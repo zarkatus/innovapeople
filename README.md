@@ -41,7 +41,7 @@ npx wrangler pages deploy . --project-name=innovapeople --branch=main
 
 ## Posicionamento
 
-Consultoria boutique de Design Organizacional + Knowledge Retention. Tese central: **Clock Drift** (Neil Redding, SXSW 2026) + **Engenharia de Contexto com 4 guardrails** + **Liderança como Orquestração**.
+Consultoria boutique de Design Organizacional + Knowledge Retention. Tese central: **Defasagem Decisória** + **Engenharia de Contexto com 4 guardrails** + **Arquitetura da Decisão Distribuída**.
 
 Casa especializada da InnovaSphere · braço de inteligência e gestão da InnCorporate.
 

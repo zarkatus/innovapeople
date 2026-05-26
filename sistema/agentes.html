@@ -114,7 +114,7 @@ const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:t
 const AGENTES = {
   pulse_anomaly_detector: { nome:'Pulse Anomaly Detector', desc:'Detecta queda > 15 pts no engajamento de uma equipe vs janela 14d anterior.' },
   knowledge_retention_watchdog: { nome:'Knowledge Retention Watchdog', desc:'Vigia concentração de relacionamentos críticos e ausência de protocolos vivos.' },
-  clock_drift_detector: { nome:'Clock Drift Detector', desc:'Detecta decisões vigentes sem revisão (táticas 14d+, estratégicas 30d+).' },
+  clock_drift_detector: { nome:'Detector de Defasagem Decisória', desc:'Detecta decisões vigentes sem revisão (táticas 14d+, estratégicas 30d+).' },
   mattering_coach: { nome:'Mattering Coach', desc:'Preventivo: queda em pertencimento ou propósito antes do score agregado cair.' },
   critic_org_designer: { nome:'Critic-Org Designer', desc:'Meta-agente. Convoca ritual extraordinário quando há ≥3 sinais altos/críticos pendentes.' }
 };

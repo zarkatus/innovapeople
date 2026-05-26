@@ -266,6 +266,35 @@ section.block.warm{background:linear-gradient(180deg,var(--paper-warm) 0%,var(--
 .partner .tag{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:12px}
 .partner p{font-size:13px;line-height:1.55;color:var(--ink-soft);margin:0;text-align:left;hyphens:none}
 
+/* CONVERSAR · form de contato */
+.conversar{padding:110px 0;background:linear-gradient(180deg,var(--paper) 0%,var(--paper-warm) 100%);position:relative;overflow:hidden}
+.conversar .wrap-narrow{max-width:780px}
+.conversar .head{text-align:center;margin-bottom:48px}
+.conversar form{background:#fff;border:1px solid var(--rule);border-radius:18px;padding:42px 44px;box-shadow:0 20px 50px rgba(63,39,86,.08)}
+@media (max-width:720px){.conversar form{padding:30px 26px}}
+.conversar .field{margin-bottom:22px}
+.conversar .field-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:580px){.conversar .field-row{grid-template-columns:1fr}}
+.conversar label{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:8px}
+.conversar input,.conversar textarea{width:100%;padding:14px 18px;border:1.4px solid var(--rule);border-radius:9px;font-family:var(--sans);font-size:15px;color:var(--ink);background:#fff;transition:all .2s ease}
+.conversar input:focus,.conversar textarea:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 4px rgba(91,58,122,.10)}
+.conversar textarea{resize:vertical;min-height:120px;line-height:1.6;font-family:var(--serif);font-size:16px;font-style:italic}
+.conversar textarea::placeholder{color:var(--muted);font-style:italic}
+.conversar .submit-row{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:8px;flex-wrap:wrap}
+.conversar .micro{font-size:12.5px;color:var(--muted);font-style:italic;font-family:var(--serif);max-width:360px;line-height:1.5}
+.conversar button{padding:16px 32px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--violet-deep) 0%,var(--violet) 100%);color:#fff;font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .25s ease;box-shadow:0 10px 28px rgba(91,58,122,.32)}
+.conversar button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 36px rgba(91,58,122,.42)}
+.conversar button:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.conversar .success-state{display:none;text-align:center;padding:48px 32px}
+.conversar .success-state.show{display:block;animation:fadeIn .5s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.conversar .success-state .dots{color:var(--gold);font-size:22px;letter-spacing:.6em;margin-bottom:20px}
+.conversar .success-state h3{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:30px;letter-spacing:-.01em;margin-bottom:14px}
+.conversar .success-state p{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--ink-soft);line-height:1.55;max-width:480px;margin:0 auto}
+.conversar .err{display:none;background:#FEEBEB;border:1px solid #F5BFBF;color:#B23B3B;padding:12px 18px;border-radius:9px;font-size:13.5px;margin-bottom:16px}
+.conversar .err.show{display:block}
+.conversar .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
 .journal-teaser{padding:90px 0;background:var(--paper-warm);text-align:center}
 .journal-teaser .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;display:block;margin-bottom:18px}
 .journal-teaser h2{font-family:var(--serif);font-weight:400;color:var(--violet-deep);font-size:clamp(28px,3.4vw,42px);line-height:1.15;letter-spacing:-.015em;margin-bottom:18px}
@@ -469,11 +498,11 @@ footer .hier a:hover{color:var(--gold)}
     </video>
   </div>
   <div class="wrap-narrow">
-    <span class="eyebrow">A Tese · Clock Drift</span>
+    <span class="eyebrow">A Tese · Defasagem Decisória</span>
     <h2>A inteligência artificial opera em minutos. <em>A sua organização, em semanas.</em> Os concorrentes ocupam essa lacuna.</h2>
-    <p>Na Era dos Participantes, o ativo único que define uma organização não é mais o produto, nem o capital, nem a marca isolada. É o contexto proprietário — a malha de relacionamentos internos, o conhecimento institucional acumulado e a capacidade de compartilhar esse contexto com velocidade. Quando essa malha vive nos celulares pessoais dos colaboradores, e o conhecimento sai pela porta a cada desligamento, o que era vantagem vira fragilidade estrutural.</p>
+    <p>Na Era da Decisão Distribuída, o ativo único que define uma organização não é mais o produto, nem o capital, nem a marca isolada. É o contexto proprietário — a malha de relacionamentos internos, o conhecimento institucional acumulado e a capacidade de compartilhar esse contexto com velocidade. Quando essa malha vive nos celulares pessoais dos colaboradores, e o conhecimento sai pela porta a cada desligamento, o que era vantagem vira fragilidade estrutural.</p>
     <p>A resposta não está em contratar mais. Está em desenhar o sistema para que o valor gerado seja estrutural, não pessoal. Em construir guardrails de conhecimento, dinâmicas de interação recíproca e uma arquitetura de liderança que orquestra, em vez de centralizar.</p>
-    <p class="cite">Inspirado em <strong>Neil Redding · SXSW 2026</strong> · "Na Era dos Participantes — A Arquitetura da Liderança"</p>
+    <p class="cite">Leitura autoral da casa · método InnovaPeople · Maio 2026</p>
   </div>
 </section>
 
@@ -514,13 +543,13 @@ footer .hier a:hover{color:var(--gold)}
   <div class="wrap">
     <span class="section-eyebrow">O Ativo Único</span>
     <h2 class="section-title">Contexto proprietário <em>é o único ativo que sua empresa não pode terceirizar.</em></h2>
-    <p class="section-lede">Na arquitetura da liderança da Era dos Participantes, o que distingue uma organização sustentável de uma frágil é a capacidade de transformar o que cada pessoa sabe individualmente em conhecimento que pertence à instituição. Quatro dimensões compõem esse ativo.</p>
+    <p class="section-lede">Na arquitetura da decisão distribuída, o que distingue uma organização sustentável de uma frágil é a capacidade de transformar o que cada pessoa sabe individualmente em conhecimento que pertence à instituição. Quatro dimensões compõem esse ativo.</p>
 
     <div class="pillars">
       <div class="pillar"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="7" r="3"/><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M9.5 9.5L7 14.5M14.5 9.5L17 14.5"/></svg></div><div><h4>Ativos Relacionais</h4><p>Os relacionamentos internos são o substrato da eficácia. Permitem decisões mais rápidas e colaboração efetiva. Quando esse tecido fica concentrado em poucos indivíduos, a organização adoece sem perceber.</p></div></div>
       <div class="pillar"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5V4.5A2.5 2.5 0 016.5 2z"/></svg></div><div><h4>Conhecimento Institucional</h4><p>Protocolos, atalhos, contexto histórico, padrões aprendidos com erros caros — ativo cumulativo que deve ser preservado. A maioria das empresas trata cada saída como custo de RH; deveria tratar como evento de risco patrimonial.</p></div></div>
       <div class="pillar"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 12h.01M12 12h.01M16 12h.01"/><path d="M21 12c0 4.97-4.03 9-9 9-1.5 0-2.92-.37-4.17-1.02L3 21l1.02-4.83C3.37 14.92 3 13.5 3 12c0-4.97 4.03-9 9-9s9 4.03 9 9z"/></svg></div><div><h4>Compartilhamento Eficiente</h4><p>A diferença entre uma empresa que escala e uma que reage a crises está na velocidade com que o que um sabe vira o que muitos podem fazer — sem ruído, sem retrabalho, sem dependência de pessoa-chave.</p></div></div>
-      <div class="pillar"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div><h4>Clock Drift Organizacional</h4><p>Enquanto a IA opera em minutos, organizações tradicionais operam em semanas. Concorrentes implementam estratégias enquanto a sua empresa ainda está em aprovação. Reduzir essa lacuna é condição de sobrevivência competitiva.</p></div></div>
+      <div class="pillar"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div><h4>Defasagem Decisória</h4><p>Enquanto a inteligência operacional disponível decide em minutos, organizações tradicionais decidem em semanas. Concorrentes implementam enquanto a empresa ainda está em aprovação. Reduzir essa defasagem é condição de sobrevivência competitiva.</p></div></div>
     </div>
   </div>
 </section>
@@ -627,7 +656,7 @@ footer .hier a:hover{color:var(--gold)}
   <div class="wrap">
     <span class="section-eyebrow">Arquitetura de Liderança</span>
     <h2 class="section-title">Liderança como orquestração. <em>O regente não toca</em> — mas define como os instrumentos interagem.</h2>
-    <p class="section-lede">Na Era dos Participantes, liderar é orquestrar a interação entre capacidades, contextos e responsabilidades. Seis ações estruturais distinguem organizações que se adaptam à velocidade da IA.</p>
+    <p class="section-lede">Na arquitetura da decisão distribuída, liderar é orquestrar a interação entre capacidades, contextos e responsabilidades — não centralizar respostas. Seis ações estruturais distinguem organizações que se adaptam à velocidade da inteligência operacional disponível.</p>
 
     <div class="orchestra">
       <div class="action"><h5>Rastrear Capacidades</h5><p>Saber, em tempo real, quais capacidades estão disponíveis permite alocação inteligente de recursos.</p></div>
@@ -655,11 +684,39 @@ footer .hier a:hover{color:var(--gold)}
   </div>
 </section>
 
+<section class="conversar" id="conversar">
+  <div class="wrap-narrow">
+    <div class="head">
+      <span class="section-eyebrow">Conversar</span>
+      <h2 class="section-title">Uma conversa de <em>trinta minutos</em> basta para entender se faz sentido.</h2>
+      <p class="section-lede" style="text-align:center;margin:0 auto">Sem formulário longo, sem fila de qualificação. Apenas o necessário para que possamos retornar à altura.</p>
+    </div>
+    <form id="conv-form" novalidate>
+      <div id="conv-err" class="err" role="alert"></div>
+      <div class="field-row">
+        <div class="field"><label for="conv-nome">Seu nome</label><input id="conv-nome" name="nome" required maxlength="160"></div>
+        <div class="field"><label for="conv-email">E-mail</label><input id="conv-email" name="email" type="email" required maxlength="160"></div>
+      </div>
+      <div class="field"><label for="conv-empresa">Empresa (opcional)</label><input id="conv-empresa" name="empresa" maxlength="160"></div>
+      <div class="field"><label for="conv-mensagem">O que você gostaria de explorar</label><textarea id="conv-mensagem" name="mensagem" required maxlength="3000" placeholder="Em duas ou três linhas, o que está te trazendo aqui."></textarea></div>
+      <div class="submit-row">
+        <div class="micro">Respondemos pessoalmente, em até 24 horas úteis. Nada de marketing automatizado, nada de listas.</div>
+        <button type="submit" id="conv-btn">Enviar mensagem</button>
+      </div>
+    </form>
+    <div id="conv-success" class="success-state">
+      <div class="dots">§ § §</div>
+      <h3>Recebida. Obrigado.</h3>
+      <p>Voltaremos pessoalmente, em até 24 horas úteis — pelo e-mail que você indicou.</p>
+    </div>
+  </div>
+</section>
+
 <section class="journal-teaser">
   <div class="wrap-narrow">
     <span class="eyebrow">A Jornada · A arquitetura do encantamento</span>
     <h2>O conhecimento que sustenta o método <em>fica aberto.</em></h2>
-    <p>Ensaios longos, sem pressa. Encantar não é gerar surpresa — é revelar o que sempre esteve ali e ninguém tinha como ver. Clock Drift, engenharia de contexto, retenção de conhecimento, arquitetura da liderança na Era dos Participantes.</p>
+    <p>Ensaios longos, sem pressa. Encantar não é gerar surpresa — é revelar o que sempre esteve ali e ninguém tinha como ver. Defasagem decisória, engenharia de contexto, retenção de conhecimento, arquitetura da decisão distribuída.</p>
     <a href="https://jornada.innovapeople.com.br/" class="cta-ghost">Ler os ensaios →</a>
   </div>
 </section>
@@ -692,7 +749,7 @@ footer .hier a:hover{color:var(--gold)}
         <h6>Institucional</h6>
         <ul>
           <li><a href="/raio-x">Solicitar Raio-X</a></li>
-          <li><a href="mailto:raphael@schifino.com.br">raphael@schifino.com.br</a></li>
+          <li><a href="#conversar">Enviar mensagem</a></li>
           <li><a href="/privacidade">Política de Privacidade</a></li>
           <li><a href="/termos">Termos de Uso</a></li>
         </ul>
@@ -719,6 +776,47 @@ document.querySelectorAll('section.block, .reveal, .reveal-stagger').forEach(s =
   if (!s.classList.contains('reveal') && !s.classList.contains('reveal-stagger')) s.classList.add('reveal');
   io.observe(s);
 });
+
+// CONVERSAR · form submit
+(function(){
+  const form = document.getElementById('conv-form');
+  if (!form) return;
+  const btn = document.getElementById('conv-btn');
+  const err = document.getElementById('conv-err');
+  const success = document.getElementById('conv-success');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    err.classList.remove('show');
+    const nome = document.getElementById('conv-nome').value.trim();
+    const email = document.getElementById('conv-email').value.trim();
+    const empresa = document.getElementById('conv-empresa').value.trim();
+    const mensagem = document.getElementById('conv-mensagem').value.trim();
+    if (!nome || !email || !mensagem || mensagem.length < 8) {
+      err.textContent = 'Preencha nome, e-mail e uma mensagem (mínimo 8 caracteres).';
+      err.classList.add('show'); return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      err.textContent = 'E-mail inválido.';
+      err.classList.add('show'); return;
+    }
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Enviando…';
+    try {
+      const r = await fetch('https://dqknyhfrrmbqvkdshjfu.supabase.co/functions/v1/innovapeople-contato-submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, email, empresa, mensagem, origem: 'site-principal' })
+      });
+      if (!r.ok) { const t = await r.text(); throw new Error(t.slice(0,200)); }
+      form.style.display = 'none';
+      success.classList.add('show');
+      success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (e2) {
+      err.textContent = 'Não foi possível enviar agora. Por favor, tente novamente em instantes.';
+      err.classList.add('show');
+      btn.disabled = false; btn.innerHTML = 'Enviar mensagem';
+    }
+  });
+})();
 
 // LGPD consent (barra fina rodapé)
 function lgpdClose(){try{localStorage.setItem('ip_lgpd_consent','1');}catch(_){}document.getElementById('lgpd-bar').classList.remove('show');}
