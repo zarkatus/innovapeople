@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Raio-X InnovaPeople — Diagnóstico gratuito</title>
+
+<meta name="description" content="Solicite o Raio-X InnovaPeople — diagnóstico gratuito de design organizacional, custo invisível de rotatividade e risco de perda de pessoas-chave. Sem compromisso.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://innovapeople.com.br/raio-x">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Raio-X InnovaPeople — Diagnóstico gratuito de design organizacional">
+<meta property="og:description" content="Em 30 minutos, a fotografia precisa do que a sua empresa não consegue ver sozinha.">
+<meta property="og:url" content="https://innovapeople.com.br/raio-x">
+<meta property="og:image" content="https://innovapeople.com.br/og-image.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --violet:#5B3A7A;--violet-deep:#3F2756;--violet-light:#7B5AA8;--violet-soft:#F4EFFA;
+  --gold:#C4A35A;--gold-deep:#9C7E3B;
+  --ink:#1A1614;--ink-soft:#3D3531;--muted:#7A6F66;--rule:#D9D2C9;
+  --paper:#FAF7F1;--paper-deep:#F2EDE3;
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',sans-serif;
+  --success:#2E7D52;--error:#B23B3B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--violet);text-decoration:none}
+.wrap{max-width:760px;margin:0 auto;padding:0 28px;width:100%}
+
+/* HEADER */
+header{padding:28px 0;border-bottom:1px solid var(--rule);background:var(--paper)}
+header .row{display:flex;align-items:center;justify-content:space-between}
+header .brand{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-size:22px;color:var(--violet-deep);font-weight:500;letter-spacing:-.015em}
+header .brand-mark{width:36px;height:36px;border-radius:9px;background:var(--violet-soft);border:1.2px solid var(--violet-light);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;font-size:20px;color:var(--violet)}
+header .back{font-size:13px;color:var(--muted);letter-spacing:.04em}
+header .back:hover{color:var(--violet)}
+
+/* HERO */
+.hero{padding:60px 0 36px 0;text-align:center}
+.hero .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:18px;display:block}
+.hero h1{font-family:var(--serif);font-weight:400;color:var(--violet-deep);font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-.02em;margin-bottom:18px}
+.hero h1 em{font-style:italic;color:var(--gold-deep);font-weight:500}
+.hero .lede{font-family:var(--serif);font-style:italic;color:var(--ink-soft);font-size:clamp(17px,1.9vw,22px);line-height:1.5;max-width:560px;margin:0 auto}
+
+/* FORM */
+form{max-width:680px;margin:0 auto;padding:40px 0 80px 0}
+.steps-bar{display:flex;gap:8px;margin-bottom:38px;justify-content:center}
+.step-dot{width:38px;height:38px;border-radius:50%;background:#fff;border:1.5px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;color:var(--muted);font-size:16px;transition:all .25s ease}
+.step-dot.active{background:var(--violet);border-color:var(--violet);color:#fff;box-shadow:0 6px 16px rgba(91,58,122,.32)}
+.step-dot.done{background:var(--violet-soft);border-color:var(--violet);color:var(--violet)}
+.step-conn{flex-shrink:0;width:38px;height:1.5px;background:var(--rule);align-self:center}
+.step-conn.done{background:var(--violet)}
+
+.step{display:none}
+.step.active{display:block;animation:slideIn .35s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.step-title{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:28px;line-height:1.2;margin-bottom:8px;letter-spacing:-.01em}
+.step-sub{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:16px;margin-bottom:32px}
+
+.field{margin-bottom:22px}
+.field label{display:block;font-size:13px;letter-spacing:.06em;color:var(--ink-soft);font-weight:600;margin-bottom:8px;text-transform:uppercase}
+.field label .req{color:var(--gold-deep);font-weight:700;margin-left:3px}
+.field input[type=text],.field input[type=email],.field input[type=tel],.field select,.field textarea{
+  width:100%;padding:13px 16px;border:1.4px solid var(--rule);border-radius:8px;
+  font-family:var(--sans);font-size:15px;color:var(--ink);background:#fff;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(91,58,122,.12);
+}
+.field textarea{resize:vertical;min-height:110px;line-height:1.55}
+.field .hint{font-size:12.5px;color:var(--muted);margin-top:6px;font-style:italic}
+
+.radio-group{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (max-width:520px){.radio-group{grid-template-columns:1fr}}
+.radio-card{position:relative;cursor:pointer}
+.radio-card input{position:absolute;opacity:0;pointer-events:none}
+.radio-card .face{padding:14px 16px;border:1.4px solid var(--rule);border-radius:8px;background:#fff;font-size:14px;color:var(--ink-soft);transition:all .2s ease;display:flex;align-items:center;gap:10px}
+.radio-card .face::before{content:'';display:inline-block;width:16px;height:16px;border-radius:50%;border:1.6px solid var(--rule);flex-shrink:0;transition:all .2s ease}
+.radio-card input:checked + .face{border-color:var(--violet);background:var(--violet-soft);color:var(--violet-deep);font-weight:500}
+.radio-card input:checked + .face::before{border-color:var(--violet);background:radial-gradient(circle at center, var(--violet) 0 4px, #fff 5px 100%)}
+
+.scale-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+.scale-card{cursor:pointer;text-align:center}
+.scale-card input{position:absolute;opacity:0;pointer-events:none}
+.scale-card .face{padding:14px 6px;border:1.4px solid var(--rule);border-radius:8px;background:#fff;font-family:var(--serif);font-size:22px;color:var(--ink-soft);transition:all .2s ease}
+.scale-card input:checked + .face{border-color:var(--violet);background:var(--violet);color:#fff}
+.scale-label-row{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+
+.nav-row{display:flex;justify-content:space-between;gap:12px;margin-top:36px;padding-top:28px;border-top:1px solid var(--rule)}
+.btn{padding:13px 26px;border-radius:8px;font-family:var(--sans);font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;transition:all .22s ease}
+.btn-primary{background:linear-gradient(135deg,var(--violet-deep),var(--violet));color:#fff;box-shadow:0 6px 18px rgba(91,58,122,.28)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(91,58,122,.38)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-ghost{background:transparent;color:var(--violet);border:1.4px solid var(--violet)}
+.btn-ghost:hover{background:var(--violet-soft)}
+
+/* CONCLUSÃO */
+.done-card{text-align:center;padding:60px 32px;background:#fff;border:1px solid var(--rule);border-radius:14px;box-shadow:0 8px 24px rgba(26,22,20,.06)}
+.done-card .icon{width:72px;height:72px;border-radius:50%;background:var(--violet-soft);border:1.5px solid var(--violet);display:flex;align-items:center;justify-content:center;margin:0 auto 24px auto;color:var(--violet)}
+.done-card .icon svg{width:36px;height:36px}
+.done-card h2{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:32px;margin-bottom:12px;letter-spacing:-.01em}
+.done-card p{color:var(--ink-soft);font-size:16px;line-height:1.65;margin-bottom:14px;text-align:left}
+.done-card .meta{font-size:13px;color:var(--muted);font-style:italic;margin-top:24px;letter-spacing:.04em}
+
+/* ERROR */
+.error-msg{background:#FEEBEB;border:1px solid #F5BFBF;color:var(--error);padding:14px 18px;border-radius:8px;font-size:14px;margin-bottom:18px;display:none}
+.error-msg.show{display:block}
+
+/* LOADING */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+footer{margin-top:auto;padding:32px 0;border-top:1px solid var(--rule);background:var(--paper);text-align:center;font-size:12.5px;color:var(--muted);letter-spacing:.04em}
+footer a{color:var(--violet)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="row">
+      <a href="/" class="brand">
+        <span class="brand-mark">I</span>
+        <span>InnovaPeople</span>
+      </a>
+      <a href="/" class="back">← voltar ao site</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Raio-X · Diagnóstico Gratuito</span>
+    <h1>Em 30 minutos, <em>a fotografia precisa</em> do que a sua empresa não consegue ver sozinha.</h1>
+    <p class="lede">Sem custo. Sem compromisso. Quatro etapas curtas para qualificar o diagnóstico — uma entrevista estruturada de 2-3h é agendada em sequência.</p>
+  </div>
+</section>
+
+<form id="raio-x-form" autocomplete="off" novalidate>
+  <div class="wrap">
+
+    <div class="steps-bar">
+      <div class="step-dot active" data-step="1">1</div>
+      <div class="step-conn"></div>
+      <div class="step-dot" data-step="2">2</div>
+      <div class="step-conn"></div>
+      <div class="step-dot" data-step="3">3</div>
+      <div class="step-conn"></div>
+      <div class="step-dot" data-step="4">4</div>
+    </div>
+
+    <div id="error-msg" class="error-msg"></div>
+
+    <!-- ETAPA 1 — EMPRESA -->
+    <div class="step active" data-step="1">
+      <h2 class="step-title">A empresa</h2>
+      <p class="step-sub">Comece pelo essencial — quem está pedindo o diagnóstico e em qual contexto.</p>
+
+      <div class="field">
+        <label for="nome">Seu nome <span class="req">*</span></label>
+        <input type="text" id="nome" name="nome" required>
+      </div>
+
+      <div class="field">
+        <label for="cargo">Seu cargo <span class="req">*</span></label>
+        <input type="text" id="cargo" name="cargo" placeholder="CEO, COO, Diretor de Pessoas..." required>
+      </div>
+
+      <div class="field">
+        <label for="empresa">Empresa <span class="req">*</span></label>
+        <input type="text" id="empresa" name="empresa" required>
+      </div>
+
+      <div class="field">
+        <label>Setor <span class="req">*</span></label>
+        <div class="radio-group">
+          <label class="radio-card"><input type="radio" name="setor" value="construcao" required><span class="face">Construção e Incorporação</span></label>
+          <label class="radio-card"><input type="radio" name="setor" value="operacao-predial"><span class="face">Manutenção / Operação Predial</span></label>
+          <label class="radio-card"><input type="radio" name="setor" value="engenharia-consultoria"><span class="face">Engenharia / Consultoria</span></label>
+          <label class="radio-card"><input type="radio" name="setor" value="varejo-logistica-agro"><span class="face">Varejo / Logística / Agro</span></label>
+          <label class="radio-card"><input type="radio" name="setor" value="industria"><span class="face">Indústria</span></label>
+          <label class="radio-card"><input type="radio" name="setor" value="outro"><span class="face">Outro</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Número de colaboradores <span class="req">*</span></label>
+        <div class="radio-group">
+          <label class="radio-card"><input type="radio" name="porte" value="ate-50" required><span class="face">Até 50</span></label>
+          <label class="radio-card"><input type="radio" name="porte" value="50-200"><span class="face">50 a 200</span></label>
+          <label class="radio-card"><input type="radio" name="porte" value="200-500"><span class="face">200 a 500</span></label>
+          <label class="radio-card"><input type="radio" name="porte" value="500-2000"><span class="face">500 a 2.000</span></label>
+          <label class="radio-card"><input type="radio" name="porte" value="2000+"><span class="face">Mais de 2.000</span></label>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <span></span>
+        <button type="button" class="btn btn-primary" data-action="next">Próximo →</button>
+      </div>
+    </div>
+
+    <!-- ETAPA 2 — SINTOMAS -->
+    <div class="step" data-step="2">
+      <h2 class="step-title">Os sintomas</h2>
+      <p class="step-sub">Avalie cada afirmação na escala 1 (não se aplica) a 5 (descreve exatamente a empresa).</p>
+
+      <div class="field">
+        <label>A empresa perde conhecimento crítico quando alguém sai</label>
+        <div class="scale-row">
+          <label class="scale-card"><input type="radio" name="s_perda" value="1"><span class="face">1</span></label>
+          <label class="scale-card"><input type="radio" name="s_perda" value="2"><span class="face">2</span></label>
+          <label class="scale-card"><input type="radio" name="s_perda" value="3"><span class="face">3</span></label>
+          <label class="scale-card"><input type="radio" name="s_perda" value="4"><span class="face">4</span></label>
+          <label class="scale-card"><input type="radio" name="s_perda" value="5"><span class="face">5</span></label>
+        </div>
+        <div class="scale-label-row"><span>Não se aplica</span><span>Descreve exatamente</span></div>
+      </div>
+
+      <div class="field">
+        <label>Contatos de fornecedores e parceiros vivem nos celulares pessoais</label>
+        <div class="scale-row">
+          <label class="scale-card"><input type="radio" name="s_contatos" value="1"><span class="face">1</span></label>
+          <label class="scale-card"><input type="radio" name="s_contatos" value="2"><span class="face">2</span></label>
+          <label class="scale-card"><input type="radio" name="s_contatos" value="3"><span class="face">3</span></label>
+          <label class="scale-card"><input type="radio" name="s_contatos" value="4"><span class="face">4</span></label>
+          <label class="scale-card"><input type="radio" name="s_contatos" value="5"><span class="face">5</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Não medimos engajamento ou risco de saída de pessoas-chave</label>
+        <div class="scale-row">
+          <label class="scale-card"><input type="radio" name="s_metricas" value="1"><span class="face">1</span></label>
+          <label class="scale-card"><input type="radio" name="s_metricas" value="2"><span class="face">2</span></label>
+          <label class="scale-card"><input type="radio" name="s_metricas" value="3"><span class="face">3</span></label>
+          <label class="scale-card"><input type="radio" name="s_metricas" value="4"><span class="face">4</span></label>
+          <label class="scale-card"><input type="radio" name="s_metricas" value="5"><span class="face">5</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>As equipes gastam horas em tarefas manuais que ninguém vê</label>
+        <div class="scale-row">
+          <label class="scale-card"><input type="radio" name="s_manual" value="1"><span class="face">1</span></label>
+          <label class="scale-card"><input type="radio" name="s_manual" value="2"><span class="face">2</span></label>
+          <label class="scale-card"><input type="radio" name="s_manual" value="3"><span class="face">3</span></label>
+          <label class="scale-card"><input type="radio" name="s_manual" value="4"><span class="face">4</span></label>
+          <label class="scale-card"><input type="radio" name="s_manual" value="5"><span class="face">5</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Decisões internas demoram mais do que deveriam</label>
+        <div class="scale-row">
+          <label class="scale-card"><input type="radio" name="s_decisao" value="1"><span class="face">1</span></label>
+          <label class="scale-card"><input type="radio" name="s_decisao" value="2"><span class="face">2</span></label>
+          <label class="scale-card"><input type="radio" name="s_decisao" value="3"><span class="face">3</span></label>
+          <label class="scale-card"><input type="radio" name="s_decisao" value="4"><span class="face">4</span></label>
+          <label class="scale-card"><input type="radio" name="s_decisao" value="5"><span class="face">5</span></label>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button type="button" class="btn btn-ghost" data-action="prev">← Voltar</button>
+        <button type="button" class="btn btn-primary" data-action="next">Próximo →</button>
+      </div>
+    </div>
+
+    <!-- ETAPA 3 — CONTEXTO -->
+    <div class="step" data-step="3">
+      <h2 class="step-title">O contexto</h2>
+      <p class="step-sub">Em uma frase ou parágrafo, descreva o desafio mais relevante.</p>
+
+      <div class="field">
+        <label for="desafio">Qual o desafio prioritário em gestão de pessoas? <span class="req">*</span></label>
+        <textarea id="desafio" name="desafio" required placeholder="Ex.: rotatividade alta em líderes operacionais; saída recente de profissional crítico; equipes distribuídas em múltiplas frentes sem visibilidade..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Quando você precisa de resultados visíveis? <span class="req">*</span></label>
+        <div class="radio-group">
+          <label class="radio-card"><input type="radio" name="urgencia" value="ja" required><span class="face">Já — crise em curso</span></label>
+          <label class="radio-card"><input type="radio" name="urgencia" value="30-90"><span class="face">Próximos 30-90 dias</span></label>
+          <label class="radio-card"><input type="radio" name="urgencia" value="6-meses"><span class="face">Próximos 6 meses</span></label>
+          <label class="radio-card"><input type="radio" name="urgencia" value="explorando"><span class="face">Explorando ainda</span></label>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button type="button" class="btn btn-ghost" data-action="prev">← Voltar</button>
+        <button type="button" class="btn btn-primary" data-action="next">Próximo →</button>
+      </div>
+    </div>
+
+    <!-- ETAPA 4 — CONTATO -->
+    <div class="step" data-step="4">
+      <h2 class="step-title">Como vamos te procurar</h2>
+      <p class="step-sub">Confirme os dados de contato. A entrevista de 2-3h é agendada por aqui.</p>
+
+      <div class="field">
+        <label for="email">E-mail corporativo <span class="req">*</span></label>
+        <input type="email" id="email" name="email" required>
+      </div>
+
+      <div class="field">
+        <label for="whatsapp">WhatsApp <span class="req">*</span></label>
+        <input type="tel" id="whatsapp" name="whatsapp" placeholder="+55 (47) 99999-9999" required>
+        <div class="hint">Usamos apenas para agendar a entrevista. Sem disparos de marketing.</div>
+      </div>
+
+      <div class="field">
+        <label for="observacoes">Algo mais que devemos saber? (opcional)</label>
+        <textarea id="observacoes" name="observacoes" placeholder="Indicação de alguém, contexto adicional, restrições de horário..."></textarea>
+      </div>
+
+      <div class="field" style="background:var(--violet-soft);border:1px solid var(--violet-light);border-radius:8px;padding:14px 18px;font-size:13px;color:var(--violet-deep);line-height:1.55">
+        Ao enviar, você concorda que a InnovaPeople entre em contato para agendar a entrevista. <strong>Seus dados não são compartilhados</strong> com terceiros. Política de Privacidade disponível sob solicitação.
+      </div>
+
+      <div class="nav-row">
+        <button type="button" class="btn btn-ghost" data-action="prev">← Voltar</button>
+        <button type="submit" class="btn btn-primary" id="submit-btn">Solicitar Raio-X</button>
+      </div>
+    </div>
+
+    <!-- CONCLUSÃO -->
+    <div class="step" data-step="done">
+      <div class="done-card">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <h2>Solicitação recebida</h2>
+        <p>Obrigado pela confiança. A InnovaPeople vai te procurar em até <strong>24 horas úteis</strong> para confirmar disponibilidade e agendar a entrevista estruturada de 2 a 3 horas.</p>
+        <p>Enquanto isso, se quiser, pode ler o <a href="/">manifesto e a metodologia completa</a> em nossa página principal — sem pressa.</p>
+        <p class="meta">Itajaí, Santa Catarina · Maio de 2026</p>
+      </div>
+    </div>
+
+  </div>
+</form>
+
+<footer>
+  <div class="wrap">
+    InnovaPeople LTDA · CNPJ 61.493.736/0001-33 · Itajaí, SC · <a href="mailto:raphael@schifino.com.br">raphael@schifino.com.br</a>
+  </div>
+</footer>
+
+<script>
+const form = document.getElementById('raio-x-form');
+const errMsg = document.getElementById('error-msg');
+const submitBtn = document.getElementById('submit-btn');
+let currentStep = 1;
+const totalSteps = 4;
+
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.querySelector(`.step[data-step="${n}"]`).classList.add('active');
+
+  document.querySelectorAll('.step-dot').forEach(d => {
+    const num = parseInt(d.dataset.step);
+    d.classList.remove('active', 'done');
+    if (num === n) d.classList.add('active');
+    else if (num < n) d.classList.add('done');
+  });
+  document.querySelectorAll('.step-conn').forEach((c, i) => {
+    c.classList.toggle('done', i + 1 < n);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  errMsg.classList.remove('show');
+}
+
+function validateStep(n) {
+  const step = document.querySelector(`.step[data-step="${n}"]`);
+  const required = step.querySelectorAll('[required]');
+  for (const f of required) {
+    if (f.type === 'radio') {
+      if (!step.querySelector(`input[name="${f.name}"]:checked`)) {
+        return { ok: false, msg: 'Por favor, escolha uma opção em cada pergunta obrigatória.' };
+      }
+    } else if (!f.value.trim()) {
+      f.focus();
+      return { ok: false, msg: 'Por favor, preencha todos os campos obrigatórios.' };
+    } else if (f.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.value)) {
+      f.focus();
+      return { ok: false, msg: 'Por favor, informe um e-mail válido.' };
+    }
+  }
+  return { ok: true };
+}
+
+form.addEventListener('click', (e) => {
+  if (e.target.dataset.action === 'next') {
+    const v = validateStep(currentStep);
+    if (!v.ok) { errMsg.textContent = v.msg; errMsg.classList.add('show'); return; }
+    currentStep++; showStep(currentStep);
+  } else if (e.target.dataset.action === 'prev') {
+    currentStep--; showStep(currentStep);
+  }
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const v = validateStep(currentStep);
+  if (!v.ok) { errMsg.textContent = v.msg; errMsg.classList.add('show'); return; }
+
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span class="spinner"></span>Enviando...';
+
+  const fd = new FormData(form);
+  const payload = Object.fromEntries(fd.entries());
+
+  try {
+    const res = await fetch('https://dqknyhfrrmbqvkdshjfu.supabase.co/functions/v1/innovapeople-raio-x-submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('falha no envio');
+    document.querySelector('.steps-bar').style.display = 'none';
+    showStep('done');
+  } catch (err) {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Solicitar Raio-X';
+    errMsg.textContent = 'Não foi possível enviar agora. Por favor, escreva diretamente para raphael@schifino.com.br ou tente novamente em alguns minutos.';
+    errMsg.classList.add('show');
+  }
+});
+</script>
+
+</body>
+</html>
