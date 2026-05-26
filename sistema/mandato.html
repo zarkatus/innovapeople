@@ -371,7 +371,7 @@ function dtRel(s){if(!s)return'';const ms=Date.now()-new Date(s).getTime();const
 function toast(msg, kind){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+(kind||'')+ ' show';setTimeout(()=>t.classList.remove('show'),3500);}
 
 async function init(){
-  if (!MANDATO_ID){ document.getElementById('content-gate').innerHTML = 'ID do mandato não informado. <a href="/sistema/">Voltar</a>'; return; }
+  if (!MANDATO_ID){ window.location.replace('/sistema/'); return; }
   const { data: { session } } = await sb.auth.getSession();
   if (!session || !ALLOWED_EMAILS.includes(session.user?.email)){
     location.href = '/sistema/';
@@ -468,6 +468,33 @@ async function carregarPulsos(){
   }).join('');
   document.getElementById('pulsos-equipes').innerHTML = html || '<div class="empty"><p>Sem pulsos ainda. Gere tokens e envie aos colaboradores.</p></div>';
 
+  // Carrega tendências (chart visual)
+  const { data: tend } = await sb.rpc('fn_ip_bi_tendencias', { p_mandato_id: MANDATO_ID, p_janela_dias: 14 });
+  const tArr = tend?.tendencias || [];
+  if (tArr.length){
+    const chartHtml = tArr.map(t=>{
+      const atual = t.score_atual || 0; const ant = t.score_anterior || 0;
+      const delta = t.delta_score || 0;
+      const deltaColor = Math.abs(delta) < 2 ? 'var(--muted)' : delta > 0 ? 'var(--success)' : 'var(--danger)';
+      const sinal = delta > 0 ? '+' : '';
+      return `<div style="padding:12px 16px;background:var(--paper);border-radius:8px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><strong>${esc(t.equipe)}</strong><span style="color:var(--muted);font-size:11px">${t.amostra_atual} respostas · janela 14d × 14d</span></div>
+        <svg viewBox="0 0 300 60" style="width:100%;max-width:480px;height:auto;font-family:var(--sans)">
+          <text x="0" y="14" font-size="9" fill="var(--muted)">14d ant.</text>
+          <rect x="50" y="6" width="${ant*2}" height="14" fill="#D9D2C9" rx="2"/>
+          <text x="${50+ant*2+6}" y="18" font-size="11" fill="var(--ink-soft)">${ant}</text>
+          <text x="0" y="40" font-size="9" fill="var(--muted)">atual</text>
+          <rect x="50" y="32" width="${atual*2}" height="14" fill="var(--violet)" rx="2"/>
+          <text x="${50+atual*2+6}" y="44" font-size="11" font-weight="600" fill="var(--violet-deep)">${atual}</text>
+          <text x="260" y="44" font-size="13" font-weight="700" fill="${deltaColor}" text-anchor="end">${sinal}${delta}</text>
+        </svg>
+      </div>`;
+    }).join('');
+    const existing = document.getElementById('pulsos-tend');
+    const target = existing || (() => { const d = document.createElement('div'); d.id = 'pulsos-tend'; document.getElementById('pulsos-equipes').parentElement.appendChild(d); return d; })();
+    target.innerHTML = '<h3 style="font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:17px;margin:20px 0 10px 0">Tendências · delta vs 14 dias anteriores</h3>' + chartHtml;
+  }
+
   const { data: tokens } = await sb.from('ip_pulse_tokens').select('token,equipe,papel,created_at,expires_at').eq('mandato_id', MANDATO_ID).is('used_at', null).gt('expires_at', new Date().toISOString()).order('created_at',{ascending:false}).limit(50);
   document.getElementById('pulsos-tokens').innerHTML = (tokens||[]).length ? (tokens||[]).map(t=>{
     const url = location.origin + '/pulso/?t=' + t.token;
@@ -544,10 +571,61 @@ function abrirModalProtocolo(){
 }
 
 // === SUGESTÕES ===
+let SUGESTOES_CACHE = [];
 async function carregarSugestoes(){
   const { data } = await sb.from('ip_agent_sugestoes').select('*').eq('mandato_id', MANDATO_ID).order('status').order('severidade',{ascending:false}).order('created_at',{ascending:false});
-  document.getElementById('ct-sugestoes').textContent = (data||[]).filter(s=>s.status==='pendente').length;
-  document.getElementById('sugestoes-list').innerHTML = (data||[]).length ? data.map(s=>`<div style="padding:18px 22px;background:#fff;border:1px solid var(--rule);border-radius:10px;margin-bottom:10px;${s.status!=='pendente'?'opacity:.55':''}"><div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px"><span class="tag-sev ${s.severidade}">${s.severidade}</span><div style="flex:1"><div style="font-family:var(--serif);font-weight:600;color:var(--violet-deep);font-size:17px;line-height:1.3">${esc(s.titulo)}</div><div style="font-size:11px;color:var(--muted);letter-spacing:.04em;margin-top:3px">Agente <strong>${esc(s.agente)}</strong> · ${dt(s.created_at)} · status <strong>${esc(s.status)}</strong></div></div></div><div style="font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:12px">${esc(s.sugestao)}</div>${s.status==='pendente'?`<div style="display:flex;gap:8px"><button class="btn btn-sm btn-success" onclick="updateSugestao('${s.id}','aplicada')">Aplicar</button><button class="btn btn-sm btn-ghost" onclick="updateSugestao('${s.id}','revisada')">Marcar como revisada</button><button class="btn btn-sm btn-danger" onclick="updateSugestao('${s.id}','descartada')">Descartar</button></div>`:''}</div>`).join('') : '<div class="empty"><p>Nenhuma sugestão dos agentes ainda. Os agentes rodam diariamente às 07:30 UTC.</p></div>';
+  SUGESTOES_CACHE = data || [];
+  document.getElementById('ct-sugestoes').textContent = SUGESTOES_CACHE.filter(s=>s.status==='pendente').length;
+  document.getElementById('sugestoes-list').innerHTML = SUGESTOES_CACHE.length ? SUGESTOES_CACHE.map(s=>{
+    const hasEvidence = s.evidencias && Object.keys(s.evidencias).length > 0;
+    return `<div style="padding:18px 22px;background:#fff;border:1px solid var(--rule);border-radius:10px;margin-bottom:10px;${s.status!=='pendente'?'opacity:.55':''};cursor:pointer" onclick="abrirDrillSugestao('${s.id}')"><div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px"><span class="tag-sev ${s.severidade}">${s.severidade}</span><div style="flex:1"><div style="font-family:var(--serif);font-weight:600;color:var(--violet-deep);font-size:17px;line-height:1.3">${esc(s.titulo)}</div><div style="font-size:11px;color:var(--muted);letter-spacing:.04em;margin-top:3px">Agente <strong>${esc(s.agente)}</strong> · ${dt(s.created_at)} · status <strong>${esc(s.status)}</strong>${hasEvidence?' · <span style="color:var(--violet);font-weight:600">clique para detalhes</span>':''}</div></div></div><div style="font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:12px">${esc(s.sugestao)}</div>${s.status==='pendente'?`<div style="display:flex;gap:8px" onclick="event.stopPropagation()"><button class="btn btn-sm btn-success" onclick="updateSugestao('${s.id}','aplicada')">Aplicar</button><button class="btn btn-sm btn-ghost" onclick="updateSugestao('${s.id}','revisada')">Marcar como revisada</button><button class="btn btn-sm btn-danger" onclick="updateSugestao('${s.id}','descartada')">Descartar</button></div>`:''}</div>`;
+  }).join('') : '<div class="empty"><p>Nenhuma sugestão dos agentes ainda. Os agentes rodam diariamente às 07:30 UTC.</p></div>';
+}
+
+async function abrirDrillSugestao(id){
+  const s = SUGESTOES_CACHE.find(x => x.id === id);
+  if (!s) return;
+  modalContext = { tipo: 'drill_sugestao', sugestao: s };
+  document.getElementById('modal-title').textContent = s.titulo;
+  const ev = s.evidencias || {};
+  const ctx = s.contexto || {};
+  let html = `
+    <div style="margin-bottom:14px">
+      <span class="tag-sev ${s.severidade}">${s.severidade}</span>
+      <span style="font-size:11px;color:var(--muted);letter-spacing:.04em;margin-left:8px">Agente <strong>${esc(s.agente)}</strong> · ${dt(s.created_at)}</span>
+    </div>
+    <div style="font-size:14.5px;color:var(--ink-soft);line-height:1.65;margin-bottom:18px;padding:14px 18px;background:var(--paper);border-radius:8px;border-left:3px solid var(--gold)">${esc(s.sugestao)}</div>`;
+  if (Object.keys(ctx).length){
+    html += `<h4 style="font-family:var(--serif);font-weight:600;color:var(--violet-deep);font-size:15px;margin:18px 0 8px 0">Contexto detectado</h4>
+      <div style="font-family:monospace;font-size:11.5px;background:#F8F4EC;padding:12px 14px;border-radius:6px;border:1px solid var(--rule);color:var(--ink-soft);white-space:pre-wrap;line-height:1.55">${esc(JSON.stringify(ctx, null, 2))}</div>`;
+  }
+  if (ev.metricas){
+    html += `<h4 style="font-family:var(--serif);font-weight:600;color:var(--violet-deep);font-size:15px;margin:18px 0 8px 0">Métricas que ativaram a regra</h4>
+      <table class="data" style="font-size:13px"><tbody>${Object.entries(ev.metricas).map(([k,v])=>`<tr><td><strong>${esc(k)}</strong></td><td>${esc(JSON.stringify(v))}</td></tr>`).join('')}</tbody></table>`;
+  }
+  if (ev.source_table){
+    html += `<h4 style="font-family:var(--serif);font-weight:600;color:var(--violet-deep);font-size:15px;margin:18px 0 8px 0">Origem do sinal</h4>
+      <div style="font-size:13px;color:var(--ink-soft);line-height:1.6">Detectado em <code style="font-family:monospace;background:var(--violet-soft);padding:2px 8px;border-radius:5px;color:var(--violet-deep)">${esc(ev.source_table)}</code>${ev.termo_buscavel?' · termo: <strong>'+esc(ev.termo_buscavel)+'</strong>':''}</div>`;
+  }
+  if (ev.termo_buscavel){
+    html += `<div style="margin-top:14px"><button class="btn btn-ghost btn-sm" onclick="buscarHistoricoTermo('${esc(ev.termo_buscavel)}')">Ver histórico por termo</button>
+      <div id="hist-termo-result" style="margin-top:12px"></div></div>`;
+  }
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-confirm').style.display = s.status === 'pendente' ? 'inline-block' : 'none';
+  document.getElementById('modal-confirm').textContent = s.status === 'pendente' ? 'Marcar como aplicada' : 'Fechar';
+  document.getElementById('modal').classList.add('show');
+}
+
+async function buscarHistoricoTermo(termo){
+  const target = document.getElementById('hist-termo-result');
+  target.innerHTML = '<div style="color:var(--muted);font-size:12px">Buscando...</div>';
+  try {
+    const { data, error } = await sb.rpc('fn_ip_historico_por_termo', { p_termo: termo, p_mandato_id: MANDATO_ID, p_limite: 30 });
+    if (error) throw error;
+    if (!data?.length){ target.innerHTML = '<div style="color:var(--muted);font-size:12px;font-style:italic">Nenhum evento encontrado para esse termo.</div>'; return; }
+    target.innerHTML = '<div style="font-size:12px;color:var(--muted);margin-bottom:8px">Encontrados '+data.length+' evento(s):</div>' + data.slice(0,10).map(e=>`<div style="padding:8px 12px;background:var(--paper);border-radius:6px;margin-bottom:6px;font-size:12px"><strong>${esc(e.source_table)}</strong> · ${esc(e.operacao)} · <span style="color:var(--muted)">${dt(e.ts)} por ${esc(e.actor_email||'sistema')}</span></div>`).join('');
+  } catch(e){ target.innerHTML = '<div style="color:var(--danger);font-size:12px">Erro: '+esc(e.message||e)+'</div>'; }
 }
 
 async function updateSugestao(id, status){
@@ -622,7 +700,29 @@ async function carregarPessoas(){
   document.getElementById('perfis-list').innerHTML = (perfis||[]).length ? `<table class="data"><thead><tr><th>Rótulo</th><th>Equipe / Papel</th><th>Tempo de casa</th><th>Automatizabilidade</th><th>Risco saída</th></tr></thead><tbody>${perfis.map(p=>`<tr><td><strong>${esc(p.rotulo||'—')}</strong></td><td>${esc(p.equipe||'—')}${p.papel?' · '+esc(p.papel):''}</td><td>${p.tempo_casa_meses?p.tempo_casa_meses+' meses':'—'}</td><td>${p.automatizabilidade_pct?p.automatizabilidade_pct+'%':'—'}</td><td>${p.risco_saida_estimado!==null?'<strong style="color:'+(p.risco_saida_estimado>=7?'var(--danger)':p.risco_saida_estimado>=4?'var(--warn)':'var(--success)')+'">'+p.risco_saida_estimado+'/10</strong>':'—'}</td></tr>`).join('')}</tbody></table>` : '<div class="empty"><p>Nenhum perfil mapeado ainda. Os perfis aqui são anonimizados — use rótulos descritivos do papel (ex: "Líder Operações Norte", "Analista Sênior").</p></div>';
 
   const { data: skills } = await sb.from('ip_skill_map').select('*,ip_perfil_colaborador(rotulo,equipe,papel)').eq('mandato_id', MANDATO_ID).order('s_score_total',{ascending:false});
-  document.getElementById('skills-list').innerHTML = (skills||[]).length ? `<table class="data"><thead><tr><th>Perfil</th><th>Técnica</th><th>Orquestração</th><th>Julgamento</th><th>Relação</th><th>IA/Auto</th><th>Gestão</th><th>Total</th></tr></thead><tbody>${skills.map(s=>{const p=s.ip_perfil_colaborador;return `<tr><td>${esc(p?.rotulo||'—')}</td><td>${s.s_tecnica??'—'}</td><td>${s.s_orquestracao??'—'}</td><td>${s.s_julgamento??'—'}</td><td>${s.s_relacao??'—'}</td><td>${s.s_ia_automacao??'—'}</td><td>${s.s_gestao??'—'}</td><td><strong style="color:var(--violet-deep);font-family:var(--serif);font-size:16px">${s.s_score_total}</strong></td></tr>`}).join('')}</tbody></table>` : '<div class="empty"><p style="font-style:italic">Skill Map é populado por perfil. Próxima sessão: tela dedicada para entrada de skills.</p></div>';
+  document.getElementById('skills-list').innerHTML = ((perfis||[]).length === 0)
+    ? '<div class="empty"><p style="font-style:italic">Crie perfis primeiro para registrar skills.</p></div>'
+    : `<table class="data"><thead><tr><th>Perfil</th><th>Téc.</th><th>Orq.</th><th>Julg.</th><th>Rel.</th><th>IA</th><th>Gest.</th><th>Total</th><th></th></tr></thead><tbody>${perfis.map(p=>{const s=(skills||[]).find(x=>x.perfil_id===p.id);return `<tr><td><strong>${esc(p.rotulo||'—')}</strong></td><td>${s?.s_tecnica??'—'}</td><td>${s?.s_orquestracao??'—'}</td><td>${s?.s_julgamento??'—'}</td><td>${s?.s_relacao??'—'}</td><td>${s?.s_ia_automacao??'—'}</td><td>${s?.s_gestao??'—'}</td><td><strong style="color:var(--violet-deep);font-family:var(--serif);font-size:16px">${s?.s_score_total??'—'}</strong></td><td><button class="btn btn-sm btn-ghost" onclick="abrirModalSkill('${p.id}','${esc(p.rotulo||'')}',${JSON.stringify(s||{}).replace(/"/g,'&quot;')})">${s?'Editar':'Registrar'}</button></td></tr>`}).join('')}</tbody></table>`;
+}
+
+async function abrirModalSkill(perfilId, rotulo, skillExistente){
+  const s = typeof skillExistente === 'string' ? JSON.parse(skillExistente.replace(/&quot;/g,'"')) : skillExistente;
+  modalContext = { tipo:'skill', perfil_id: perfilId, skill_id: s.id };
+  document.getElementById('modal-title').textContent = `Skill Map · ${rotulo}`;
+  document.getElementById('modal-body').innerHTML = `
+    <p style="font-size:12.5px;color:var(--muted);margin-bottom:14px">Avalie cada categoria em escala 0-10 (0 = ausente · 10 = excepcional).</p>
+    <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;font-size:13px">
+      <label>Técnica</label><input type="number" id="s-tec" min="0" max="10" value="${s.s_tecnica??''}" placeholder="0-10">
+      <label>Orquestração</label><input type="number" id="s-orq" min="0" max="10" value="${s.s_orquestracao??''}" placeholder="0-10">
+      <label>Julgamento</label><input type="number" id="s-jul" min="0" max="10" value="${s.s_julgamento??''}" placeholder="0-10">
+      <label>Relação</label><input type="number" id="s-rel" min="0" max="10" value="${s.s_relacao??''}" placeholder="0-10">
+      <label>IA / Automação</label><input type="number" id="s-ia" min="0" max="10" value="${s.s_ia_automacao??''}" placeholder="0-10">
+      <label>Gestão</label><input type="number" id="s-ges" min="0" max="10" value="${s.s_gestao??''}" placeholder="0-10">
+    </div>
+    <div class="field" style="margin-top:14px"><label>Notas</label><textarea id="s-notas">${esc(s.notas||'')}</textarea></div>`;
+  document.getElementById('modal-confirm').style.display = 'inline-block';
+  document.getElementById('modal-confirm').textContent = 'Salvar';
+  document.getElementById('modal').classList.add('show');
 }
 
 function abrirModalPerfil(){
@@ -761,6 +861,31 @@ async function confirmarModal(){
       if (error) throw error;
       toast('Perfil registrado','success');
       carregarPessoas();
+    } else if (modalContext.tipo === 'skill'){
+      const row = {
+        mandato_id: MANDATO_ID,
+        perfil_id: modalContext.perfil_id,
+        s_tecnica: parseInt(document.getElementById('s-tec').value)||null,
+        s_orquestracao: parseInt(document.getElementById('s-orq').value)||null,
+        s_julgamento: parseInt(document.getElementById('s-jul').value)||null,
+        s_relacao: parseInt(document.getElementById('s-rel').value)||null,
+        s_ia_automacao: parseInt(document.getElementById('s-ia').value)||null,
+        s_gestao: parseInt(document.getElementById('s-ges').value)||null,
+        notas: document.getElementById('s-notas').value.trim() || null
+      };
+      if (modalContext.skill_id){
+        const { error } = await sb.from('ip_skill_map').update(row).eq('id', modalContext.skill_id);
+        if (error) throw error;
+      } else {
+        const { error } = await sb.from('ip_skill_map').insert(row);
+        if (error) throw error;
+      }
+      toast('Skill Map salvo','success');
+      carregarPessoas();
+    } else if (modalContext.tipo === 'drill_sugestao'){
+      if (modalContext.sugestao?.status === 'pendente') {
+        await updateSugestao(modalContext.sugestao.id, 'aplicada');
+      }
     } else if (modalContext.tipo === 'ritual'){
       const { error } = await sb.from('ip_rituais').insert({
         mandato_id: MANDATO_ID,

@@ -378,7 +378,8 @@ function renderInbox(list) {
         <div class="k-meta">${escapeHtml(r.nome)} · ${escapeHtml(r.setor || '—')}<br>urgência <strong>${escapeHtml(r.urgencia || '—')}</strong></div>
         <div><span class="k-score ${sc}">${score}/100</span></div>
         <div class="k-actions">
-          ${c.k === 'novo' ? `<button onclick="event.stopPropagation();criarMandato('${r.id}')">→ Virar mandato</button>` : ''}
+          <button onclick="event.stopPropagation();gerarRelatorio('${r.id}')">PDF</button>
+          ${c.k === 'novo' ? `<button onclick="event.stopPropagation();criarMandato('${r.id}')">→ Mandato</button>` : ''}
           ${next ? `<button onclick="event.stopPropagation();moverStatus('${r.id}','${next}')">→ ${nextLabel(next)}</button>` : ''}
           ${c.k !== 'descartado' && c.k !== 'convertido' ? `<button onclick="event.stopPropagation();moverStatus('${r.id}','descartado')">Descartar</button>` : ''}
         </div>
@@ -390,6 +391,27 @@ function renderInbox(list) {
 
 function nextStatus(s){return {novo:'contatado',contatado:'agendado',agendado:'realizado',realizado:'convertido'}[s] || null;}
 function nextLabel(s){return {contatado:'Contatado',agendado:'Agendado',realizado:'Realizado',convertido:'Convertido'}[s] || s;}
+
+async function gerarRelatorio(submissaoId){
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { alert('Sessão expirada — refaça login.'); return; }
+  const url = `${SUPA_URL}/functions/v1/innovapeople-relatorio-raio-x`;
+  try {
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ submissao_id: submissaoId }),
+    });
+    if (!resp.ok) { const txt = await resp.text(); alert('Erro ao gerar: ' + txt.slice(0,200)); return; }
+    const html = await resp.text();
+    const blob = new Blob([html], { type: 'text/html' });
+    const blobUrl = URL.createObjectURL(blob);
+    window.open(blobUrl, '_blank');
+  } catch (e) { alert('Erro: ' + (e.message||e)); }
+}
 
 async function moverStatus(id, novoStatus){
   const { error } = await sb.from('ip_raio_x_submissions').update({ status: novoStatus, contato_em: ['contatado','agendado'].includes(novoStatus) ? new Date().toISOString() : undefined }).eq('id', id);
