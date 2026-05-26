@@ -19,6 +19,11 @@ header.top .row{max-width:1080px;margin:0 auto;padding:0 28px;display:flex;align
 .logo{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:500;color:var(--violet-deep);letter-spacing:-.015em;font-size:18px;text-decoration:none}
 .logo svg{width:30px;height:30px;color:var(--violet)}
 .logo .sub{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;border-left:1px solid var(--rule);padding-left:9px;margin-left:6px}
+.sys-nav{display:flex;align-items:center;gap:28px;flex:1;justify-content:center}
+.sys-link{font-size:12.5px;color:var(--ink-soft);font-weight:500;text-decoration:none;letter-spacing:.02em;padding:6px 0;border-bottom:1.5px solid transparent;transition:all .22s ease;white-space:nowrap}
+.sys-link:hover{color:var(--violet)}
+.sys-link.active{color:var(--violet-deep);border-bottom-color:var(--gold)}
+@media (max-width:980px){.sys-nav{display:none}}
 .nav-user{display:flex;align-items:center;gap:14px;font-size:13px}
 .nav-user a{color:var(--ink-soft);font-weight:500}
 .nav-user a:hover{color:var(--violet)}
@@ -63,8 +68,13 @@ footer{background:#0E0916;color:rgba(255,255,255,.5);padding:18px;text-align:cen
 
 <header class="top">
   <div class="row">
-    <a href="/sistema/" class="logo"><svg><use href="#ip-logo"/></svg><span>InnovaPeople</span><span class="sub">Sistema · Calendar</span></a>
-    <div class="nav-user"><a href="/sistema/">← Dashboard</a><a href="/sistema/agentes.html">Agentes</a><span id="user-display" style="color:var(--muted)">—</span><button class="btn-logout" onclick="doLogout()">Sair</button></div>
+    <a href="/sistema/" class="logo"><svg><use href="#ip-logo"/></svg><span>InnovaPeople</span><span class="sub">Sistema</span></a>
+    <nav class="sys-nav">
+      <a href="/sistema/" class="sys-link">Visão geral</a>
+      <a href="/sistema/agentes.html" class="sys-link">Agentes IA</a>
+      <a href="/sistema/calendar.html" class="sys-link active">Calendário</a>
+    </nav>
+    <div class="nav-user"><span id="user-display" style="color:var(--muted)">—</span><button class="btn-logout" onclick="doLogout()">Sair</button></div>
   </div>
 </header>
 

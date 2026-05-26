@@ -25,6 +25,11 @@ header.top .row{max-width:1180px;margin:0 auto;padding:0 28px;display:flex;align
 .logo svg{width:32px;height:32px;color:var(--violet)}
 .logo .wordmark{font-size:19px}
 .logo .sub{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;border-left:1px solid var(--rule);padding-left:9px;margin-left:6px;font-family:var(--sans)}
+.sys-nav{display:flex;align-items:center;gap:28px;flex:1;justify-content:center}
+.sys-link{font-size:12.5px;color:var(--ink-soft);font-weight:500;text-decoration:none;letter-spacing:.02em;padding:6px 0;border-bottom:1.5px solid transparent;transition:all .22s ease;white-space:nowrap}
+.sys-link:hover{color:var(--violet)}
+.sys-link.active{color:var(--violet-deep);border-bottom-color:var(--gold)}
+@media (max-width:980px){.sys-nav{display:none}}
 .nav-user{display:flex;align-items:center;gap:14px;font-size:13px}
 .nav-user .user-name{color:var(--ink-soft);font-weight:500}
 .nav-user .user-name strong{color:var(--violet-deep)}
@@ -150,15 +155,20 @@ footer a{color:rgba(255,255,255,.65)}
 
 <header class="top" id="topbar" style="display:none">
   <div class="row">
-    <a href="/" class="logo">
+    <a href="/sistema/" class="logo">
       <svg><use href="#ip-logo"/></svg>
       <span class="wordmark">InnovaPeople</span>
       <span class="sub">Sistema</span>
     </a>
+    <nav class="sys-nav">
+      <a href="/sistema/" class="sys-link active">Visão geral</a>
+      <a href="#trabalhos" class="sys-link" onclick="scrollTo(0,document.getElementById('sec-trabalhos').offsetTop-90);return false">Trabalhos</a>
+      <a href="#inbox" class="sys-link" onclick="toggleSection('inbox');setTimeout(()=>window.scrollTo(0,document.getElementById('inbox-section').offsetTop-90),100);return false">Caixa de entrada</a>
+      <a href="/sistema/agentes.html" class="sys-link">Agentes IA</a>
+      <a href="/sistema/calendar.html" class="sys-link">Calendário</a>
+    </nav>
     <div class="nav-user">
-      <a href="/sistema/agentes.html" style="color:var(--ink-soft);font-weight:500;text-decoration:none;font-size:13px">Agentes</a>
-      <a href="/sistema/calendar.html" style="color:var(--ink-soft);font-weight:500;text-decoration:none;font-size:13px">Calendar</a>
-      <span class="user-name">Conduzindo como <strong id="user-display">—</strong></span>
+      <span class="user-name"><strong id="user-display">—</strong></span>
       <button class="btn-logout" onclick="doLogout()">Sair</button>
     </div>
   </div>
@@ -185,7 +195,7 @@ footer a{color:rgba(255,255,255,.65)}
     <div class="dash-header">
       <span class="dash-eyebrow">Sistema InnovaPeople · Acompanhamento</span>
       <h1 class="dash-title">A casa <em>em uma visão.</em></h1>
-      <p class="dash-sub">Mandatos ativos, Raio-X recém-recebidos, sugestões dos agentes e ações pendentes.</p>
+      <p class="dash-sub">Trabalhos em andamento, Raio-X recém-recebidos, sugestões dos agentes e o que pede atenção agora.</p>
     </div>
 
     <div class="stats-bar" id="stats-bar">
@@ -195,9 +205,9 @@ footer a{color:rgba(255,255,255,.65)}
       <div class="stat"><div class="label">Score médio (30d)</div><div class="figure" id="kpi-score">—<span class="unit">/100</span></div></div>
     </div>
 
-    <section class="sec-block">
+    <section class="sec-block" id="sec-trabalhos">
       <div class="sec-head">
-        <h2>Mandatos ativos</h2>
+        <h2>Trabalhos em andamento</h2>
         <div class="actions">
           <button class="btn-ghost" onclick="toggleSection('inbox')">Caixa de entrada Raio-X</button>
         </div>
@@ -324,9 +334,26 @@ function renderMandatos(list) {
   if (!list.length) {
     el.innerHTML = `
       <div class="empty">
-        <h3>Nenhum mandato ativo ainda.</h3>
-        <p>Cada submissão de Raio-X pode virar um mandato. Veja a caixa de entrada abaixo.</p>
-        <button class="btn-action" onclick="toggleSection('inbox')">Ver caixa de entrada</button>
+        <h3>Esta sala ainda não tem trabalhos em andamento.</h3>
+        <p>Aqui aparecem, em ordem, todos os trabalhos vivos da casa — com estágio, score de saúde dos últimos 30 dias, sugestões dos agentes IA e relacionamentos críticos sinalizados em tempo real.</p>
+        <p style="margin-top:14px;color:var(--muted);font-size:14px">Quando um Raio-X for convertido em trabalho, ele aparece aqui. <a href="#" onclick="toggleSection('inbox');return false" style="color:var(--violet);text-decoration:underline">Ver caixa de entrada de Raio-X →</a></p>
+        <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--rule);display:grid;grid-template-columns:repeat(3,1fr);gap:18px;text-align:left">
+          <a href="/sistema/agentes.html" style="text-decoration:none;color:inherit;padding:18px 20px;border:1px solid var(--rule);border-radius:10px;transition:border-color .25s ease,background .25s ease" onmouseover="this.style.borderColor='var(--violet-light)';this.style.background='var(--violet-soft)'" onmouseout="this.style.borderColor='var(--rule)';this.style.background='transparent'">
+            <div style="font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:6px">Módulo</div>
+            <div style="font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:17px;margin-bottom:4px">Agentes IA</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.55">Cinco vigias que rodam diariamente sobre cada trabalho e emitem sugestões priorizadas.</div>
+          </a>
+          <a href="/sistema/calendar.html" style="text-decoration:none;color:inherit;padding:18px 20px;border:1px solid var(--rule);border-radius:10px;transition:border-color .25s ease,background .25s ease" onmouseover="this.style.borderColor='var(--violet-light)';this.style.background='var(--violet-soft)'" onmouseout="this.style.borderColor='var(--rule)';this.style.background='transparent'">
+            <div style="font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:6px">Módulo</div>
+            <div style="font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:17px;margin-bottom:4px">Calendário</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.55">Agenda integrada ao Google Calendar para as conversas de Raio-X e acompanhamento.</div>
+          </a>
+          <a href="/pulso/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;padding:18px 20px;border:1px solid var(--rule);border-radius:10px;transition:border-color .25s ease,background .25s ease" onmouseover="this.style.borderColor='var(--violet-light)';this.style.background='var(--violet-soft)'" onmouseout="this.style.borderColor='var(--rule)';this.style.background='transparent'">
+            <div style="font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:6px">Endpoint público</div>
+            <div style="font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:17px;margin-bottom:4px">Pulso anônimo</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.55">Link único enviado às equipes — respostas anônimas, agregadas por k-anonimato ≥ 3.</div>
+          </a>
+        </div>
       </div>
     `;
     return;
