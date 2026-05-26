@@ -256,8 +256,12 @@ section.block.warm{background:linear-gradient(180deg,var(--paper-warm) 0%,var(--
 
 .partners{margin-top:48px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 @media (max-width:880px){.partners{grid-template-columns:repeat(2,1fr)}}
-.partner{padding:28px 24px;background:#fff;border:1px solid var(--rule);border-radius:14px;transition:all .25s ease}
-.partner:hover{border-color:var(--violet-light);transform:translateY(-3px);box-shadow:0 12px 28px rgba(63,39,86,.10)}
+.partner{padding:28px 24px;background:#fff;border:1px solid var(--rule);border-radius:14px;transition:all .25s ease;text-decoration:none;color:inherit;display:block;cursor:pointer;position:relative}
+.partner:hover{border-color:var(--violet-light);transform:translateY(-3px);box-shadow:0 12px 28px rgba(63,39,86,.10);color:inherit}
+.partner::after{content:'→';position:absolute;top:24px;right:22px;color:var(--violet-light);font-size:18px;opacity:0;transition:all .3s ease}
+.partner:hover::after{opacity:1;transform:translateX(4px)}
+.partner:hover h6{color:var(--violet)}
+.partner h6{transition:color .25s ease}
 .partner h6{font-family:var(--serif);font-weight:600;color:var(--violet-deep);font-size:20px;margin-bottom:6px}
 .partner .tag{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:12px}
 .partner p{font-size:13px;line-height:1.55;color:var(--ink-soft);margin:0;text-align:left;hyphens:none}
@@ -391,7 +395,7 @@ footer .hier a:hover{color:var(--gold)}
     <div class="trust-inner">
       <span>Casa especializada da <strong>InnovaSphere</strong></span>
       <span class="sep">·</span>
-      <span>Em parceria com <strong>Age-Free World</strong>, <strong>FabriPitch</strong>, <strong>Overdub</strong> e <strong>Globalita</strong></span>
+      <span>Em parceria com casas selecionadas de <strong>design organizacional</strong>, <strong>IA cognitiva</strong> e <strong>transformação digital</strong></span>
       <span class="sep">·</span>
       <span>Operando desde <strong>2026</strong></span>
     </div>
@@ -643,10 +647,10 @@ footer .hier a:hover{color:var(--gold)}
     <p class="section-lede">Cada mandato é conduzido em conexão com parceiros selecionados — especialistas em diferentes dimensões do desenho organizacional. Integração discreta, contratual, e sempre orientada pelo interesse do parceiro.</p>
 
     <div class="partners">
-      <div class="partner"><h6>Age-Free World</h6><div class="tag">Intergeracional</div><p>Design intergeracional para empresas que reconhecem talento em todas as idades. Referência em cocriação multigeracional.</p></div>
-      <div class="partner"><h6>FabriPitch</h6><div class="tag">IA Cognitiva</div><p>Inteligência cognitiva para gerentes industriais. Interpreta intenção e conecta áreas operacionais.</p></div>
-      <div class="partner"><h6>Overdub</h6><div class="tag">Desenvolvimento</div><p>Consultoria de desenvolvimento organizacional na intersecção entre resultado, cultura e tração tecnológica.</p></div>
-      <div class="partner"><h6>Globalita</h6><div class="tag">Transformação Digital</div><p>Parceiro de transformação digital e IA. Implementação técnica de stacks adaptados à maturidade de cada cliente.</p></div>
+      <a class="partner" href="/frentes/intergeracional.html"><h6>Frente Intergeracional</h6><div class="tag">Talento em todas as idades</div><p>Como empresas que reconhecem talento em todas as gerações constroem ambientes onde a profundidade da experiência convive com a velocidade da novidade — sem hierarquia etária implícita.</p></a>
+      <a class="partner" href="/frentes/inteligencia-cognitiva.html"><h6>Inteligência Cognitiva Industrial</h6><div class="tag">Linguagem do gestor</div><p>Quando o gestor industrial recupera tempo para pensar estrategicamente — porque a interpretação de intenção e a conexão entre áreas operacionais deixou de exigir terceiros.</p></a>
+      <a class="partner" href="/frentes/desenvolvimento-organizacional.html"><h6>Desenvolvimento Organizacional</h6><div class="tag">Resultado × Gente</div><p>Onde resultado de negócio, eficiência operacional, cultura de inovação e tração tecnológica deixam de ser frentes separadas e passam a operar como sistema único.</p></a>
+      <a class="partner" href="/frentes/transformacao-digital.html"><h6>Transformação Digital com IA</h6><div class="tag">Stack adaptado</div><p>Implementação técnica de stacks de inteligência adaptados à maturidade real de cada empresa — não ao calendário comercial de quem vende o stack.</p></a>
     </div>
   </div>
 </section>
