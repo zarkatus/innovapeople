@@ -1,0 +1,16 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="InnovaPeople">
+  <g fill="none" stroke="#5B3A7A" stroke-linecap="round">
+    <g stroke-width="2.2" opacity="0.85">
+      <line x1="50" y1="6" x2="50" y2="28"/>
+      <line x1="22" y1="18" x2="38" y2="36"/>
+      <line x1="78" y1="18" x2="62" y2="36"/>
+      <line x1="6" y1="50" x2="32" y2="50"/>
+      <line x1="94" y1="50" x2="68" y2="50"/>
+      <line x1="16" y1="32" x2="32" y2="44"/>
+      <line x1="84" y1="32" x2="68" y2="44"/>
+    </g>
+    <circle cx="50" cy="50" r="14" stroke-width="3.4"/>
+    <line x1="50" y1="38" x2="50" y2="86" stroke-width="3.4"/>
+    <line x1="24" y1="86" x2="76" y2="86" stroke-width="3.4"/>
+  </g>
+</svg>
