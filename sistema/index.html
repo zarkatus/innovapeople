@@ -90,6 +90,30 @@ header.top .row{max-width:1180px;margin:0 auto;padding:0 28px;display:flex;align
 .empty p{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--ink-soft);margin-bottom:18px}
 
 .inbox-list{display:flex;flex-direction:column;gap:10px}
+/* Kanban pipeline Raio-X */
+.kanban{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:8px}
+@media (max-width:1180px){.kanban{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:720px){.kanban{grid-template-columns:repeat(2,1fr)}}
+.k-col{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:12px;min-height:120px}
+.k-head{display:flex;align-items:center;justify-content:space-between;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--rule)}
+.k-head .k-count{background:var(--violet-soft);color:var(--violet);font-weight:700;font-size:10.5px;padding:2px 8px;border-radius:10px;min-width:22px;text-align:center}
+.k-col.novo .k-count{background:var(--gold-soft);color:var(--gold-deep)}
+.k-col.contatado .k-count{background:#E3EBF5;color:#3A6E9C}
+.k-col.agendado .k-count{background:var(--violet-soft);color:var(--violet)}
+.k-col.realizado .k-count{background:#E2F0E8;color:var(--success)}
+.k-col.convertido .k-count{background:#F5E6FB;color:#8B3FA5}
+.k-col.descartado .k-count{background:#EEE;color:var(--muted)}
+.k-card{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all .2s ease}
+.k-card:hover{border-color:var(--violet-light);transform:translateY(-2px);box-shadow:0 4px 12px rgba(63,39,86,.10)}
+.k-card .k-empresa{font-family:var(--serif);font-weight:600;color:var(--violet-deep);font-size:14.5px;letter-spacing:-.005em;line-height:1.2;margin-bottom:3px}
+.k-card .k-meta{font-size:10.5px;color:var(--muted);letter-spacing:.04em;margin-bottom:6px;line-height:1.4}
+.k-card .k-score{display:inline-block;font-size:10px;font-weight:700;color:#fff;background:var(--violet);padding:1px 7px;border-radius:8px;letter-spacing:.04em}
+.k-card .k-score.alto{background:var(--warn)}
+.k-card .k-score.critico{background:var(--danger)}
+.k-card .k-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.k-card .k-actions button{font-size:9.5px;padding:3px 8px;border-radius:5px;border:1px solid var(--rule);background:#fff;color:var(--muted);cursor:pointer;letter-spacing:.04em;transition:all .15s ease;font-weight:500}
+.k-card .k-actions button:hover{border-color:var(--violet);color:var(--violet)}
+.k-empty{color:var(--muted);font-size:11px;font-style:italic;text-align:center;padding:12px 0;font-family:var(--serif)}
 .inbox-item{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:18px 22px;display:flex;align-items:center;gap:18px;transition:all .2s ease}
 .inbox-item:hover{border-color:var(--violet-light);box-shadow:0 6px 18px rgba(63,39,86,.06)}
 .inbox-score{flex-shrink:0;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--violet-soft);font-family:var(--serif);font-weight:600;font-size:18px;color:var(--violet-deep)}
@@ -132,6 +156,7 @@ footer a{color:rgba(255,255,255,.65)}
       <span class="sub">Sistema</span>
     </a>
     <div class="nav-user">
+      <a href="/sistema/agentes.html" style="color:var(--ink-soft);font-weight:500;text-decoration:none;font-size:13px">Agentes</a>
       <span class="user-name">Conduzindo como <strong id="user-display">—</strong></span>
       <button class="btn-logout" onclick="doLogout()">Sair</button>
     </div>
@@ -273,7 +298,7 @@ async function loadDashboard() {
   // Stats agregadas
   const [{ data: mandatos, error: err1 }, { data: raioX, error: err2 }, { data: sugestoes }] = await Promise.all([
     sb.from('v_ip_mandatos_overview').select('*').eq('status', 'ativo'),
-    sb.from('ip_raio_x_submissions').select('id,empresa,nome,setor,sintomas_score,urgencia,created_at,status').eq('status', 'novo').order('created_at', { ascending: false }).limit(20),
+    sb.from('ip_raio_x_submissions').select('id,empresa,nome,setor,sintomas_score,urgencia,created_at,status').order('created_at', { ascending: false }).limit(120),
     sb.from('ip_agent_sugestoes').select('id', { count: 'exact', head: true }).eq('status', 'pendente')
   ]);
 
@@ -330,27 +355,54 @@ function renderMandatos(list) {
 
 function renderInbox(list) {
   const el = document.getElementById('inbox-list');
-  if (!list.length) {
-    el.innerHTML = '<div class="empty"><p>Sem Raio-X pendentes no momento.</p></div>';
-    return;
-  }
-  el.innerHTML = list.map(r => {
-    const score = r.sintomas_score || 0;
-    const scoreClass = score >= 80 ? 'critico' : score >= 60 ? 'alto' : '';
-    return `
-    <div class="inbox-item">
-      <div class="inbox-score ${scoreClass}">${score}</div>
-      <div class="inbox-body">
-        <h4>${escapeHtml(r.empresa)} · ${escapeHtml(r.nome)}</h4>
-        <div class="m">${escapeHtml(r.setor || '—')} · urgência <strong>${r.urgencia}</strong> · ${new Date(r.created_at).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}</div>
-      </div>
-      <div class="inbox-actions">
-        <button class="btn-ghost" onclick="abrirRaioX('${r.id}')">Ver</button>
-        <button class="btn-action" onclick="criarMandato('${r.id}')">Virar mandato</button>
-      </div>
-    </div>
-  `;
-  }).join('');
+  const COLS = [
+    { k:'novo', label:'Novo' },
+    { k:'contatado', label:'Contatado' },
+    { k:'agendado', label:'Agendado' },
+    { k:'realizado', label:'Realizado' },
+    { k:'convertido', label:'Convertido' },
+    { k:'descartado', label:'Descartado' }
+  ];
+  const byStatus = {};
+  COLS.forEach(c => byStatus[c.k] = []);
+  (list || []).forEach(r => { (byStatus[r.status] || byStatus['novo']).push(r); });
+
+  el.innerHTML = '<div class="kanban">' + COLS.map(c => {
+    const items = byStatus[c.k] || [];
+    const cards = items.length ? items.map(r => {
+      const score = r.sintomas_score || 0;
+      const sc = score >= 80 ? 'critico' : score >= 60 ? 'alto' : '';
+      const next = nextStatus(c.k);
+      return `<div class="k-card" onclick="abrirRaioXDetalhe('${r.id}', event)">
+        <div class="k-empresa">${escapeHtml(r.empresa)}</div>
+        <div class="k-meta">${escapeHtml(r.nome)} · ${escapeHtml(r.setor || '—')}<br>urgência <strong>${escapeHtml(r.urgencia || '—')}</strong></div>
+        <div><span class="k-score ${sc}">${score}/100</span></div>
+        <div class="k-actions">
+          ${c.k === 'novo' ? `<button onclick="event.stopPropagation();criarMandato('${r.id}')">→ Virar mandato</button>` : ''}
+          ${next ? `<button onclick="event.stopPropagation();moverStatus('${r.id}','${next}')">→ ${nextLabel(next)}</button>` : ''}
+          ${c.k !== 'descartado' && c.k !== 'convertido' ? `<button onclick="event.stopPropagation();moverStatus('${r.id}','descartado')">Descartar</button>` : ''}
+        </div>
+      </div>`;
+    }).join('') : '<div class="k-empty">—</div>';
+    return `<div class="k-col ${c.k}"><div class="k-head">${c.label} <span class="k-count">${items.length}</span></div>${cards}</div>`;
+  }).join('') + '</div>';
+}
+
+function nextStatus(s){return {novo:'contatado',contatado:'agendado',agendado:'realizado',realizado:'convertido'}[s] || null;}
+function nextLabel(s){return {contatado:'Contatado',agendado:'Agendado',realizado:'Realizado',convertido:'Convertido'}[s] || s;}
+
+async function moverStatus(id, novoStatus){
+  const { error } = await sb.from('ip_raio_x_submissions').update({ status: novoStatus, contato_em: ['contatado','agendado'].includes(novoStatus) ? new Date().toISOString() : undefined }).eq('id', id);
+  if (error){ alert('Erro: '+error.message); return; }
+  loadDashboard();
+}
+
+async function abrirRaioXDetalhe(id, evt){
+  if (evt && evt.target && evt.target.tagName === 'BUTTON') return;
+  const { data: r } = await sb.from('ip_raio_x_submissions').select('*').eq('id', id).single();
+  if (!r) return;
+  const detalhe = `${r.empresa} · ${r.nome}\n\nCargo: ${r.cargo}\nSetor: ${r.setor || '—'}\nPorte: ${r.porte || '—'}\nUrgência: ${r.urgencia}\nScore: ${r.sintomas_score}/100\n\nDesafio:\n${r.desafio}\n\nContato:\n${r.email}\n${r.whatsapp}\n${r.observacoes ? '\n\nObs: '+r.observacoes : ''}`;
+  alert(detalhe);
 }
 
 function toggleSection(id) {
@@ -360,13 +412,7 @@ function toggleSection(id) {
 }
 
 function abrirMandato(id) {
-  // Sprint #4: tela detalhada do mandato
-  alert('Tela detalhada do mandato será construída no próximo sprint.\n\nID: ' + id);
-}
-
-function abrirRaioX(id) {
-  // Sprint #4: tela detalhada
-  alert('Detalhamento do Raio-X · próximo sprint.\n\nID: ' + id);
+  location.href = '/sistema/mandato.html?id=' + id;
 }
 
 async function criarMandato(submissaoId) {

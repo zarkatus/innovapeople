@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Mandato · Sistema · InnovaPeople</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{--violet:#5B3A7A;--violet-deep:#3F2756;--violet-light:#7B5AA8;--violet-soft:#F4EFFA;--gold:#C4A35A;--gold-deep:#9C7E3B;--gold-soft:#F7EFDD;--ink:#1A1614;--ink-soft:#3D3531;--muted:#7A6F66;--rule:#D9D2C9;--paper:#FAF7F1;--paper-deep:#F2EDE3;--success:#2E7D52;--warn:#C0742D;--danger:#B23B3B;--info:#3A6E9C;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.55;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--violet);text-decoration:none;transition:color .2s ease}
+a:hover{color:var(--violet-deep)}
+
+/* TOP NAV */
+header.top{background:var(--paper-deep);border-bottom:1px solid var(--rule);padding:14px 0;position:sticky;top:0;z-index:30}
+header.top .row{max-width:1280px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:500;color:var(--violet-deep);letter-spacing:-.015em;text-decoration:none}
+.logo svg{width:30px;height:30px;color:var(--violet)}
+.logo .wordmark{font-size:18px}
+.logo .sub{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;border-left:1px solid var(--rule);padding-left:9px;margin-left:6px;font-family:var(--sans)}
+.nav-user{display:flex;align-items:center;gap:14px;font-size:13px}
+.nav-user a{color:var(--ink-soft);font-weight:500}
+.nav-user a:hover{color:var(--violet)}
+.btn-logout{background:transparent;border:1px solid var(--rule);color:var(--muted);padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;letter-spacing:.04em;transition:all .2s ease}
+.btn-logout:hover{border-color:var(--violet);color:var(--violet)}
+
+main{flex:1;padding:32px 0 80px 0}
+.wrap{max-width:1280px;margin:0 auto;padding:0 28px}
+
+/* CABEÇALHO DO MANDATO */
+.mandato-head{background:#fff;border:1px solid var(--rule);border-radius:14px;padding:26px 30px;margin-bottom:28px;position:relative;overflow:hidden}
+.mandato-head::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--violet),var(--gold))}
+.breadcrumb{font-size:12px;color:var(--muted);letter-spacing:.06em;margin-bottom:12px}
+.breadcrumb a{color:var(--muted)}
+.breadcrumb a:hover{color:var(--violet)}
+.mandato-title{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.mandato-title h1{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:32px;line-height:1.1;letter-spacing:-.015em;margin-bottom:8px}
+.mandato-meta{font-size:13px;color:var(--ink-soft);letter-spacing:.02em}
+.mandato-meta strong{color:var(--ink);font-weight:600}
+.estagio-pill{display:inline-block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;background:var(--gold-soft);padding:5px 12px;border-radius:14px;margin-left:8px}
+.estagio-pill.diagnostico{background:var(--gold-soft);color:var(--gold-deep)}
+.estagio-pill.plano{background:#E3EBF5;color:var(--info)}
+.estagio-pill.plataforma{background:var(--violet-soft);color:var(--violet)}
+.estagio-pill.resultado{background:#E2F0E8;color:var(--success)}
+.estagio-pill.parceria{background:#F5E6FB;color:#8B3FA5}
+.estagio-pill.encerrado{background:#EEE;color:var(--muted)}
+
+/* TABS */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--rule);margin-bottom:28px;overflow-x:auto;background:#fff;border-radius:10px 10px 0 0;padding:0 8px}
+.tab{padding:14px 18px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:all .2s ease;letter-spacing:.02em;white-space:nowrap;font-family:var(--sans)}
+.tab:hover{color:var(--violet)}
+.tab.active{color:var(--violet-deep);border-bottom-color:var(--violet);font-weight:600}
+.tab .count{display:inline-block;background:var(--violet-soft);color:var(--violet);font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;min-width:20px;text-align:center}
+
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* STATS / KPIs */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:32px}
+@media (max-width:880px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:22px 24px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--gold))}
+.kpi .label{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px}
+.kpi .figure{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:30px;line-height:1;letter-spacing:-.02em}
+.kpi .figure.warn{color:var(--warn)}
+.kpi .figure.danger{color:var(--danger)}
+.kpi .figure.success{color:var(--success)}
+.kpi .note{margin-top:8px;font-size:11.5px;color:var(--muted)}
+
+/* SECTIONS DENTRO DE TAB */
+.section{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:24px 26px;margin-bottom:20px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.section-head h2{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:22px;letter-spacing:-.005em}
+.section-head .actions{display:flex;gap:8px}
+
+.btn{padding:8px 16px;border:none;border-radius:7px;font-family:var(--sans);font-weight:600;font-size:12px;letter-spacing:.06em;cursor:pointer;transition:all .2s ease;text-decoration:none;display:inline-block}
+.btn-primary{background:var(--violet);color:#fff;box-shadow:0 3px 10px rgba(91,58,122,.22)}
+.btn-primary:hover{background:var(--violet-deep);color:#fff;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--violet);border:1px solid var(--violet)}
+.btn-ghost:hover{background:var(--violet-soft)}
+.btn-sm{padding:5px 10px;font-size:11px;letter-spacing:.05em}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid var(--danger)}
+.btn-danger:hover{background:#FEEBEB}
+.btn-success{background:var(--success);color:#fff}
+.btn-success:hover{background:#236940;color:#fff}
+
+/* TABELAS */
+table.data{width:100%;border-collapse:collapse;font-size:13.5px}
+table.data th{text-align:left;padding:10px 14px;font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rule);background:var(--paper)}
+table.data td{padding:12px 14px;border-bottom:1px solid var(--rule);color:var(--ink-soft);vertical-align:top}
+table.data tr:hover td{background:var(--paper)}
+table.data tr:last-child td{border-bottom:none}
+.tag-cat{display:inline-block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--violet-deep);background:var(--violet-soft);padding:2px 8px;border-radius:10px;font-weight:600}
+.tag-sev{display:inline-block;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:10px}
+.tag-sev.baixa{background:#EEE;color:var(--muted)}
+.tag-sev.media{background:var(--gold-soft);color:var(--gold-deep)}
+.tag-sev.alta{background:#FBE5DC;color:var(--warn)}
+.tag-sev.critica{background:#FEEBEB;color:var(--danger)}
+.tag-nivel{display:inline-block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:2px 8px;border-radius:10px}
+.tag-nivel.operacional{background:#EEE;color:var(--muted)}
+.tag-nivel.tatica{background:#E3EBF5;color:var(--info)}
+.tag-nivel.estrategica{background:var(--violet-soft);color:var(--violet-deep)}
+.indic-critico{color:var(--danger);font-weight:700;margin-left:4px}
+
+.empty{padding:40px 28px;text-align:center;color:var(--muted)}
+.empty p{font-family:var(--serif);font-style:italic;font-size:16px;margin-bottom:14px}
+
+/* PULSOS */
+.equipe-row{display:grid;grid-template-columns:1fr auto auto auto;gap:18px;align-items:center;padding:14px 0;border-bottom:1px solid var(--rule)}
+.equipe-row:last-child{border-bottom:none}
+.equipe-name{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:18px;letter-spacing:-.005em}
+.equipe-meta{font-size:11px;color:var(--muted);letter-spacing:.04em;margin-top:3px}
+.score-bar{width:120px;height:10px;background:var(--paper-deep);border-radius:5px;overflow:hidden;border:1px solid var(--rule)}
+.score-bar-fill{height:100%;background:linear-gradient(90deg,var(--danger) 0%,var(--warn) 50%,var(--success) 100%);transition:width .5s ease}
+.score-val{font-family:var(--serif);font-weight:600;font-size:18px;color:var(--violet-deep);min-width:34px;text-align:right}
+.score-delta{font-size:11px;font-weight:600;letter-spacing:.04em;min-width:50px;text-align:right}
+.score-delta.up{color:var(--success)}
+.score-delta.down{color:var(--danger)}
+.score-delta.flat{color:var(--muted)}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--rule)}
+.tl-item{position:relative;padding-bottom:18px}
+.tl-item::before{content:'';position:absolute;left:-26px;top:6px;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid var(--violet);box-shadow:0 0 0 3px var(--paper)}
+.tl-item.delete::before{border-color:var(--danger)}
+.tl-item.insert::before{border-color:var(--success)}
+.tl-time{font-size:11px;letter-spacing:.06em;color:var(--muted);margin-bottom:3px}
+.tl-content{font-size:13.5px;color:var(--ink-soft);line-height:1.55}
+.tl-content strong{color:var(--ink);font-weight:600}
+.tl-content em{color:var(--violet);font-style:normal;font-weight:500}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,16,15,.6);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:14px;padding:28px 32px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.modal h3{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:24px;letter-spacing:-.005em;margin-bottom:18px}
+.modal .field{margin-bottom:16px}
+.modal label{display:block;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:6px}
+.modal input,.modal select,.modal textarea{width:100%;padding:10px 14px;border:1.4px solid var(--rule);border-radius:7px;font-family:var(--sans);font-size:14px;color:var(--ink);background:#fff;transition:border-color .2s ease}
+.modal textarea{resize:vertical;min-height:88px;line-height:1.5}
+.modal input:focus,.modal select:focus,.modal textarea:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(91,58,122,.12)}
+.modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;padding-top:18px;border-top:1px solid var(--rule)}
+
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading{padding:40px;text-align:center;color:var(--muted)}
+.loading .spinner{border-color:rgba(91,58,122,.2);border-top-color:var(--violet)}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--violet-deep);color:#fff;padding:14px 20px;border-radius:10px;font-size:13px;box-shadow:0 12px 30px rgba(0,0,0,.3);z-index:200;display:none}
+.toast.show{display:block;animation:slideUp .4s ease}
+.toast.success{background:var(--success)}
+.toast.error{background:var(--danger)}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.token-row{background:var(--violet-soft);border:1px solid var(--violet-light);border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;font-size:12.5px}
+.token-row code{flex:1;font-family:monospace;color:var(--violet-deep);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+footer{background:#0E0916;color:rgba(255,255,255,.5);padding:18px;text-align:center;font-size:11.5px;letter-spacing:.04em}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ip-logo" viewBox="0 0 120 120">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="60" cy="56" r="44" stroke-width="0.5" opacity="0.15"/>
+        <circle cx="60" cy="56" r="34" stroke-width="0.6" opacity="0.25"/>
+        <ellipse cx="60" cy="56" rx="15" ry="20" stroke-width="2.2"/>
+        <line x1="60" y1="24" x2="60" y2="92" stroke-width="2.2"/>
+        <path d="M 32 102 Q 60 108 88 102" stroke-width="1.6" opacity="0.5"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="row">
+    <a href="/sistema/" class="logo">
+      <svg><use href="#ip-logo"/></svg>
+      <span class="wordmark">InnovaPeople</span>
+      <span class="sub">Sistema · Mandato</span>
+    </a>
+    <div class="nav-user">
+      <a href="/sistema/">← Dashboard</a>
+      <a href="/sistema/agentes.html">Agentes</a>
+      <span id="user-display" style="color:var(--muted)">—</span>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div id="content-gate" class="loading"><span class="spinner"></span> Validando acesso...</div>
+
+    <div id="content-body" style="display:none">
+      <div class="mandato-head" id="mandato-head">
+        <div class="breadcrumb"><a href="/sistema/">Mandatos</a> · <span id="bc-empresa">—</span></div>
+        <div class="mandato-title">
+          <div>
+            <h1 id="m-empresa">—</h1>
+            <div class="mandato-meta" id="m-meta">—</div>
+          </div>
+          <span class="estagio-pill" id="m-estagio">—</span>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="resumo">Resumo</button>
+        <button class="tab" data-tab="pulsos">Pulsos <span class="count" id="ct-pulsos">0</span></button>
+        <button class="tab" data-tab="decisoes">Decisões <span class="count" id="ct-decisoes">0</span></button>
+        <button class="tab" data-tab="relacionamentos">Relacionamentos <span class="count" id="ct-relacionamentos">0</span></button>
+        <button class="tab" data-tab="protocolos">Protocolos <span class="count" id="ct-protocolos">0</span></button>
+        <button class="tab" data-tab="sugestoes">Sugestões <span class="count" id="ct-sugestoes">0</span></button>
+        <button class="tab" data-tab="auditoria">Auditoria</button>
+      </div>
+
+      <!-- TAB · RESUMO -->
+      <div class="tab-content active" data-tab="resumo">
+        <div class="kpi-row">
+          <div class="kpi"><div class="label">Score 30 dias</div><div class="figure" id="kpi-score">—</div><div class="note" id="kpi-score-note">—</div></div>
+          <div class="kpi"><div class="label">Sugestões pendentes</div><div class="figure" id="kpi-sugest">—</div><div class="note" id="kpi-sugest-note">—</div></div>
+          <div class="kpi"><div class="label">Relac. críticos</div><div class="figure" id="kpi-rel">—</div><div class="note" id="kpi-rel-note">—</div></div>
+          <div class="kpi"><div class="label">Decisões vigentes</div><div class="figure" id="kpi-dec">—</div><div class="note" id="kpi-dec-note">—</div></div>
+        </div>
+        <div class="section">
+          <div class="section-head"><h2>Próxima ação sugerida</h2></div>
+          <div id="proxima-acao" class="empty"><p>—</p></div>
+        </div>
+        <div class="section">
+          <div class="section-head"><h2>Últimas mudanças</h2></div>
+          <div id="resumo-timeline" class="timeline"></div>
+        </div>
+      </div>
+
+      <!-- TAB · PULSOS -->
+      <div class="tab-content" data-tab="pulsos">
+        <div class="section">
+          <div class="section-head"><h2>Engajamento por equipe</h2><div class="actions"><button class="btn btn-primary" onclick="abrirModalGerarTokens()">Gerar tokens de pulso</button></div></div>
+          <div id="pulsos-equipes"></div>
+        </div>
+        <div class="section">
+          <div class="section-head"><h2>Tokens ativos</h2></div>
+          <div id="pulsos-tokens"></div>
+        </div>
+      </div>
+
+      <!-- TAB · DECISÕES -->
+      <div class="tab-content" data-tab="decisoes">
+        <div class="section">
+          <div class="section-head"><h2>Decisões registradas</h2><div class="actions"><button class="btn btn-primary" onclick="abrirModalDecisao()">Nova decisão</button></div></div>
+          <div id="decisoes-list"></div>
+        </div>
+      </div>
+
+      <!-- TAB · RELACIONAMENTOS -->
+      <div class="tab-content" data-tab="relacionamentos">
+        <div class="section">
+          <div class="section-head"><h2>Relacionamentos externos</h2><div class="actions"><button class="btn btn-primary" onclick="abrirModalRelacionamento()">Novo relacionamento</button></div></div>
+          <div id="relacionamentos-list"></div>
+        </div>
+      </div>
+
+      <!-- TAB · PROTOCOLOS -->
+      <div class="tab-content" data-tab="protocolos">
+        <div class="section">
+          <div class="section-head"><h2>Protocolos vivos</h2><div class="actions"><button class="btn btn-primary" onclick="abrirModalProtocolo()">Novo protocolo</button></div></div>
+          <div id="protocolos-list"></div>
+        </div>
+      </div>
+
+      <!-- TAB · SUGESTÕES -->
+      <div class="tab-content" data-tab="sugestoes">
+        <div class="section">
+          <div class="section-head"><h2>Sugestões dos agentes IA</h2></div>
+          <div id="sugestoes-list"></div>
+        </div>
+      </div>
+
+      <!-- TAB · AUDITORIA -->
+      <div class="tab-content" data-tab="auditoria">
+        <div class="section">
+          <div class="section-head"><h2>Linha do tempo · auditoria imutável</h2></div>
+          <div id="auditoria-timeline" class="timeline"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL universal -->
+<div id="modal" class="modal-overlay">
+  <div class="modal">
+    <h3 id="modal-title">—</h3>
+    <div id="modal-body"></div>
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modal-confirm" onclick="confirmarModal()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<footer>InnovaPeople · Sistema · acesso restrito</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script>
+const SUPA_URL = 'https://dqknyhfrrmbqvkdshjfu.supabase.co';
+const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+const ALLOWED_EMAILS = ['raphael@schifino.com.br','gleice@schifino.com.br'];
+const sb = window.supabase.createClient(SUPA_URL, SUPA_ANON, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }});
+
+const MANDATO_ID = new URLSearchParams(location.search).get('id');
+let mandato = null;
+let modalContext = null;
+
+const ESTAGIO_LABEL = { diagnostico:'Diagnóstico', plano:'Plano', plataforma:'Plataforma', resultado:'Resultado', parceria:'Parceria', encerrado:'Encerrado' };
+
+function esc(s){return String(s??'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));}
+function dt(s){if(!s)return'—';const d=new Date(s);return d.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});}
+function dtRel(s){if(!s)return'';const ms=Date.now()-new Date(s).getTime();const m=Math.floor(ms/60000);if(m<60)return m+' min atrás';const h=Math.floor(m/60);if(h<24)return h+'h atrás';return Math.floor(h/24)+' dias atrás';}
+function toast(msg, kind){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+(kind||'')+ ' show';setTimeout(()=>t.classList.remove('show'),3500);}
+
+async function init(){
+  if (!MANDATO_ID){ document.getElementById('content-gate').innerHTML = 'ID do mandato não informado. <a href="/sistema/">Voltar</a>'; return; }
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session || !ALLOWED_EMAILS.includes(session.user?.email)){
+    location.href = '/sistema/';
+    return;
+  }
+  document.getElementById('user-display').textContent = (session.user.user_metadata?.full_name || session.user.email.split('@')[0]);
+  await carregarMandato();
+}
+
+async function carregarMandato(){
+  const { data, error } = await sb.from('ip_mandatos').select('*').eq('id', MANDATO_ID).single();
+  if (error || !data){ document.getElementById('content-gate').innerHTML = 'Mandato não encontrado. <a href="/sistema/">Voltar</a>'; return; }
+  mandato = data;
+  document.getElementById('content-gate').style.display='none';
+  document.getElementById('content-body').style.display='block';
+  document.getElementById('bc-empresa').textContent = data.empresa;
+  document.getElementById('m-empresa').textContent = data.empresa;
+  document.getElementById('m-estagio').textContent = ESTAGIO_LABEL[data.estagio]||data.estagio;
+  document.getElementById('m-estagio').className = 'estagio-pill '+data.estagio;
+  document.getElementById('m-meta').innerHTML = `${esc(data.setor||'—')} · porte <strong>${esc(data.porte||'—')}</strong> · responsável <strong>${esc(data.socio_responsavel)}</strong> · desde ${dt(data.created_at)}`;
+  document.title = data.empresa + ' · Mandato · InnovaPeople';
+  await Promise.all([carregarResumo(), carregarPulsos(), carregarDecisoes(), carregarRelacionamentos(), carregarProtocolos(), carregarSugestoes(), carregarAuditoria()]);
+}
+
+// === RESUMO ===
+async function carregarResumo(){
+  const [{data: mdv}, {data: sug}, {data: pulsos}] = await Promise.all([
+    sb.from('v_ip_mandatos_overview').select('*').eq('id', MANDATO_ID).single(),
+    sb.from('ip_agent_sugestoes').select('*').eq('mandato_id', MANDATO_ID).eq('status','pendente').order('severidade',{ascending:false}).order('created_at',{ascending:false}).limit(1),
+    sb.from('ip_pulsos').select('score').eq('mandato_id', MANDATO_ID).gte('created_at', new Date(Date.now()-30*86400000).toISOString())
+  ]);
+  const score30 = pulsos?.length ? Math.round(pulsos.reduce((a,p)=>a+(p.score||0),0)/pulsos.length) : null;
+  document.getElementById('kpi-score').textContent = score30 ?? '—';
+  document.getElementById('kpi-score').className = 'figure '+(score30 && score30<50?'danger':score30 && score30<70?'warn':score30?'success':'');
+  document.getElementById('kpi-score-note').textContent = pulsos?.length ? `${pulsos.length} respostas` : 'sem respostas';
+  document.getElementById('kpi-sugest').textContent = mdv?.sugestoes_pendentes || 0;
+  document.getElementById('kpi-sugest').className = 'figure '+((mdv?.sugestoes_criticas||0)>0?'danger':'');
+  document.getElementById('kpi-sugest-note').textContent = (mdv?.sugestoes_criticas||0) > 0 ? `${mdv.sugestoes_criticas} crítica(s)/alta(s)` : '';
+  document.getElementById('kpi-rel').textContent = mdv?.relacionamentos_criticos || 0;
+  document.getElementById('kpi-rel').className = 'figure '+((mdv?.relacionamentos_criticos||0)>0?'warn':'');
+  document.getElementById('kpi-rel-note').textContent = `de ${mdv?.total_relacionamentos||0} total`;
+  document.getElementById('kpi-dec').textContent = mdv?.decisoes_vigentes || 0;
+
+  const px = sug?.[0];
+  if (px){
+    document.getElementById('proxima-acao').className = '';
+    document.getElementById('proxima-acao').innerHTML = `
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <span class="tag-sev ${px.severidade}">${px.severidade}</span>
+        <div style="flex:1">
+          <div style="font-family:var(--serif);font-weight:600;color:var(--violet-deep);font-size:18px;margin-bottom:6px">${esc(px.titulo)}</div>
+          <div style="font-size:13.5px;color:var(--ink-soft);line-height:1.55">${esc(px.sugestao)}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px;letter-spacing:.06em">Agente <strong>${esc(px.agente)}</strong> · ${dtRel(px.created_at)}</div>
+        </div>
+      </div>`;
+  }
+
+  // mini timeline (5 últimas)
+  const { data: tl } = await sb.from('v_ip_timeline_mandato').select('*').eq('mandato_id', MANDATO_ID).order('ts',{ascending:false}).limit(5);
+  document.getElementById('resumo-timeline').innerHTML = (tl||[]).map(renderTimelineItem).join('') || '<div class="empty"><p>Sem mudanças ainda.</p></div>';
+}
+
+function renderTimelineItem(t){
+  return `<div class="tl-item ${t.operacao.toLowerCase()}">
+    <div class="tl-time">${dt(t.ts)} · ${esc(t.actor_email||'sistema')}</div>
+    <div class="tl-content"><strong>${esc(t.entidade)}</strong> <em>${t.verbo}</em>${t.referencia?' · <strong>'+esc(t.referencia)+'</strong>':''}</div>
+  </div>`;
+}
+
+// === PULSOS ===
+async function carregarPulsos(){
+  const dataLimite = new Date(Date.now()-14*86400000).toISOString();
+  const { data: pulsos } = await sb.from('ip_pulsos').select('equipe,score,risco_saida,r_pertencimento,r_proposito').eq('mandato_id', MANDATO_ID).gte('created_at', dataLimite);
+  document.getElementById('ct-pulsos').textContent = (pulsos||[]).length;
+  const equipes = {};
+  (pulsos||[]).forEach(p=>{
+    const k = p.equipe || '(sem equipe)';
+    if (!equipes[k]) equipes[k] = { scores:[], risco:[], pert:[], prop:[] };
+    equipes[k].scores.push(p.score);
+    equipes[k].risco.push(p.risco_saida);
+    equipes[k].pert.push(p.r_pertencimento);
+    equipes[k].prop.push(p.r_proposito);
+  });
+  const html = Object.entries(equipes).map(([nome, d])=>{
+    if (d.scores.length < 3) return `<div class="equipe-row"><div><div class="equipe-name">${esc(nome)}</div><div class="equipe-meta">Apenas ${d.scores.length} resposta(s) — necessário ≥ 3 para preservar anonimato (k-anon)</div></div></div>`;
+    const avg = Math.round(d.scores.reduce((a,b)=>a+b,0)/d.scores.length);
+    const risco = Math.round(d.risco.reduce((a,b)=>a+b,0)/d.risco.length);
+    return `<div class="equipe-row">
+      <div><div class="equipe-name">${esc(nome)}</div><div class="equipe-meta">${d.scores.length} respostas · risco saída médio ${risco}/10</div></div>
+      <div class="score-bar"><div class="score-bar-fill" style="width:${avg}%"></div></div>
+      <div class="score-val">${avg}</div>
+      <div class="score-delta flat">—</div>
+    </div>`;
+  }).join('');
+  document.getElementById('pulsos-equipes').innerHTML = html || '<div class="empty"><p>Sem pulsos ainda. Gere tokens e envie aos colaboradores.</p></div>';
+
+  const { data: tokens } = await sb.from('ip_pulse_tokens').select('token,equipe,papel,created_at,expires_at').eq('mandato_id', MANDATO_ID).is('used_at', null).gt('expires_at', new Date().toISOString()).order('created_at',{ascending:false}).limit(50);
+  document.getElementById('pulsos-tokens').innerHTML = (tokens||[]).length ? (tokens||[]).map(t=>{
+    const url = location.origin + '/pulso/?t=' + t.token;
+    return `<div class="token-row"><code>${esc(url)}</code><button class="btn btn-sm btn-ghost" onclick="navigator.clipboard.writeText('${url}');toast('Link copiado','success')">Copiar</button><span style="font-size:11px;color:var(--muted)">${esc(t.equipe||'')} · expira ${dt(t.expires_at)}</span></div>`;
+  }).join('') : '<div class="empty"><p>Nenhum token ativo.</p></div>';
+}
+
+function abrirModalGerarTokens(){
+  modalContext = { tipo:'tokens' };
+  document.getElementById('modal-title').textContent = 'Gerar tokens de pulso';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="field"><label>Equipe (opcional)</label><input id="m-equipe" placeholder="Ex: Operações Sul"></div>
+    <div class="field"><label>Papel (opcional)</label><input id="m-papel" placeholder="Ex: Líder, Operacional"></div>
+    <div class="field"><label>Quantidade</label><input id="m-qtd" type="number" min="1" max="200" value="10"></div>
+    <p style="font-size:12px;color:var(--muted);font-style:italic">Cada token é único, anônimo e válido por 14 dias.</p>`;
+  document.getElementById('modal').classList.add('show');
+}
+
+// === DECISÕES ===
+async function carregarDecisoes(){
+  const { data } = await sb.from('ip_decisoes').select('*').eq('mandato_id', MANDATO_ID).order('created_at',{ascending:false});
+  document.getElementById('ct-decisoes').textContent = (data||[]).length;
+  document.getElementById('decisoes-list').innerHTML = (data||[]).length ? `<table class="data"><thead><tr><th>Título</th><th>Nível</th><th>Status</th><th>Autor</th><th>Quando</th></tr></thead><tbody>${data.map(d=>`<tr><td><strong>${esc(d.titulo)}</strong><br><span style="font-size:12px;color:var(--muted)">${esc((d.decisao||'').slice(0,140))}${d.decisao&&d.decisao.length>140?'…':''}</span></td><td><span class="tag-nivel ${d.nivel}">${d.nivel}</span></td><td>${esc(d.status)}</td><td>${esc(d.autor||'—')}</td><td>${dt(d.created_at)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty"><p>Nenhuma decisão registrada ainda.</p></div>';
+}
+
+function abrirModalDecisao(){
+  modalContext = { tipo:'decisao' };
+  document.getElementById('modal-title').textContent = 'Nova decisão';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="field"><label>Título</label><input id="m-titulo" required></div>
+    <div class="field"><label>Decisão</label><textarea id="m-decisao" required></textarea></div>
+    <div class="field"><label>Motivo</label><textarea id="m-motivo" required></textarea></div>
+    <div class="field"><label>Nível</label><select id="m-nivel"><option value="tatica">Tática</option><option value="operacional">Operacional</option><option value="estrategica">Estratégica</option></select></div>
+    <div class="field"><label>Autor</label><input id="m-autor" placeholder="seu nome"></div>`;
+  document.getElementById('modal').classList.add('show');
+}
+
+// === RELACIONAMENTOS ===
+async function carregarRelacionamentos(){
+  const { data } = await sb.from('ip_relacionamentos').select('*').eq('mandato_id', MANDATO_ID).order('vinculo_critico',{ascending:false}).order('created_at',{ascending:false});
+  document.getElementById('ct-relacionamentos').textContent = (data||[]).length;
+  document.getElementById('relacionamentos-list').innerHTML = (data||[]).length ? `<table class="data"><thead><tr><th>Nome</th><th>Papel</th><th>Categoria</th><th>Responsável</th><th>Crítico</th></tr></thead><tbody>${data.map(r=>`<tr><td><strong>${esc(r.nome)}</strong>${r.organizacao?'<br><span style="font-size:12px;color:var(--muted)">'+esc(r.organizacao)+'</span>':''}</td><td>${esc(r.papel||'—')}</td><td><span class="tag-cat">${esc(r.categoria||'—')}</span></td><td>${esc(r.responsavel_interno||'—')}</td><td>${r.vinculo_critico?'<span class="indic-critico">●</span>':''}</td></tr>`).join('')}</tbody></table>` : '<div class="empty"><p>Nenhum relacionamento mapeado ainda.</p></div>';
+}
+
+function abrirModalRelacionamento(){
+  modalContext = { tipo:'relacionamento' };
+  document.getElementById('modal-title').textContent = 'Novo relacionamento';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="field"><label>Nome</label><input id="m-nome" required></div>
+    <div class="field"><label>Papel</label><input id="m-papel"></div>
+    <div class="field"><label>Organização</label><input id="m-org"></div>
+    <div class="field"><label>Categoria</label><select id="m-cat"><option value="fornecedor">Fornecedor</option><option value="parceiro">Parceiro</option><option value="prestador">Prestador</option><option value="cliente">Cliente</option><option value="interno">Interno</option><option value="outro">Outro</option></select></div>
+    <div class="field"><label>Responsável interno</label><input id="m-resp"></div>
+    <div class="field"><label><input type="checkbox" id="m-critico" style="width:auto;margin-right:6px"> Vínculo crítico (risco patrimonial se perdido)</label></div>`;
+  document.getElementById('modal').classList.add('show');
+}
+
+// === PROTOCOLOS ===
+async function carregarProtocolos(){
+  const { data } = await sb.from('ip_protocolos').select('*').eq('mandato_id', MANDATO_ID).eq('ativo', true).order('updated_at',{ascending:false});
+  document.getElementById('ct-protocolos').textContent = (data||[]).length;
+  document.getElementById('protocolos-list').innerHTML = (data||[]).length ? data.map(p=>`<div style="padding:18px 22px;background:var(--paper);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;margin-bottom:10px"><div style="font-family:var(--serif);font-weight:600;color:var(--violet-deep);font-size:18px;margin-bottom:4px">${esc(p.titulo)}</div><div style="font-size:12px;color:var(--muted);letter-spacing:.04em;margin-bottom:10px">${esc(p.area||'—')} · v${p.versao} · responsável ${esc(p.responsavel||'—')} · atualizado ${dt(p.updated_at)}</div><div style="font-size:13.5px;color:var(--ink-soft);line-height:1.55;white-space:pre-wrap">${esc((p.conteudo||'').slice(0,400))}${p.conteudo&&p.conteudo.length>400?'…':''}</div></div>`).join('') : '<div class="empty"><p>Nenhum protocolo vivo ainda.</p></div>';
+}
+
+function abrirModalProtocolo(){
+  modalContext = { tipo:'protocolo' };
+  document.getElementById('modal-title').textContent = 'Novo protocolo';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="field"><label>Título</label><input id="m-titulo" required></div>
+    <div class="field"><label>Área</label><input id="m-area" placeholder="Ex: Operações, Vendas, Financeiro"></div>
+    <div class="field"><label>Responsável</label><input id="m-resp"></div>
+    <div class="field"><label>Conteúdo</label><textarea id="m-conteudo" required style="min-height:160px"></textarea></div>`;
+  document.getElementById('modal').classList.add('show');
+}
+
+// === SUGESTÕES ===
+async function carregarSugestoes(){
+  const { data } = await sb.from('ip_agent_sugestoes').select('*').eq('mandato_id', MANDATO_ID).order('status').order('severidade',{ascending:false}).order('created_at',{ascending:false});
+  document.getElementById('ct-sugestoes').textContent = (data||[]).filter(s=>s.status==='pendente').length;
+  document.getElementById('sugestoes-list').innerHTML = (data||[]).length ? data.map(s=>`<div style="padding:18px 22px;background:#fff;border:1px solid var(--rule);border-radius:10px;margin-bottom:10px;${s.status!=='pendente'?'opacity:.55':''}"><div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px"><span class="tag-sev ${s.severidade}">${s.severidade}</span><div style="flex:1"><div style="font-family:var(--serif);font-weight:600;color:var(--violet-deep);font-size:17px;line-height:1.3">${esc(s.titulo)}</div><div style="font-size:11px;color:var(--muted);letter-spacing:.04em;margin-top:3px">Agente <strong>${esc(s.agente)}</strong> · ${dt(s.created_at)} · status <strong>${esc(s.status)}</strong></div></div></div><div style="font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:12px">${esc(s.sugestao)}</div>${s.status==='pendente'?`<div style="display:flex;gap:8px"><button class="btn btn-sm btn-success" onclick="updateSugestao('${s.id}','aplicada')">Aplicar</button><button class="btn btn-sm btn-ghost" onclick="updateSugestao('${s.id}','revisada')">Marcar como revisada</button><button class="btn btn-sm btn-danger" onclick="updateSugestao('${s.id}','descartada')">Descartar</button></div>`:''}</div>`).join('') : '<div class="empty"><p>Nenhuma sugestão dos agentes ainda. Os agentes rodam diariamente às 07:30 UTC.</p></div>';
+}
+
+async function updateSugestao(id, status){
+  const session = (await sb.auth.getSession()).data.session;
+  const { error } = await sb.from('ip_agent_sugestoes').update({ status, revisada_em: new Date().toISOString(), revisada_por: session?.user?.email }).eq('id', id);
+  if (error){ toast('Erro: '+error.message,'error'); return; }
+  toast('Sugestão atualizada','success');
+  carregarSugestoes(); carregarResumo();
+}
+
+// === AUDITORIA ===
+async function carregarAuditoria(){
+  const { data } = await sb.from('v_ip_timeline_mandato').select('*').eq('mandato_id', MANDATO_ID).order('ts',{ascending:false}).limit(80);
+  document.getElementById('auditoria-timeline').innerHTML = (data||[]).map(renderTimelineItem).join('') || '<div class="empty"><p>Auditoria vazia.</p></div>';
+}
+
+// === TABS ===
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelector(`.tab-content[data-tab="${t.dataset.tab}"]`).classList.add('active');
+  });
+});
+
+// === MODAL universal ===
+function fecharModal(){ document.getElementById('modal').classList.remove('show'); modalContext = null; }
+async function confirmarModal(){
+  if (!modalContext) return;
+  const btn = document.getElementById('modal-confirm');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Salvando...';
+  try{
+    if (modalContext.tipo === 'tokens'){
+      const equipe = document.getElementById('m-equipe').value.trim() || null;
+      const papel = document.getElementById('m-papel').value.trim() || null;
+      const qtd = parseInt(document.getElementById('m-qtd').value) || 1;
+      const { error } = await sb.rpc('fn_ip_pulso_token_gerar', { p_mandato_id: MANDATO_ID, p_equipe: equipe, p_papel: papel, p_qtd: qtd });
+      if (error) throw error;
+      toast(`${qtd} token(s) gerado(s)`,'success');
+      carregarPulsos();
+    } else if (modalContext.tipo === 'decisao'){
+      const { error } = await sb.from('ip_decisoes').insert({
+        mandato_id: MANDATO_ID,
+        titulo: document.getElementById('m-titulo').value.trim(),
+        decisao: document.getElementById('m-decisao').value.trim(),
+        motivo: document.getElementById('m-motivo').value.trim(),
+        nivel: document.getElementById('m-nivel').value,
+        autor: document.getElementById('m-autor').value.trim() || 'sócio'
+      });
+      if (error) throw error;
+      toast('Decisão registrada','success');
+      carregarDecisoes(); carregarResumo(); carregarAuditoria();
+    } else if (modalContext.tipo === 'relacionamento'){
+      const { error } = await sb.from('ip_relacionamentos').insert({
+        mandato_id: MANDATO_ID,
+        nome: document.getElementById('m-nome').value.trim(),
+        papel: document.getElementById('m-papel').value.trim() || null,
+        organizacao: document.getElementById('m-org').value.trim() || null,
+        categoria: document.getElementById('m-cat').value,
+        responsavel_interno: document.getElementById('m-resp').value.trim() || null,
+        vinculo_critico: document.getElementById('m-critico').checked
+      });
+      if (error) throw error;
+      toast('Relacionamento adicionado','success');
+      carregarRelacionamentos(); carregarResumo();
+    } else if (modalContext.tipo === 'protocolo'){
+      const { error } = await sb.from('ip_protocolos').insert({
+        mandato_id: MANDATO_ID,
+        titulo: document.getElementById('m-titulo').value.trim(),
+        area: document.getElementById('m-area').value.trim() || null,
+        responsavel: document.getElementById('m-resp').value.trim() || null,
+        conteudo: document.getElementById('m-conteudo').value.trim()
+      });
+      if (error) throw error;
+      toast('Protocolo criado','success');
+      carregarProtocolos();
+    }
+    fecharModal();
+  } catch(e){
+    toast('Erro: '+(e.message||e),'error');
+  } finally {
+    btn.disabled = false; btn.innerHTML = 'Salvar';
+  }
+}
+
+async function doLogout(){ await sb.auth.signOut(); location.href='/sistema/'; }
+
+init();
+</script>
+
+</body>
+</html>
