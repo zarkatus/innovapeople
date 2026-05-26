@@ -222,6 +222,9 @@ footer{background:#0E0916;color:rgba(255,255,255,.5);padding:18px;text-align:cen
         <button class="tab" data-tab="decisoes">Decisões <span class="count" id="ct-decisoes">0</span></button>
         <button class="tab" data-tab="relacionamentos">Relacionamentos <span class="count" id="ct-relacionamentos">0</span></button>
         <button class="tab" data-tab="protocolos">Protocolos <span class="count" id="ct-protocolos">0</span></button>
+        <button class="tab" data-tab="plano">Plano de ação <span class="count" id="ct-plano">0</span></button>
+        <button class="tab" data-tab="pessoas">Pessoas <span class="count" id="ct-pessoas">0</span></button>
+        <button class="tab" data-tab="rituais">Rituais <span class="count" id="ct-rituais">0</span></button>
         <button class="tab" data-tab="sugestoes">Sugestões <span class="count" id="ct-sugestoes">0</span></button>
         <button class="tab" data-tab="auditoria">Auditoria</button>
       </div>
@@ -277,6 +280,40 @@ footer{background:#0E0916;color:rgba(255,255,255,.5);padding:18px;text-align:cen
         <div class="section">
           <div class="section-head"><h2>Protocolos vivos</h2><div class="actions"><button class="btn btn-primary" onclick="abrirModalProtocolo()">Novo protocolo</button></div></div>
           <div id="protocolos-list"></div>
+        </div>
+      </div>
+
+      <!-- TAB · PLANO DE AÇÃO -->
+      <div class="tab-content" data-tab="plano">
+        <div class="section">
+          <div class="section-head">
+            <h2>Plano de ação priorizado IREU</h2>
+            <div class="actions">
+              <button class="btn btn-ghost" onclick="abrirModalAcao()">+ Nova ação manual</button>
+              <button class="btn btn-primary" onclick="gerarPlano()">Gerar plano automático</button>
+            </div>
+          </div>
+          <div id="plano-list"></div>
+        </div>
+      </div>
+
+      <!-- TAB · PESSOAS -->
+      <div class="tab-content" data-tab="pessoas">
+        <div class="section">
+          <div class="section-head"><h2>Perfis de colaboradores (anônimos)</h2><div class="actions"><button class="btn btn-primary" onclick="abrirModalPerfil()">+ Novo perfil</button></div></div>
+          <div id="perfis-list"></div>
+        </div>
+        <div class="section">
+          <div class="section-head"><h2>Skill Map por perfil</h2></div>
+          <div id="skills-list"></div>
+        </div>
+      </div>
+
+      <!-- TAB · RITUAIS -->
+      <div class="tab-content" data-tab="rituais">
+        <div class="section">
+          <div class="section-head"><h2>Rituais de orquestração</h2><div class="actions"><button class="btn btn-primary" onclick="abrirModalRitual()">+ Novo ritual</button></div></div>
+          <div id="rituais-list"></div>
         </div>
       </div>
 
@@ -356,7 +393,7 @@ async function carregarMandato(){
   document.getElementById('m-estagio').className = 'estagio-pill '+data.estagio;
   document.getElementById('m-meta').innerHTML = `${esc(data.setor||'—')} · porte <strong>${esc(data.porte||'—')}</strong> · responsável <strong>${esc(data.socio_responsavel)}</strong> · desde ${dt(data.created_at)}`;
   document.title = data.empresa + ' · Mandato · InnovaPeople';
-  await Promise.all([carregarResumo(), carregarPulsos(), carregarDecisoes(), carregarRelacionamentos(), carregarProtocolos(), carregarSugestoes(), carregarAuditoria()]);
+  await Promise.all([carregarResumo(), carregarPulsos(), carregarDecisoes(), carregarRelacionamentos(), carregarProtocolos(), carregarSugestoes(), carregarAuditoria(), carregarPlano(), carregarPessoas(), carregarRituais()]);
 }
 
 // === RESUMO ===
@@ -527,6 +564,120 @@ async function carregarAuditoria(){
   document.getElementById('auditoria-timeline').innerHTML = (data||[]).map(renderTimelineItem).join('') || '<div class="empty"><p>Auditoria vazia.</p></div>';
 }
 
+// === PLANO DE AÇÃO ===
+const FRENTE_LABEL = {diagnostico:'Diagnóstico',coerencia:'Coerência',confianca:'Confiança',guardrails:'Guardrails',revisao:'Revisão Humana',orquestracao:'Orquestração',pulso:'Pulso',protocolos:'Protocolos',relacionamentos:'Relacionamentos',decisao:'Decisão',transferencia:'Transferência'};
+const STATUS_PLANO_LABEL = {pendente:'Pendente',em_andamento:'Em andamento',concluida:'Concluída',descartada:'Descartada',arquivada:'Arquivada'};
+
+async function carregarPlano(){
+  const { data } = await sb.from('ip_plano_acoes').select('*').eq('mandato_id', MANDATO_ID).order('status').order('ireu_score',{ascending:false,nullsLast:true}).order('created_at',{ascending:false});
+  document.getElementById('ct-plano').textContent = (data||[]).filter(a=>a.status==='pendente'||a.status==='em_andamento').length;
+  const html = (data||[]).length ? `<table class="data"><thead><tr><th>Título</th><th>Frente</th><th>IREU</th><th>Responsável</th><th>Prazo</th><th>Status</th></tr></thead><tbody>${data.map(a=>{
+    const sclass = a.status==='concluida'?'opacity:.5':'';
+    return `<tr style="${sclass}"><td><strong>${esc(a.titulo)}</strong><br><span style="font-size:11.5px;color:var(--muted);font-style:italic">${esc(a.origem)}${a.descricao?' · '+esc(a.descricao.slice(0,120))+(a.descricao.length>120?'…':''):''}</span></td><td><span class="tag-cat">${esc(FRENTE_LABEL[a.frente]||a.frente)}</span></td><td><strong style="color:var(--violet-deep);font-family:var(--serif);font-size:16px">${a.ireu_score??'—'}</strong></td><td>${esc(a.responsavel||'—')}</td><td>${a.prazo?new Date(a.prazo).toLocaleDateString('pt-BR'):'—'}</td><td><select onchange="updateStatusAcao('${a.id}', this.value)" style="font-size:11px;padding:3px 6px;border:1px solid var(--rule);border-radius:5px;background:#fff;cursor:pointer">${Object.entries(STATUS_PLANO_LABEL).map(([k,v])=>`<option value="${k}" ${a.status===k?'selected':''}>${v}</option>`).join('')}</select></td></tr>`;
+  }).join('')}</tbody></table>` : '<div class="empty"><p>Plano vazio. Clique em "Gerar plano automático" para popular a partir de templates curados + sugestões dos agentes + sintomas do Raio-X.</p></div>';
+  document.getElementById('plano-list').innerHTML = html;
+}
+
+async function updateStatusAcao(id, status){
+  const update = { status, updated_at: new Date().toISOString() };
+  if (status==='concluida') update.concluida_em = new Date().toISOString();
+  const { error } = await sb.from('ip_plano_acoes').update(update).eq('id', id);
+  if (error){ toast('Erro: '+error.message,'error'); return; }
+  toast('Status atualizado','success');
+  carregarPlano();
+}
+
+async function gerarPlano(){
+  if (!confirm('Gerar plano automaticamente combinando templates curados + sugestões pendentes dos agentes + sintomas do Raio-X?\n\nAções já existentes não serão duplicadas.')) return;
+  try{
+    const { data, error } = await sb.rpc('fn_ip_plano_gerar', { p_mandato_id: MANDATO_ID });
+    if (error) throw error;
+    toast(`${data?.acoes_geradas_nesta_run||0} ação(ões) gerada(s) · ${data?.acoes_pendentes_total||0} pendente(s) no plano`,'success');
+    carregarPlano(); carregarResumo();
+  } catch(e){ toast('Erro: '+(e.message||e),'error'); }
+}
+
+function abrirModalAcao(){
+  modalContext = { tipo:'acao' };
+  document.getElementById('modal-title').textContent = 'Nova ação no plano';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="field"><label>Título</label><input id="m-titulo" required></div>
+    <div class="field"><label>Descrição</label><textarea id="m-descricao" required></textarea></div>
+    <div class="field"><label>Frente</label><select id="m-frente">${Object.entries(FRENTE_LABEL).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+      <div class="field"><label>Impacto</label><input type="number" id="m-imp" min="1" max="5" value="3"></div>
+      <div class="field"><label>Relevância</label><input type="number" id="m-rel" min="1" max="5" value="3"></div>
+      <div class="field"><label>Borboleta</label><input type="number" id="m-bor" min="1" max="5" value="3"></div>
+      <div class="field"><label>Urgência</label><input type="number" id="m-urg" min="1" max="5" value="3"></div>
+    </div>
+    <div class="field"><label>Responsável</label><input id="m-resp"></div>
+    <div class="field"><label>Prazo</label><input type="date" id="m-prazo"></div>`;
+  document.getElementById('modal').classList.add('show');
+}
+
+// === PESSOAS ===
+async function carregarPessoas(){
+  const { data: perfis } = await sb.from('ip_perfil_colaborador').select('*').eq('mandato_id', MANDATO_ID).order('created_at',{ascending:false});
+  document.getElementById('ct-pessoas').textContent = (perfis||[]).length;
+  document.getElementById('perfis-list').innerHTML = (perfis||[]).length ? `<table class="data"><thead><tr><th>Rótulo</th><th>Equipe / Papel</th><th>Tempo de casa</th><th>Automatizabilidade</th><th>Risco saída</th></tr></thead><tbody>${perfis.map(p=>`<tr><td><strong>${esc(p.rotulo||'—')}</strong></td><td>${esc(p.equipe||'—')}${p.papel?' · '+esc(p.papel):''}</td><td>${p.tempo_casa_meses?p.tempo_casa_meses+' meses':'—'}</td><td>${p.automatizabilidade_pct?p.automatizabilidade_pct+'%':'—'}</td><td>${p.risco_saida_estimado!==null?'<strong style="color:'+(p.risco_saida_estimado>=7?'var(--danger)':p.risco_saida_estimado>=4?'var(--warn)':'var(--success)')+'">'+p.risco_saida_estimado+'/10</strong>':'—'}</td></tr>`).join('')}</tbody></table>` : '<div class="empty"><p>Nenhum perfil mapeado ainda. Os perfis aqui são anonimizados — use rótulos descritivos do papel (ex: "Líder Operações Norte", "Analista Sênior").</p></div>';
+
+  const { data: skills } = await sb.from('ip_skill_map').select('*,ip_perfil_colaborador(rotulo,equipe,papel)').eq('mandato_id', MANDATO_ID).order('s_score_total',{ascending:false});
+  document.getElementById('skills-list').innerHTML = (skills||[]).length ? `<table class="data"><thead><tr><th>Perfil</th><th>Técnica</th><th>Orquestração</th><th>Julgamento</th><th>Relação</th><th>IA/Auto</th><th>Gestão</th><th>Total</th></tr></thead><tbody>${skills.map(s=>{const p=s.ip_perfil_colaborador;return `<tr><td>${esc(p?.rotulo||'—')}</td><td>${s.s_tecnica??'—'}</td><td>${s.s_orquestracao??'—'}</td><td>${s.s_julgamento??'—'}</td><td>${s.s_relacao??'—'}</td><td>${s.s_ia_automacao??'—'}</td><td>${s.s_gestao??'—'}</td><td><strong style="color:var(--violet-deep);font-family:var(--serif);font-size:16px">${s.s_score_total}</strong></td></tr>`}).join('')}</tbody></table>` : '<div class="empty"><p style="font-style:italic">Skill Map é populado por perfil. Próxima sessão: tela dedicada para entrada de skills.</p></div>';
+}
+
+function abrirModalPerfil(){
+  modalContext = { tipo:'perfil' };
+  document.getElementById('modal-title').textContent = 'Novo perfil de colaborador (anônimo)';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="field"><label>Rótulo descritivo</label><input id="m-rotulo" required placeholder="Ex: Líder Operações Norte"></div>
+    <div class="field"><label>Equipe</label><input id="m-equipe"></div>
+    <div class="field"><label>Papel</label><input id="m-papel"></div>
+    <div class="field"><label>Tempo de casa (meses)</label><input type="number" id="m-tempo" min="0"></div>
+    <div class="field"><label>Automatizabilidade estimada do papel (%)</label><input type="number" id="m-auto" min="0" max="100"></div>
+    <div class="field"><label>Risco de saída estimado (0-10)</label><input type="number" id="m-risco" min="0" max="10"></div>
+    <div class="field"><label>Observações</label><textarea id="m-obs"></textarea></div>
+    <p style="font-size:12px;color:var(--muted);font-style:italic;margin-top:8px">Anonimizado: registre o papel, não o nome. Use rótulo descritivo se precisar referência.</p>`;
+  document.getElementById('modal').classList.add('show');
+}
+
+// === RITUAIS ===
+const RITUAL_TIPO_LABEL = {semanal:'Semanal',quinzenal:'Quinzenal',mensal:'Mensal',trimestral:'Trimestral',outro:'Outro'};
+
+async function carregarRituais(){
+  const { data } = await sb.from('ip_rituais').select('*').eq('mandato_id', MANDATO_ID).eq('ativo',true).order('proxima_em',{ascending:true,nullsLast:true});
+  document.getElementById('ct-rituais').textContent = (data||[]).length;
+  document.getElementById('rituais-list').innerHTML = (data||[]).length ? data.map(r=>{
+    const dias = r.proxima_em ? Math.ceil((new Date(r.proxima_em)-new Date())/86400000) : null;
+    const proxColor = dias===null?'var(--muted)':dias<0?'var(--danger)':dias<=3?'var(--warn)':'var(--success)';
+    return `<div style="padding:18px 22px;background:var(--paper);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px">
+        <div style="flex:1">
+          <div style="font-family:var(--serif);font-weight:600;color:var(--violet-deep);font-size:18px">${esc(r.titulo)}</div>
+          <div style="font-size:11.5px;color:var(--muted);letter-spacing:.04em;margin:3px 0 10px 0">${esc(RITUAL_TIPO_LABEL[r.tipo]||r.tipo)}${r.cadencia?' · '+esc(r.cadencia):''}${r.duracao_min?' · '+r.duracao_min+'min':''}${r.facilitador?' · facilitador: '+esc(r.facilitador):''}</div>
+          ${r.participantes?'<div style="font-size:12.5px;color:var(--ink-soft);margin-bottom:6px"><strong>Participantes:</strong> '+esc(r.participantes)+'</div>':''}
+          ${r.agenda?'<div style="font-size:12.5px;color:var(--ink-soft);white-space:pre-wrap">'+esc(r.agenda)+'</div>':''}
+        </div>
+        <div style="text-align:right;flex-shrink:0;min-width:120px"><div style="font-family:var(--serif);color:${proxColor};font-weight:600;font-size:15px">${r.proxima_em?new Date(r.proxima_em).toLocaleDateString('pt-BR'):'—'}</div><div style="font-size:10.5px;color:var(--muted);letter-spacing:.04em">${dias===null?'sem data':dias<0?Math.abs(dias)+' dias atrás':dias===0?'hoje':dias===1?'amanhã':'em '+dias+' dias'}</div></div>
+      </div>
+    </div>`;
+  }).join('') : '<div class="empty"><p>Nenhum ritual ativo. Rituais regulares (semanal de orquestração, mensal estratégico) sustentam Coerência de Contexto.</p></div>';
+}
+
+function abrirModalRitual(){
+  modalContext = { tipo:'ritual' };
+  document.getElementById('modal-title').textContent = 'Novo ritual de orquestração';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="field"><label>Título</label><input id="m-titulo" required placeholder="Ex: Reunião semanal de orquestração"></div>
+    <div class="field"><label>Tipo</label><select id="m-tipo">${Object.entries(RITUAL_TIPO_LABEL).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div>
+    <div class="field"><label>Cadência descrita</label><input id="m-cad" placeholder="Ex: Toda terça às 9h"></div>
+    <div class="field"><label>Duração (minutos)</label><input type="number" id="m-dur" min="15" max="480" value="45"></div>
+    <div class="field"><label>Facilitador</label><input id="m-facil"></div>
+    <div class="field"><label>Participantes</label><input id="m-part" placeholder="Ex: Liderança imediata + sócio condutor"></div>
+    <div class="field"><label>Próxima ocorrência</label><input type="date" id="m-prox"></div>
+    <div class="field"><label>Agenda fixa / pauta padrão</label><textarea id="m-agenda" placeholder="Ex: 1. Sinais críticos da semana&#10;2. Decisões pendentes&#10;3. Ações em curso"></textarea></div>`;
+  document.getElementById('modal').classList.add('show');
+}
+
 // === TABS ===
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click', ()=>{
@@ -577,6 +728,54 @@ async function confirmarModal(){
       if (error) throw error;
       toast('Relacionamento adicionado','success');
       carregarRelacionamentos(); carregarResumo();
+    } else if (modalContext.tipo === 'acao'){
+      const i = parseInt(document.getElementById('m-imp').value)||3;
+      const r = parseInt(document.getElementById('m-rel').value)||3;
+      const b = parseInt(document.getElementById('m-bor').value)||3;
+      const u = parseInt(document.getElementById('m-urg').value)||3;
+      const { error } = await sb.from('ip_plano_acoes').insert({
+        mandato_id: MANDATO_ID,
+        titulo: document.getElementById('m-titulo').value.trim(),
+        descricao: document.getElementById('m-descricao').value.trim(),
+        frente: document.getElementById('m-frente').value,
+        origem: 'manual',
+        impacto: i, relevancia: r, efeito_borboleta: b, urgencia: u,
+        ireu_score: i*r*b*u,
+        responsavel: document.getElementById('m-resp').value.trim() || null,
+        prazo: document.getElementById('m-prazo').value || null
+      });
+      if (error) throw error;
+      toast('Ação adicionada ao plano','success');
+      carregarPlano(); carregarResumo();
+    } else if (modalContext.tipo === 'perfil'){
+      const { error } = await sb.from('ip_perfil_colaborador').insert({
+        mandato_id: MANDATO_ID,
+        rotulo: document.getElementById('m-rotulo').value.trim(),
+        equipe: document.getElementById('m-equipe').value.trim() || null,
+        papel: document.getElementById('m-papel').value.trim() || null,
+        automatizabilidade_pct: parseInt(document.getElementById('m-auto').value)||null,
+        risco_saida_estimado: parseInt(document.getElementById('m-risco').value)||null,
+        tempo_casa_meses: parseInt(document.getElementById('m-tempo').value)||null,
+        observacoes: document.getElementById('m-obs').value.trim() || null
+      });
+      if (error) throw error;
+      toast('Perfil registrado','success');
+      carregarPessoas();
+    } else if (modalContext.tipo === 'ritual'){
+      const { error } = await sb.from('ip_rituais').insert({
+        mandato_id: MANDATO_ID,
+        titulo: document.getElementById('m-titulo').value.trim(),
+        tipo: document.getElementById('m-tipo').value,
+        cadencia: document.getElementById('m-cad').value.trim() || null,
+        duracao_min: parseInt(document.getElementById('m-dur').value)||null,
+        facilitador: document.getElementById('m-facil').value.trim() || null,
+        participantes: document.getElementById('m-part').value.trim() || null,
+        proxima_em: document.getElementById('m-prox').value || null,
+        agenda: document.getElementById('m-agenda').value.trim() || null
+      });
+      if (error) throw error;
+      toast('Ritual criado','success');
+      carregarRituais();
     } else if (modalContext.tipo === 'protocolo'){
       const { error } = await sb.from('ip_protocolos').insert({
         mandato_id: MANDATO_ID,
