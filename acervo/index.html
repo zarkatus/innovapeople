@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Acervo — InnovaPeople</title>
+<meta name="description" content="Referências intelectuais que sustentam a leitura autoral da casa. Não bibliografia. Acervo silencioso.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://innovapeople.com.br/acervo/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --violet:#5B3A7A;--violet-deep:#3F2756;--violet-light:#7B5AA8;
+  --gold:#C4A35A;--gold-deep:#9C7E3B;--gold-soft:#F7EFDD;
+  --ink:#1A1614;--ink-soft:#3D3531;--muted:#7A6F66;--rule:#D9D2C9;
+  --paper:#FAF7F1;--paper-deep:#F2EDE3;
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.75;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--violet);text-decoration:none;transition:color .25s ease}
+a:hover{color:var(--violet-deep)}
+
+nav.top{position:sticky;top:0;z-index:30;background:rgba(250,247,241,.96);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid rgba(217,210,201,.6);padding:14px 0}
+nav.top .inner{max-width:1080px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between}
+nav.top .logo{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:500;color:var(--violet-deep);letter-spacing:-.015em;text-decoration:none}
+nav.top .logo svg{width:32px;height:32px;color:var(--violet)}
+nav.top .logo .wordmark{font-size:19px}
+nav.top .home-link{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);font-weight:500;font-family:var(--sans)}
+nav.top .home-link:hover{color:var(--violet)}
+
+main{flex:1;padding:90px 32px 120px 32px}
+.wrap{max-width:780px;margin:0 auto}
+
+.eyebrow{display:inline-block;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:24px;padding:6px 14px;background:var(--gold-soft);border-radius:20px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(38px,5vw,56px);line-height:1.08;letter-spacing:-.02em;color:var(--violet-deep);margin-bottom:24px}
+h1 em{font-style:italic;color:var(--gold-deep);font-weight:500}
+.lede{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(18px,2vw,22px);line-height:1.55;color:var(--ink-soft);margin-bottom:48px;text-align:left;letter-spacing:.005em}
+
+.rule{width:36px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin:48px 0 36px 0}
+
+h2.sec{font-family:var(--serif);font-weight:500;font-size:22px;color:var(--violet-deep);letter-spacing:-.005em;margin:56px 0 6px 0;line-height:1.25}
+h2.sec em{font-style:italic;color:var(--gold-deep)}
+.sec-note{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--muted);margin-bottom:24px;line-height:1.5}
+
+.ref-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid var(--rule)}
+.ref{padding:22px 0 22px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:42px 1fr;gap:18px;align-items:baseline}
+.ref .marker{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--gold-deep);font-weight:500;padding-top:2px}
+.ref-body{}
+.ref-author{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:17px;letter-spacing:-.005em;display:block;line-height:1.3}
+.ref-title{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--ink);font-size:15.5px;letter-spacing:-.005em;display:block;margin-top:3px;line-height:1.45}
+.ref-meta{font-size:11.5px;letter-spacing:.08em;color:var(--muted);margin-top:6px;font-family:var(--sans)}
+.ref-gloss{font-family:var(--serif);font-style:italic;font-size:14.5px;color:var(--ink-soft);margin-top:10px;line-height:1.6;text-align:justify;padding-left:0}
+
+.closing{margin-top:72px;padding:36px 36px;border:1px solid var(--rule);background:#fff;border-left:2px solid var(--gold);border-radius:0 4px 4px 0}
+.closing p{font-family:var(--serif);font-style:italic;font-size:18px;line-height:1.6;color:var(--ink-soft);margin:0;text-align:justify}
+
+footer{border-top:1px solid var(--rule);padding:22px 32px;background:var(--paper-deep);text-align:center;font-size:12px;color:var(--muted);font-family:var(--sans);letter-spacing:.04em}
+footer a{color:var(--ink-soft)}
+</style>
+</head>
+
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="ip-logo" viewBox="0 0 120 120"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="60" cy="56" r="44" stroke-width="0.5" opacity="0.15"/><circle cx="60" cy="56" r="34" stroke-width="0.6" opacity="0.25"/><ellipse cx="60" cy="56" rx="15" ry="20" stroke-width="2.2"/><line x1="60" y1="24" x2="60" y2="92" stroke-width="2.2"/><path d="M 32 102 Q 60 108 88 102" stroke-width="1.6" opacity="0.5"/></g></symbol>
+</defs></svg>
+
+<nav class="top">
+  <div class="inner">
+    <a href="/" class="logo">
+      <svg><use href="#ip-logo"/></svg>
+      <span class="wordmark">InnovaPeople</span>
+    </a>
+    <a href="/" class="home-link">← Voltar</a>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+    <span class="eyebrow">Acervo silencioso</span>
+    <h1>Não é bibliografia. <em>É o que nos sustenta</em> quando ninguém está olhando.</h1>
+    <p class="lede">A leitura autoral da casa decanta um conjunto de fontes que circulam silenciosamente em cada mandato. Não citamos no site principal. Não compomos lista comercial. Mas estão presentes — no método, no vocabulário, na forma de olhar.</p>
+
+    <div class="rule"></div>
+
+    <h2 class="sec">Filosofia da <em>linguagem e da descrição</em></h2>
+    <p class="sec-note">Onde a categoria que se nomeia se torna materialmente verdadeira por repetição.</p>
+    <ol class="ref-list">
+      <li class="ref"><span class="marker">i</span><div class="ref-body"><span class="ref-author">Ian Hacking</span><span class="ref-title">The Looping Effect of Human Kinds</span><div class="ref-meta">In: Causal Cognition, Oxford University Press, 1995</div><p class="ref-gloss">Descrições circulantes não apenas observam — produzem o objeto que pareciam apenas registrar. Princípio que opera em organizações silenciosamente, todos os dias.</p></div></li>
+      <li class="ref"><span class="marker">ii</span><div class="ref-body"><span class="ref-author">Murray Shanahan &amp; Janet Wiles Singer</span><span class="ref-title">Role-Play with Large Language Models</span><div class="ref-meta">Nature, vol. 623, 2024</div><p class="ref-gloss">A persona estabilizada por convergência de descrições é o mesmo mecanismo que opera na cultura organizacional. A diferença é quem segura o lápis.</p></div></li>
+      <li class="ref"><span class="marker">iii</span><div class="ref-body"><span class="ref-author">George Soros</span><span class="ref-title">The Alchemy of Finance — sobre reflexividade</span><div class="ref-meta">Wiley, edição revisada 2003</div><p class="ref-gloss">O que se pensa sobre o mercado modifica o mercado. O que uma empresa pensa sobre si mesma faz o mesmo. Reflexividade como categoria de design organizacional.</p></div></li>
+    </ol>
+
+    <h2 class="sec">Arquitetura da <em>cognição distribuída</em></h2>
+    <p class="sec-note">Sobre como decisões emergem entre múltiplos agentes — humanos, máquinas e o sistema que os contém.</p>
+    <ol class="ref-list">
+      <li class="ref"><span class="marker">iv</span><div class="ref-body"><span class="ref-author">Edwin Hutchins</span><span class="ref-title">Cognition in the Wild</span><div class="ref-meta">MIT Press, 1995</div><p class="ref-gloss">A cognição não pertence ao indivíduo. Pertence ao sistema sócio-técnico em que o indivíduo é apenas um nó. Fundamento do que chamamos contexto proprietário.</p></div></li>
+      <li class="ref"><span class="marker">v</span><div class="ref-body"><span class="ref-author">James G. March</span><span class="ref-title">Exploration and Exploitation in Organizational Learning</span><div class="ref-meta">Organization Science, vol. 2, 1991</div><p class="ref-gloss">O dilema entre explorar o novo e tirar partido do já dominado é o dilema fundamental de toda organização que dura. Engenharia de contexto começa aqui.</p></div></li>
+      <li class="ref"><span class="marker">vi</span><div class="ref-body"><span class="ref-author">Karl Weick</span><span class="ref-title">The Collapse of Sensemaking in Organizations: The Mann Gulch Disaster</span><div class="ref-meta">Administrative Science Quarterly, vol. 38, 1993</div><p class="ref-gloss">Quando o sentido institucional desaba sob pressão, a organização revela a fragilidade que sempre carregou. Estudo de caso que ensina mais sobre liderança do que mil manuais.</p></div></li>
+    </ol>
+
+    <h2 class="sec">Vulnerabilidade <em>arquitetural</em> em era de agentes</h2>
+    <p class="sec-note">O que aprendemos sobre risco organizacional lendo pesquisa de segurança de IA.</p>
+    <ol class="ref-list">
+      <li class="ref"><span class="marker">vii</span><div class="ref-body"><span class="ref-author">Franklin, Tomašev, Jacobs, Leibo &amp; Osindero</span><span class="ref-title">AI Agent Traps: Categorizing Adversarial Content for Autonomous Web Agents</span><div class="ref-meta">SSRN 6372438, Google DeepMind, 2026</div><p class="ref-gloss">Seis classes de armadilha cognitiva. Cinco delas operam, antes de qualquer agente, em organizações inteiras — todos os dias, antes que IA seja contratada.</p></div></li>
+    </ol>
+
+    <h2 class="sec">Atenção, escassez e <em>economia da curadoria</em></h2>
+    <p class="sec-note">Por que, num mundo de abundância informacional, a única coisa que ainda escala é a atenção curada.</p>
+    <ol class="ref-list">
+      <li class="ref"><span class="marker">viii</span><div class="ref-body"><span class="ref-author">Herbert A. Simon</span><span class="ref-title">Designing Organizations for an Information-Rich World</span><div class="ref-meta">In: Computers, Communications, and the Public Interest, Johns Hopkins, 1971</div><p class="ref-gloss">"Em um mundo rico em informação, abundância de informação cria pobreza de atenção." Princípio escrito antes da internet — e mais verdadeiro agora.</p></div></li>
+      <li class="ref"><span class="marker">ix</span><div class="ref-body"><span class="ref-author">Mihaly Csikszentmihalyi</span><span class="ref-title">Flow: The Psychology of Optimal Experience</span><div class="ref-meta">Harper Perennial, 1990</div><p class="ref-gloss">A condição de fluxo só emerge quando o contexto sustenta a atenção. Em organizações, contexto compartilhado é a infraestrutura silenciosa do flow institucional.</p></div></li>
+    </ol>
+
+    <h2 class="sec">Práticas de <em>permanência</em></h2>
+    <p class="sec-note">Sobre o que se mantém quando o líder, o sistema, o ciclo passam.</p>
+    <ol class="ref-list">
+      <li class="ref"><span class="marker">x</span><div class="ref-body"><span class="ref-author">Peter Drucker</span><span class="ref-title">Managing Oneself</span><div class="ref-meta">Harvard Business Review, janeiro 1999</div><p class="ref-gloss">Quem se conhece, sustenta organização. A primeira camada do contexto proprietário é, sempre, o autoconhecimento de quem lidera. Sem isso, o resto é compensação.</p></div></li>
+    </ol>
+
+    <div class="closing">
+      <p>Nada do que está aqui é prescrição. É composição. Cada autor entrou em um momento específico, contribuiu com uma frase que ainda ressoa, e permanece no horizonte do que escrevemos. Quando uma organização nos procura, é parte do que carregamos para a sala. Mesmo sem ser dito.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <a href="/">InnovaPeople</a> · acervo silencioso · 2026
+</footer>
+
+</body>
+</html>
