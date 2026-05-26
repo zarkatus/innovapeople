@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>InnovaPeople — Inteligência em Gestão de Pessoas | Design Organizacional e Engenharia de Contexto</title>
+
+<!-- GEO/AEO Meta Tags -->
+<meta name="robots" content="index, follow">
+<meta name="description" content="InnovaPeople — consultoria boutique de design organizacional. Engenharia de contexto, retenção de conhecimento e inteligência em gestão de pessoas para empresas onde gente é o ativo mais importante e o menos gerido.">
+<meta name="author" content="InnovaSphere">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="canonical" href="https://innovapeople.com.br/">
+<link rel="alternate" hreflang="pt-BR" href="https://innovapeople.com.br/">
+<link rel="alternate" hreflang="en" href="https://innovapeople.com.br/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://innovapeople.com.br/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="InnovaPeople — Design Organizacional e Engenharia de Contexto">
+<meta property="og:description" content="Consultoria boutique de design organizacional para empresas onde gente é o ativo mais importante e o menos gerido. Diagnóstico, plataforma, acompanhamento.">
+<meta property="og:url" content="https://innovapeople.com.br/">
+<meta property="og:image" content="https://innovapeople.com.br/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="InnovaPeople">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"InnovaPeople","description":"Consultoria boutique de design organizacional. Engenharia de contexto, retenção de conhecimento e inteligência em gestão de pessoas.","url":"https://innovapeople.com.br","logo":"https://innovapeople.com.br/favicon.svg","areaServed":{"@type":"Country","name":"BR"},"parentOrganization":{"@type":"Organization","name":"InnovaSphere","url":"https://innovasphere.ia.br","parentOrganization":{"@type":"Organization","name":"InnCorporate","url":"https://inncorporate.com.br"}},"knowsAbout":["Design Organizacional","Engenharia de Contexto","Retenção de Conhecimento","People Analytics","Employee Engagement","Knowledge Management","Adaptive HR","Organizational Development","Talent Retention","Mattering"]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ProfessionalService","name":"InnovaPeople","priceRange":"Sob consulta","description":"Consultoria boutique de design organizacional, engenharia de contexto e retenção de conhecimento.","areaServed":"BR","provider":{"@type":"Organization","name":"InnovaSphere"}}
+</script>
+
+<style>
+:root{
+  --violet:#5B3A7A;
+  --violet-deep:#3F2756;
+  --violet-light:#7B5AA8;
+  --violet-soft:#F4EFFA;
+  --gold:#C4A35A;
+  --gold-deep:#9C7E3B;
+  --ink:#1A1614;
+  --ink-soft:#3D3531;
+  --muted:#7A6F66;
+  --rule:#D9D2C9;
+  --paper:#FAF7F1;
+  --paper-deep:#F2EDE3;
+  --serif:'Cormorant Garamond', Georgia, serif;
+  --sans:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --shadow-sm: 0 2px 6px rgba(26,22,20,.06);
+  --shadow-md: 0 8px 24px rgba(26,22,20,.10);
+  --shadow-lg: 0 18px 48px rgba(63,39,86,.18);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+img,svg{max-width:100%;display:block}
+a{color:var(--violet);text-decoration:none;transition:color .25s ease}
+a:hover{color:var(--violet-deep)}
+p{margin:0 0 1.1em 0;color:var(--ink-soft);text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+strong{color:var(--ink);font-weight:600}
+em{font-style:italic;color:var(--ink-soft)}
+.serif{font-family:var(--serif)}
+
+/* CONTAINER */
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+.wrap-narrow{max-width:880px;margin:0 auto;padding:0 32px}
+
+/* NAV */
+nav.top{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  background:rgba(250,247,241,.92);
+  backdrop-filter:saturate(180%) blur(14px);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid rgba(217,210,201,.6);
+}
+nav.top .nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;padding:0 32px;max-width:1180px;margin:0 auto;
+}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-size:22px;color:var(--violet-deep);letter-spacing:-.015em;font-weight:500}
+.brand-mark{
+  width:36px;height:36px;border-radius:9px;
+  background:var(--violet-soft);border:1.2px solid var(--violet-light);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-weight:600;font-size:20px;color:var(--violet);
+  letter-spacing:-.04em;line-height:1;
+}
+nav.top ul{display:flex;gap:30px;list-style:none}
+nav.top ul a{
+  font-size:13.5px;color:var(--ink-soft);font-weight:500;
+  letter-spacing:.01em;
+}
+nav.top ul a:hover{color:var(--violet)}
+nav.top .nav-cta{
+  font-size:13px;padding:9px 20px;border-radius:6px;
+  background:var(--violet);color:#fff;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  box-shadow:0 4px 12px rgba(91,58,122,.25);
+}
+nav.top .nav-cta:hover{background:var(--violet-deep);color:#fff;transform:translateY(-1px)}
+@media (max-width: 880px){
+  nav.top ul{display:none}
+}
+
+/* HERO */
+.hero{
+  padding:160px 0 110px 0;
+  position:relative;
+  background:
+    radial-gradient(60% 80% at 80% 20%, rgba(196,163,90,.08) 0%, transparent 70%),
+    radial-gradient(50% 70% at 15% 80%, rgba(91,58,122,.08) 0%, transparent 70%),
+    var(--paper);
+}
+.hero .eyebrow{
+  font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--gold-deep);font-weight:600;margin-bottom:24px;
+}
+.hero h1{
+  font-family:var(--serif);font-weight:400;color:var(--violet-deep);
+  font-size:clamp(40px, 5.4vw, 72px);line-height:1.04;letter-spacing:-.02em;
+  margin-bottom:24px;
+}
+.hero h1 .accent{color:var(--gold-deep);font-style:italic;font-weight:500}
+.hero .lede{
+  font-family:var(--serif);font-style:italic;font-weight:300;
+  font-size:clamp(20px, 2.3vw, 28px);line-height:1.45;
+  color:var(--ink-soft);max-width:760px;margin-bottom:42px;
+  text-align:left;
+}
+.hero .cta-row{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+.cta-primary{
+  display:inline-block;padding:16px 32px;border-radius:8px;
+  background:linear-gradient(135deg, var(--violet-deep) 0%, var(--violet) 100%);
+  color:#fff;font-weight:600;font-size:14px;
+  letter-spacing:.1em;text-transform:uppercase;
+  box-shadow:0 8px 22px rgba(91,58,122,.32);
+  transition:transform .22s ease, box-shadow .22s ease;
+}
+.cta-primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(91,58,122,.42);color:#fff}
+.cta-ghost{
+  display:inline-block;padding:16px 26px;border-radius:8px;
+  border:1.4px solid var(--violet);color:var(--violet-deep);
+  font-weight:600;font-size:14px;letter-spacing:.1em;text-transform:uppercase;
+  transition:all .22s ease;
+}
+.cta-ghost:hover{background:var(--violet-soft);border-color:var(--violet-deep)}
+
+/* MANIFESTO CLOCK DRIFT */
+.manifesto{
+  padding:90px 0;background:var(--violet-deep);color:#fff;
+  position:relative;overflow:hidden;
+}
+.manifesto::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(60% 80% at 20% 30%, rgba(196,163,90,.15) 0%, transparent 60%);
+  pointer-events:none;
+}
+.manifesto .eyebrow{
+  font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--gold);font-weight:600;margin-bottom:24px;display:block;
+}
+.manifesto h2{
+  font-family:var(--serif);font-weight:400;
+  font-size:clamp(34px, 4.2vw, 54px);line-height:1.1;letter-spacing:-.015em;
+  margin-bottom:32px;color:#fff;
+}
+.manifesto h2 em{color:var(--gold);font-style:italic;font-weight:500}
+.manifesto p{
+  color:rgba(255,255,255,.82);font-size:18px;line-height:1.75;
+  max-width:780px;
+}
+.manifesto .cite{
+  margin-top:32px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.55);font-weight:500;
+}
+.manifesto .cite strong{color:var(--gold);font-weight:600}
+
+/* SECTIONS */
+section.block{padding:100px 0;position:relative}
+section.block.alt{background:var(--paper-deep)}
+.section-eyebrow{
+  font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--gold-deep);font-weight:600;margin-bottom:14px;display:block;
+}
+.section-title{
+  font-family:var(--serif);font-weight:500;color:var(--violet-deep);
+  font-size:clamp(32px, 3.8vw, 48px);line-height:1.12;letter-spacing:-.015em;
+  margin-bottom:24px;
+}
+.section-title em{color:var(--gold-deep);font-style:italic}
+.section-lede{
+  font-family:var(--serif);font-style:italic;font-weight:300;
+  font-size:22px;line-height:1.5;color:var(--ink-soft);
+  max-width:780px;margin-bottom:60px;text-align:left;
+}
+
+/* CENÁRIO — números */
+.stats-grid{
+  display:grid;grid-template-columns:repeat(4, 1fr);gap:24px;
+  margin-top:48px;
+}
+@media (max-width: 880px){.stats-grid{grid-template-columns:repeat(2, 1fr)}}
+.stat-card{
+  background:#fff;border:1px solid var(--rule);border-radius:14px;
+  padding:36px 28px;
+  box-shadow:var(--shadow-sm);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.stat-card .figure{
+  font-family:var(--serif);font-weight:500;color:var(--violet-deep);
+  font-size:46px;line-height:1;letter-spacing:-.025em;margin-bottom:12px;
+}
+.stat-card .figure .unit{font-size:24px;color:var(--gold-deep);font-weight:600;font-style:italic}
+.stat-card .label{
+  font-size:13px;line-height:1.5;color:var(--ink-soft);font-weight:500;
+}
+.stat-card .source{
+  margin-top:16px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;
+}
+
+/* PROBLEMA INVISÍVEL — 3 cards */
+.three-col{
+  display:grid;grid-template-columns:repeat(3, 1fr);gap:32px;
+  margin-top:48px;
+}
+@media (max-width: 880px){.three-col{grid-template-columns:1fr}}
+.problem-card{
+  background:#fff;border:1px solid var(--rule);border-radius:14px;
+  padding:38px 32px;position:relative;
+  box-shadow:var(--shadow-sm);
+}
+.problem-card .num{
+  font-family:var(--serif);font-weight:500;color:var(--gold);
+  font-size:60px;line-height:1;letter-spacing:-.04em;
+  margin-bottom:14px;font-style:italic;
+}
+.problem-card h3{
+  font-family:var(--serif);font-weight:600;color:var(--violet-deep);
+  font-size:24px;line-height:1.2;letter-spacing:-.005em;
+  margin-bottom:14px;
+}
+.problem-card p{font-size:15px;line-height:1.7;color:var(--ink-soft);text-align:left}
+
+/* QUOTE STRIP */
+.quote-strip{
+  margin:80px 0;padding:48px;border-left:4px solid var(--gold);
+  background:var(--violet-soft);border-radius:0 14px 14px 0;
+}
+.quote-strip blockquote{
+  font-family:var(--serif);font-style:italic;font-weight:400;
+  font-size:clamp(22px, 2.4vw, 30px);line-height:1.4;color:var(--violet-deep);
+}
+.quote-strip cite{
+  display:block;margin-top:18px;font-style:normal;font-family:var(--sans);
+  font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600;
+}
+
+/* CONTEXTO PROPRIETÁRIO + GUARDRAILS — pillars */
+.pillars{
+  display:grid;grid-template-columns:repeat(2, 1fr);gap:24px;margin-top:48px;
+}
+@media (max-width: 880px){.pillars{grid-template-columns:1fr}}
+.pillar{
+  background:#fff;border:1px solid var(--rule);border-radius:14px;
+  padding:38px 32px;display:flex;gap:24px;align-items:flex-start;
+  box-shadow:var(--shadow-sm);
+}
+.pillar .icon{
+  flex-shrink:0;width:54px;height:54px;border-radius:12px;
+  background:var(--violet-soft);border:1px solid var(--violet-light);
+  display:flex;align-items:center;justify-content:center;color:var(--violet-deep);
+}
+.pillar .icon svg{width:26px;height:26px}
+.pillar h4{
+  font-family:var(--serif);font-weight:600;color:var(--violet-deep);
+  font-size:22px;line-height:1.2;letter-spacing:-.005em;margin-bottom:10px;
+}
+.pillar p{font-size:14.5px;line-height:1.65;text-align:left;margin:0;color:var(--ink-soft)}
+
+/* MODELO 3 movimentos */
+.movements{
+  display:grid;grid-template-columns:repeat(3, 1fr);gap:32px;margin-top:48px;
+  position:relative;
+}
+@media (max-width: 880px){.movements{grid-template-columns:1fr}}
+.movement{
+  background:#fff;border:1px solid var(--rule);border-radius:14px;
+  padding:42px 32px;position:relative;text-align:center;
+  box-shadow:var(--shadow-sm);
+}
+.movement .ord{
+  position:absolute;top:-18px;left:50%;transform:translateX(-50%);
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg, var(--violet-deep), var(--violet));
+  color:#fff;font-family:var(--serif);font-weight:600;font-size:20px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 16px rgba(91,58,122,.35);
+}
+.movement h4{
+  font-family:var(--serif);font-weight:600;color:var(--violet-deep);
+  font-size:24px;margin:18px 0 10px 0;letter-spacing:-.005em;
+}
+.movement .tag{
+  font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold-deep);font-weight:600;margin-bottom:14px;
+}
+.movement p{font-size:14.5px;text-align:left;line-height:1.7;color:var(--ink-soft);margin:0}
+
+/* JORNADA 5 estágios — timeline horizontal */
+.timeline{
+  margin-top:56px;display:grid;grid-template-columns:repeat(5, 1fr);gap:16px;
+  position:relative;
+}
+@media (max-width: 880px){.timeline{grid-template-columns:1fr;gap:24px}}
+.timeline::before{
+  content:'';position:absolute;top:22px;left:8%;right:8%;height:1px;
+  background:linear-gradient(90deg, var(--violet-light), var(--gold), var(--violet-light));
+  z-index:0;
+}
+@media (max-width: 880px){.timeline::before{display:none}}
+.stage{position:relative;z-index:1;text-align:center}
+.stage .dot{
+  width:44px;height:44px;border-radius:50%;
+  background:#fff;border:2px solid var(--violet);
+  font-family:var(--serif);font-weight:600;color:var(--violet);
+  font-size:18px;display:flex;align-items:center;justify-content:center;
+  margin:0 auto 18px auto;
+  box-shadow:0 4px 12px rgba(91,58,122,.18);
+}
+.stage h5{
+  font-family:var(--serif);font-weight:600;color:var(--violet-deep);
+  font-size:18px;line-height:1.2;margin-bottom:6px;
+}
+.stage .tag{
+  font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold-deep);font-weight:600;margin-bottom:14px;
+}
+.stage p{font-size:13.5px;line-height:1.6;color:var(--ink-soft);text-align:left;margin:0;hyphens:none}
+
+/* PARA QUEM — 4 setores */
+.sectors{
+  display:grid;grid-template-columns:repeat(2, 1fr);gap:20px;margin-top:48px;
+}
+@media (max-width: 720px){.sectors{grid-template-columns:1fr}}
+.sector{
+  background:#fff;border:1px solid var(--rule);border-radius:12px;
+  padding:28px 28px;
+  box-shadow:var(--shadow-sm);transition:transform .22s ease;
+}
+.sector:hover{transform:translateY(-3px)}
+.sector h5{
+  font-family:var(--serif);font-weight:600;color:var(--violet-deep);
+  font-size:21px;margin-bottom:8px;letter-spacing:-.005em;
+}
+.sector p{font-size:14.5px;text-align:left;line-height:1.65;color:var(--ink-soft);margin:0}
+
+/* LIDERANÇA ORQUESTRAÇÃO — 6 ações em grid */
+.orchestra{
+  display:grid;grid-template-columns:repeat(3, 1fr);gap:24px;margin-top:48px;
+}
+@media (max-width: 880px){.orchestra{grid-template-columns:1fr}}
+.action{
+  padding:28px 24px;border-left:3px solid var(--gold);background:var(--paper);
+  border-radius:0 10px 10px 0;
+}
+.action h5{
+  font-family:var(--serif);font-weight:600;color:var(--violet-deep);
+  font-size:18px;line-height:1.25;margin-bottom:8px;
+}
+.action p{font-size:14px;line-height:1.6;color:var(--ink-soft);text-align:left;margin:0}
+
+/* STACK DE PARCEIROS */
+.partners{
+  margin-top:48px;display:grid;grid-template-columns:repeat(4, 1fr);gap:18px;
+}
+@media (max-width: 880px){.partners{grid-template-columns:repeat(2, 1fr)}}
+.partner{
+  padding:24px 22px;background:#fff;border:1px solid var(--rule);border-radius:12px;
+  transition:all .22s ease;
+}
+.partner:hover{border-color:var(--violet-light);transform:translateY(-2px)}
+.partner h6{
+  font-family:var(--serif);font-weight:600;color:var(--violet-deep);
+  font-size:18px;margin-bottom:6px;
+}
+.partner .tag{
+  font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold-deep);font-weight:600;margin-bottom:10px;
+}
+.partner p{font-size:13px;line-height:1.55;color:var(--ink-soft);margin:0;text-align:left;hyphens:none}
+
+/* CTA FINAL */
+.cta-final{
+  padding:120px 0;background:
+    radial-gradient(60% 80% at 80% 20%, rgba(196,163,90,.10) 0%, transparent 60%),
+    var(--violet-deep);
+  color:#fff;text-align:center;
+}
+.cta-final h2{
+  font-family:var(--serif);font-weight:400;
+  font-size:clamp(36px, 4.4vw, 56px);line-height:1.08;letter-spacing:-.015em;
+  margin-bottom:24px;color:#fff;
+}
+.cta-final h2 em{color:var(--gold);font-style:italic;font-weight:500}
+.cta-final .lede{
+  font-family:var(--serif);font-style:italic;font-size:22px;line-height:1.5;
+  color:rgba(255,255,255,.78);max-width:720px;margin:0 auto 42px auto;
+  text-align:center;
+}
+.cta-final .cta-primary{
+  background:var(--gold);color:var(--violet-deep);
+  box-shadow:0 10px 28px rgba(196,163,90,.35);
+}
+.cta-final .cta-primary:hover{
+  background:#D4B26A;color:var(--violet-deep);
+  box-shadow:0 14px 36px rgba(196,163,90,.5);
+}
+
+/* FOOTER */
+footer{
+  background:#0E0916;color:rgba(255,255,255,.62);
+  padding:60px 0 32px 0;font-size:13.5px;
+}
+footer .foot-grid{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:42px;
+}
+@media (max-width: 880px){footer .foot-grid{grid-template-columns:1fr 1fr;gap:32px}}
+footer h6{
+  font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--gold);font-weight:600;margin-bottom:18px;
+}
+footer .brand-foot{
+  font-family:var(--serif);font-size:26px;color:#fff;letter-spacing:-.01em;
+  font-weight:500;margin-bottom:14px;display:flex;align-items:center;gap:12px;
+}
+footer .brand-foot .brand-mark{
+  background:rgba(123,90,168,.18);border-color:var(--violet-light);color:var(--violet-light);
+}
+footer ul{list-style:none}
+footer ul li{margin-bottom:9px}
+footer ul a{color:rgba(255,255,255,.7);font-size:13.5px}
+footer ul a:hover{color:var(--gold)}
+footer .foot-bottom{
+  border-top:1px solid rgba(255,255,255,.10);padding-top:24px;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;
+  font-size:12px;color:rgba(255,255,255,.45);letter-spacing:.04em;
+}
+footer .hier{font-family:var(--serif);font-style:italic;color:rgba(255,255,255,.55)}
+footer .hier a{color:var(--violet-light);font-weight:500}
+footer .hier a:hover{color:var(--gold)}
+
+/* UTILS */
+.scroll-reveal{opacity:0;transform:translateY(20px);transition:opacity .8s ease, transform .8s ease}
+.scroll-reveal.visible{opacity:1;transform:translateY(0)}
+.spacer{height:48px}
+
+/* PRINT */
+@media print{
+  nav.top, .cta-final{display:none}
+  body{background:#fff}
+  section.block{padding:30px 0;page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top">
+  <div class="nav-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark">I</span>
+      <span>InnovaPeople</span>
+    </a>
+    <ul>
+      <li><a href="#tese">Tese</a></li>
+      <li><a href="#modelo">Modelo</a></li>
+      <li><a href="#jornada">Como acontece</a></li>
+      <li><a href="#para-quem">Para quem é</a></li>
+      <li><a href="#ecossistema">Ecossistema</a></li>
+    </ul>
+    <a href="#contato" class="nav-cta">Marcar Raio-X</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <span class="eyebrow">Consultoria boutique · Design Organizacional · 2026</span>
+    <h1>O problema que ninguém vê.<br><span class="accent">A solução que todo mundo precisa.</span></h1>
+    <p class="lede">
+      Existe uma epidemia silenciosa dentro das empresas brasileiras. Não aparece nos balanços, não entra nas reuniões de diretoria, não tem linha no orçamento — mas custa caro. A InnovaPeople opera onde as pessoas são o ativo mais importante e, paradoxalmente, o menos gerido.
+    </p>
+    <div class="cta-row">
+      <a href="#contato" class="cta-primary">Solicitar Raio-X</a>
+      <a href="#tese" class="cta-ghost">Ler a tese</a>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO CLOCK DRIFT -->
+<section class="manifesto" id="tese">
+  <div class="wrap-narrow">
+    <span class="eyebrow">A Tese · Clock Drift</span>
+    <h2>A inteligência artificial opera em minutos. <em>A sua organização, em semanas.</em> Os concorrentes ocupam essa lacuna.</h2>
+    <p>
+      Na Era dos Participantes, o ativo único que define uma organização não é mais o produto, nem o capital, nem a marca isolada. É o contexto proprietário — a malha de relacionamentos internos, o conhecimento institucional acumulado e a capacidade de compartilhar esse contexto com velocidade. Quando essa malha vive nos celulares pessoais dos colaboradores, e o conhecimento sai pela porta a cada desligamento, o que era vantagem vira fragilidade estrutural.
+    </p>
+    <p>
+      A resposta não está em contratar mais. Está em desenhar o sistema para que o valor gerado seja estrutural, não pessoal. Em construir guardrails de conhecimento, dinâmicas de interação recíproca e uma arquitetura de liderança que orquestra, em vez de centralizar.
+    </p>
+    <p class="cite">Inspirado em <strong>Neil Redding · SXSW 2026</strong> · "Na Era dos Participantes — A Arquitetura da Liderança"</p>
+  </div>
+</section>
+
+<!-- CENÁRIO -->
+<section class="block" id="cenario">
+  <div class="wrap">
+    <span class="section-eyebrow">O Cenário</span>
+    <h2 class="section-title">Os números que <em>ninguém quer ler</em>, mas todo CEO precisa enfrentar.</h2>
+    <p class="section-lede">
+      O maior estudo de engajamento já realizado no Brasil cruzado com pesquisas globais do BCG, do Instituto de Pesquisa ADP e do Indeed. Não são abstrações acadêmicas — é o retrato exato do que acontece dentro de milhares de empresas neste momento.
+    </p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="figure">R$ 77<span class="unit"> bi</span></div>
+        <div class="label">custo anual do desengajamento no Brasil</div>
+        <div class="source">FGV / Flash · 2025</div>
+      </div>
+      <div class="stat-card">
+        <div class="figure">60<span class="unit">%</span></div>
+        <div class="label">dos profissionais já consideraram pedir demissão</div>
+        <div class="source">BCG · 7.000 respondentes · 115 países</div>
+      </div>
+      <div class="stat-card">
+        <div class="figure">78<span class="unit">%</span></div>
+        <div class="label">se sentem inseguros no trabalho globalmente</div>
+        <div class="source">Instituto de Pesquisa ADP · 36 mercados</div>
+      </div>
+      <div class="stat-card">
+        <div class="figure">16<span class="unit"> h</span></div>
+        <div class="label">por semana perdidas em tarefas invisíveis por equipe</div>
+        <div class="source">Indeed · mercado global</div>
+      </div>
+    </div>
+
+    <div class="quote-strip">
+      <blockquote>
+        "A empresa paga o salário de pessoas que passam metade do tempo compensando a falta de organização que a própria empresa criou."
+      </blockquote>
+      <cite>InnovaPeople · Documento Estratégico · 2026</cite>
+    </div>
+  </div>
+</section>
+
+<!-- O PROBLEMA INVISÍVEL -->
+<section class="block alt" id="problema">
+  <div class="wrap">
+    <span class="section-eyebrow">O Problema Invisível</span>
+    <h2 class="section-title">A maioria das empresas <em>não sabe que tem esse problema.</em> E esse é, exatamente, o problema.</h2>
+
+    <div class="three-col">
+      <div class="problem-card">
+        <div class="num">01</div>
+        <h3>A empresa não é dona dos seus relacionamentos.</h3>
+        <p>Contatos de fornecedores, parceiros, prestadores — tudo nos celulares pessoais dos colaboradores. Quando alguém sai, e os dados mostram que a maioria está considerando sair, leva junto toda a rede construída em nome da empresa. É como se o patrimônio comercial evaporasse a cada desligamento.</p>
+      </div>
+      <div class="problem-card">
+        <div class="num">02</div>
+        <h3>Ninguém mede o que realmente importa.</h3>
+        <p>A empresa mede faturamento, margem, prazo de entrega. Não mede satisfação, não mede engajamento, não mede risco de perda de pessoas-chave. O primeiro sinal de que algo vai mal é a carta de demissão. Aí já é tarde.</p>
+      </div>
+      <div class="problem-card">
+        <div class="num">03</div>
+        <h3>O custo das operações manuais é invisível.</h3>
+        <p>Procurar contato no celular. Compilar informações de três fontes diferentes. Reenviar documento que alguém não achou. Cobrar resposta que nunca veio. São 16 horas por semana, por equipe, consumidas em tarefas que não aparecem em nenhum relatório. É o equivalente a dois profissionais pagos para fazer trabalho que não deveria existir.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTEXTO PROPRIETÁRIO -->
+<section class="block" id="contexto">
+  <div class="wrap">
+    <span class="section-eyebrow">O Ativo Único</span>
+    <h2 class="section-title">Contexto proprietário <em>é o único ativo que sua empresa não pode terceirizar.</em></h2>
+    <p class="section-lede">
+      Na arquitetura da liderança da Era dos Participantes, o que distingue uma organização sustentável de uma frágil é a capacidade de transformar o que cada pessoa sabe individualmente em conhecimento que pertence à instituição. Três dimensões compõem esse ativo.
+    </p>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="7" r="3"/><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M9.5 9.5L7 14.5M14.5 9.5L17 14.5"/></svg>
+        </div>
+        <div>
+          <h4>Ativos Relacionais</h4>
+          <p>Os relacionamentos internos — entre times, entre níveis, entre disciplinas — são o substrato da eficácia organizacional. Permitem decisões mais rápidas, colaboração efetiva e a circulação fluida da informação que mantém o sistema vivo. Quando esse tecido fica concentrado em poucos indivíduos, a organização adoece sem perceber.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5V4.5A2.5 2.5 0 016.5 2z"/></svg>
+        </div>
+        <div>
+          <h4>Conhecimento Institucional</h4>
+          <p>O conhecimento acumulado dentro da organização — protocolos, atalhos, contexto histórico, padrões aprendidos com erros caros — é um ativo cumulativo que deve ser compartilhado e preservado. A maioria das empresas falha exatamente aqui: trata cada saída como custo de RH, quando deveria tratar como evento de risco patrimonial.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 12h.01M12 12h.01M16 12h.01"/><path d="M21 12c0 4.97-4.03 9-9 9-1.5 0-2.92-.37-4.17-1.02L3 21l1.02-4.83C3.37 14.92 3 13.5 3 12c0-4.97 4.03-9 9-9s9 4.03 9 9z"/></svg>
+        </div>
+        <div>
+          <h4>Compartilhamento Eficiente</h4>
+          <p>A maioria das organizações falha em compartilhar contexto interno, limitando inovação e capacidade de adaptação. A diferença entre uma empresa que escala e uma que reage a crises está exatamente aqui: na velocidade com que o que um sabe vira o que muitos podem fazer — sem ruído, sem retrabalho, sem dependência de pessoa-chave.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        </div>
+        <div>
+          <h4>Clock Drift Organizacional</h4>
+          <p>Enquanto a inteligência artificial opera em minutos, organizações tradicionais operam em semanas. Concorrentes implementam estratégias enquanto a sua empresa ainda está em aprovação. Reduzir essa lacuna não é luxo tecnológico — é condição de sobrevivência competitiva nos próximos cinco anos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODELO INNOVAPEOPLE -->
+<section class="block alt" id="modelo">
+  <div class="wrap">
+    <span class="section-eyebrow">O Modelo</span>
+    <h2 class="section-title">A InnovaPeople não vende sistema. Não vende consultoria. <em>Não vende metodologia em PDF.</em></h2>
+    <p class="section-lede">
+      A InnovaPeople oferece acesso a um ecossistema de inteligência em gestão de pessoas que combina diagnóstico preciso, tecnologia operacional e acompanhamento estratégico. Tudo integrado, tudo rápido, tudo mensurável. O modelo funciona em três movimentos simultâneos.
+    </p>
+
+    <div class="movements">
+      <div class="movement">
+        <div class="ord">D</div>
+        <div class="tag">Diagnóstico</div>
+        <h4>Raio-X InnovaPeople</h4>
+        <p>Revela, com precisão, o que a empresa não enxerga: quanto custa a rotatividade real, onde estão os riscos de perda de pessoas críticas, quais equipes estão no limite, e quanto dinheiro escorre todos os meses em tarefas manuais que poderiam não existir. Não é questionário genérico — é uma radiografia sob medida.</p>
+      </div>
+      <div class="movement">
+        <div class="ord">P</div>
+        <div class="tag">Plataforma</div>
+        <h4>Ecossistema Operacional</h4>
+        <p>Ferramentas inteligentes que eliminam o trabalho invisível: pulsos rápidos de engajamento, comunicação profissional estruturada, centralização de contatos e relacionamentos como ativo da empresa, e um painel de visibilidade que mostra, em tempo real, o estado das equipes. Tudo integrado, tudo no mesmo lugar.</p>
+      </div>
+      <div class="movement">
+        <div class="ord">A</div>
+        <div class="tag">Acompanhamento</div>
+        <h4>Protocolos Testados</h4>
+        <p>Aplicados por profissionais treinados pela InnovaPeople, sob supervisão estratégica direta da liderança. Não é terceirização — é capacitação com suporte. A empresa ganha autonomia, não dependência. O objetivo é claro desde o início: transferir capacidade, não criar relação de subordinação técnica.</p>
+      </div>
+    </div>
+
+    <div class="quote-strip" style="margin-top:80px">
+      <blockquote>"Quem entra no ecossistema InnovaPeople não é cliente. É parceiro. Cresce junto, evolui junto, ganha junto."</blockquote>
+      <cite>Princípio Fundador</cite>
+    </div>
+  </div>
+</section>
+
+<!-- ENGENHARIA DE CONTEXTO — 4 PILARES -->
+<section class="block" id="engenharia">
+  <div class="wrap">
+    <span class="section-eyebrow">Engenharia de Contexto</span>
+    <h2 class="section-title">Quatro guardrails que separam <em>uma empresa resiliente</em> de uma que depende de pessoa-chave.</h2>
+    <p class="section-lede">
+      Engenharia de contexto é o que permite que decisões sejam tomadas com a mesma qualidade independentemente de quem está na sala. É a infraestrutura invisível que sustenta a operação quando o talento performa muito bem — e continua sustentando quando ele decide sair.
+    </p>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L4 6v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V6l-8-4z"/></svg>
+        </div>
+        <div>
+          <h4>Coerência de Contexto</h4>
+          <p>Assegura que todos os participantes compreendam e compartilhem a mesma visão sobre objetivos, prioridades e critérios de decisão. Sem coerência, cada reunião reinventa o ponto de partida e o tempo organizacional se gasta em recalibração em vez de execução.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11a3 3 0 116 0v3a3 3 0 11-6 0v-3z"/><path d="M5 11v5a7 7 0 0014 0v-5"/></svg>
+        </div>
+        <div>
+          <h4>Confiança e Delegação</h4>
+          <p>Confiança bem construída permite que as equipes deleguem responsabilidades reais, capacitando os participantes a tomar decisões informadas e rápidas. Confiança não é entrega de fé — é a consequência de ter contexto suficiente para autorizar autonomia com critério.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="7" cy="6" r="1.5" fill="currentColor"/><circle cx="13" cy="12" r="1.5" fill="currentColor"/><circle cx="9" cy="18" r="1.5" fill="currentColor"/></svg>
+        </div>
+        <div>
+          <h4>Guardrails de Conhecimento</h4>
+          <p>A implementação de guardrails garante que as interações e decisões sigam diretrizes claras, evitando desvios e promovendo segurança organizacional. É a diferença entre uma empresa que sobrevive à saída de um talento de alta performance e uma que regride a cada desligamento.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+        </div>
+        <div>
+          <h4>Revisão Humana Estruturada</h4>
+          <p>Validar decisões garantindo que o contexto e as intenções dos participantes sejam mantidos ao longo do processo. Em organizações maduras, revisão humana não é gargalo — é o mecanismo que mantém a qualidade quando a velocidade aumenta.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO ACONTECE — TIMELINE 5 ESTÁGIOS -->
+<section class="block alt" id="jornada">
+  <div class="wrap">
+    <span class="section-eyebrow">Como Acontece</span>
+    <h2 class="section-title">Cinco etapas. <em>Cada uma gera resultado próprio</em>, sem dependência das futuras.</h2>
+    <p class="section-lede">
+      O processo é rápido, controlado e minuciosamente organizado. O parceiro percebe valor desde o primeiro contato — sem que isso comprometa profundidade ou rigor metodológico. Tudo desenhado para velocidade com profundidade. Sem atalhos, mas sem atrasos.
+    </p>
+
+    <div class="timeline">
+      <div class="stage">
+        <div class="dot">1</div>
+        <h5>Raio-X</h5>
+        <div class="tag">Diagnóstico</div>
+        <p>Entrevista estruturada de 2 a 3 horas com a direção e gestores-chave. Mapeia a estrutura real de comunicação, identifica custos da rotatividade, riscos de saída e tempo gasto em tarefas invisíveis. Relatório personalizado com números concretos e recomendações imediatas.</p>
+      </div>
+      <div class="stage">
+        <div class="dot">2</div>
+        <h5>Plano</h5>
+        <div class="tag">Personalizado</div>
+        <p>Com base no diagnóstico, plano sob medida com as ações de maior impacto para aquela empresa específica. Ações ordenadas por retorno imediato — o que resolve mais rápido vem primeiro. Inclui responsáveis, indicadores e recursos necessários.</p>
+      </div>
+      <div class="stage">
+        <div class="dot">3</div>
+        <h5>Plataforma</h5>
+        <div class="tag">Progressiva</div>
+        <p>Ativação em camadas, conforme a empresa absorve. Primeiro o Pulso (medição de engajamento), depois a Comunicação Estruturada, depois as demais funcionalidades. Cada camada só avança quando a anterior já está rodando com naturalidade.</p>
+      </div>
+      <div class="stage">
+        <div class="dot">4</div>
+        <h5>Resultado</h5>
+        <div class="tag">Mensurável</div>
+        <p>Em poucas semanas o parceiro tem em mãos dados que nunca teve: índice real de engajamento por equipe, mapa de quem está onde, custo documentado da rotatividade, comparativo com o setor. Não é promessa futura — é entrega concreta.</p>
+      </div>
+      <div class="stage">
+        <div class="dot">5</div>
+        <h5>Parceria</h5>
+        <div class="tag">Recorrente</div>
+        <p>A partir daqui, a empresa opera a plataforma com independência. Protocolos internalizados, relatórios automáticos, equipe dominando o uso. A InnovaPeople permanece como retaguarda estratégica — disponível para análises, ajustes, evolução.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARA QUEM É -->
+<section class="block" id="para-quem">
+  <div class="wrap">
+    <span class="section-eyebrow">Para Quem É</span>
+    <h2 class="section-title">Empresas onde as pessoas são o ativo mais importante <em>e, paradoxalmente, o menos gerido.</em></h2>
+    <p class="section-lede">
+      O denominador comum não é o setor. É o padrão: operações com equipes grandes ou dispersas, alta rotatividade, comunicação que vive em canais pessoais e zero visibilidade sobre engajamento real. Quatro perfis se destacam.
+    </p>
+
+    <div class="sectors">
+      <div class="sector">
+        <h5>Construtoras e Incorporadoras</h5>
+        <p>Equipes distribuídas em múltiplos canteiros, alta rotatividade, zero visibilidade sobre engajamento. A comunicação se fragmenta em grupos de WhatsApp, e o conhecimento operacional fica nos celulares de mestres de obra e residentes que podem sair amanhã.</p>
+      </div>
+      <div class="sector">
+        <h5>Manutenção e Operação Predial</h5>
+        <p>Dezenas de unidades, equipes que o escritório central nunca vê, comunicação que depende do celular pessoal do zelador. A relação entre gestão e base operacional é frágil e improvisada — até que uma demissão crítica revela o tamanho do buraco.</p>
+      </div>
+      <div class="sector">
+        <h5>Engenharia e Consultoria</h5>
+        <p>Profissionais flutuando entre projetos, sem mecanismo de medição de satisfação ou risco de saída. Cada profissional carrega clientes, conhecimento técnico e padrões de execução que, ao sair, deixam vácuo de produtividade e relacionamento.</p>
+      </div>
+      <div class="sector">
+        <h5>Varejo, Logística, Agroindústria</h5>
+        <p>Operações com equipes grandes, dispersas geograficamente, onde a relação entre gestão e base operacional é estruturalmente frágil. O turnover é alto por desenho do setor — mas o custo real disso jamais foi medido com precisão.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIDERANÇA COMO ORQUESTRAÇÃO -->
+<section class="block alt" id="lideranca">
+  <div class="wrap">
+    <span class="section-eyebrow">Arquitetura de Liderança</span>
+    <h2 class="section-title">Liderança como orquestração. <em>O regente não toca</em> — mas define como os instrumentos interagem.</h2>
+    <p class="section-lede">
+      Na Era dos Participantes, liderar é orquestrar a interação entre capacidades, contextos e responsabilidades. Seis ações estruturais distinguem organizações que se adaptam à velocidade da IA das que ficam para trás na lacuna do Clock Drift.
+    </p>
+
+    <div class="orchestra">
+      <div class="action">
+        <h5>Rastrear Capacidades</h5>
+        <p>Saber, em tempo real, quais capacidades estão disponíveis no sistema permite alocação inteligente de recursos e fortalece a eficácia organizacional.</p>
+      </div>
+      <div class="action">
+        <h5>Avaliar Resultados</h5>
+        <p>Medir o impacto das decisões e ajustar a trajetória é a base do aprendizado organizacional cumulativo — sem isso, cada ciclo recomeça do zero.</p>
+      </div>
+      <div class="action">
+        <h5>Re-sintonizar Padrões</h5>
+        <p>Garantir que todos os membros sigam a mesma direção e contribuam para objetivos comuns. Coerência não nasce — é construída e mantida.</p>
+      </div>
+      <div class="action">
+        <h5>Realocar Responsabilidades</h5>
+        <p>A realocação contínua é essencial para maximizar eficiência e adaptabilidade em ambientes dinâmicos e competitivos.</p>
+      </div>
+      <div class="action">
+        <h5>Orquestrar Recursos</h5>
+        <p>Orquestração eficaz impulsiona inovação e permite que a organização se destaque em mercado em transformação acelerada.</p>
+      </div>
+      <div class="action">
+        <h5>Sustentar Contexto</h5>
+        <p>Preservar contexto institucional ao longo do tempo é o que permite que decisões mantenham qualidade independentemente da composição da equipe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ECOSSISTEMA DE PARCEIROS -->
+<section class="block" id="ecossistema">
+  <div class="wrap">
+    <span class="section-eyebrow">Ecossistema</span>
+    <h2 class="section-title">A InnovaPeople opera <em>como hub</em>, não como ilha.</h2>
+    <p class="section-lede">
+      Cada mandato é conduzido em conexão com parceiros selecionados — especialistas em diferentes dimensões do desenho organizacional, da inteligência cognitiva e do desenvolvimento humano. A integração é discreta, contratual, e sempre orientada pelo interesse do parceiro.
+    </p>
+
+    <div class="partners">
+      <div class="partner">
+        <h6>Age-Free World</h6>
+        <div class="tag">Intergeracional</div>
+        <p>Frente de design intergeracional para empresas que reconhecem talento em todas as idades — referência em cocriação multigeracional.</p>
+      </div>
+      <div class="partner">
+        <h6>FabriPitch</h6>
+        <div class="tag">IA Cognitiva</div>
+        <p>Inteligência cognitiva para gerentes industriais — interpreta intenção e conecta áreas operacionais, da produção à logística.</p>
+      </div>
+      <div class="partner">
+        <h6>Overdub</h6>
+        <div class="tag">Desenvolvimento</div>
+        <p>Consultoria de desenvolvimento organizacional na intersecção entre resultado de negócio, cultura de inovação e tração tecnológica.</p>
+      </div>
+      <div class="partner">
+        <h6>Globalita</h6>
+        <div class="tag">Transformação Digital</div>
+        <p>Parceiro de transformação digital e IA — implementação técnica e curadoria de stacks adaptados à maturidade de cada cliente.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final" id="contato">
+  <div class="wrap-narrow">
+    <h2>O primeiro passo cabe em uma <em>conversa de 30 minutos.</em></h2>
+    <p class="lede">
+      Se a empresa que você lidera depende de pessoas para funcionar — e ainda gere essas pessoas com ferramentas do século passado — o Raio-X InnovaPeople vale o tempo. Sem custo. Sem compromisso. Apenas a fotografia precisa do que a empresa não consegue ver sozinha.
+    </p>
+    <a href="mailto:raphael@schifino.com.br?subject=Raio-X%20InnovaPeople&amp;body=Gostaria%20de%20agendar%20uma%20conversa%20inicial%20sobre%20o%20Raio-X%20InnovaPeople." class="cta-primary">Marcar Raio-X</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand-foot">
+          <span class="brand-mark">I</span>
+          <span>InnovaPeople</span>
+        </div>
+        <p style="color:rgba(255,255,255,.55);font-size:13.5px;text-align:left;line-height:1.7">
+          Consultoria boutique de design organizacional, engenharia de contexto e retenção de conhecimento. Para empresas onde gente é o ativo mais importante — e o menos gerido.
+        </p>
+      </div>
+      <div>
+        <h6>Navegação</h6>
+        <ul>
+          <li><a href="#tese">Tese</a></li>
+          <li><a href="#cenario">Cenário</a></li>
+          <li><a href="#modelo">Modelo</a></li>
+          <li><a href="#jornada">Como acontece</a></li>
+          <li><a href="#para-quem">Para quem é</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6>Inteligência</h6>
+        <ul>
+          <li><a href="#engenharia">Engenharia de Contexto</a></li>
+          <li><a href="#lideranca">Liderança como Orquestração</a></li>
+          <li><a href="#contexto">Contexto Proprietário</a></li>
+          <li><a href="#ecossistema">Ecossistema</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6>Contato</h6>
+        <ul>
+          <li><a href="mailto:raphael@schifino.com.br">raphael@schifino.com.br</a></li>
+          <li><a href="#contato">Solicitar Raio-X</a></li>
+          <li><span style="color:rgba(255,255,255,.55)">Itajaí · Santa Catarina</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div class="hier">InnovaPeople é a casa de consultoria especializada da <a href="https://innovasphere.ia.br">InnovaSphere</a> — braço de inteligência e gestão da <a href="https://inncorporate.com.br">InnCorporate</a>.</div>
+      <div>© 2026 InnovaPeople. Todos os direitos reservados.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal mínimo
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('section.block').forEach(s => { s.classList.add('scroll-reveal'); io.observe(s); });
+</script>
+
+</body>
+</html>
