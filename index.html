@@ -61,9 +61,12 @@ nav.top .nav-inner{display:flex;align-items:center;justify-content:space-between
 nav.top ul{display:flex;gap:30px;list-style:none}
 nav.top ul a{font-size:13.5px;color:var(--ink-soft);font-weight:500;letter-spacing:.01em}
 nav.top ul a:hover{color:var(--violet)}
+nav.top .nav-right{display:flex;align-items:center;gap:22px}
+nav.top .nav-restrita{font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);font-weight:500;font-family:var(--sans);padding:8px 14px;border:1px solid var(--rule);border-radius:4px;transition:all .25s ease;text-decoration:none;background:transparent;white-space:nowrap}
+nav.top .nav-restrita:hover{color:var(--violet-deep);border-color:var(--violet-light);background:rgba(91,58,122,.04)}
 nav.top .nav-cta{font-size:13px;padding:10px 22px;border-radius:6px;background:var(--violet);color:#fff;font-weight:600;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 4px 12px rgba(91,58,122,.25)}
 nav.top .nav-cta:hover{background:var(--violet-deep);color:#fff;transform:translateY(-1px)}
-@media (max-width:880px){nav.top ul{display:none}}
+@media (max-width:880px){nav.top ul{display:none}nav.top .nav-restrita{display:none}}
 
 .hero{padding:170px 0 130px 0;position:relative;overflow:hidden;color:#fff;min-height:88vh;display:flex;align-items:center}
 .hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden}
@@ -93,10 +96,10 @@ nav.top .nav-cta:hover{background:var(--violet-deep);color:#fff;transform:transl
 /* CINEMA — Ken Burns para fotos */
 @keyframes kenBurns{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.06) translate(-1.5%,-1%)}}
 .cinema{animation:kenBurns 20s ease-in-out infinite alternate}
-.hero .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:24px;display:inline-block;padding:6px 14px;background:var(--gold-soft);border-radius:20px}
-.hero h1{font-family:var(--serif);font-weight:400;color:var(--violet-deep);font-size:clamp(38px,5.2vw,68px);line-height:1.05;letter-spacing:-.02em;margin-bottom:26px}
-.hero h1 .accent{color:var(--gold-deep);font-style:italic;font-weight:500}
-.hero .lede{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(19px,2.1vw,26px);line-height:1.5;color:var(--ink-soft);max-width:640px;margin-bottom:38px;text-align:left}
+.hero .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#F5DDA5;font-weight:600;margin-bottom:24px;display:inline-block;padding:6px 14px;background:rgba(255,255,255,.10);border:1px solid rgba(245,221,165,.32);border-radius:20px;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.hero h1{font-family:var(--serif);font-weight:400;color:#FFFFFF;font-size:clamp(38px,5.2vw,68px);line-height:1.05;letter-spacing:-.02em;margin-bottom:26px;text-shadow:0 2px 14px rgba(0,0,0,.65),0 1px 4px rgba(0,0,0,.55)}
+.hero h1 .accent{color:#F5DDA5;font-style:italic;font-weight:500;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+.hero .lede{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(19px,2.1vw,26px);line-height:1.5;color:#FFFFFF;max-width:640px;margin-bottom:38px;text-align:left;text-shadow:0 1px 8px rgba(0,0,0,.65),0 1px 3px rgba(0,0,0,.5)}
 .hero .cta-row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
 .cta-primary{display:inline-block;padding:16px 32px;border-radius:8px;background:linear-gradient(135deg,var(--violet-deep) 0%,var(--violet) 100%);color:#fff;font-weight:600;font-size:14px;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 8px 22px rgba(91,58,122,.32);transition:transform .22s ease,box-shadow .22s ease}
 .cta-primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(91,58,122,.42);color:#fff}
@@ -211,16 +214,17 @@ section.block.warm{background:linear-gradient(180deg,var(--paper-warm) 0%,var(--
 .movement .tag{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:14px}
 .movement p{font-size:14.5px;text-align:left;line-height:1.7;color:var(--ink-soft);margin:0}
 
-.timeline{margin-top:56px;display:grid;grid-template-columns:repeat(5,1fr);gap:16px;position:relative}
-@media (max-width:880px){.timeline{grid-template-columns:1fr;gap:24px}}
-.timeline::before{content:'';position:absolute;top:24px;left:8%;right:8%;height:2px;background:linear-gradient(90deg,var(--violet-light),var(--gold),var(--violet-light));z-index:0;border-radius:1px}
-@media (max-width:880px){.timeline::before{display:none}}
-.stage{position:relative;z-index:1;text-align:center}
-.stage .dot{width:50px;height:50px;border-radius:50%;background:#fff;border:2.5px solid var(--violet);font-family:var(--serif);font-weight:600;color:var(--violet);font-size:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px auto;box-shadow:0 6px 16px rgba(91,58,122,.22);transition:all .25s ease}
-.stage:hover .dot{background:var(--violet);color:#fff;transform:scale(1.08)}
-.stage h5{font-family:var(--serif);font-weight:600;color:var(--violet-deep);font-size:18px;line-height:1.2;margin-bottom:6px}
-.stage .tag{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:14px}
-.stage p{font-size:13.5px;line-height:1.6;color:var(--ink-soft);text-align:left;margin:0;hyphens:none}
+.timeline{margin-top:56px;max-width:820px;margin-left:auto;margin-right:auto;display:flex;flex-direction:column;border-top:1px solid var(--rule)}
+.stage{display:grid;grid-template-columns:64px 1fr;gap:36px;padding:32px 8px;border-bottom:1px solid var(--rule);align-items:start;transition:background .35s ease}
+.stage:hover{background:rgba(91,58,122,.025)}
+.stage .dot{width:48px;height:48px;border-radius:50%;background:#fff;border:1.5px solid var(--violet);font-family:var(--serif);font-weight:500;color:var(--violet);font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:none;transition:all .35s ease;font-style:italic}
+.stage:hover .dot{border-color:var(--gold);color:var(--gold-deep)}
+.stage .stage-body{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:baseline}
+@media (max-width:720px){.stage{grid-template-columns:42px 1fr;gap:18px;padding:26px 4px}.stage .dot{width:38px;height:38px;font-size:17px}.stage .stage-body{grid-template-columns:1fr;gap:6px}}
+.stage .stage-head{min-width:200px}
+.stage h5{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:22px;line-height:1.2;letter-spacing:-.005em;margin-bottom:4px}
+.stage .tag{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600}
+.stage p{font-size:15px;line-height:1.7;color:var(--ink-soft);text-align:left;margin:0;hyphens:none}
 
 /* PULL QUOTE EDITORIAL — padrão Aman */
 .pull-aman{max-width:780px;margin:96px auto;padding:42px 32px;text-align:center;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);position:relative;background:transparent}
@@ -386,7 +390,10 @@ footer .hier a:hover{color:var(--gold)}
       <li><a href="#jornada">Como acontece</a></li>
       <li><a href="https://jornada.innovapeople.com.br/">Ensaios</a></li>
     </ul>
-    <a href="/raio-x" class="nav-cta">Marcar Raio-X</a>
+    <div class="nav-right">
+      <a href="/sistema/" class="nav-restrita" title="Área restrita · acesso à plataforma">Área restrita</a>
+      <a href="/raio-x" class="nav-cta">Marcar Raio-X</a>
+    </div>
   </div>
 </nav>
 
@@ -432,9 +439,9 @@ footer .hier a:hover{color:var(--gold)}
     <div class="trust-inner">
       <span>Casa especializada da <strong>InnovaSphere</strong></span>
       <span class="sep">·</span>
-      <span>Em conexão com casas selecionadas de <strong>design organizacional</strong>, <strong>inteligência cognitiva</strong> e <strong>transformação digital</strong></span>
+      <span>Sob lastro institucional do grupo <strong>InnCorporate</strong></span>
       <span class="sep">·</span>
-      <span>Operando desde <strong>2026</strong></span>
+      <span>Em conexão com casas selecionadas de <strong>design organizacional</strong>, <strong>inteligência cognitiva</strong> e <strong>transformação digital</strong></span>
     </div>
   </div>
 </div>
@@ -449,7 +456,7 @@ footer .hier a:hover{color:var(--gold)}
       <li style="padding:22px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:42px 1fr;gap:18px;align-items:baseline"><span style="font-family:var(--serif);font-style:italic;font-size:15px;color:var(--gold-deep);font-weight:500">i</span><div><strong style="font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:18px;letter-spacing:-.005em">Não somos consultoria de transformação digital.</strong><p style="margin:6px 0 0 0;color:var(--ink-soft);font-size:14.5px;line-height:1.75">Quando ela chega, já é tarde. Trabalhamos antes — na camada onde a empresa decide o que é digno de ser transformado.</p></div></li>
       <li style="padding:22px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:42px 1fr;gap:18px;align-items:baseline"><span style="font-family:var(--serif);font-style:italic;font-size:15px;color:var(--gold-deep);font-weight:500">ii</span><div><strong style="font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:18px;letter-spacing:-.005em">Não somos CRM, nem plataforma de engagement.</strong><p style="margin:6px 0 0 0;color:var(--ink-soft);font-size:14.5px;line-height:1.75">A ferramenta resolve sintoma. Resolvemos o que ainda não tem nome próprio.</p></div></li>
       <li style="padding:22px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:42px 1fr;gap:18px;align-items:baseline"><span style="font-family:var(--serif);font-style:italic;font-size:15px;color:var(--gold-deep);font-weight:500">iii</span><div><strong style="font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:18px;letter-spacing:-.005em">Não somos people analytics, nem firma de outsourcing de HR.</strong><p style="margin:6px 0 0 0;color:var(--ink-soft);font-size:14.5px;line-height:1.75">Dashboard mede o que já passou. Operamos no que ainda pode ser desenhado.</p></div></li>
-      <li style="padding:22px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:42px 1fr;gap:18px;align-items:baseline"><span style="font-family:var(--serif);font-style:italic;font-size:15px;color:var(--gold-deep);font-weight:500">iv</span><div><strong style="font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:18px;letter-spacing:-.005em">Não somos metodologia em PDF, nem treinamento em sala.</strong><p style="margin:6px 0 0 0;color:var(--ink-soft);font-size:14.5px;line-height:1.75">Materializamos. Cada mandato termina com algo que continua funcionando depois que saímos.</p></div></li>
+      <li style="padding:22px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:42px 1fr;gap:18px;align-items:baseline"><span style="font-family:var(--serif);font-style:italic;font-size:15px;color:var(--gold-deep);font-weight:500">iv</span><div><strong style="font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:18px;letter-spacing:-.005em">Não somos metodologia em PDF, nem treinamento em sala.</strong><p style="margin:6px 0 0 0;color:var(--ink-soft);font-size:14.5px;line-height:1.75">Materializamos. Cada trabalho termina com algo que continua funcionando depois que saímos.</p></div></li>
     </ul>
 
     <p style="margin-top:48px;font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.55;color:var(--ink-soft);text-align:center;letter-spacing:-.005em">Somos <strong style="color:var(--violet-deep);font-weight:500">arquitetos</strong>. Trabalhamos antes de qualquer um desses chegar, e às vezes em substituição a todos.</p>
@@ -593,7 +600,7 @@ footer .hier a:hover{color:var(--gold)}
   <div class="wrap">
     <span class="section-eyebrow">O Modelo</span>
     <h2 class="section-title">Não <em>vendemos</em> sistema, consultoria ou metodologia em PDF. Oferecemos acesso a uma <em>arquitetura que continua funcionando</em> depois que saímos da sala.</h2>
-    <p class="section-lede">Cada mandato opera em três movimentos que avançam em paralelo — diagnóstico preciso, plataforma operacional discreta e acompanhamento conduzido pelos sócios. Integrados. Rápidos. Mensuráveis. E, principalmente, <em>endereçados</em>.</p>
+    <p class="section-lede">Cada trabalho opera em três movimentos que avançam em paralelo — diagnóstico preciso, plataforma operacional discreta e acompanhamento conduzido pelos sócios. Integrados. Rápidos. Mensuráveis. E, principalmente, <em>endereçados</em>.</p>
 
     <div class="movements reveal-stagger">
       <div class="movement"><div class="ord">D</div><div class="tag">Diagnóstico</div><h4>Raio-X InnovaPeople</h4><p>Revela, com precisão, o que a organização não enxerga: o custo real da rotatividade, onde estão os riscos de saída, quais equipes operam no limite, quanto dinheiro escorre todos os meses por tarefas manuais. Radiografia sob medida — sem fórmula pronta.</p></div>
@@ -630,11 +637,41 @@ footer .hier a:hover{color:var(--gold)}
     <p class="section-lede">O processo é rápido, controlado e minuciosamente sequenciado. O parceiro percebe valor desde a primeira entrega. Velocidade com profundidade — sem atalhos, sem atrasos.</p>
 
     <div class="timeline">
-      <div class="stage"><div class="dot">1</div><h5>Raio-X</h5><div class="tag">Diagnóstico</div><p>Entrevista conduzida em duas a três horas. Mapeia comunicação real, custo de rotatividade, risco de saída e tempo perdido em tarefas invisíveis. Relatório com números — e com leitura.</p></div>
-      <div class="stage"><div class="dot">2</div><h5>Plano</h5><div class="tag">Endereçado</div><p>Ações ordenadas por retorno e urgência. Considera setor, porte, maturidade e o que a organização está pronta para receber. Inclui responsáveis, indicadores e cobertura técnica.</p></div>
-      <div class="stage"><div class="dot">3</div><h5>Plataforma</h5><div class="tag">Progressiva</div><p>Ativação em camadas. Pulso primeiro. Comunicação estruturada em seguida. Cada camada só avança quando a anterior já está rodando — para que a operação não pare de respirar.</p></div>
-      <div class="stage"><div class="dot">4</div><h5>Resultado</h5><div class="tag">Mensurável</div><p>Em semanas, dados que a organização nunca teve antes: engajamento por equipe, mapa de risco humano, custo documentado em horas e em moeda, comparativo institucional.</p></div>
-      <div class="stage"><div class="dot">5</div><h5>Parceria</h5><div class="tag">Continuidade</div><p>A empresa opera com autonomia. Protocolos internalizados. Relatórios contínuos. A InnovaPeople permanece como retaguarda — onde precisa estar, com o cuidado que merece.</p></div>
+      <div class="stage">
+        <div class="dot">i</div>
+        <div class="stage-body">
+          <div class="stage-head"><h5>Raio-X</h5><div class="tag">Diagnóstico</div></div>
+          <p>Entrevista conduzida em duas a três horas. Mapeia comunicação real, custo de rotatividade, risco de saída e tempo perdido em tarefas invisíveis. Relatório com números — e com leitura.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="dot">ii</div>
+        <div class="stage-body">
+          <div class="stage-head"><h5>Plano</h5><div class="tag">Endereçado</div></div>
+          <p>Ações ordenadas por retorno e urgência. Considera setor, porte, maturidade e o que a organização está pronta para receber. Inclui responsáveis, indicadores e cobertura técnica.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="dot">iii</div>
+        <div class="stage-body">
+          <div class="stage-head"><h5>Plataforma</h5><div class="tag">Progressiva</div></div>
+          <p>Ativação em camadas. Pulso primeiro. Comunicação estruturada em seguida. Cada camada só avança quando a anterior já está rodando — para que a operação não pare de respirar.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="dot">iv</div>
+        <div class="stage-body">
+          <div class="stage-head"><h5>Resultado</h5><div class="tag">Mensurável</div></div>
+          <p>Em semanas, dados que a organização nunca teve antes: engajamento por equipe, mapa de risco humano, custo documentado em horas e em moeda, comparativo institucional.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="dot">v</div>
+        <div class="stage-body">
+          <div class="stage-head"><h5>Parceria</h5><div class="tag">Continuidade</div></div>
+          <p>A empresa opera com autonomia. Protocolos internalizados. Relatórios contínuos. A InnovaPeople permanece como retaguarda — onde precisa estar, com o cuidado que merece.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -656,7 +693,7 @@ footer .hier a:hover{color:var(--gold)}
       </div>
       <div class="sector">
         <div class="sector-img"><img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900&h=560&fit=crop&q=80&auto=format" alt="Casa técnica em projeto" loading="lazy"></div>
-        <div class="sector-body"><h5>Casas técnicas e de projeto</h5><p>Profissionais flutuando entre mandatos. Sem medição contínua de risco humano. Cada um carrega clientela e padrão. Cada saída deixa vácuo que ninguém soube prever — porque ninguém somou.</p></div>
+        <div class="sector-body"><h5>Casas técnicas e de projeto</h5><p>Profissionais flutuando entre trabalhos. Sem medição contínua de risco humano. Cada um carrega clientela e padrão. Cada saída deixa vácuo que ninguém soube prever — porque ninguém somou.</p></div>
       </div>
       <div class="sector">
         <div class="sector-img"><img src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=900&h=560&fit=crop&q=80&auto=format" alt="Operação de larga escala" loading="lazy"></div>
@@ -681,7 +718,7 @@ footer .hier a:hover{color:var(--gold)}
 <section class="block warm" id="quem-conduz">
   <div class="wrap-narrow">
     <span class="section-eyebrow">Quem Conduz</span>
-    <h2 class="section-title">Cada mandato é <em>conduzido por nome próprio</em> — nunca por central de atendimento.</h2>
+    <h2 class="section-title">Cada trabalho é <em>conduzido por nome próprio</em> — nunca por central de atendimento.</h2>
     <p class="section-lede">A InnovaPeople não é software com helpdesk. Cada relação é conduzida diretamente pela dupla de sócios, com cobertura técnica e relacional de ponta a ponta. Identidade, lastro e trajetória completos são compartilhados no primeiro contato formal — onde precisam estar, com o cuidado que merecem.</p>
     <p style="font-family:var(--serif);font-style:italic;font-size:19px;color:var(--ink-soft);text-align:center;margin-top:36px;letter-spacing:-.005em">A partir daí, conversamos.</p>
   </div>
@@ -713,7 +750,7 @@ footer .hier a:hover{color:var(--gold)}
   <div class="wrap">
     <span class="section-eyebrow">Ecossistema</span>
     <h2 class="section-title">Operamos <em>como hub</em>. Nunca como ilha.</h2>
-    <p class="section-lede">Cada mandato é conduzido em conexão com casas selecionadas — especialistas em dimensões distintas do desenho organizacional. Integração discreta, contratual, sempre orientada pelo interesse de quem nos procurou.</p>
+    <p class="section-lede">Cada trabalho é conduzido em conexão com casas selecionadas — especialistas em dimensões distintas do desenho organizacional. Integração discreta, contratual, sempre orientada pelo interesse de quem nos procurou.</p>
 
     <div class="partners">
       <a class="partner" href="/frentes/intergeracional.html"><h6>Frente Intergeracional</h6><div class="tag">Onde a experiência ainda decide</div><p>A única reserva de capacidade humana ainda não-extraída em organizações brasileiras é o trabalhador que já viu o ciclo inteiro. Décadas de contexto. Redes vivas. Julgamento calibrado pelo erro. Estamos onde profundidade convive com velocidade — sem hierarquia etária implícita.</p></a>
