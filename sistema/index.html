@@ -168,14 +168,14 @@ footer a{color:rgba(255,255,255,.65)}
 <section class="login-wrap" id="login-gate">
   <div class="login-card">
     <div class="mark"><svg><use href="#ip-logo"/></svg></div>
-    <h1>Sistema de Mandatos</h1>
-    <p class="sub">Acesso restrito aos sócios condutores.</p>
+    <h1>Há uma sala <em style="font-style:italic;color:var(--gold-deep);font-weight:500">que continua sua.</em></h1>
+    <p class="sub">Entre — está tudo onde você deixou.</p>
     <div id="login-error" class="login-error"></div>
     <button class="btn-google" onclick="doLogin()">
       <svg viewBox="0 0 24 24"><path fill="#fff" d="M21.35 11.1H12v2.8h5.35c-.24 1.5-1.7 4.4-5.35 4.4-3.22 0-5.84-2.66-5.84-5.94S8.78 6.42 12 6.42c1.83 0 3.06.78 3.76 1.45l2.57-2.47C16.8 3.86 14.62 3 12 3 6.97 3 2.9 7.05 2.9 12s4.07 9 9.1 9c5.26 0 8.74-3.68 8.74-8.86 0-.6-.07-1.05-.16-1.5z"/></svg>
       Entrar com Google
     </button>
-    <p class="note">Acesso permitido apenas a e-mails autorizados<br>(@schifino.com.br + lista vinculada).</p>
+    <p class="note">Acesso permitido apenas a contas previamente autorizadas.</p>
   </div>
 </section>
 
@@ -183,13 +183,13 @@ footer a{color:rgba(255,255,255,.65)}
 <main class="dash" id="dashboard">
   <div class="wrap">
     <div class="dash-header">
-      <span class="dash-eyebrow">Dashboard · Sistema de Mandatos</span>
+      <span class="dash-eyebrow">Sistema InnovaPeople · Acompanhamento</span>
       <h1 class="dash-title">A casa <em>em uma visão.</em></h1>
       <p class="dash-sub">Mandatos ativos, Raio-X recém-recebidos, sugestões dos agentes e ações pendentes.</p>
     </div>
 
     <div class="stats-bar" id="stats-bar">
-      <div class="stat"><div class="label">Mandatos ativos</div><div class="figure" id="kpi-mandatos">—</div></div>
+      <div class="stat"><div class="label">Trabalhos ativos</div><div class="figure" id="kpi-mandatos">—</div></div>
       <div class="stat"><div class="label">Raio-X pendentes</div><div class="figure" id="kpi-raio-x">—</div></div>
       <div class="stat"><div class="label">Sugestões pendentes</div><div class="figure" id="kpi-sugestoes">—</div></div>
       <div class="stat"><div class="label">Score médio (30d)</div><div class="figure" id="kpi-score">—<span class="unit">/100</span></div></div>
@@ -220,12 +220,12 @@ footer a{color:rgba(255,255,255,.65)}
 </main>
 
 <footer>
-  InnovaPeople · Sistema de Mandatos · Acesso restrito · <a href="/">site público</a>
+  InnovaPeople · Área Restrita · <a href="/">site público</a>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
 <script>
-const SUPA_URL = 'https://dqknyhfrrmbqvkdshjfu.supabase.co';
+const SUPA_URL = 'https://auth.innovasphere.ia.br';
 const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
 const ALLOWED_EMAILS = ['raphael@schifino.com.br', 'gleice@schifino.com.br'];
 
