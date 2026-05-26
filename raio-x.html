@@ -37,8 +37,15 @@ a{color:var(--violet);text-decoration:none}
 /* HEADER */
 header{padding:28px 0;border-bottom:1px solid var(--rule);background:var(--paper)}
 header .row{display:flex;align-items:center;justify-content:space-between}
-header .brand{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-size:22px;color:var(--violet-deep);font-weight:500;letter-spacing:-.015em}
-header .brand-mark{width:36px;height:36px;border-radius:9px;background:var(--violet-soft);border:1.2px solid var(--violet-light);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;font-size:20px;color:var(--violet)}
+header .brand{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-size:22px;color:var(--violet-deep);font-weight:500;letter-spacing:-.015em;text-decoration:none}
+header .brand svg{width:38px;height:38px;color:var(--violet)}
+/* LGPD barra */
+.lgpd-bar{position:fixed;bottom:0;left:0;right:0;z-index:80;background:rgba(20,16,15,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:rgba(255,255,255,.86);padding:8px 16px;display:none;align-items:center;justify-content:center;gap:14px;font-size:12px;letter-spacing:.02em;border-top:1px solid rgba(255,255,255,.08);font-family:var(--sans)}
+.lgpd-bar.show{display:flex;animation:lgpdFade .4s ease}
+@keyframes lgpdFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.lgpd-bar a{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(196,163,90,.4);text-underline-offset:2px}
+.lgpd-bar button{background:transparent;border:none;color:rgba(255,255,255,.55);cursor:pointer;font-size:18px;padding:0 6px;line-height:1;transition:color .2s;margin-left:4px;font-family:inherit}
+.lgpd-bar button:hover{color:#fff}
 header .back{font-size:13px;color:var(--muted);letter-spacing:.04em}
 header .back:hover{color:var(--violet)}
 
@@ -132,7 +139,13 @@ footer .foot-links a:hover{color:var(--violet)}
   <div class="wrap">
     <div class="row">
       <a href="/" class="brand">
-        <span class="brand-mark">I</span>
+        <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="60" cy="56" r="44" stroke-width="0.5" opacity="0.15"/>
+          <circle cx="60" cy="56" r="34" stroke-width="0.6" opacity="0.25"/>
+          <ellipse cx="60" cy="56" rx="15" ry="20" stroke-width="2.2"/>
+          <line x1="60" y1="24" x2="60" y2="92" stroke-width="2.2"/>
+          <path d="M 32 102 Q 60 108 88 102" stroke-width="1.6" opacity="0.5"/>
+        </svg>
         <span>InnovaPeople</span>
       </a>
       <a href="/" class="back">← voltar ao site</a>
@@ -352,6 +365,11 @@ footer .foot-links a:hover{color:var(--violet)}
   </div>
 </form>
 
+<div id="lgpd-bar" class="lgpd-bar" role="status">
+  <span>Tratamos apenas dados estritamente necessários. <a href="/privacidade">Política de Privacidade</a>.</span>
+  <button type="button" aria-label="Fechar" onclick="lgpdClose()">×</button>
+</div>
+
 <footer>
   <div class="wrap">
     InnovaPeople · Itajaí, Santa Catarina · <a href="mailto:raphael@schifino.com.br">raphael@schifino.com.br</a>
@@ -416,6 +434,9 @@ form.addEventListener('click', (e) => {
     currentStep--; showStep(currentStep);
   }
 });
+
+function lgpdClose(){try{localStorage.setItem('ip_lgpd_consent','1');}catch(_){}document.getElementById('lgpd-bar').classList.remove('show');}
+(function(){try{if(!localStorage.getItem('ip_lgpd_consent')){setTimeout(()=>document.getElementById('lgpd-bar').classList.add('show'),900);}}catch(_){}})();
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
