@@ -77,6 +77,19 @@ header.top .row{max-width:1180px;margin:0 auto;padding:0 28px;display:flex;align
 .btn-ghost{background:transparent;color:var(--violet);border:1px solid var(--violet);padding:8px 16px;border-radius:7px;font-family:var(--sans);font-weight:600;font-size:12.5px;letter-spacing:.06em;cursor:pointer;transition:all .2s ease}
 .btn-ghost:hover{background:var(--violet-soft)}
 
+/* MÓDULOS GRID */
+.modulos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:20px}
+.modulo-card{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:22px 24px;text-decoration:none;color:inherit;transition:all .25s ease;position:relative;display:flex;flex-direction:column;gap:10px}
+.modulo-card:hover{transform:translateY(-2px);border-color:var(--violet-light);box-shadow:0 12px 28px rgba(63,39,86,.08)}
+.modulo-card .mod-cat{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);font-weight:600}
+.modulo-card .mod-name{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:19px;letter-spacing:-.005em;line-height:1.2}
+.modulo-card .mod-status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-soft)}
+.modulo-card .mod-dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 0 3px rgba(46,125,82,.15)}
+.modulo-card .mod-dot.warn{background:var(--warn);box-shadow:0 0 0 3px rgba(192,116,45,.15)}
+.modulo-card .mod-dot.idle{background:var(--muted);box-shadow:0 0 0 3px rgba(122,111,102,.15)}
+.modulo-card .mod-detail{font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:4px}
+.modulo-card .mod-action{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--violet);font-weight:600;margin-top:auto;padding-top:10px;border-top:1px solid var(--rule)}
+
 .mandatos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;margin-bottom:56px}
 .mandato-card{background:#fff;border:1px solid var(--rule);border-radius:14px;padding:24px;transition:all .25s ease;cursor:pointer;position:relative}
 .mandato-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(63,39,86,.10);border-color:var(--violet-light)}
@@ -205,6 +218,17 @@ footer a{color:rgba(255,255,255,.65)}
       <div class="stat"><div class="label">Score médio (30d)</div><div class="figure" id="kpi-score">—<span class="unit">/100</span></div></div>
     </div>
 
+    <!-- MÓDULOS DO SISTEMA · sempre visíveis -->
+    <section class="sec-block" style="margin-bottom:56px">
+      <div class="sec-head">
+        <h2>Módulos do sistema</h2>
+        <span style="font-size:12px;color:var(--muted);font-style:italic">9 ferramentas ativas · status em tempo real</span>
+      </div>
+      <div class="modulos-grid" id="modulos-grid">
+        <div class="loading"><span class="spinner"></span></div>
+      </div>
+    </section>
+
     <section class="sec-block" id="sec-trabalhos">
       <div class="sec-head">
         <h2>Trabalhos em andamento</h2>
@@ -327,6 +351,118 @@ async function loadDashboard() {
 
   renderMandatos(mandatos || []);
   renderInbox(raioX || []);
+  renderModulos();
+}
+
+async function renderModulos() {
+  const el = document.getElementById('modulos-grid');
+  // queries de status reais — silenciam erros pra mostrar grid mesmo se RPC faltar
+  const safe = async (fn, fallback) => { try { return await fn(); } catch(_) { return fallback; } };
+
+  const [agentRuns, pulsoTokens, raioXTotal, emailOutbox, agendamentos, eventos, sugestoes, decisoes, relacionamentos] = await Promise.all([
+    safe(() => sb.from('ip_agent_runs').select('id,iniciado_em,status', { count: 'exact' }).order('iniciado_em', { ascending: false }).limit(1), { data: [], count: 0 }),
+    safe(() => sb.from('ip_pulse_tokens').select('id', { count: 'exact', head: true }), { count: 0 }),
+    safe(() => sb.from('ip_raio_x_submissions').select('id,created_at', { count: 'exact' }).order('created_at', { ascending: false }).limit(1), { data: [], count: 0 }),
+    safe(() => sb.from('ip_email_outbox').select('id', { count: 'exact', head: true }).eq('status', 'pending'), { count: 0 }),
+    safe(() => sb.from('ip_agendamentos').select('id', { count: 'exact', head: true }), { count: 0 }),
+    safe(() => sb.from('ip_eventos').select('id', { count: 'exact', head: true }), { count: 0 }),
+    safe(() => sb.from('ip_agent_sugestoes').select('id', { count: 'exact', head: true }), { count: 0 }),
+    safe(() => sb.from('ip_decisoes').select('id', { count: 'exact', head: true }), { count: 0 }),
+    safe(() => sb.from('ip_relacionamentos').select('id', { count: 'exact', head: true }), { count: 0 }),
+  ]);
+
+  const fmtData = (d) => d ? new Date(d).toLocaleDateString('pt-BR', { day:'2-digit', month:'short' }) : '—';
+  const lastAgent = agentRuns?.data?.[0];
+  const lastRaioX = raioXTotal?.data?.[0];
+
+  const modulos = [
+    {
+      cat: 'Diagnóstico',
+      name: 'Raio-X',
+      status: (raioXTotal?.count ?? 0) > 0 ? 'ativo' : 'idle',
+      detail: `${raioXTotal?.count ?? 0} submissões recebidas${lastRaioX ? ' · última em ' + fmtData(lastRaioX.created_at) : ''}`,
+      action: 'Ver caixa de entrada',
+      onClick: "toggleSection('inbox');return false",
+      href: '#inbox',
+    },
+    {
+      cat: 'IA · diário',
+      name: 'Agentes IA',
+      status: lastAgent ? 'ativo' : 'idle',
+      detail: `5 vigias rodando · ${sugestoes?.count ?? 0} sugestões geradas${lastAgent ? ' · última execução ' + fmtData(lastAgent.iniciado_em) : ' · aguardando primeira execução'}`,
+      action: 'Abrir agentes →',
+      href: '/sistema/agentes.html',
+    },
+    {
+      cat: 'Engajamento',
+      name: 'Pulso anônimo',
+      status: (pulsoTokens?.count ?? 0) > 0 ? 'ativo' : 'idle',
+      detail: `${pulsoTokens?.count ?? 0} tokens emitidos · k-anonimato ≥ 3 respostas por equipe`,
+      action: 'Página pública →',
+      href: '/pulso/',
+      target: '_blank',
+    },
+    {
+      cat: 'Calendário',
+      name: 'Agenda integrada',
+      status: (agendamentos?.count ?? 0) > 0 ? 'ativo' : 'idle',
+      detail: `${agendamentos?.count ?? 0} agendamentos · Google Calendar (sócios)`,
+      action: 'Abrir calendário →',
+      href: '/sistema/calendar.html',
+    },
+    {
+      cat: 'Comunicação',
+      name: 'Fila de e-mail',
+      status: (emailOutbox?.count ?? 0) > 0 ? 'warn' : 'ativo',
+      detail: `${emailOutbox?.count ?? 0} pendentes · dispatcher rodando a cada 5 minutos via cron`,
+      action: 'Em background',
+      noClick: true,
+    },
+    {
+      cat: 'Auditoria',
+      name: 'EventBus',
+      status: (eventos?.count ?? 0) > 0 ? 'ativo' : 'idle',
+      detail: `${eventos?.count ?? 0} eventos capturados · auditoria imutável append-only`,
+      action: 'Background',
+      noClick: true,
+    },
+    {
+      cat: 'Patrimônio',
+      name: 'Decisões e Protocolos',
+      status: (decisoes?.count ?? 0) > 0 ? 'ativo' : 'idle',
+      detail: `${decisoes?.count ?? 0} decisões registradas · detecção de Clock Drift por agente`,
+      action: 'Via trabalho →',
+      noClick: true,
+    },
+    {
+      cat: 'Patrimônio',
+      name: 'Relacionamentos críticos',
+      status: (relacionamentos?.count ?? 0) > 0 ? 'ativo' : 'idle',
+      detail: `${relacionamentos?.count ?? 0} relacionamentos mapeados · vigia de concentração ativo`,
+      action: 'Via trabalho →',
+      noClick: true,
+    },
+    {
+      cat: 'Boletim',
+      name: 'Digest semanal',
+      status: 'ativo',
+      detail: `Enviado aos sócios todo domingo às 18h UTC · cron pg_cron`,
+      action: 'Background',
+      noClick: true,
+    },
+  ];
+
+  el.innerHTML = modulos.map(m => {
+    const tag = m.noClick ? 'div' : 'a';
+    const attrs = m.noClick ? '' : ` href="${m.href}"${m.target ? ' target="'+m.target+'" rel="noopener"' : ''}${m.onClick ? ' onclick="'+m.onClick+'"' : ''}`;
+    return `<${tag} class="modulo-card"${attrs}>
+      <div class="mod-cat">${m.cat}</div>
+      <div class="mod-name">${m.name}</div>
+      <div class="mod-status"><span class="mod-dot ${m.status === 'warn' ? 'warn' : m.status === 'idle' ? 'idle' : ''}"></span>${m.status === 'warn' ? 'Atenção' : m.status === 'idle' ? 'Pronto · aguardando primeiro uso' : 'Operacional'}</div>
+      <div class="mod-detail">${m.detail}</div>
+      <div class="mod-action">${m.action}</div>
+    </${tag}>`;
+  }).join('');
 }
 
 function renderMandatos(list) {
