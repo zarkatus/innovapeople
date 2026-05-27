@@ -440,7 +440,7 @@ function renderThread(){
     <div class="avatar img" ${av}>${c?._avatar?'':initials(nome)}</div>
     <div class="thread-h-name">
       <div class="nm">${esc(nome)}</div>
-      <div class="ph">${esc(numero)}</div>
+      <div class="ph" onclick="editarNumeroContato()" title="Clique para corrigir o número se estiver errado (ex: JID interno)" style="cursor:pointer;text-decoration:underline dotted rgba(10,22,40,.3);text-underline-offset:3px">${esc(numero)}</div>
     </div>
     <div class="thread-actions">
       <button class="thread-act" id="estado-btn" onclick="toggleEstado()">${esc(c?.conversa_estado||'aberta')}</button>
@@ -829,6 +829,24 @@ async function toggleEstado(){
     renderThread();
     renderPerfil();
   }catch(e){toast('Erro: '+e.message)}
+}
+
+// V20.10 — corrige número quando o webhook salvou JID interno como numero_e164
+async function editarNumeroContato(){
+  const c=_state.conversas.find(x=>x.conversa_id===_state.convId);if(!c)return;
+  const atual=c.numero_e164||'';
+  const sugestao=atual.replace(/^\+?/,'+');
+  const novo=prompt(`Número atual: ${atual}\n\nDigite o número CORRETO no formato E.164 (ex: +5547999998888):\n\n• DDI + DDD + número, com o "+" na frente\n• Sem espaços, sem traços\n• Brasileiro tem 13 dígitos contando o +`,sugestao);
+  if(!novo||novo.trim()===atual.trim())return;
+  const limpo=novo.replace(/[^0-9+]/g,'');
+  if(!limpo.startsWith('+')||limpo.length<11||limpo.length>16){toast('Formato inválido. Use +DDIDDDxxxxxxxx');return}
+  try{
+    const {error}=await sb().from('wa_contato').update({numero_e164:limpo,atualizado_em:new Date().toISOString()}).eq('id',c.contato_id);
+    if(error)throw error;
+    c.numero_e164=limpo;
+    toast('Número atualizado para '+limpo);
+    renderThread();renderConversas();
+  }catch(e){console.error(e);toast('Erro ao salvar: '+e.message)}
 }
 
 async function abrirAssign(){
