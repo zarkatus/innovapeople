@@ -380,11 +380,15 @@ function renderConversas(){
     const dir=c.preview_direcao==='out'||c.preview_direcao==='outbound'?'→ ':c.preview_direcao==='in'||c.preview_direcao==='inbound'?'← ':'';
     const sel=c.conversa_id===_state.convId?' on':'';
     const av=c._avatar?`style="background-image:url('${esc(c._avatar)}');background-size:cover"`:'';
+    // V21.3: badge LID — número provisório (JID interno multi-device)
+    const numLen=(c.numero_e164||'').replace(/\D/g,'').length;
+    const isLid=numLen>13||numLen<10;
+    const lidBadge=isLid?`<span title="Número provisório (JID interno) — corrige automaticamente quando o contato mandar nova mensagem; ou clique no número na conversa para editar manualmente" style="display:inline-block;padding:1px 5px;background:rgba(168,106,31,.18);color:var(--amber);border-radius:3px;font-size:9px;letter-spacing:.08em;font-family:var(--mono);margin-left:6px;vertical-align:middle">lid</span>`:'';
     return `<div class="conv-item${sel}" data-id="${esc(c.conversa_id)}" onclick="abrirConversa('${esc(c.conversa_id)}','${esc(c.contato_id)}')">
       <div class="avatar img" ${av}>${c._avatar?'':initials(nome)}</div>
       <div class="conv-body">
         <div class="conv-top">
-          <div class="conv-name">${esc(nome)}</div>
+          <div class="conv-name">${esc(nome)}${lidBadge}</div>
           <div class="conv-time">${fmtTime(c.ultima_mensagem_em)}</div>
         </div>
         <div class="conv-preview">
@@ -422,12 +426,13 @@ function renderThreadLoading(){
 // V21 2026-05-27: migra para schema PT (wa_mensagem) — bate com wa_conversa/v_wa_inbox
 // Antes lia wa_messages (EN) com conversation_id PT → vazio → mensagem desaparecia.
 function _mapMsgPtToView(m){
+  const mt=m.media_tipo;
   return {
     id:m.id, conversation_id:m.conversa_id,
     direction:m.direcao==='saida'?'outbound':(m.direcao==='entrada'?'inbound':m.direcao),
-    message_type:m.media_tipo==='image'?'image':(m.media_tipo==='document'?'document':(m.media_tipo==='audio'?'audio':'text')),
+    message_type:(mt==='image'||mt==='gif'||mt==='video'||mt==='audio'||mt==='document'||mt==='sticker')?mt:'text',
     content:m.conteudo, media_url:m.media_url,
-    status:m.estado_entrega==='falha'?'failed':(m.estado_entrega||'sent'),
+    status:m.estado_entrega||'sent',
     sent_by:null, evo_message_id:m.evolution_message_id,
     created_at:m.ocorrido_em||m.criado_em,
   };
@@ -474,19 +479,27 @@ function renderThread(){
     }
     const dir=(m.direction==='outbound'||m.direction==='out')?'out':'in';
     let bubble='';
-    if(m.message_type==='image'&&m.media_url){
-      bubble+=`<div class="msg-media"><img src="${esc(m.media_url)}" alt="imagem"></div>`;
-    }else if(m.message_type==='audio'&&m.media_url){
-      bubble+=`<div class="msg-media"><audio controls src="${esc(m.media_url)}"></audio></div>`;
+    // V21.2: renderiza todos os tipos de mídia (image/gif/video/audio/document/sticker)
+    const mtype=m.message_type||'text';
+    if((mtype==='image'||mtype==='sticker')&&m.media_url){
+      bubble+=`<div class="msg-media"><img src="${esc(m.media_url)}" alt="${mtype}" style="max-width:280px;border-radius:8px;display:block"></div>`;
+    }else if((mtype==='gif'||mtype==='video')&&m.media_url){
+      bubble+=`<div class="msg-media"><video controls ${mtype==='gif'?'autoplay loop muted':''} playsinline src="${esc(m.media_url)}" style="max-width:280px;border-radius:8px;display:block"></video></div>`;
+    }else if(mtype==='audio'&&m.media_url){
+      bubble+=`<div class="msg-media"><audio controls src="${esc(m.media_url)}" style="max-width:280px"></audio></div>`;
+    }else if(mtype==='document'&&m.media_url){
+      bubble+=`<div class="msg-media"><a href="${esc(m.media_url)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(196,163,90,.08);border:1px solid var(--border);border-radius:8px;color:var(--navy);text-decoration:none"><span style="font-family:var(--serif);font-size:18px;color:var(--gold-deep)">📄</span><span style="font-size:13px">Abrir documento</span></a></div>`;
     }
-    if(m.content)bubble+=esc(m.content);
-    const stIco={sent:'✓',delivered:'✓✓',read:'✓✓',failed:'✕'}[m.status]||'';
+    if(m.content&&!/^\((imagem|áudio|documento|vídeo|figurinha|gif|mensagem|media)\)$/i.test(m.content))bubble+=esc(m.content);
+    // V21.2: ícone azul para read, cinza para delivered/sent
+    const stIco={enviada:'✓',sent:'✓',entregue:'✓✓',delivered:'✓✓',lida:'✓✓',read:'✓✓',falha:'✕',failed:'✕',pendente:'⌛'}[m.status]||'';
     const stClass=m.status||'sent';
+    const stColor=(m.status==='lida'||m.status==='read')?'color:#34B7F1':'';
     html+=`<div class="msg ${dir}">
       <div class="msg-bubble">${bubble||'<em style="opacity:.6">(sem conteúdo)</em>'}</div>
       <div class="msg-meta">
         <span>${fmtFullTime(m.created_at)}</span>
-        ${dir==='out'?`<span class="msg-status ${stClass}">${stIco}</span>`:''}
+        ${dir==='out'?`<span class="msg-status ${stClass}" style="${stColor}">${stIco}</span>`:''}
       </div>
     </div>`;
   });
@@ -1002,7 +1015,6 @@ function subscribeRealtime(){
           if((m.direction==='inbound'||m.direction==='in')&&m.conversation_id!==_state.convId){
             c.nao_lidas=(c.nao_lidas||0)+1;
           }
-          // Reordena
           _state.conversas.sort((a,b)=>new Date(b.ultima_mensagem_em)-new Date(a.ultima_mensagem_em));
           renderConversas();
         }else{
@@ -1010,8 +1022,27 @@ function subscribeRealtime(){
           loadConversas();
         }
       })
+      .on('postgres_changes',{event:'UPDATE',schema:'public',table:'wa_mensagem'},payload=>{
+        // V21.1: status delivered/read atualiza em realtime
+        const m=_mapMsgPtToView(payload.new);
+        const i=_state.mensagens.findIndex(x=>x.id===m.id);
+        if(i>=0){_state.mensagens[i]=m;renderThread()}
+      })
+      .on('postgres_changes',{event:'UPDATE',schema:'public',table:'wa_contato'},payload=>{
+        // V21.1: auto-resolução PN reflete na UI sem reload
+        const novo=payload.new;
+        for(const c of _state.conversas){
+          if(c.contato_id===novo.id){
+            c.numero_e164=novo.numero_e164;
+            c.contato_nome=novo.nome||c.contato_nome;
+            renderConversas();
+            if(_state.convId===c.conversa_id)renderThread();
+            break;
+          }
+        }
+      })
       .subscribe();
-    console.log('[wa] realtime subscribed');
+    console.log('[wa] realtime subscribed (mensagens INSERT+UPDATE, contatos UPDATE)');
   }catch(e){console.warn('[wa] realtime falhou',e)}
 }
 </script>
