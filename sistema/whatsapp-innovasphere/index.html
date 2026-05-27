@@ -529,6 +529,7 @@ async function enviarMensagem(){
   if(!c){toast('Conversa não encontrada');return}
   const numero=(c.numero_e164||'').replace(/\D/g,'');
   if(!numero){toast('Número inválido');return}
+  if(numero.length<10||numero.length>13){toast('Número corrompido: '+numero+' ('+numero.length+' dígitos). Provavelmente lixo do webhook. Procure outra conversa do mesmo contato.');return}
 
   document.getElementById('send-btn').disabled=true;
 
@@ -560,7 +561,13 @@ async function enviarMensagem(){
     };
     if(msgType==='image'&&mediaUrl){payload.image_url=mediaUrl}
     const {data,error}=await sb().functions.invoke('whatsapp-direto',{body:payload});
-    if(error)throw error;
+    if(error){
+      let reason=null,message=null;
+      try{const respText=await error.context?.response?.text();if(respText){const j=JSON.parse(respText);reason=j.reason;message=j.message}}catch{}
+      if(reason==='phone_not_registered'){toast('Número não está no WhatsApp · '+(message||'lixo do webhook'));throw new Error(message||'phone_not_registered')}
+      throw error;
+    }
+    if(data&&data.reason==='phone_not_registered'){toast('Número não está no WhatsApp · '+(data.message||''));throw new Error(data.message||'phone_not_registered')}
     if(data&&data.persist_error)console.warn('[wa] persist warn:',data.persist_error);
     toast('Mensagem enviada');
     await loadMensagens(_state.convId);

@@ -2170,8 +2170,14 @@ function openWaSend(){
       ev.preventDefault();const f=ev.target;const r=body.querySelector('#wa-result');r.innerHTML='<div class="dr-info">Enviando...</div>';
       try{
         const sb=window.__IP_SB;
-        const {error}=await sb.functions.invoke('whatsapp-direto',{body:{phone:f.numero.value,text:f.texto.value,contexto:'chro-drawer',actor_email:window.__IP_USER_EMAIL||null}});
-        if(error)throw error;
+        const {data,error}=await sb.functions.invoke('whatsapp-direto',{body:{phone:f.numero.value,text:f.texto.value,contexto:'chro-drawer',actor_email:window.__IP_USER_EMAIL||null}});
+        if(error){
+          let reason=null,message=null;
+          try{const respText=await error.context?.response?.text();if(respText){const j=JSON.parse(respText);reason=j.reason;message=j.message}}catch{}
+          if(reason==='phone_not_registered'){r.innerHTML='<div class="dr-err">Número não está no WhatsApp · '+esc(message||'lixo do webhook')+'</div>';return}
+          throw error;
+        }
+        if(data&&data.reason==='phone_not_registered'){r.innerHTML='<div class="dr-err">Número não está no WhatsApp · '+esc(data.message||'')+'</div>';return}
         r.innerHTML='<div class="dr-ok">✓ Mensagem enviada via Evolution.</div>';
       }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
     });

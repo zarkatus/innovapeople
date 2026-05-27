@@ -531,7 +531,9 @@ async function enviarMensagem(){
   const numero=(c.numero_e164||'').replace(/\D/g,'');
   console.log('[wa-DIAG] numero raw:',c.numero_e164,'numero limpo:',numero);
   if(!numero){console.error('[wa-DIAG] numero vazio');toast('Número da conversa está vazio — verifique no perfil');return}
-  if(numero.length<10||numero.length>15){console.error('[wa-DIAG] numero suspeito (tamanho '+numero.length+')',numero);toast('Número suspeito: '+numero+' (tamanho '+numero.length+'). Veja console.');return}
+  // V20.8 2026-05-27: aperto da validação. Webhook do Evolution salvou WIDs com 14-15 dígitos
+  // como numero_e164 em ~22 conversas. Aqui rejeitamos antes de chamar a EF.
+  if(numero.length<10||numero.length>13){console.error('[wa-DIAG] numero malformado (tamanho '+numero.length+')',numero);toast('Número corrompido: '+numero+' ('+numero.length+' dígitos). Provavelmente lixo do webhook. Procure outra conversa do mesmo contato.');return}
 
   document.getElementById('send-btn').disabled=true;
 
@@ -565,11 +567,23 @@ async function enviarMensagem(){
     console.log('[wa-DIAG] chamando EF whatsapp-direto com payload:',payload);
     const {data,error}=await sb().functions.invoke('whatsapp-direto',{body:payload});
     console.log('[wa-DIAG] EF retornou data:',data,'error:',error);
+    // V20.8 2026-05-27: ao invés de jogar erro genérico "non-2xx", lê o body via context.response
+    // pra extrair reason (phone_not_registered) e mostrar msg clara ao CVO.
     if(error){
-      console.error('[wa-DIAG] EF erro completo:',JSON.stringify(error,Object.getOwnPropertyNames(error)));
+      let reason=null,message=null;
+      try{
+        const respBody=error.context?.response?.json?error.context.response.json():(error.context?.body?JSON.parse(error.context.body):null);
+        if(respBody){reason=respBody.reason;message=respBody.message}
+      }catch{}
+      if(!reason&&error.context?.response){
+        try{const t=await error.context.response.text();const j=JSON.parse(t);reason=j.reason;message=j.message}catch{}
+      }
+      console.error('[wa-DIAG] EF erro:',{reason,message,raw:error.message});
+      if(reason==='phone_not_registered'){toast('Número não está no WhatsApp · '+(message||'lixo do webhook'));throw new Error(message||'phone_not_registered')}
       throw error;
     }
     if(data&&data.error){console.error('[wa-DIAG] EF retornou erro no body:',data);throw new Error(data.error+(data.detail?' · '+data.detail:''))}
+    if(data&&data.reason==='phone_not_registered'){toast('Número não está no WhatsApp · '+(data.message||''));console.error('[wa-DIAG] phone_not_registered:',data);throw new Error(data.message||'phone_not_registered')}
     if(data&&data.persist_error)console.warn('[wa-DIAG] persist warn:',data.persist_error);
     console.log('[wa-DIAG] envio OK, evolution_status:',data?.evolution_status,'persisted_id:',data?.persisted_id);
     toast('Mensagem enviada');
