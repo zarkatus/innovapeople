@@ -295,12 +295,12 @@ async function loadAgents(){
     {k:'critic_org',n:'Critic-Org',d:'Crítica organizacional sistêmica'},
   ];
   const [runs,sug]=await Promise.all([
-    safe(()=>sb.from('ip_agent_runs').select('agente_key,iniciado_em,status,sugestoes_geradas').order('iniciado_em',{ascending:false}).limit(50),{data:[]}),
-    safe(()=>sb.from('ip_agent_sugestoes').select('agente_key,severidade,titulo,criado_em').eq('status','pendente').order('criado_em',{ascending:false}).limit(3),{data:[]}),
+    safe(()=>sb.from('ip_agent_runs').select('agente,iniciado_em,status,sugestoes_geradas').order('iniciado_em',{ascending:false}).limit(50),{data:[]}),
+    safe(()=>sb.from('ip_agent_sugestoes').select('agente,severidade,titulo,created_at').eq('status','pendente').order('created_at',{ascending:false}).limit(3),{data:[]}),
   ]);
   // última run por agente
   const ultRun={};
-  for(const r of (runs.data||[])){if(!ultRun[r.agente_key])ultRun[r.agente_key]=r}
+  for(const r of (runs.data||[])){if(!ultRun[r.agente])ultRun[r.agente]=r}
   const lines=AGENTES.map(a=>{
     const u=ultRun[a.k];
     const tag=u?(u.status==='concluido'?'<span class="tag ok">ok</span>':'<span class="tag warn">'+esc(u.status)+'</span>'):'<span class="tag muted">idle</span>';
@@ -310,7 +310,7 @@ async function loadAgents(){
   // top 3 sugestões pendentes embaixo
   const sugList=(sug.data||[]).map(s=>{
     const sev=s.severidade==='alta'?'danger':(s.severidade==='media'?'warn':'info');
-    return `<div class="row-item"><div class="ico" style="background:rgba(196,163,90,.12);color:var(--gold-deep)">!</div><div class="body"><div class="nm">${esc(s.titulo||'sugestão')}</div><div class="desc">${esc(s.agente_key||'')}</div></div><span class="tag ${sev}">${esc(s.severidade||'—')}</span><div class="time">${esc(fmtRel(s.criado_em))}</div></div>`;
+    return `<div class="row-item"><div class="ico" style="background:rgba(196,163,90,.12);color:var(--gold-deep)">!</div><div class="body"><div class="nm">${esc(s.titulo||'sugestão')}</div><div class="desc">${esc(s.agente||'')}</div></div><span class="tag ${sev}">${esc(s.severidade||'—')}</span><div class="time">${esc(fmtRel(s.created_at))}</div></div>`;
   }).join('');
   $('b-agents').innerHTML=lines+(sugList?'<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--rule);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600">sugestões pendentes</div>'+sugList:'');
   $('c-agents').textContent=AGENTES.length;
@@ -335,12 +335,13 @@ async function loadSinal(){
 
 // MANDATOS — top 5 ativos
 async function loadMandatos(){
-  const {data}=await safe(()=>sb.from('v_ip_mandatos_overview').select('id,empresa,setor,estagio,score_30d,raio_x_score,criado_em,socio_responsavel').eq('status','ativo').order('criado_em',{ascending:false}).limit(8),{data:[]});
+  const {data}=await safe(()=>sb.from('v_ip_mandatos_overview').select('id,empresa,setor,estagio,score_30d,created_at,socio_responsavel,sugestoes_pendentes,sugestoes_criticas').eq('status','ativo').order('created_at',{ascending:false}).limit(8),{data:[]});
   const lines=(data||[]).map(m=>{
     const stagMap={diagnostico:'Diagnóstico',plano:'Plano',execucao:'Execução',rituais:'Rituais',escala:'Escala'};
     const stag=stagMap[m.estagio]||m.estagio||'—';
     const sc=m.score_30d?'<span class="tag ok">'+m.score_30d+'/100</span>':'<span class="tag muted">sem score</span>';
-    return `<a class="row-item" href="/sistema/mandato.html?id=${esc(m.id)}" style="text-decoration:none;color:inherit"><div class="ico">${initials(m.empresa)}</div><div class="body"><div class="nm">${esc(m.empresa)} <span style="color:var(--muted);font-weight:400;font-size:11px">· ${esc(m.setor||'—')}</span></div><div class="desc">${esc(stag)} · sócio ${esc(m.socio_responsavel||'—')}</div></div>${sc}<div class="time">${esc(fmtRel(m.criado_em))}</div></a>`;
+    const alert=m.sugestoes_criticas>0?`<span class="tag danger">${m.sugestoes_criticas}!</span>`:(m.sugestoes_pendentes>0?`<span class="tag warn">${m.sugestoes_pendentes}</span>`:'');
+    return `<a class="row-item" href="/sistema/mandato.html?id=${esc(m.id)}" style="text-decoration:none;color:inherit"><div class="ico">${initials(m.empresa)}</div><div class="body"><div class="nm">${esc(m.empresa)} <span style="color:var(--muted);font-weight:400;font-size:11px">· ${esc(m.setor||'—')}</span></div><div class="desc">${esc(stag)} · sócio ${esc(m.socio_responsavel||'—')}</div></div>${alert}${sc}<div class="time">${esc(fmtRel(m.created_at))}</div></a>`;
   }).join('')||'<div class="p-empty">Nenhum trabalho ativo.</div>';
   $('b-mand').innerHTML=lines;
   $('c-mand').textContent=(data||[]).length;
@@ -366,9 +367,10 @@ async function loadComunicacao(){
 
 // MEMÓRIA — eventos recentes (EventBus)
 async function loadMemoria(){
-  const {data}=await safe(()=>sb.from('ip_eventos').select('id,tipo,entidade,resumo,criado_em').order('criado_em',{ascending:false}).limit(6),{data:[]});
+  const {data}=await safe(()=>sb.from('ip_eventos').select('id,ts,operacao,domain,source_table,source_id,actor_email').order('ts',{ascending:false}).limit(6),{data:[]});
   const lines=(data||[]).map(e=>{
-    return `<div class="row-item"><div class="ico" style="background:rgba(91,58,122,.08);color:var(--violet);font-size:10px;font-family:var(--mono)">EV</div><div class="body"><div class="nm" style="font-size:12.5px">${esc(e.tipo||'evento')}</div><div class="desc">${esc((e.resumo||e.entidade||'').slice(0,60))}</div></div><div class="time">${esc(fmtRel(e.criado_em))}</div></div>`;
+    const opTag=e.operacao==='INSERT'?'<span class="tag ok">+</span>':(e.operacao==='UPDATE'?'<span class="tag info">~</span>':(e.operacao==='DELETE'?'<span class="tag danger">−</span>':'<span class="tag muted">·</span>'));
+    return `<div class="row-item"><div class="ico" style="background:rgba(91,58,122,.08);color:var(--violet);font-size:10px;font-family:var(--mono)">${esc((e.domain||'').slice(0,2).toUpperCase()||'EV')}</div><div class="body"><div class="nm" style="font-size:12.5px">${esc(e.source_table||'evento')}</div><div class="desc">${esc(e.actor_email||'system')}</div></div>${opTag}<div class="time">${esc(fmtRel(e.ts))}</div></div>`;
   }).join('')||'<div class="p-empty">Sem eventos recentes.</div>';
   $('b-mem').innerHTML=lines;
   const {count}=await safe(()=>sb.from('ip_eventos').select('id',{count:'exact',head:true}),{count:0});
