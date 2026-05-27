@@ -419,11 +419,24 @@ function renderThreadLoading(){
   document.getElementById('center').innerHTML=`<div class="center-empty"><div class="ico" style="animation:pulse 1s infinite">i</div><p>Carregando…</p></div>`;
 }
 
+// V21 2026-05-27: migra para schema PT (wa_mensagem) — bate com wa_conversa/v_wa_inbox
+// Antes lia wa_messages (EN) com conversation_id PT → vazio → mensagem desaparecia.
+function _mapMsgPtToView(m){
+  return {
+    id:m.id, conversation_id:m.conversa_id,
+    direction:m.direcao==='saida'?'outbound':(m.direcao==='entrada'?'inbound':m.direcao),
+    message_type:m.media_tipo==='image'?'image':(m.media_tipo==='document'?'document':(m.media_tipo==='audio'?'audio':'text')),
+    content:m.conteudo, media_url:m.media_url,
+    status:m.estado_entrega==='falha'?'failed':(m.estado_entrega||'sent'),
+    sent_by:null, evo_message_id:m.evolution_message_id,
+    created_at:m.ocorrido_em||m.criado_em,
+  };
+}
 async function loadMensagens(convId){
   try{
-    const {data,error}=await sb().from('wa_messages').select('*').eq('conversation_id',convId).order('created_at',{ascending:true}).limit(500);
+    const {data,error}=await sb().from('wa_mensagem').select('*').eq('conversa_id',convId).order('ocorrido_em',{ascending:true}).limit(500);
     if(error)throw error;
-    _state.mensagens=data||[];
+    _state.mensagens=(data||[]).map(_mapMsgPtToView);
     renderThread();
   }catch(e){
     console.error('[wa] loadMensagens',e);
@@ -974,8 +987,8 @@ function subscribeRealtime(){
   try{
     if(_state.channel)sb().removeChannel(_state.channel);
     _state.channel=sb().channel('wa-realtime')
-      .on('postgres_changes',{event:'INSERT',schema:'public',table:'wa_messages'},payload=>{
-        const m=payload.new;
+      .on('postgres_changes',{event:'INSERT',schema:'public',table:'wa_mensagem'},payload=>{
+        const m=_mapMsgPtToView(payload.new);
         if(m.conversation_id===_state.convId){
           _state.mensagens.push(m);
           renderThread();
