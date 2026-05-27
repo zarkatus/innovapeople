@@ -317,20 +317,17 @@ async function loadAgents(){
   $('d-agents').className='dot'+(Object.keys(ultRun).length>=3?'':' warn');
 }
 
-// SINAL VIVO — Raio-X + Pulso
+// SINAL VIVO — Raio-X (Pulse via RPC ou skip — anon não pode ler ip_pulse_tokens por design)
 async function loadSinal(){
-  const [raio,pulso]=await Promise.all([
-    safe(()=>sb.from('ip_raio_x_submissions').select('id,empresa,nome,sintomas_score,urgencia,created_at,status').in('status',['novo','contatado','agendado']).order('created_at',{ascending:false}).limit(6),{data:[]}),
-    safe(()=>sb.from('ip_pulse_tokens').select('id',{count:'exact',head:true}),{count:0}),
-  ]);
-  const lines=(raio.data||[]).map(r=>{
+  const {data}=await safe(()=>sb.from('ip_raio_x_submissions').select('id,empresa,nome,sintomas_score,urgencia,created_at,status').in('status',['novo','contatado','agendado']).order('created_at',{ascending:false}).limit(6),{data:[]});
+  const lines=(data||[]).map(r=>{
     const urgTag=r.urgencia==='alta'?'<span class="tag danger">alta</span>':(r.urgencia==='media'?'<span class="tag warn">media</span>':'<span class="tag info">baixa</span>');
     return `<div class="row-item"><div class="ico">${initials(r.empresa||r.nome)}</div><div class="body"><div class="nm">${esc(r.empresa||'(sem empresa)')}</div><div class="desc">${esc(r.nome||'')} · score ${r.sintomas_score||'—'}</div></div>${urgTag}<div class="time">${esc(fmtRel(r.created_at))}</div></div>`;
   }).join('')||'<div class="p-empty">Sem Raio-X pendente.</div>';
-  const extra=`<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--rule);font-size:11px;color:var(--muted)"><strong style="color:var(--violet-deep);font-family:var(--serif);font-size:15px;font-weight:500">${pulso.count||0}</strong> tokens de pulso emitidos · k≥3 anônimo</div>`;
+  const extra=`<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--rule);font-size:11px;color:var(--muted);font-style:italic">Pulso quinzenal k≥3 · anônimo · agente Pulse Anomaly vigia variação no painel CHRO.</div>`;
   $('b-sinal').innerHTML=lines+extra;
-  $('c-sinal').textContent=(raio.data||[]).length;
-  $('d-sinal').className='dot'+((raio.data||[]).length>2?' warn':'');
+  $('c-sinal').textContent=(data||[]).length;
+  $('d-sinal').className='dot'+((data||[]).length>2?' warn':'');
 }
 
 // MANDATOS — top 5 ativos
