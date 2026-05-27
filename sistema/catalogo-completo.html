@@ -27,9 +27,15 @@
   }
   function deny(reason){console.warn('[ip-auth] deny:',reason);window.location.replace('/sistema/?from=catalogo')}
   function allow(){
-    // Esconde o gate antigo do CRM (login email/senha) que vinha do crm.innovapeople.com.br
+    // Replica o sucesso do doLogin() antigo: #app vem com display:none por padrão
     const a=document.getElementById('auth');if(a)a.style.display='none';
+    const app=document.getElementById('app');if(app)app.style.display='block';
+    const fab=document.getElementById('aiFab');if(fab)fab.style.display='flex';
+    try{localStorage.setItem('cs','ipgateipgateipga')}catch(_){}
     removeOverlay();
+    // boot() popula dashboard — só existe depois do script inline rodar
+    if(typeof window.boot==='function'){try{window.boot()}catch(e){console.warn('[ip-auth] boot err',e)}}
+    else{setTimeout(function(){if(typeof window.boot==='function'){try{window.boot()}catch(e){}}},300)}
   }
 
   // Inject overlay assim que body existir
