@@ -560,12 +560,16 @@ async function enviarMensagem(){
       actor_email:window.__IP_USER_EMAIL||null,
     };
     if(msgType==='image'&&mediaUrl){payload.image_url=mediaUrl}
-    const {data,error}=await sb().functions.invoke('whatsapp-direto',{body:payload});
-    if(error){
-      let reason=null,message=null;
-      try{const respText=await error.context?.response?.text();if(respText){const j=JSON.parse(respText);reason=j.reason;message=j.message}}catch{}
+    const sess=(await sb().auth.getSession()).data.session;
+    const SUPA_URL='https://auth.innovasphere.ia.br';
+    const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+    const resp=await fetch(SUPA_URL+'/functions/v1/whatsapp-direto',{method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+(sess?.access_token||SUPA_ANON),'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const respText=await resp.text();
+    let data=null;try{data=JSON.parse(respText)}catch{}
+    if(!resp.ok){
+      const reason=data?.reason||null,message=data?.message||null;
       if(reason==='phone_not_registered'){toast('Número não está no WhatsApp · '+(message||'lixo do webhook'));throw new Error(message||'phone_not_registered')}
-      throw error;
+      throw new Error((message||data?.error||('HTTP '+resp.status)));
     }
     if(data&&data.reason==='phone_not_registered'){toast('Número não está no WhatsApp · '+(data.message||''));throw new Error(data.message||'phone_not_registered')}
     if(data&&data.persist_error)console.warn('[wa] persist warn:',data.persist_error);

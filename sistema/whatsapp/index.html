@@ -565,22 +565,24 @@ async function enviarMensagem(){
     };
     if(msgType==='image'&&mediaUrl){payload.image_url=mediaUrl}
     console.log('[wa-DIAG] chamando EF whatsapp-direto com payload:',payload);
-    const {data,error}=await sb().functions.invoke('whatsapp-direto',{body:payload});
-    console.log('[wa-DIAG] EF retornou data:',data,'error:',error);
-    // V20.8 2026-05-27: ao invés de jogar erro genérico "non-2xx", lê o body via context.response
-    // pra extrair reason (phone_not_registered) e mostrar msg clara ao CVO.
-    if(error){
-      let reason=null,message=null;
-      try{
-        const respBody=error.context?.response?.json?error.context.response.json():(error.context?.body?JSON.parse(error.context.body):null);
-        if(respBody){reason=respBody.reason;message=respBody.message}
-      }catch{}
-      if(!reason&&error.context?.response){
-        try{const t=await error.context.response.text();const j=JSON.parse(t);reason=j.reason;message=j.message}catch{}
-      }
-      console.error('[wa-DIAG] EF erro:',{reason,message,raw:error.message});
+    // V20.9 2026-05-27: fetch direto em vez de sb().functions.invoke() pra ler o body
+    // de status 422/502 que o wrapper supabase-js engole como FunctionsHttpError genérico.
+    const sess=(await sb().auth.getSession()).data.session;
+    const SUPA_URL='https://auth.innovasphere.ia.br';
+    const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+    const resp=await fetch(SUPA_URL+'/functions/v1/whatsapp-direto',{
+      method:'POST',
+      headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+(sess?.access_token||SUPA_ANON),'Content-Type':'application/json'},
+      body:JSON.stringify(payload),
+    });
+    const respText=await resp.text();
+    let data=null;try{data=JSON.parse(respText)}catch{}
+    console.log('[wa-DIAG] EF retornou status:',resp.status,'data:',data);
+    if(!resp.ok){
+      const reason=data?.reason||null,message=data?.message||null;
+      console.error('[wa-DIAG] EF erro:',{status:resp.status,reason,message,body:respText.slice(0,400)});
       if(reason==='phone_not_registered'){toast('Número não está no WhatsApp · '+(message||'lixo do webhook'));throw new Error(message||'phone_not_registered')}
-      throw error;
+      throw new Error((message||data?.error||('HTTP '+resp.status))+' · veja console');
     }
     if(data&&data.error){console.error('[wa-DIAG] EF retornou erro no body:',data);throw new Error(data.error+(data.detail?' · '+data.detail:''))}
     if(data&&data.reason==='phone_not_registered'){toast('Número não está no WhatsApp · '+(data.message||''));console.error('[wa-DIAG] phone_not_registered:',data);throw new Error(data.message||'phone_not_registered')}
