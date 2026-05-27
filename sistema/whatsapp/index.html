@@ -461,9 +461,11 @@ function renderThread(){
       <div class="ph" onclick="editarNumeroContato()" title="Clique para corrigir o número se estiver errado (ex: JID interno)" style="cursor:pointer;text-decoration:underline dotted rgba(10,22,40,.3);text-underline-offset:3px">${esc(numero)}</div>
     </div>
     <div class="thread-actions">
+      <input id="thread-search" type="text" placeholder="Buscar..." oninput="buscarThread(this.value)" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:rgba(245,240,232,.6);color:var(--ink2);width:140px;font-family:var(--sans)">
       <button class="thread-act" id="estado-btn" onclick="toggleEstado()">${esc(c?.conversa_estado||'aberta')}</button>
       <button class="thread-act" id="assign-btn" onclick="abrirAssign()">${cv_assign(c)}</button>
       <button class="thread-act" onclick="refreshThread()">↻</button>
+      <button class="thread-act" onclick="marcarNaoLida()" title="Marcar não lida">●</button>
       <button class="thread-act" onclick="arquivarConversa()">Arquivar</button>
     </div>
   </div>
@@ -521,6 +523,7 @@ function renderThread(){
       <button class="tool-btn" onclick="toggleTemplates()" style="position:relative">Templates</button>
       <button class="tool-btn" onclick="document.getElementById('att-input').click()">Anexar imagem</button>
       <input type="file" id="att-input" accept="image/*" style="display:none" onchange="handleAttach(this)">
+      <button class="tool-btn" id="ptt-btn" onclick="togglePTT()" title="Gravar áudio">🎙</button>
       <button class="tool-btn" onclick="agendarEnvio()">Agendar</button>
       <div style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.06em">Hash chain ativo · auditado</div>
     </div>
@@ -630,6 +633,7 @@ async function enviarMensagem(){
     if(data&&data.persist_error)console.warn('[wa-DIAG] persist warn:',data.persist_error);
     console.log('[wa-DIAG] envio OK, evolution_status:',data?.evolution_status,'persisted_id:',data?.persisted_id);
     toast('Mensagem enviada');
+    clearReplyTo();
     await loadMensagens(_state.convId);
     loadConversas();
   }catch(e){
@@ -845,6 +849,70 @@ function buscarThread(q){
     const txt=el.textContent.toLowerCase();
     el.style.display=!_buscaThread||txt.includes(_buscaThread)?'':'none';
   });
+}
+
+// V23: Áudio PTT (Push-To-Talk) — grava webm/opus, faz upload pra wa-media e envia
+let _pttRec=null, _pttChunks=[], _pttStream=null, _pttStart=0;
+async function togglePTT(){
+  const btn=document.getElementById('ptt-btn');
+  if(_pttRec&&_pttRec.state==='recording'){
+    _pttRec.stop();
+    return;
+  }
+  try{
+    _pttStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+    const mime=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':'audio/webm';
+    _pttRec=new MediaRecorder(_pttStream,{mimeType:mime});
+    _pttChunks=[];
+    _pttStart=Date.now();
+    _pttRec.ondataavailable=e=>{if(e.data&&e.data.size)_pttChunks.push(e.data)};
+    _pttRec.onstop=async ()=>{
+      const dur=Math.round((Date.now()-_pttStart)/1000);
+      if(_pttStream)_pttStream.getTracks().forEach(t=>t.stop());
+      btn.style.background='';btn.textContent='🎙';
+      if(dur<1){toast('Pressione e segure pra gravar (mín 1s)');return}
+      const blob=new Blob(_pttChunks,{type:mime});
+      toast('Enviando áudio '+dur+'s...');
+      await enviarPTT(blob,dur);
+    };
+    _pttRec.start();
+    btn.style.background='var(--red)';btn.style.color='var(--white)';btn.textContent='■';
+    toast('Gravando... clique novamente para enviar');
+  }catch(e){
+    console.error(e);toast('Mic negado: '+e.message);
+  }
+}
+async function enviarPTT(blob,dur){
+  const c=_state.conversas.find(c=>c.conversa_id===_state.convId);
+  if(!c){toast('Conversa não encontrada');return}
+  const numero=(c.numero_e164||'').replace(/\D/g,'');
+  if(!numero||numero.length<10||numero.length>13){toast('Número inválido pra envio');return}
+  try{
+    const path=`wa-out/ptt-${Date.now()}.webm`;
+    const {error:upErr}=await sb().storage.from('wa-media').upload(path,blob,{contentType:'audio/webm',cacheControl:'3600'});
+    if(upErr)throw upErr;
+    const {data:pub}=sb().storage.from('wa-media').getPublicUrl(path);
+    // EF whatsapp-direto v16 deve aceitar audio_url + ptt:true
+    const sess=(await sb().auth.getSession()).data.session;
+    const SUPA_URL='https://auth.innovasphere.ia.br';
+    const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+    const resp=await fetch(SUPA_URL+'/functions/v1/whatsapp-direto',{method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+(sess?.access_token||SUPA_ANON),'Content-Type':'application/json'},body:JSON.stringify({phone:numero,text:'',audio_url:pub.publicUrl,ptt:true,duration:dur,contact_name:c.contato_nome,contexto:'ptt-innovapeople',actor_email:window.__IP_USER_EMAIL||null})});
+    const respText=await resp.text();let data=null;try{data=JSON.parse(respText)}catch{}
+    if(!resp.ok)throw new Error(data?.message||('HTTP '+resp.status));
+    toast('Áudio enviado');
+    await loadMensagens(_state.convId);loadConversas();
+  }catch(e){console.error(e);toast('Erro PTT: '+e.message)}
+}
+
+// V23: Marcar não lida
+async function marcarNaoLida(){
+  const c=_state.conversas.find(x=>x.conversa_id===_state.convId);if(!c)return;
+  try{
+    const {error}=await sb().from('wa_conversa').update({nao_lidas:1}).eq('id',_state.convId);
+    if(error)throw error;
+    c.nao_lidas=1;renderConversas();
+    toast('Marcada como não lida');
+  }catch(e){toast('Erro: '+e.message)}
 }
 
 async function handleAttach(input){
