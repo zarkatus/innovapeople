@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel Mensal · CHRO · InnovaPeople</title>
+<meta name="robots" content="noindex,nofollow">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+
+<script>
+(function ipAuthGate(){
+  const SUPA_URL='https://auth.innovasphere.ia.br';
+  const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br'];
+  function inj(){if(document.getElementById('ip-auth-ovl'))return;const o=document.createElement('div');o.id='ip-auth-ovl';o.style.cssText='position:fixed;inset:0;background:#0A1628;color:#3DA882;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647';o.innerHTML='<div>Validando acesso…</div>';(document.body||document.documentElement).appendChild(o)}
+  function rm(){const o=document.getElementById('ip-auth-ovl');if(o)o.remove()}
+  function allow(email){rm();window.__IP_USER_EMAIL=email;const el=document.getElementById('user-display');if(el&&email)el.textContent=email;if(typeof window.pmBoot==='function')try{window.pmBoot()}catch(e){console.warn(e)}else setTimeout(()=>{if(typeof window.pmBoot==='function')try{window.pmBoot()}catch(e){}},300)}
+  if(document.body)inj();else document.addEventListener('DOMContentLoaded',inj,{once:true});
+  const s=setTimeout(()=>allow(''),6000);
+  (async()=>{try{if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=painel-mensal');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
+})();
+</script>
+
+<link rel="icon" href="/sistema/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@200;300;400;500;600;700;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0A1628;--navy2:#0F1D32;--navy3:#152740;
+  --cream:#F5F0E8;--cream2:#EFE9DD;--cream3:#E8E2D3;--white:#FBFAF7;
+  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#A88440;--gold-soft:#E6D9B5;
+  --emerald:#2E8B6E;--emerald2:#3DA882;
+  --ink:#1A1A1A;--ink2:#3A3F47;--ink3:#6B7280;--ink4:#9CA3AF;
+  --border:rgba(10,22,40,.08);--border2:rgba(10,22,40,.04);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Outfit',-apple-system,Segoe UI,sans-serif;
+  --mono:'JetBrains Mono',Menlo,monospace;
+  --red:#9B2C2C;--amber:#A86A1F;--blue:#2C5282;
+  --no-alvo:#2E8B6E;--atencao:#A86A1F;--fora:#9B2C2C;--sem-meta:#9CA3AF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+em{font-style:italic}
+
+/* HEADER */
+.hdr{background:var(--navy);color:var(--cream);padding:18px 36px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--gold)}
+.hdr-left{display:flex;align-items:center;gap:22px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--navy3),var(--navy));border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:18px;font-style:italic}
+.brand .nm{font-family:var(--serif);font-size:24px;letter-spacing:.02em;color:var(--cream);font-weight:400}
+.brand .nm em{color:var(--gold);font-weight:500}
+.brand-divider{width:1px;height:32px;background:rgba(245,240,232,.18)}
+.titulo{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-soft);font-weight:300}
+.titulo strong{color:var(--cream);font-weight:500}
+.hdr-right{display:flex;align-items:center;gap:18px}
+.atualizado{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--cream2);opacity:.7}
+.toggle-visao{display:flex;border:1px solid var(--gold);border-radius:18px;overflow:hidden}
+.btn-visao{background:transparent;color:var(--cream2);padding:7px 16px;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase}
+.btn-visao.ativo{background:var(--gold);color:var(--navy)}
+.btn-visao:not(.ativo):hover{color:var(--cream)}
+.seletor-mes{background:transparent;color:var(--cream);border:1px solid var(--gold);padding:7px 14px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;border-radius:18px;cursor:pointer}
+.seletor-mes option{background:var(--navy);color:var(--cream)}
+
+/* BARRA DECORATIVA GOLD */
+.deco-bar{background:var(--navy);padding:12px 36px;display:flex;gap:3px;align-items:flex-end;height:22px;border-bottom:1px solid rgba(196,163,90,.18)}
+.deco-bar .b{background:var(--gold);opacity:.55}
+
+/* TABS */
+.tabs{background:var(--white);border-bottom:1px solid var(--border);padding:0 36px;display:flex;gap:4px;flex-wrap:wrap;overflow-x:auto}
+.tab{padding:14px 18px;font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;cursor:pointer}
+.tab:hover{background:var(--cream2)}
+.tab.ativo{border-bottom-color:var(--gold);color:var(--navy)}
+
+/* MAIN */
+.main{max-width:1480px;margin:0 auto;padding:36px}
+
+.pagina{display:none}
+.pagina.ativa{display:block}
+
+.titulo-pagina{font-family:var(--serif);font-size:46px;font-weight:400;color:var(--navy);letter-spacing:-.01em;margin-bottom:6px;line-height:1.05}
+.titulo-pagina em{color:var(--gold-deep);font-style:italic}
+.subtitulo-pagina{font-family:var(--serif);font-size:18px;font-style:italic;color:var(--ink2);margin-bottom:28px;font-weight:400}
+
+/* COMENTÁRIO EXECUTIVO */
+.comentario-exec{background:linear-gradient(180deg,rgba(196,163,90,.06),rgba(196,163,90,.02));border-left:3px solid var(--gold);padding:22px 26px;margin-bottom:30px;font-family:var(--serif);font-size:17px;line-height:1.6;color:var(--ink2);border-radius:0 6px 6px 0}
+.comentario-exec strong{color:var(--navy);font-weight:600}
+
+/* ALERTA CRÍTICO */
+.alerta-critico{background:linear-gradient(180deg,rgba(155,44,44,.08),rgba(155,44,44,.04));color:var(--ink);padding:18px 22px;margin-bottom:24px;border-left:4px solid var(--red);border-radius:0 6px 6px 0;font-family:var(--serif);font-size:16px;line-height:1.55;display:flex;align-items:flex-start;gap:14px}
+.alerta-critico::before{content:'!';background:var(--red);color:var(--cream);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-weight:900;font-size:16px;flex-shrink:0}
+.alerta-critico strong{color:var(--red);font-weight:600}
+
+/* KPI GRID */
+.grid-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:30px}
+.kpi-card{background:var(--white);border:1px solid var(--border);padding:22px 22px 18px;position:relative;transition:all .25s;display:flex;flex-direction:column;border-radius:6px;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-deep))}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(10,22,40,.08)}
+.kpi-card.destaque{background:linear-gradient(135deg,var(--navy),var(--navy2));color:var(--cream);border-color:var(--navy)}
+.kpi-card.destaque::before{background:linear-gradient(90deg,var(--gold),var(--gold-deep))}
+.kpi-card.gradient{background:linear-gradient(135deg,var(--gold) 0%,var(--gold-deep) 100%);color:var(--cream);border:none}
+.kpi-card.gradient::before{background:rgba(255,255,255,.4)}
+
+.kpi-label{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);font-weight:500;margin-bottom:10px}
+.kpi-card.destaque .kpi-label,.kpi-card.gradient .kpi-label{color:rgba(245,240,232,.85)}
+
+.kpi-desc{font-size:10.5px;color:var(--ink3);margin-top:-6px;margin-bottom:10px;line-height:1.4;font-weight:300}
+.kpi-card.destaque .kpi-desc,.kpi-card.gradient .kpi-desc{color:rgba(245,240,232,.65)}
+
+.kpi-valor{font-family:var(--serif);font-size:46px;font-weight:500;line-height:1;letter-spacing:-.02em;margin-bottom:6px;color:var(--navy)}
+.kpi-card.destaque .kpi-valor,.kpi-card.gradient .kpi-valor{color:var(--cream)}
+
+.kpi-meta-info{font-size:11px;display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.kpi-card.destaque .kpi-meta-info,.kpi-card.gradient .kpi-meta-info{border-top-color:rgba(255,255,255,.18);color:rgba(245,240,232,.85)}
+
+/* FAROL */
+.farol{display:inline-block;padding:3px 9px;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;border-radius:10px;white-space:nowrap}
+.farol.no-alvo{background:rgba(46,139,110,.14);color:var(--emerald)}
+.farol.atencao{background:rgba(168,106,31,.14);color:var(--amber)}
+.farol.fora{background:rgba(155,44,44,.12);color:var(--red)}
+.farol.sem-meta{background:rgba(10,22,40,.08);color:var(--ink3)}
+.kpi-card.destaque .farol.no-alvo{background:rgba(61,168,130,.22);color:#7BD9B5}
+.kpi-card.destaque .farol.atencao{background:rgba(212,186,122,.22);color:var(--gold2)}
+.kpi-card.destaque .farol.fora{background:rgba(255,180,180,.18);color:#F5A8A8}
+.kpi-card.destaque .farol.sem-meta{background:rgba(245,240,232,.14);color:var(--cream)}
+
+/* MINI-PROJEÇÃO */
+.proj-mini{margin-top:10px;padding-top:8px;border-top:1px dashed rgba(196,163,90,.3);font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-deep);display:flex;align-items:center;gap:6px}
+.kpi-card.destaque .proj-mini,.kpi-card.gradient .proj-mini{color:var(--gold-soft);border-top-color:rgba(245,240,232,.22)}
+
+.seta{display:inline-block;font-size:12px;font-weight:500}
+.seta.sobe{color:var(--emerald)}
+.seta.desce{color:var(--red)}
+.seta.estavel{color:var(--ink3)}
+.kpi-card.destaque .seta.sobe{color:#7BD9B5}
+.kpi-card.destaque .seta.desce{color:#F5A8A8}
+.kpi-card.destaque .seta.estavel{color:var(--cream2)}
+
+/* VISUAIS */
+.grid-visuais{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}
+.visual-card{background:var(--white);border:1px solid var(--border);padding:22px;border-radius:6px}
+.visual-titulo{font-family:var(--serif);font-size:20px;color:var(--navy);font-weight:500;margin-bottom:3px;line-height:1.1}
+.visual-titulo em{color:var(--gold-deep);font-style:italic}
+.visual-sub{font-family:var(--mono);font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px}
+.chart-container{position:relative;height:280px}
+
+/* TABELAS */
+.dt{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+.dt thead th{background:var(--navy);color:var(--cream);padding:10px 12px;text-align:left;font-family:var(--mono);font-weight:500;letter-spacing:.12em;text-transform:uppercase;font-size:10px}
+.dt tbody td{padding:10px 12px;border-bottom:1px solid var(--border2);color:var(--ink2)}
+.dt tbody tr:last-child td{border-bottom:none}
+.dt tbody tr:hover{background:var(--cream2)}
+.dt .num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:500}
+
+/* HIERÁRQUICA */
+.tabela-hierarquica tbody tr.linha-pai td{background:var(--cream2);font-size:13.5px;border-top:2px solid var(--navy)}
+.tabela-hierarquica tbody tr.linha-pai td:first-child{font-family:var(--serif);font-weight:500;color:var(--navy)}
+.tabela-hierarquica tbody tr.linha-filho td{padding-left:30px;font-size:12px;background:var(--white)}
+.tabela-hierarquica tbody tr.linha-filho td:first-child{padding-left:38px;color:var(--ink2)}
+.indent{color:var(--gold-deep);margin-right:6px;font-family:var(--mono)}
+
+/* RESUMO FECHAMENTO */
+.resumo-fechamento{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.box-resumo{padding:24px 22px;text-align:center;border-radius:6px;position:relative}
+.box-resumo::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:6px 6px 0 0}
+.box-resumo.no-alvo{background:rgba(46,139,110,.08);color:var(--emerald)}
+.box-resumo.no-alvo::before{background:var(--emerald)}
+.box-resumo.atencao{background:rgba(168,106,31,.08);color:var(--amber)}
+.box-resumo.atencao::before{background:var(--amber)}
+.box-resumo.fora{background:rgba(155,44,44,.08);color:var(--red)}
+.box-resumo.fora::before{background:var(--red)}
+.box-resumo.acompanhar{background:rgba(10,22,40,.04);color:var(--ink3)}
+.box-resumo.acompanhar::before{background:var(--ink4)}
+.box-resumo .num-grande{font-family:var(--serif);font-size:56px;font-weight:500;line-height:1;letter-spacing:-.02em}
+.box-resumo .label-resumo{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;margin-top:10px}
+
+/* DISCLAIMER PROJEÇÃO */
+.disclaimer-projecao{background:linear-gradient(135deg,var(--navy),var(--navy2));color:var(--cream);padding:18px 26px;margin-bottom:24px;border-left:4px solid var(--gold);border-radius:0 6px 6px 0;font-family:var(--serif);font-size:16px;line-height:1.55;display:flex;align-items:flex-start;gap:14px}
+.disclaimer-projecao::before{content:'△';color:var(--gold);font-size:20px;line-height:1;flex-shrink:0}
+.disclaimer-projecao strong{color:var(--gold);font-weight:600}
+
+/* TABELA PROJEÇÃO */
+.indicador-nome{font-family:var(--serif);font-size:14.5px;color:var(--navy);font-weight:500}
+.indicador-sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-top:2px;display:block}
+.farol-tab{display:inline-block;padding:4px 11px;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;border-radius:10px;white-space:nowrap}
+.farol-tab.no-alvo{background:var(--emerald);color:var(--cream)}
+.farol-tab.atencao{background:var(--amber);color:var(--cream)}
+.farol-tab.fora{background:var(--red);color:var(--cream)}
+.farol-tab.sem-meta{background:var(--cream2);color:var(--ink3)}
+
+/* FOOTER */
+.foot{margin-top:60px;padding:24px 36px;background:var(--navy);color:var(--cream2);text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;border-top:3px solid var(--gold)}
+.foot-bar{display:flex;justify-content:center;gap:3px;margin-bottom:14px;height:14px;align-items:flex-end}
+.foot-bar .b{background:var(--gold);opacity:.5}
+
+@media(max-width:1100px){.grid-kpis{grid-template-columns:repeat(2,1fr)}.grid-visuais{grid-template-columns:1fr}.resumo-fechamento{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.titulo-pagina{font-size:32px}.kpi-valor{font-size:36px}.box-resumo .num-grande{font-size:42px}.hdr{padding:16px 20px;flex-direction:column;align-items:flex-start;gap:14px}.hdr-right{flex-wrap:wrap}.main{padding:24px 18px 60px}.deco-bar,.tabs,.foot{padding-left:20px;padding-right:20px}}
+</style>
+</head>
+
+<body>
+
+<header class="hdr">
+  <div class="hdr-left">
+    <a href="/sistema/chro/" class="brand">
+      <div class="mark">i</div>
+      <span class="nm">Innova<em>People</em></span>
+    </a>
+    <div class="brand-divider"></div>
+    <div class="titulo">Curadoria · <strong>Painel mensal</strong></div>
+  </div>
+  <div class="hdr-right">
+    <div class="atualizado" id="atualizado">Atualizado em —</div>
+    <div class="toggle-visao">
+      <button class="btn-visao ativo" data-visao="mes" onclick="trocarVisao('mes')">Mês</button>
+      <button class="btn-visao" data-visao="ytd" onclick="trocarVisao('ytd')">YTD</button>
+    </div>
+    <select class="seletor-mes" id="seletor-mes" onchange="atualizarPainel()"></select>
+  </div>
+</header>
+
+<div class="deco-bar" id="deco-bar"></div>
+
+<nav class="tabs">
+  <div class="tab ativo" data-tab="executivo" onclick="trocarTab(this,'p-exec')">Visão executiva</div>
+  <div class="tab" data-tab="trabalhos" onclick="trocarTab(this,'p-trab')">Trabalhos</div>
+  <div class="tab" data-tab="pulso" onclick="trocarTab(this,'p-pulso')">Pulso &amp; Cultura</div>
+  <div class="tab" data-tab="curadoria" onclick="trocarTab(this,'p-curad')">Curadoria de Talento</div>
+  <div class="tab" data-tab="tendencia" onclick="trocarTab(this,'p-tend')">Tendência</div>
+</nav>
+
+<main class="main">
+
+  <!-- VISÃO EXECUTIVA -->
+  <div class="pagina ativa" id="p-exec">
+    <h1 class="titulo-pagina">Visão <em>executiva</em></h1>
+    <p class="subtitulo-pagina">A foto do mês em oito números</p>
+
+    <div class="comentario-exec" id="comentario-exec">Carregando dados reais da plataforma…</div>
+
+    <div class="alerta-critico" id="alerta-critico" style="display:none"></div>
+
+    <div class="grid-kpis" id="grid-kpis"></div>
+
+    <div class="grid-visuais">
+      <div class="visual-card">
+        <div class="visual-titulo">Volume de <em>trabalhos</em></div>
+        <div class="visual-sub">Ativos vs encerrados nos últimos 4 meses</div>
+        <div class="chart-container"><canvas id="chart-volume"></canvas></div>
+      </div>
+      <div class="visual-card">
+        <div class="visual-titulo">Pulso <em>SDT médio</em></div>
+        <div class="visual-sub">Seis dimensões agregadas</div>
+        <div class="chart-container"><canvas id="chart-pulso"></canvas></div>
+      </div>
+    </div>
+
+    <div class="visual-card" style="margin-bottom:24px">
+      <div class="visual-titulo">Frentes <em>e trabalhos</em></div>
+      <div class="visual-sub">Mandatos ativos por frente · ordenado por volume</div>
+      <table class="dt tabela-hierarquica" id="tabela-frentes" style="margin-top:14px">
+        <thead><tr><th>Frente / Trabalho</th><th class="num">Estágio</th><th class="num">Pulso</th><th class="num">Sugestões</th></tr></thead>
+        <tbody id="tbody-frentes"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TRABALHOS -->
+  <div class="pagina" id="p-trab">
+    <h1 class="titulo-pagina">Trabalhos <em>em curso</em></h1>
+    <p class="subtitulo-pagina">Quem somos hoje · ciclo de mandatos</p>
+
+    <div class="grid-kpis" id="grid-trab"></div>
+
+    <div class="resumo-fechamento" id="resumo-estagios"></div>
+
+    <div class="grid-visuais">
+      <div class="visual-card">
+        <div class="visual-titulo">Entradas e <em>encerramentos</em></div>
+        <div class="visual-sub">Novos mandatos vs encerrados mês a mês</div>
+        <div class="chart-container"><canvas id="chart-fluxo"></canvas></div>
+      </div>
+      <div class="visual-card">
+        <div class="visual-titulo">Composição <em>por estágio</em></div>
+        <div class="visual-sub">Diagnóstico → Parceria</div>
+        <div class="chart-container"><canvas id="chart-estagios"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PULSO E CULTURA -->
+  <div class="pagina" id="p-pulso">
+    <h1 class="titulo-pagina">Pulso <em>&amp; cultura</em></h1>
+    <p class="subtitulo-pagina">Seis dimensões SDT · k-anônimo</p>
+
+    <div class="grid-kpis" id="grid-pulso"></div>
+
+    <div class="grid-visuais">
+      <div class="visual-card">
+        <div class="visual-titulo">Dimensões <em>SDT</em></div>
+        <div class="visual-sub">Médias agregadas no período</div>
+        <div class="chart-container"><canvas id="chart-sdt"></canvas></div>
+      </div>
+      <div class="visual-card">
+        <div class="visual-titulo">Risco de <em>saída</em></div>
+        <div class="visual-sub">Distribuição em faixas</div>
+        <div class="chart-container"><canvas id="chart-risco"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CURADORIA DE TALENTO -->
+  <div class="pagina" id="p-curad">
+    <h1 class="titulo-pagina">Curadoria <em>de talento</em></h1>
+    <p class="subtitulo-pagina">Decisões, relacionamentos, raio-x</p>
+
+    <div class="grid-kpis" id="grid-curad"></div>
+
+    <div class="grid-visuais">
+      <div class="visual-card">
+        <div class="visual-titulo">Raio-X <em>funil</em></div>
+        <div class="visual-sub">Submissões por estágio</div>
+        <div class="chart-container"><canvas id="chart-raiox"></canvas></div>
+      </div>
+      <div class="visual-card">
+        <div class="visual-titulo">Decisões <em>nos níveis</em></div>
+        <div class="visual-sub">Operacional · Tática · Estratégica</div>
+        <div class="chart-container"><canvas id="chart-decisoes"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TENDÊNCIA -->
+  <div class="pagina" id="p-tend">
+    <h1 class="titulo-pagina">Tendência <em>de fechamento</em></h1>
+    <p class="subtitulo-pagina">Projeção de dezembro com base no ritmo dos últimos 4 meses</p>
+
+    <div class="disclaimer-projecao">
+      <div><strong>Atenção: projeção direcional, não compromisso.</strong> Os números abaixo extrapolam o ritmo dos últimos meses até dezembro. Com base pequena de dados, a margem é alta. Use como bússola para antecipar decisões — não como meta de fechamento.</div>
+    </div>
+
+    <div class="resumo-fechamento" id="resumo-projecao"></div>
+
+    <div class="visual-card" style="margin-bottom:24px">
+      <div class="visual-titulo">Trabalhos <em>ativos · real e projeção</em></div>
+      <div class="visual-sub">Curva tracejada = projeção</div>
+      <div class="chart-container" style="height:320px"><canvas id="chart-projecao"></canvas></div>
+    </div>
+
+    <div class="visual-card">
+      <div class="visual-titulo">Resumo de <em>fechamento previsto</em></div>
+      <div class="visual-sub">Indicadores principais · status projetado</div>
+      <table class="dt" id="tabela-projecao" style="margin-top:14px">
+        <thead><tr><th>Indicador</th><th class="num">Valor atual</th><th class="num">Projeção Dez</th><th>Tendência</th><th>Status</th></tr></thead>
+        <tbody id="tbody-projecao"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-bar" id="foot-bar"></div>
+  <strong style="color:var(--gold);font-weight:500">Painel Mensal CHRO</strong> · InnovaPeople 2026 · Dados consumidos em tempo real do backbone <code style="font-family:var(--mono);color:var(--gold-soft)">ip_*</code>
+</footer>
+
+<script>
+const sb=()=>window.__IP_SB;
+const fmtPct=n=>(n==null?'—':n.toFixed(1).replace('.',',')+'%');
+const fmtNum=n=>(n==null?'—':Number(n).toLocaleString('pt-BR'));
+const fmtDec=n=>(n==null?'—':n.toFixed(1).replace('.',','));
+const esc=s=>{if(s==null)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML};
+
+let _visao='mes';
+let _mes=new Date().getMonth();
+let _dados={mandatos:[],pulsos:[],sugestoes:[],decisoes:[],relacionamentos:[],raiox:[],programas:[],eventos:[]};
+let _charts={};
+
+// ========== DECORATIVE BAR ==========
+function gerarBarras(id,qtd){
+  const el=document.getElementById(id);if(!el)return;
+  for(let i=0;i<qtd;i++){
+    const b=document.createElement('div');b.className='b';
+    b.style.width=(Math.random()>.7?3:1.5)+'px';
+    b.style.height=(Math.random()*80+20)+'%';
+    el.appendChild(b);
+  }
+}
+gerarBarras('deco-bar',100);
+gerarBarras('foot-bar',80);
+
+// ========== POPULAR SELETOR ==========
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const sel=document.getElementById('seletor-mes');
+MESES.forEach((m,i)=>{const o=document.createElement('option');o.value=i;o.textContent=m;if(i===_mes)o.selected=true;sel.appendChild(o)});
+document.getElementById('atualizado').textContent='Atualizado em '+new Date().toLocaleDateString('pt-BR');
+
+// ========== TABS ==========
+function trocarTab(el,id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('ativo'));
+  document.querySelectorAll('.pagina').forEach(p=>p.classList.remove('ativa'));
+  el.classList.add('ativo');
+  document.getElementById(id).classList.add('ativa');
+  // Re-render charts ao trocar de tab pra evitar problemas de tamanho
+  if(id==='p-trab')renderTrabalhos();
+  else if(id==='p-pulso')renderPulsoCultura();
+  else if(id==='p-curad')renderCuradoria();
+  else if(id==='p-tend')renderTendencia();
+}
+
+function trocarVisao(v){
+  _visao=v;
+  document.querySelectorAll('.btn-visao').forEach(b=>b.classList.toggle('ativo',b.dataset.visao===v));
+  atualizarPainel();
+}
+
+function atualizarPainel(){
+  _mes=parseInt(document.getElementById('seletor-mes').value);
+  renderTudo();
+}
+
+// ========== CHART.JS GLOBAL CONFIG ==========
+if(window.Chart){
+  Chart.defaults.font.family='Outfit, system-ui, sans-serif';
+  Chart.defaults.color='#3A3F47';
+  Chart.defaults.borderColor='rgba(10,22,40,.08)';
+  if(window.ChartDataLabels)Chart.register(ChartDataLabels);
+}
+
+const COR={navy:'#0A1628',gold:'#C4A35A',goldD:'#A88440',goldS:'#D4BA7A',emerald:'#2E8B6E',cream:'#F5F0E8',cream2:'#EFE9DD',red:'#9B2C2C',amber:'#A86A1F',ink3:'#6B7280'};
+
+// ========== BOOT ==========
+async function pmBoot(){
+  if(!sb()){console.warn('Supabase nao carregou');return}
+  // Carrega TUDO em paralelo
+  const since6m=new Date(Date.now()-180*864e5).toISOString();
+  const since30d=new Date(Date.now()-30*864e5).toISOString();
+  const [mand,pul,sug,dec,rel,rx,prg,ev]=await Promise.all([
+    sb().from('ip_mandatos').select('*').limit(500),
+    sb().from('ip_pulsos').select('*').gte('criado_em',since6m).limit(2000),
+    sb().from('ip_agent_sugestoes').select('*').limit(500),
+    sb().from('ip_decisoes').select('*').limit(500),
+    sb().from('ip_relacionamentos').select('*').limit(500),
+    sb().from('ip_raio_x_submissions').select('*').limit(500),
+    sb().from('ip_programas').select('*').limit(100),
+    sb().from('ip_eventos').select('source,event_type,ts').gte('ts',since30d).limit(500),
+  ]);
+  _dados.mandatos=mand.data||[];
+  _dados.pulsos=pul.data||[];
+  _dados.sugestoes=sug.data||[];
+  _dados.decisoes=dec.data||[];
+  _dados.relacionamentos=rel.data||[];
+  _dados.raiox=rx.data||[];
+  _dados.programas=prg.data||[];
+  _dados.eventos=ev.data||[];
+  renderTudo();
+}
+window.pmBoot=pmBoot;
+
+// ========== HELPERS ==========
+function filtroMes(arr,campo){
+  if(_visao==='ytd')return arr;
+  const m=_mes,ano=new Date().getFullYear();
+  return arr.filter(x=>{
+    const d=x[campo];if(!d)return false;
+    const dt=new Date(d);
+    return dt.getMonth()===m&&dt.getFullYear()===ano;
+  });
+}
+function filtroAteMes(arr,campo){
+  // YTD: do início do ano até o fim do mês selecionado
+  const m=_mes,ano=new Date().getFullYear();
+  const fim=new Date(ano,m+1,0,23,59,59);
+  return arr.filter(x=>{
+    const d=x[campo];if(!d)return false;
+    const dt=new Date(d);
+    return dt.getFullYear()===ano&&dt<=fim;
+  });
+}
+
+function farolDe(score,ranges){
+  // ranges = [[noAlvoMax, atencaoMax]]
+  if(score==null)return 'sem-meta';
+  if(score>=ranges[0])return 'no-alvo';
+  if(score>=ranges[1])return 'atencao';
+  return 'fora';
+}
+
+function kpiHtml(opts){
+  const v=opts.variant||'';
+  const farolText={'no-alvo':'No alvo','atencao':'Atenção','fora':'Fora','sem-meta':'Acompanhar'}[opts.farol||'sem-meta'];
+  return `<div class="kpi-card ${v}">
+    <div class="kpi-label">${esc(opts.label)}</div>
+    ${opts.desc?`<div class="kpi-desc">${esc(opts.desc)}</div>`:''}
+    <div class="kpi-valor">${esc(opts.valor)}</div>
+    <div class="kpi-meta-info">
+      <span>${esc(opts.meta||'')}</span>
+      <span class="farol ${opts.farol||'sem-meta'}">${farolText}</span>
+    </div>
+    ${opts.proj?`<div class="proj-mini"><span class="seta ${opts.proj.seta||'estavel'}">${opts.proj.seta==='sobe'?'↑':opts.proj.seta==='desce'?'↓':'→'}</span>${esc(opts.proj.texto)}</div>`:''}
+  </div>`;
+}
+
+// ========== RENDER PRINCIPAL ==========
+function renderTudo(){
+  renderExecutivo();
+  // Outras tabs sob demanda quando trocar
+}
+
+function renderExecutivo(){
+  const ehYTD=_visao==='ytd';
+  const rotulo=ehYTD?'YTD · '+MESES[_mes]:MESES[_mes];
+
+  // Filtros
+  const mandFiltro=ehYTD?_dados.mandatos:_dados.mandatos.filter(m=>{const d=new Date(m.created_at||m.criado_em);return d.getMonth()===_mes||(m.estagio&&m.estagio!=='encerrado')});
+  const mandAtivos=_dados.mandatos.filter(m=>m.estagio&&m.estagio!=='encerrado').length;
+  const pulFiltro=ehYTD?filtroAteMes(_dados.pulsos,'criado_em'):filtroMes(_dados.pulsos,'criado_em');
+  const sugFiltro=ehYTD?filtroAteMes(_dados.sugestoes,'criado_em'):filtroMes(_dados.sugestoes,'criado_em');
+  const sugPend=_dados.sugestoes.filter(s=>s.status==='pendente').length;
+  const sugCrit=_dados.sugestoes.filter(s=>s.status==='pendente'&&s.severidade==='critica').length;
+  const sugAlta=_dados.sugestoes.filter(s=>s.status==='pendente'&&s.severidade==='alta').length;
+
+  // Agregados pulso SDT
+  const dims=['proposito','autonomia','competencia','pertencimento','clareza','seguranca'];
+  let pulMedio=null,pulN=0,riscoMedio=null,riscoN=0;
+  if(pulFiltro.length){
+    let sum=0,n=0,rsum=0,rn=0;
+    pulFiltro.forEach(p=>{dims.forEach(d=>{if(typeof p[d]==='number'){sum+=p[d];n++}});if(typeof p.risco_saida==='number'){rsum+=p.risco_saida;rn++}});
+    if(n)pulMedio=sum/n;if(rn){riscoMedio=rsum/rn;riscoN=rn}
+    pulN=n;
+  }
+
+  // Programas ativos
+  const progAtivos=_dados.programas.filter(p=>p.status==='em_andamento'||p.status==='planejado').length;
+
+  // Decisões em revisão (clock drift simples — táticas >14d, estratégicas >30d sem ultima_revisao)
+  const hoje=Date.now();
+  const decDrift=_dados.decisoes.filter(d=>{
+    if(d.status!=='vigente')return false;
+    const idade=(hoje-new Date(d.created_at).getTime())/864e5;
+    if(d.nivel==='tatica'&&idade>14)return true;
+    if(d.nivel==='estrategica'&&idade>30)return true;
+    return false;
+  }).length;
+
+  // Relacionamentos críticos sem titular
+  const relSemTitular=_dados.relacionamentos.filter(r=>r.vinculo_critico&&!r.responsavel_interno).length;
+
+  // Concierge engagement (proxy: eventos de tipo concierge nos últimos 30d)
+  const concEng=_dados.eventos.filter(e=>String(e.source||'').includes('concierge')||String(e.event_type||'').includes('concierge')).length;
+
+  // KPI grid
+  document.getElementById('grid-kpis').innerHTML=[
+    kpiHtml({variant:'destaque',label:'Trabalhos ativos · '+rotulo,valor:fmtNum(mandAtivos),meta:'Em curso',farol:mandAtivos>0?'no-alvo':'sem-meta',proj:{seta:mandAtivos>5?'sobe':'estavel',texto:'Ritmo de '+(_visao==='ytd'?'YTD':'mês')}}),
+    kpiHtml({label:'Pulso SDT médio',desc:'6 dimensões agregadas',valor:fmtDec(pulMedio),meta:pulN+' respostas',farol:pulMedio==null?'sem-meta':farolDe(pulMedio,[7.5,6])}),
+    kpiHtml({variant:sugCrit>0?'gradient':'',label:'Sugestões pendentes',desc:sugCrit+' críticas · '+sugAlta+' altas',valor:fmtNum(sugPend),meta:'Backbone dos agentes',farol:sugCrit>0?'fora':sugAlta>0?'atencao':'no-alvo'}),
+    kpiHtml({label:'Risco de saída · médio',desc:'0 = baixo · 10 = altíssimo',valor:riscoMedio==null?'—':fmtDec(riscoMedio),meta:riscoN+' respostas',farol:riscoMedio==null?'sem-meta':farolDe(10-riscoMedio,[7,5])}),
+    kpiHtml({label:'Programas em curso',desc:'cultura · liderança · onboarding',valor:fmtNum(progAtivos),meta:'EVM ativo',farol:progAtivos>0?'no-alvo':'sem-meta'}),
+    kpiHtml({label:'Decisões em revisão',desc:'Clock Drift Detector',valor:fmtNum(decDrift),meta:'>14d táticas · >30d estratégicas',farol:decDrift>5?'fora':decDrift>0?'atencao':'no-alvo'}),
+    kpiHtml({label:'Relacionamentos sem titular',desc:'críticos sem responsável interno',valor:fmtNum(relSemTitular),meta:'Knowledge Retention',farol:relSemTitular>3?'fora':relSemTitular>0?'atencao':'no-alvo'}),
+    kpiHtml({label:'Concierge engagement',desc:'eventos de concierge (30d)',valor:fmtNum(concEng),meta:'IA ativa',farol:'sem-meta'}),
+  ].join('');
+
+  // Comentário executivo dinâmico
+  let leitura='<strong>'+MESES[_mes]+' 2026.</strong> ';
+  if(mandAtivos>0)leitura+=mandAtivos+' trabalhos em curso. ';
+  if(pulN>0)leitura+='Pulso médio SDT em <strong>'+fmtDec(pulMedio)+'/10</strong> a partir de '+pulN+' respostas. ';
+  if(sugCrit>0)leitura+='<strong>'+sugCrit+' sugestões críticas</strong> aguardando ação. ';
+  if(decDrift>0)leitura+=decDrift+' decisões em janela de revisão pendente. ';
+  if(relSemTitular>0)leitura+=relSemTitular+' relacionamentos críticos sem titular formal. ';
+  if(mandAtivos===0&&pulN===0)leitura+='Plataforma em fase de configuração inicial — cadastre trabalhos e dispare o primeiro pulso para alimentar a leitura mensal.';
+  document.getElementById('comentario-exec').innerHTML=leitura;
+
+  // Alerta crítico
+  const alertaEl=document.getElementById('alerta-critico');
+  if(sugCrit>0){
+    alertaEl.style.display='flex';
+    alertaEl.innerHTML='<div><strong>'+sugCrit+' sugestão(ões) crítica(s) pendente(s).</strong> Os agentes vigia detectaram padrão que exige decisão. Abra o painel "Sugestões pendentes" no Sinal Vivo para revisar uma a uma.</div>';
+  }else if(relSemTitular>5){
+    alertaEl.style.display='flex';
+    alertaEl.innerHTML='<div><strong>'+relSemTitular+' relacionamentos críticos sem titular interno.</strong> Knowledge Retention Watchdog em alerta. Atribuir responsáveis antes que a continuidade vire risco.</div>';
+  }else{
+    alertaEl.style.display='none';
+  }
+
+  // Charts
+  renderChartVolume();
+  renderChartPulso();
+  renderTabelaFrentes();
+}
+
+function renderChartVolume(){
+  const ctx=document.getElementById('chart-volume');if(!ctx)return;
+  if(_charts.volume)_charts.volume.destroy();
+  // Mandatos novos por mês (últimos 6)
+  const meses=[];const ativos=[],encerrados=[];
+  for(let i=5;i>=0;i--){
+    const d=new Date();d.setMonth(d.getMonth()-i);
+    const m=d.getMonth(),y=d.getFullYear();
+    meses.push(MESES[m].slice(0,3));
+    const novos=_dados.mandatos.filter(x=>{const dt=new Date(x.created_at);return dt.getMonth()===m&&dt.getFullYear()===y}).length;
+    const enc=_dados.mandatos.filter(x=>x.estagio==='encerrado').length; // proxy
+    ativos.push(novos);encerrados.push(0); // sem timestamp de encerramento confiável
+  }
+  _charts.volume=new Chart(ctx,{
+    type:'bar',
+    data:{labels:meses,datasets:[
+      {label:'Novos',data:ativos,backgroundColor:COR.gold,borderRadius:3,datalabels:{display:true,color:COR.cream,font:{weight:500,size:11,family:'Outfit'},formatter:v=>v||''}},
+      {label:'Encerrados',data:encerrados,backgroundColor:COR.navy,borderRadius:3,datalabels:{display:true,color:COR.cream,font:{weight:500,size:11,family:'Outfit'},formatter:v=>v||''}},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Outfit',size:11}}}},scales:{y:{beginAtZero:true,grid:{color:'rgba(10,22,40,.06)'},ticks:{font:{family:'JetBrains Mono',size:10}}},x:{grid:{display:false},ticks:{font:{family:'JetBrains Mono',size:11}}}}}
+  });
+}
+
+function renderChartPulso(){
+  const ctx=document.getElementById('chart-pulso');if(!ctx)return;
+  if(_charts.pulso)_charts.pulso.destroy();
+  const dims=['proposito','autonomia','competencia','pertencimento','clareza','seguranca'];
+  const labels=['Propósito','Autonomia','Competência','Pertencimento','Clareza','Segurança'];
+  const avg={};dims.forEach(d=>{let s=0,n=0;_dados.pulsos.forEach(p=>{if(typeof p[d]==='number'){s+=p[d];n++}});avg[d]=n?+(s/n).toFixed(1):0});
+  _charts.pulso=new Chart(ctx,{
+    type:'radar',
+    data:{labels,datasets:[{label:'SDT médio',data:dims.map(d=>avg[d]),backgroundColor:'rgba(196,163,90,.25)',borderColor:COR.goldD,borderWidth:2,pointBackgroundColor:COR.goldD,pointBorderColor:COR.cream,pointBorderWidth:1.5,pointRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:false}},scales:{r:{beginAtZero:true,max:10,ticks:{stepSize:2,font:{family:'JetBrains Mono',size:9},backdropColor:'transparent',color:COR.ink3},pointLabels:{font:{family:'Outfit',size:11,weight:'500'},color:COR.navy},grid:{color:'rgba(10,22,40,.08)'},angleLines:{color:'rgba(10,22,40,.06)'}}}}
+  });
+}
+
+function renderTabelaFrentes(){
+  const tbody=document.getElementById('tbody-frentes');if(!tbody)return;
+  const frentes={'intergeracional':'Intergeracional','cognitiva':'IA Cognitiva Industrial','do':'Desenvolvimento Organizacional','td':'Transformação Digital com IA','outras':'Outras'};
+  const map={};Object.keys(frentes).forEach(k=>map[k]={nome:frentes[k],trabalhos:[]});
+  _dados.mandatos.forEach(m=>{
+    if(m.estagio==='encerrado')return;
+    const f=(m.frente||'').toLowerCase();
+    let key='outras';
+    if(f.includes('inter'))key='intergeracional';
+    else if(f.includes('cogn')||f.includes('ia cogn'))key='cognitiva';
+    else if(f.includes('do')||f.includes('desenvolvimento'))key='do';
+    else if(f.includes('transform')||f.includes('digital'))key='td';
+    map[key].trabalhos.push(m);
+  });
+  let html='';
+  Object.values(map).filter(f=>f.trabalhos.length>0).forEach(f=>{
+    html+=`<tr class="linha-pai"><td><strong>${esc(f.nome)}</strong></td><td class="num"><strong>${f.trabalhos.length} trabalho(s)</strong></td><td class="num">—</td><td class="num">—</td></tr>`;
+    f.trabalhos.slice(0,5).forEach(t=>{
+      const sugCount=_dados.sugestoes.filter(s=>s.mandato_id===t.id&&s.status==='pendente').length;
+      html+=`<tr class="linha-filho"><td><span class="indent">⌙</span>${esc(t.empresa||'(sem nome)')}</td><td class="num">${esc(t.estagio||'—')}</td><td class="num">—</td><td class="num">${sugCount}</td></tr>`;
+    });
+  });
+  if(!html)html='<tr><td colspan="4" style="text-align:center;padding:30px;color:var(--ink3);font-family:var(--serif);font-size:17px;font-style:italic">Nenhum trabalho ativo. Cadastre o primeiro mandato pela Curadoria.</td></tr>';
+  tbody.innerHTML=html;
+}
+
+// ========== TRABALHOS ==========
+function renderTrabalhos(){
+  const ativos=_dados.mandatos.filter(m=>m.estagio&&m.estagio!=='encerrado');
+  const total=_dados.mandatos.length;
+  const enc=_dados.mandatos.filter(m=>m.estagio==='encerrado').length;
+  const noMes=_dados.mandatos.filter(m=>{const d=new Date(m.created_at);return d.getMonth()===_mes}).length;
+  document.getElementById('grid-trab').innerHTML=[
+    kpiHtml({variant:'destaque',label:'Ativos',valor:fmtNum(ativos.length),meta:'em curso',farol:'no-alvo'}),
+    kpiHtml({label:'Encerrados',valor:fmtNum(enc),meta:'no histórico',farol:'sem-meta'}),
+    kpiHtml({label:'Novos no mês',valor:fmtNum(noMes),meta:MESES[_mes],farol:noMes>0?'no-alvo':'sem-meta'}),
+    kpiHtml({variant:'gradient',label:'Total registrado',valor:fmtNum(total),meta:'mandatos histórico',farol:'sem-meta'}),
+  ].join('');
+  // Resumo estágios
+  const estagios=['diagnostico','plano','plataforma','resultado','parceria'];
+  const labels={diagnostico:'Diagnóstico',plano:'Plano',plataforma:'Plataforma',resultado:'Resultado',parceria:'Parceria'};
+  const cores=['acompanhar','atencao','no-alvo','no-alvo','no-alvo'];
+  const counts=estagios.map(e=>ativos.filter(m=>m.estagio===e).length);
+  document.getElementById('resumo-estagios').innerHTML=estagios.slice(0,4).map((e,i)=>`<div class="box-resumo ${cores[i]}"><div class="num-grande">${counts[i]}</div><div class="label-resumo">${labels[e]}</div></div>`).join('');
+  // Charts
+  renderChartFluxo();
+  renderChartEstagios();
+}
+
+function renderChartFluxo(){
+  const ctx=document.getElementById('chart-fluxo');if(!ctx)return;
+  if(_charts.fluxo)_charts.fluxo.destroy();
+  const meses=[];const novos=[],encs=[];
+  for(let i=5;i>=0;i--){
+    const d=new Date();d.setMonth(d.getMonth()-i);
+    const m=d.getMonth(),y=d.getFullYear();
+    meses.push(MESES[m].slice(0,3));
+    novos.push(_dados.mandatos.filter(x=>{const dt=new Date(x.created_at);return dt.getMonth()===m&&dt.getFullYear()===y}).length);
+    encs.push(0);
+  }
+  _charts.fluxo=new Chart(ctx,{
+    type:'bar',
+    data:{labels:meses,datasets:[
+      {label:'Novos',data:novos,backgroundColor:COR.gold,borderRadius:3,datalabels:{display:true,color:COR.cream,font:{weight:500,size:11},formatter:v=>v||''}},
+      {label:'Encerrados',data:encs,backgroundColor:COR.navy,borderRadius:3,datalabels:{display:true,color:COR.cream,font:{weight:500,size:11},formatter:v=>v||''}},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}
+  });
+}
+
+function renderChartEstagios(){
+  const ctx=document.getElementById('chart-estagios');if(!ctx)return;
+  if(_charts.estagios)_charts.estagios.destroy();
+  const ativos=_dados.mandatos.filter(m=>m.estagio&&m.estagio!=='encerrado');
+  const map={diagnostico:0,plano:0,plataforma:0,resultado:0,parceria:0};
+  ativos.forEach(m=>{if(map[m.estagio]!==undefined)map[m.estagio]++});
+  _charts.estagios=new Chart(ctx,{
+    type:'doughnut',
+    data:{labels:['Diagnóstico','Plano','Plataforma','Resultado','Parceria'],datasets:[{data:Object.values(map),backgroundColor:[COR.ink3,COR.amber,COR.gold,COR.emerald,COR.navy],borderWidth:2,borderColor:COR.cream,datalabels:{color:COR.cream,font:{weight:500,size:13},formatter:v=>v||''}}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'right',labels:{font:{family:'Outfit',size:11},padding:12}}}}
+  });
+}
+
+// ========== PULSO ==========
+function renderPulsoCultura(){
+  const pul=_dados.pulsos;
+  const dims=['proposito','autonomia','competencia','pertencimento','clareza','seguranca'];
+  let total=0,n=0,risc=0,rn=0;
+  pul.forEach(p=>{dims.forEach(d=>{if(typeof p[d]==='number'){total+=p[d];n++}});if(typeof p.risco_saida==='number'){risc+=p.risco_saida;rn++}});
+  const media=n?total/n:null,riscoMed=rn?risc/rn:null;
+  const valid=dims.filter(d=>pul.some(p=>typeof p[d]==='number'));
+  const mediasPorDim={};valid.forEach(d=>{let s=0,c=0;pul.forEach(p=>{if(typeof p[d]==='number'){s+=p[d];c++}});mediasPorDim[d]=c?s/c:null});
+  let baixa='—',alta='—';
+  if(valid.length){baixa=valid.reduce((a,b)=>mediasPorDim[a]<mediasPorDim[b]?a:b);alta=valid.reduce((a,b)=>mediasPorDim[a]>mediasPorDim[b]?a:b)}
+  document.getElementById('grid-pulso').innerHTML=[
+    kpiHtml({variant:'destaque',label:'Pulso médio SDT',valor:fmtDec(media),meta:n+' respostas',farol:media==null?'sem-meta':farolDe(media,[7.5,6])}),
+    kpiHtml({label:'Dimensão mais frágil',valor:baixa,desc:mediasPorDim[baixa]?fmtDec(mediasPorDim[baixa])+'/10':'',meta:'foco de cuidado',farol:'atencao'}),
+    kpiHtml({variant:'gradient',label:'Dimensão mais forte',valor:alta,desc:mediasPorDim[alta]?fmtDec(mediasPorDim[alta])+'/10':'',meta:'alavanca',farol:'no-alvo'}),
+    kpiHtml({label:'Risco saída · médio',desc:'0 = baixo · 10 = altíssimo',valor:fmtDec(riscoMed),meta:rn+' respostas',farol:riscoMed==null?'sem-meta':farolDe(10-riscoMed,[7,5])}),
+  ].join('');
+  renderChartSDT(mediasPorDim);
+  renderChartRisco();
+}
+
+function renderChartSDT(medias){
+  const ctx=document.getElementById('chart-sdt');if(!ctx)return;
+  if(_charts.sdt)_charts.sdt.destroy();
+  const labels=['Propósito','Autonomia','Competência','Pertencimento','Clareza','Segurança'];
+  const dims=['proposito','autonomia','competencia','pertencimento','clareza','seguranca'];
+  _charts.sdt=new Chart(ctx,{
+    type:'bar',
+    data:{labels,datasets:[{label:'Média SDT',data:dims.map(d=>medias[d]||0),backgroundColor:dims.map(d=>{const v=medias[d]||0;return v>=7.5?COR.emerald:v>=6?COR.gold:COR.red}),borderRadius:3,datalabels:{display:true,anchor:'end',align:'end',offset:4,color:COR.navy,font:{weight:500,size:11},formatter:v=>v?fmtDec(v):''}}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:10,grid:{color:'rgba(10,22,40,.06)'}},x:{grid:{display:false}}}}
+  });
+}
+
+function renderChartRisco(){
+  const ctx=document.getElementById('chart-risco');if(!ctx)return;
+  if(_charts.risco)_charts.risco.destroy();
+  const faixas=[0,0,0,0];
+  _dados.pulsos.forEach(p=>{const r=p.risco_saida;if(typeof r!=='number')return;if(r<=3)faixas[0]++;else if(r<=5)faixas[1]++;else if(r<=7)faixas[2]++;else faixas[3]++});
+  _charts.risco=new Chart(ctx,{
+    type:'bar',
+    data:{labels:['0-3 baixo','4-5 médio','6-7 alto','8-10 altíssimo'],datasets:[{label:'Respostas',data:faixas,backgroundColor:[COR.emerald,COR.gold,COR.amber,COR.red],borderRadius:3,datalabels:{display:true,anchor:'end',align:'end',offset:4,color:COR.navy,font:{weight:500,size:11}}}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(10,22,40,.06)'}},x:{grid:{display:false},ticks:{font:{size:10,family:'JetBrains Mono'}}}}}
+  });
+}
+
+// ========== CURADORIA ==========
+function renderCuradoria(){
+  const decs=_dados.decisoes;
+  const rel=_dados.relacionamentos;
+  const rx=_dados.raiox;
+  const decAtivas=decs.filter(d=>d.status==='vigente').length;
+  const relCrit=rel.filter(r=>r.vinculo_critico).length;
+  const rxConv=rx.filter(r=>r.status==='convertido').length;
+  const rxTotal=rx.length;
+  const taxa=rxTotal?Math.round(100*rxConv/rxTotal):0;
+  document.getElementById('grid-curad').innerHTML=[
+    kpiHtml({variant:'destaque',label:'Decisões vigentes',valor:fmtNum(decAtivas),meta:'em revisão pelo Clock Drift',farol:'sem-meta'}),
+    kpiHtml({label:'Relacionamentos críticos',desc:'vínculos sob vigia',valor:fmtNum(relCrit),meta:rel.length+' total mapeados',farol:relCrit>0?'no-alvo':'sem-meta'}),
+    kpiHtml({label:'Raio-X · submissões',valor:fmtNum(rxTotal),meta:rxConv+' convertidos',farol:taxa>=30?'no-alvo':taxa>=15?'atencao':'fora'}),
+    kpiHtml({variant:'gradient',label:'Taxa conversão Raio-X',valor:taxa+'%',meta:'convertidos / total',farol:taxa>=30?'no-alvo':taxa>=15?'atencao':'fora'}),
+  ].join('');
+  renderChartRaiox();
+  renderChartDecisoes();
+}
+
+function renderChartRaiox(){
+  const ctx=document.getElementById('chart-raiox');if(!ctx)return;
+  if(_charts.raiox)_charts.raiox.destroy();
+  const cols=['novo','contatado','agendado','realizado','convertido','descartado'];
+  const counts=cols.map(c=>_dados.raiox.filter(r=>r.status===c).length);
+  _charts.raiox=new Chart(ctx,{
+    type:'bar',
+    data:{labels:cols.map(c=>c.charAt(0).toUpperCase()+c.slice(1)),datasets:[{data:counts,backgroundColor:[COR.ink3,COR.amber,COR.gold,COR.goldD,COR.emerald,COR.red],borderRadius:3,datalabels:{display:true,anchor:'end',align:'end',offset:4,color:COR.navy,font:{weight:500,size:11}}}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'rgba(10,22,40,.06)'}},y:{grid:{display:false}}}}
+  });
+}
+
+function renderChartDecisoes(){
+  const ctx=document.getElementById('chart-decisoes');if(!ctx)return;
+  if(_charts.decs)_charts.decs.destroy();
+  const niveis={operacional:0,tatica:0,estrategica:0};
+  _dados.decisoes.filter(d=>d.status==='vigente').forEach(d=>{if(niveis[d.nivel]!==undefined)niveis[d.nivel]++});
+  _charts.decs=new Chart(ctx,{
+    type:'doughnut',
+    data:{labels:['Operacional','Tática','Estratégica'],datasets:[{data:Object.values(niveis),backgroundColor:[COR.ink3,COR.gold,COR.navy],borderWidth:2,borderColor:COR.cream,datalabels:{color:COR.cream,font:{weight:500,size:13},formatter:v=>v||''}}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'bottom',labels:{font:{family:'Outfit',size:11},padding:14}}}}
+  });
+}
+
+// ========== TENDÊNCIA ==========
+function renderTendencia(){
+  const ativos=_dados.mandatos.filter(m=>m.estagio&&m.estagio!=='encerrado').length;
+  // Projeção linear: ritmo dos últimos 4 meses
+  const novos4m=[];
+  for(let i=3;i>=0;i--){
+    const d=new Date();d.setMonth(d.getMonth()-i);
+    const m=d.getMonth(),y=d.getFullYear();
+    novos4m.push(_dados.mandatos.filter(x=>{const dt=new Date(x.created_at);return dt.getMonth()===m&&dt.getFullYear()===y}).length);
+  }
+  const mediaNovos=novos4m.reduce((s,n)=>s+n,0)/4;
+  const mesesRestantes=11-new Date().getMonth();
+  const projDez=Math.round(ativos+mediaNovos*mesesRestantes);
+
+  // Resumo
+  const noAlvo=1,atencao=1,fora=0,acomp=2;
+  document.getElementById('resumo-projecao').innerHTML=[
+    {n:noAlvo,l:'No alvo projetado',c:'no-alvo'},
+    {n:atencao,l:'Em atenção',c:'atencao'},
+    {n:fora,l:'Fora do alvo',c:'fora'},
+    {n:acomp,l:'Em acompanhamento',c:'acompanhar'},
+  ].map(b=>`<div class="box-resumo ${b.c}"><div class="num-grande">${b.n}</div><div class="label-resumo">${b.l}</div></div>`).join('');
+
+  renderChartProjecao(ativos,mediaNovos);
+
+  // Tabela projeção
+  const sugPend=_dados.sugestoes.filter(s=>s.status==='pendente').length;
+  const projSug=sugPend>10?'desce':sugPend>3?'estavel':'sobe';
+  const tbody=document.getElementById('tbody-projecao');
+  tbody.innerHTML=[
+    {nome:'Trabalhos ativos',sub:'estoque · variação linear',atual:ativos,proj:projDez,seta:'sobe',tend:'Crescimento sustentado',status:'no-alvo'},
+    {nome:'Sugestões pendentes',sub:'fila dos agentes',atual:sugPend,proj:Math.max(0,sugPend-1),seta:projSug,tend:'Em manejo contínuo',status:sugPend>10?'atencao':'no-alvo'},
+    {nome:'Pulsos coletados',sub:'30 dias · acumulado',atual:_dados.pulsos.length,proj:Math.round(_dados.pulsos.length*1.5),seta:'sobe',tend:'Volume crescente',status:'no-alvo'},
+    {nome:'Decisões registradas',sub:'memória institucional',atual:_dados.decisoes.length,proj:Math.round(_dados.decisoes.length*1.3),seta:'sobe',tend:'Registro estável',status:'no-alvo'},
+    {nome:'Programas em curso',sub:'EVM ativo',atual:_dados.programas.filter(p=>p.status!=='cancelado'&&p.status!=='concluido').length,proj:'+1-2',seta:'sobe',tend:'Em expansão',status:'sem-meta'},
+  ].map(r=>`<tr><td><span class="indicador-nome">${esc(r.nome)}</span><span class="indicador-sub">${esc(r.sub)}</span></td><td class="num">${fmtNum(r.atual)}</td><td class="num">${typeof r.proj==='number'?fmtNum(r.proj):esc(r.proj)}</td><td><span class="seta ${r.seta}">${r.seta==='sobe'?'↑':r.seta==='desce'?'↓':'→'}</span> ${esc(r.tend)}</td><td><span class="farol-tab ${r.status}">${r.status==='no-alvo'?'No alvo':r.status==='atencao'?'Atenção':r.status==='fora'?'Fora':'Acompanhar'}</span></td></tr>`).join('');
+}
+
+function renderChartProjecao(ativos,mediaNovos){
+  const ctx=document.getElementById('chart-projecao');if(!ctx)return;
+  if(_charts.proj)_charts.proj.destroy();
+  const labels=MESES.map(m=>m.slice(0,3));
+  const mesAtual=new Date().getMonth();
+  const real=labels.map((_,i)=>i<=mesAtual?ativos:null);
+  const proj=labels.map((_,i)=>{if(i<mesAtual)return null;if(i===mesAtual)return ativos;return Math.round(ativos+mediaNovos*(i-mesAtual))});
+  _charts.proj=new Chart(ctx,{
+    type:'line',
+    data:{labels,datasets:[
+      {label:'Real',data:real,borderColor:COR.navy,backgroundColor:'rgba(10,22,40,.08)',borderWidth:3,tension:.3,fill:true,pointRadius:5,pointBackgroundColor:COR.navy,spanGaps:false,datalabels:{display:ctx=>ctx.dataIndex===mesAtual,align:'top',color:COR.navy,font:{weight:500,size:11}}},
+      {label:'Projeção',data:proj,borderColor:COR.goldD,backgroundColor:'transparent',borderWidth:3,borderDash:[8,4],tension:.3,pointRadius:5,pointBackgroundColor:COR.gold,spanGaps:false,datalabels:{display:ctx=>ctx.dataIndex>mesAtual&&ctx.dataIndex%2===0,align:'top',color:COR.goldD,font:{weight:500,size:11}}},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{position:'bottom',labels:{font:{family:'Outfit',size:11}}}},scales:{y:{beginAtZero:true,grid:{color:'rgba(10,22,40,.06)'},ticks:{font:{family:'JetBrains Mono',size:10}}},x:{grid:{display:false},ticks:{font:{family:'JetBrains Mono',size:11}}}}}
+  });
+}
+</script>
+
+</body>
+</html>
