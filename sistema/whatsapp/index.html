@@ -495,7 +495,16 @@ function renderThread(){
     const stIco={enviada:'✓',sent:'✓',entregue:'✓✓',delivered:'✓✓',lida:'✓✓',read:'✓✓',falha:'✕',failed:'✕',pendente:'⌛'}[m.status]||'';
     const stClass=m.status||'sent';
     const stColor=(m.status==='lida'||m.status==='read')?'color:#34B7F1':'';
-    html+=`<div class="msg ${dir}">
+    // V22: ações por mensagem (Responder / Encaminhar / Copiar)
+    const evoId=esc(m.evo_message_id||'');
+    const safeContent=esc((m.content||'').slice(0,200).replace(/'/g,"\\'"));
+    const acoes=`<div class="msg-acoes" style="position:absolute;${dir==='out'?'left:-78px':'right:-78px'};top:0;display:none;background:var(--white);border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 14px rgba(10,22,40,.1);padding:4px;gap:2px;flex-direction:column;z-index:5">
+      <button onclick="setReplyTo('${evoId}','${safeContent}',${dir==='out'?'true':'false'})" title="Responder" style="background:none;border:none;padding:6px 10px;cursor:pointer;text-align:left;font-size:11px;color:var(--ink2);border-radius:3px" onmouseover="this.style.background='rgba(196,163,90,.1)'" onmouseout="this.style.background='none'">↩ Responder</button>
+      <button onclick="abrirEncaminhar('${evoId}','${safeContent}')" title="Encaminhar para você" style="background:none;border:none;padding:6px 10px;cursor:pointer;text-align:left;font-size:11px;color:var(--ink2);border-radius:3px" onmouseover="this.style.background='rgba(196,163,90,.1)'" onmouseout="this.style.background='none'">↪ Encaminhar</button>
+      <button onclick="navigator.clipboard.writeText('${safeContent}');toast('Copiado')" title="Copiar texto" style="background:none;border:none;padding:6px 10px;cursor:pointer;text-align:left;font-size:11px;color:var(--ink2);border-radius:3px" onmouseover="this.style.background='rgba(196,163,90,.1)'" onmouseout="this.style.background='none'">⎘ Copiar</button>
+    </div>`;
+    html+=`<div class="msg ${dir}" style="position:relative" onmouseenter="this.querySelector('.msg-acoes').style.display='flex'" onmouseleave="this.querySelector('.msg-acoes').style.display='none'">
+      ${acoes}
       <div class="msg-bubble">${bubble||'<em style="opacity:.6">(sem conteúdo)</em>'}</div>
       <div class="msg-meta">
         <span>${fmtFullTime(m.created_at)}</span>
@@ -590,6 +599,12 @@ async function enviarMensagem(){
       actor_email:window.__IP_USER_EMAIL||null,
     };
     if(msgType==='image'&&mediaUrl){payload.image_url=mediaUrl}
+    // V22: reply/quote
+    if(_replyTo){
+      payload.quoted_evo_id=_replyTo.evoId;
+      payload.quoted_text=_replyTo.content;
+      payload.quoted_from_me=_replyTo.fromMe;
+    }
     console.log('[wa-DIAG] chamando EF whatsapp-direto com payload:',payload);
     // V20.9 2026-05-27: fetch direto em vez de sb().functions.invoke() pra ler o body
     // de status 422/502 que o wrapper supabase-js engole como FunctionsHttpError genérico.
@@ -766,6 +781,72 @@ function renderPerfil(){
 // BLOCO E — UPLOAD MÍDIA + AGENDAR
 // ============================================================
 let _attach=null;
+// V22: reply/encaminhar/busca
+let _replyTo=null; // {evoId, content, fromMe}
+let _buscaThread='';
+
+function setReplyTo(evoId,content,fromMe){
+  _replyTo={evoId,content,fromMe:fromMe===true||fromMe==='true'};
+  // injeta chip no composer
+  const composer=document.querySelector('.composer');
+  let chip=document.getElementById('reply-chip');
+  if(!chip){chip=document.createElement('div');chip.id='reply-chip';composer.insertBefore(chip,composer.firstChild)}
+  chip.innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(196,163,90,.1);border-left:3px solid var(--gold);margin-bottom:6px;border-radius:0 6px 6px 0">
+    <span style="flex:1;font-style:italic;font-size:13px;color:var(--ink2)">Em resposta a: <strong>${esc(content.slice(0,120))}${content.length>120?'…':''}</strong></span>
+    <button onclick="clearReplyTo()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:18px;padding:0 4px" title="Cancelar resposta">×</button>
+  </div>`;
+  document.getElementById('composer-input')?.focus();
+}
+function clearReplyTo(){
+  _replyTo=null;
+  document.getElementById('reply-chip')?.remove();
+}
+
+// V22: encaminhar — só pra números autorizados do CVO (ordem 27/05)
+const FORWARD_DESTINOS=[
+  {nome:'Raphael (Itajaí)',phone:'5547992403447'},
+  {nome:'Raphael (Bahia)',phone:'5571982428959'},
+];
+async function abrirEncaminhar(evoId,content){
+  const opts=FORWARD_DESTINOS.map((d,i)=>`<button onclick="encaminharPara('${d.phone}','${esc(content).replace(/'/g,"\\'")}',this)" style="display:block;width:100%;text-align:left;padding:14px 18px;background:none;border:none;border-bottom:1px solid var(--border2);cursor:pointer;font-size:14px;color:var(--ink2);font-family:var(--sans)" onmouseover="this.style.background='rgba(196,163,90,.08)'" onmouseout="this.style.background='none'">${esc(d.nome)} <span style="color:var(--ink3);font-family:var(--mono);font-size:11px">+${d.phone}</span></button>`).join('');
+  const ovl=document.createElement('div');
+  ovl.id='forward-overlay';
+  ovl.style.cssText='position:fixed;inset:0;background:rgba(10,22,40,.45);backdrop-filter:blur(6px);z-index:9000;display:flex;align-items:center;justify-content:center';
+  ovl.onclick=e=>{if(e.target===ovl)ovl.remove()};
+  ovl.innerHTML=`<div style="background:var(--white);border-radius:8px;width:380px;max-width:90vw;box-shadow:0 20px 60px rgba(10,22,40,.25);overflow:hidden">
+    <div style="padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+      <div style="font-family:var(--serif);font-size:18px;color:var(--navy);font-weight:500">Encaminhar mensagem</div>
+      <button onclick="document.getElementById('forward-overlay').remove()" style="background:none;border:none;color:var(--ink3);font-size:22px;cursor:pointer">×</button>
+    </div>
+    <div style="padding:14px 22px;background:rgba(196,163,90,.05);border-bottom:1px solid var(--border);font-style:italic;font-size:13px;color:var(--ink2);max-height:120px;overflow:auto">"${esc(content.slice(0,400))}${content.length>400?'…':''}"</div>
+    <div style="padding:4px 0">${opts}</div>
+  </div>`;
+  document.body.appendChild(ovl);
+}
+async function encaminharPara(phone,content,btn){
+  if(btn)btn.disabled=true;
+  try{
+    const sess=(await sb().auth.getSession()).data.session;
+    const SUPA_URL='https://auth.innovasphere.ia.br';
+    const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+    const fwdText='Encaminhada:\n\n'+content;
+    const resp=await fetch(SUPA_URL+'/functions/v1/whatsapp-direto',{method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+(sess?.access_token||SUPA_ANON),'Content-Type':'application/json'},body:JSON.stringify({phone,text:fwdText,contexto:'forward',actor_email:window.__IP_USER_EMAIL||null})});
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    toast('Encaminhado pra +'+phone);
+    document.getElementById('forward-overlay')?.remove();
+  }catch(e){toast('Falha: '+e.message)}finally{if(btn)btn.disabled=false}
+}
+
+// V22: busca dentro da conversa
+function buscarThread(q){
+  _buscaThread=(q||'').toLowerCase();
+  const msgs=document.querySelectorAll('#thread-list .msg');
+  msgs.forEach(el=>{
+    const txt=el.textContent.toLowerCase();
+    el.style.display=!_buscaThread||txt.includes(_buscaThread)?'':'none';
+  });
+}
+
 async function handleAttach(input){
   const file=input.files[0];if(!file)return;
   if(file.size>5*1024*1024){toast('Imagem máx 5MB');input.value='';return}
