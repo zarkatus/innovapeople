@@ -199,10 +199,10 @@ em{font-style:italic}
     </a>
     <nav class="nav">
       <a href="/sistema/">Visão geral</a>
-      <a href="/sistema/agentes.html">Agentes IA</a>
+      <a href="/sistema/agentes.html">Agentes</a>
       <a href="/sistema/calendar.html">Calendário</a>
-      <a href="/sistema/catalogo-completo.html">Plataforma operacional</a>
-      <a href="/sistema/chro/" class="active">CHRO</a>
+      <a href="/sistema/chro/" class="active">Curadoria</a>
+      <a href="/sistema/bastidores/">Bastidores</a>
     </nav>
     <div class="usr">
       <span id="user-display">—</span>
@@ -214,18 +214,18 @@ em{font-style:italic}
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
-    <h1>Centro de Comando <em>de Pessoas, Cultura e Curadoria.</em></h1>
+    <h1>Centro de <em>Curadoria.</em></h1>
     <p class="lede">
-      Trinta e nove instrumentos para o trabalho silencioso de manter uma organização inteira de pé.
-      <strong>Dezenove já operam</strong>, treze esperam definição, sete espelham o que o AIPrev faz na InnovaSphere — porque o que vale ali vale aqui.
-      Todos respondem ao mesmo backbone: pulso anônimo, agentes vigia, EventBus relacional e a memória que não se demite com a pessoa.
+      Trinta e dois instrumentos para o trabalho silencioso de manter uma organização inteira de pé.
+      <strong>Pessoas, cultura, ritual, memória, frentes</strong> — tudo o que aparece no palco da curadoria.
+      O backbone técnico (EventBus, canais, compliance) vive em separado, nos <a href="/sistema/bastidores/" style="color:var(--gold-deep);font-weight:500;text-decoration:underline">Bastidores</a>.
     </p>
     <div class="hero-meta">
-      <span>Backbone <strong id="m-tables">—</strong> tabelas</span>
       <span>Agentes <strong id="m-agents">5</strong> diários</span>
-      <span>Pulsos 30d <strong id="m-pulses">—</strong></span>
       <span>Mandatos ativos <strong id="m-mandatos">—</strong></span>
+      <span>Pulsos 30d <strong id="m-pulses">—</strong></span>
       <span>Sugestões pendentes <strong id="m-sugg">—</strong></span>
+      <span>Programas em curso <strong id="m-programas">—</strong></span>
     </div>
   </div>
 </section>
@@ -236,23 +236,21 @@ em{font-style:italic}
 <!-- SIDE NAV -->
 <aside class="side">
   <div class="side-group">
-    <div class="side-h">Categorias</div>
+    <div class="side-h">Curadoria</div>
     <a href="#sinal-vivo" class="side-link active" data-jump>Sinal Vivo <span class="count">3</span></a>
-    <a href="#curadoria" class="side-link" data-jump>Curadoria <span class="count">3</span></a>
+    <a href="#curadoria" class="side-link" data-jump>Curadoria de Trabalhos <span class="count">4</span></a>
     <a href="#memoria" class="side-link" data-jump>Memória Institucional <span class="count">3</span></a>
-    <a href="#pessoas" class="side-link" data-jump>Pessoas <span class="count">4</span></a>
+    <a href="#pessoas" class="side-link" data-jump>Pessoas <span class="count">5</span></a>
     <a href="#ritual" class="side-link" data-jump>Ritual &amp; Cadência <span class="count">4</span></a>
-    <a href="#comunicacao" class="side-link" data-jump>Comunicação <span class="count">3</span></a>
     <a href="#frentes" class="side-link" data-jump>Frentes <span class="count">4</span></a>
-    <a href="#bi" class="side-link" data-jump>BI &amp; Analytics <span class="count">5</span></a>
-    <a href="#eventbus" class="side-link" data-jump>EventBus Relacional <span class="count">4</span></a>
-    <a href="#governanca" class="side-link" data-jump>Governança <span class="count">6</span></a>
+    <a href="#bi" class="side-link" data-jump>BI &amp; Tendências <span class="count">5</span></a>
+    <a href="#governanca" class="side-link" data-jump>Cultura &amp; Governança <span class="count">5</span></a>
   </div>
   <div class="side-group">
     <div class="side-h">Atalhos</div>
+    <a href="/sistema/bastidores/" class="side-link" style="color:var(--gold-deep);font-weight:500">→ Bastidores (TI)</a>
     <a href="/sistema/agentes.html" class="side-link">Agentes (página dedicada)</a>
     <a href="/sistema/calendar.html" class="side-link">Calendário Google</a>
-    <a href="/sistema/catalogo-completo.html" class="side-link">Catálogo Completo</a>
   </div>
 </aside>
 
@@ -316,26 +314,20 @@ em{font-style:italic}
       </div>
     </div>
 
-    <div class="card" data-mod="trilha">
+    <div class="card" data-mod="concierge">
       <div class="card-head">
         <div>
-          <div class="card-title">Trilha de Eventos</div>
-          <div class="card-promise">EventBus append-only, 36 meses de memória forense.</div>
+          <div class="card-title">Concierge IA</div>
+          <div class="card-promise">Pergunte em linguagem natural sobre qualquer faceta da plataforma.</div>
         </div>
         <span class="status st-live">Operacional</span>
       </div>
       <div class="card-body">
-        Captura silenciosa de toda mudança em mandatos, pulsos, decisões, relacionamentos, protocolos.
-        Snapshot antes/depois com autor — quem fez, quando, o que mudou.
-      </div>
-      <div class="card-stats">
-        <div><strong id="ev-24h">—</strong>eventos 24h</div>
-        <div><strong id="ev-7d">—</strong>eventos 7d</div>
-        <div><strong id="ev-src">—</strong>fontes ativas</div>
+        Claude Haiku 4.5 com grounding em todas as tabelas <code style="font-family:var(--mono);font-size:11px">ip_*</code>: trabalhos, pulso, sugestões, decisões, relacionamentos, raio-x, rituais, eventos. Sem alucinação.
       </div>
       <div class="card-actions">
-        <button class="btn btn-primary" onclick="openEventBus()">Abrir trilha</button>
-        <button class="btn btn-ghost" onclick="searchEvents()">Buscar termo</button>
+        <button class="btn btn-primary" onclick="openConcierge()">Abrir conversa</button>
+        <button class="btn btn-ghost" onclick="cncQuick('Resumo da plataforma agora')">Resumo agora</button>
       </div>
     </div>
 
@@ -401,6 +393,23 @@ em{font-style:italic}
       <div class="card-actions">
         <button class="btn btn-primary" onclick="openAcoesBib()">Biblioteca</button>
         <button class="btn btn-ghost" onclick="generatePlano()">Gerar plano</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="programas">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Programas (EVM)</div>
+          <div class="card-promise">Iniciativas de cultura, liderança, onboarding — com PV, EV, AC, CPI, SPI.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body" id="programas-body">
+        Tabelas <code style="font-family:var(--mono);font-size:11px">ip_programas</code> + <code style="font-family:var(--mono);font-size:11px">ip_programa_marcos</code>. RPC <code style="font-family:var(--mono);font-size:11px">fn_ip_evm_resumo</code> calcula valor agregado em tempo real.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openProgramas()">Lista de programas</button>
+        <button class="btn btn-ghost" onclick="newPrograma()">Novo programa</button>
       </div>
     </div>
 
@@ -478,40 +487,25 @@ em{font-style:italic}
 <section id="pessoas" class="section">
   <div class="section-h">
     <h2>Pessoas <em>(anônimo, agregado)</em></h2>
-    <span class="count">4 instrumentos · 1 vivo · 3 em definição</span>
+    <span class="count">5 instrumentos · todos operacionais</span>
   </div>
   <p class="section-sub">Nunca uma ficha. Sempre o coletivo que a ficha esconde.</p>
   <div class="grid">
-
-    <div class="card" data-mod="skill-map">
-      <div class="card-head">
-        <div>
-          <div class="card-title">Skill Map</div>
-          <div class="card-promise">Seis competências em escala 0–10: técnica, orquestração, julgamento, relação, IA/automação, gestão.</div>
-        </div>
-        <span class="status st-partial">Schema pronto</span>
-      </div>
-      <div class="card-body">
-        Tabela <code class="mono" style="font-family:var(--mono);font-size:11px">ip_skill_map</code> existe, correlação com desempenho calculada. UI de heatmap a definir.
-      </div>
-      <div class="card-actions">
-        <button class="btn btn-primary" onclick="openSkillMap()">Ver agregado</button>
-      </div>
-    </div>
 
     <div class="card" data-mod="nine-box">
       <div class="card-head">
         <div>
           <div class="card-title">9-Box Grid</div>
-          <div class="card-promise">Performance × Potencial, sem caçada às bruxas.</div>
+          <div class="card-promise">Performance × Potencial, em grade 3×3 sem caça às bruxas.</div>
         </div>
-        <span class="status st-spec">Spec aberta</span>
+        <span class="status st-live">Operacional</span>
       </div>
       <div class="card-body">
-        Promessa no catálogo. Schema parcial via <code style="font-family:var(--mono);font-size:11px">ip_perfil_colaborador</code>. UI de grid 3×3 com tooltip qualitativo a desenhar.
+        Tabela <code style="font-family:var(--mono);font-size:11px">ip_avaliacao_perfil</code>. Mostra distribuição agregada com cores Aman — ouro no topo direito, âmbar nos extremos baixos.
       </div>
       <div class="card-actions">
-        <button class="btn btn-gold" onclick="defineSpec('nine-box')">Abrir spec</button>
+        <button class="btn btn-primary" onclick="open9Box()">Abrir grade</button>
+        <button class="btn btn-ghost" onclick="newAvaliacao()">Nova avaliação</button>
       </div>
     </div>
 
@@ -521,13 +515,30 @@ em{font-style:italic}
           <div class="card-title">Succession Plan</div>
           <div class="card-promise">Quem segue quem, antes que faça falta.</div>
         </div>
-        <span class="status st-spec">Spec aberta</span>
+        <span class="status st-live">Operacional</span>
       </div>
       <div class="card-body">
-        Liga a Relacionamentos Críticos + Skill Map. Saída: árvore visual com prontidão (ready now / 1y / 2y) por posição-chave.
+        Tabela <code style="font-family:var(--mono);font-size:11px">ip_sucessao</code>. Lista posições-chave com titular + sucessor + prontidão (ready_now / 1y / 2y / indefinido).
       </div>
       <div class="card-actions">
-        <button class="btn btn-gold" onclick="defineSpec('succession')">Abrir spec</button>
+        <button class="btn btn-primary" onclick="openSuccession()">Plano de sucessão</button>
+        <button class="btn btn-ghost" onclick="newSuccession()">Nova posição</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="skill-map">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Skill Map</div>
+          <div class="card-promise">Seis competências em escala 0–10, agregadas por equipe.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body">
+        Técnica · orquestração · julgamento · relação · IA/automação · gestão. Tabela <code style="font-family:var(--mono);font-size:11px">ip_skill_map</code>. Heatmap por threshold com cores de criticidade.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openSkillMap()">Ver agregado</button>
       </div>
     </div>
 
@@ -535,15 +546,33 @@ em{font-style:italic}
       <div class="card-head">
         <div>
           <div class="card-title">Perfil Anonimizado</div>
-          <div class="card-promise">Valor humano em seis dimensões; sem PII, sem rótulo.</div>
+          <div class="card-promise">Valor humano em seis dimensões; sem PII, sem rótulo identificável.</div>
         </div>
-        <span class="status st-partial">Schema pronto</span>
+        <span class="status st-live">Operacional</span>
       </div>
       <div class="card-body">
-        Estrutura <code style="font-family:var(--mono);font-size:11px">valor_humano</code> (jsonb) + percentual de automatizabilidade + risco de saída estimado. UI de leitura agregada a definir.
+        Tabela <code style="font-family:var(--mono);font-size:11px">ip_perfil_colaborador</code>: <code style="font-family:var(--mono);font-size:11px">valor_humano</code> (jsonb) · automatizabilidade % · tempo de casa · risco de saída estimado.
       </div>
       <div class="card-actions">
-        <button class="btn btn-primary" onclick="openSkillMap()">Ver agregado</button>
+        <button class="btn btn-primary" onclick="openPerfis()">Listar perfis</button>
+        <button class="btn btn-ghost" onclick="newPerfil()">Adicionar</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="compensation">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Compensation Intelligence</div>
+          <div class="card-promise">Bandas salariais por papel com dispersão interna calculada.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body">
+        Tabela <code style="font-family:var(--mono);font-size:11px">ip_compensacao</code>: banda min · med · max · n_pessoas · dispersão %. Benchmark externo opcional.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openCompensation()">Bandas atuais</button>
+        <button class="btn btn-ghost" onclick="newCompensation()">Nova banda</button>
       </div>
     </div>
 
@@ -633,72 +662,7 @@ em{font-style:italic}
 </section>
 
 <!-- ============================================================ -->
-<!-- 6. COMUNICAÇÃO -->
-<!-- ============================================================ -->
-<section id="comunicacao" class="section">
-  <div class="section-h">
-    <h2>Comunicação <em>institucional</em></h2>
-    <span class="count">3 canais · todos operacionais</span>
-  </div>
-  <p class="section-sub">Convite, sempre. Imposição, nunca.</p>
-  <div class="grid">
-
-    <div class="card" data-mod="email">
-      <div class="card-head">
-        <div>
-          <div class="card-title">E-mail Outbox</div>
-          <div class="card-promise">Fila com retry e governança de CC automático.</div>
-        </div>
-        <span class="status st-live">Operacional</span>
-      </div>
-      <div class="card-body" id="email-body">
-        Tabela <code style="font-family:var(--mono);font-size:11px">ip_email_outbox</code> + dispatcher EF. CC governamental automático para destinatários <em>@innovasphere.ia.br</em>.
-      </div>
-      <div class="card-actions">
-        <button class="btn btn-primary" onclick="openOutbox()">Ver outbox</button>
-        <button class="btn btn-ghost" onclick="sendTestEmail()">Teste</button>
-      </div>
-    </div>
-
-    <div class="card" data-mod="whatsapp">
-      <div class="card-head">
-        <div>
-          <div class="card-title">WhatsApp Direto</div>
-          <div class="card-promise">Canal urgente para alertas críticos.</div>
-        </div>
-        <span class="status st-live">Operacional</span>
-      </div>
-      <div class="card-body">
-        Edge Function <code style="font-family:var(--mono);font-size:11px">whatsapp-direto</code> via Evolution API. Texto, imagem, OTP.
-      </div>
-      <div class="card-actions">
-        <button class="btn btn-primary" onclick="openWaSend()">Enviar mensagem</button>
-        <button class="btn btn-ghost" onclick="openWaTemplates()">Templates</button>
-      </div>
-    </div>
-
-    <div class="card" data-mod="concierge">
-      <div class="card-head">
-        <div>
-          <div class="card-title">Concierge IA</div>
-          <div class="card-promise">Pergunte sobre engajamento, retenção, tendências, qualquer trabalho — em linguagem natural.</div>
-        </div>
-        <span class="status st-live">Operacional</span>
-      </div>
-      <div class="card-body">
-        Claude Haiku 4.5 com grounding em <strong>23 tabelas <code style="font-family:var(--mono);font-size:11px">ip_*</code></strong>, 5 agentes, EventBus 7d, decisões, relacionamentos, raio-x. Sem alucinação.
-      </div>
-      <div class="card-actions">
-        <button class="btn btn-primary" onclick="openConcierge()">Abrir conversa</button>
-        <button class="btn btn-ghost" onclick="cncQuick('Resumo da plataforma agora')">Resumo agora</button>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- 7. FRENTES -->
+<!-- 6. FRENTES -->
 <!-- ============================================================ -->
 <section id="frentes" class="section">
   <div class="section-h">
@@ -876,87 +840,6 @@ em{font-style:italic}
   </div>
 </section>
 
-<!-- ============================================================ -->
-<!-- 9. EVENTBUS RELACIONAL -->
-<!-- ============================================================ -->
-<section id="eventbus" class="section">
-  <div class="section-h">
-    <h2>EventBus <em>relacional</em></h2>
-    <span class="count">Backbone L1 · porta direta do AIPrev</span>
-  </div>
-  <p class="section-sub">
-    O AIPrev provou: trinta gatilhos em dez tabelas, snapshot antes/depois com autor, fila saudável.
-    Aqui se replica para o domínio de pessoas — toda admissão, promoção, feedback recebido, ritual realizado vira evento auditável.
-  </p>
-  <div class="grid">
-
-    <div class="card" data-mod="eb-triggers">
-      <div class="card-head">
-        <div>
-          <div class="card-title">Triggers Relacionais</div>
-          <div class="card-promise">Captura silenciosa de toda mutação relevante.</div>
-        </div>
-        <span class="status st-live">Operacional</span>
-      </div>
-      <div class="card-body">
-        Função <code style="font-family:var(--mono);font-size:11px">fn_ip_eventbus_capturar</code> em seis tabelas centrais (mandatos, pulsos, decisões, relacionamentos, protocolos, sugestões). Modelo do AIPrev (<code style="font-family:var(--mono);font-size:11px">trg_eventbus_generico</code> em todas <code style="font-family:var(--mono);font-size:11px">plat_plano_*</code>).
-      </div>
-      <div class="card-actions">
-        <button class="btn btn-primary" onclick="openTriggers()">Listar triggers ativos</button>
-      </div>
-    </div>
-
-    <div class="card" data-mod="eb-fila">
-      <div class="card-head">
-        <div>
-          <div class="card-title">Fila de Despacho</div>
-          <div class="card-promise">Eventos enfileirados, processados, com rate limit.</div>
-        </div>
-        <span class="status st-partial">Parcial</span>
-      </div>
-      <div class="card-body">
-        AIPrev usa <code style="font-family:var(--mono);font-size:11px">eventbus_dispatch_v2 · _enqueue · _process_queue · _check_rate_limit</code>. Migrar para o domínio InnovaPeople — útil para notificações compostas, escalonamento de sugestões, integração WhatsApp.
-      </div>
-      <div class="card-actions">
-        <button class="btn btn-gold" onclick="defineSpec('eb-fila')">Portar do AIPrev</button>
-      </div>
-    </div>
-
-    <div class="card" data-mod="eb-busca">
-      <div class="card-head">
-        <div>
-          <div class="card-title">Busca Forense</div>
-          <div class="card-promise">Toda mudança recuperável por termo, autor, fonte, janela.</div>
-        </div>
-        <span class="status st-live">Operacional</span>
-      </div>
-      <div class="card-body">
-        RPC <code style="font-family:var(--mono);font-size:11px">fn_ip_historico_por_termo</code> + indexes em <code style="font-family:var(--mono);font-size:11px">ts DESC, source, actor</code>. 36 meses de retenção configurável.
-      </div>
-      <div class="card-actions">
-        <button class="btn btn-primary" onclick="searchEvents()">Buscar</button>
-      </div>
-    </div>
-
-    <div class="card" data-mod="eb-auditor">
-      <div class="card-head">
-        <div>
-          <div class="card-title">Auditor Relacional</div>
-          <div class="card-promise">Agente que lê o EventBus inteiro e aponta padrão suspeito.</div>
-        </div>
-        <span class="status st-spec">Espelho Rapheice</span>
-      </div>
-      <div class="card-body">
-        Rapheice OS roda agente <code style="font-family:var(--mono);font-size:11px">auditor_relacional</code> sobre 30 triggers em 10 tabelas. Aqui aplicado a sequências de mudança em relacionamentos críticos e decisões revogadas em ciclo curto.
-      </div>
-      <div class="card-actions">
-        <button class="btn btn-gold" onclick="defineSpec('eb-auditor')">Espelhar Rapheice</button>
-      </div>
-    </div>
-
-  </div>
-</section>
-
 <!-- BANDA MATTERING (faixa especial — construção colaborativa) -->
 <section class="section" style="background:linear-gradient(135deg,rgba(196,163,90,.06),rgba(46,139,110,.04));border-radius:12px;padding:32px;border:1px solid rgba(196,163,90,.2)">
   <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap">
@@ -1065,22 +948,6 @@ em{font-style:italic}
       </div>
       <div class="card-actions">
         <button class="btn btn-gold" onclick="defineSpec('offboarding')">Abrir spec</button>
-      </div>
-    </div>
-
-    <div class="card" data-mod="lgpd">
-      <div class="card-head">
-        <div>
-          <div class="card-title">Compliance LGPD</div>
-          <div class="card-promise">Anonimato, retenção de dados, audit trail completo.</div>
-        </div>
-        <span class="status st-live">Operacional</span>
-      </div>
-      <div class="card-body">
-        Pulso por hash, retenção configurável, eventos imutáveis em <code style="font-family:var(--mono);font-size:11px">ip_eventos</code>. Constitutivo, não bolt-on.
-      </div>
-      <div class="card-actions">
-        <button class="btn btn-primary" onclick="openLgpd()">Painel LGPD</button>
       </div>
     </div>
 
@@ -2451,6 +2318,408 @@ function openTriggers(){
   `);
 }
 function openMatteringStatus(){alert('Mattering — estado atual:\n\n· Agente Mattering Coach: operacional (vigia propósito + pertencimento < 6).\n· Frente conceitual: em construção na InnovaSphere ao lado do AIPrev.\n· Próximo passo conjunto: dimensão longitudinal (mattering trajectory) com retroalimentação visível ao colaborador.\n\nO que evoluir lá, importa para cá. O que aqui produzirmos de bom, modela lá.')}
+// ============================================================
+// 9-BOX GRID — ip_avaliacao_perfil
+// ============================================================
+async function open9Box(){
+  openDrawer('9-Box Grid · Performance × Potencial','<div id="b9-body"><div class="dr-info">Carregando avaliações...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#b9-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_avaliacao_perfil').select('*').eq('ativo',true).limit(500);
+      if(error)throw error;
+      // Grid 3x3: linhas potencial 3-1 (alto em cima), colunas performance 1-3
+      const grid={};for(let pot=1;pot<=3;pot++)for(let perf=1;perf<=3;perf++)grid[perf+'-'+pot]=0;
+      (data||[]).forEach(a=>{if(a.performance&&a.potencial)grid[a.performance+'-'+a.potencial]=(grid[a.performance+'-'+a.potencial]||0)+1});
+      const labels={'1-3':'Diamante Bruto','2-3':'Estrela Emergente','3-3':'Estrela','1-2':'Enigma','2-2':'Núcleo Sólido','3-2':'Alta Performance','1-1':'Risco','2-1':'Eficaz','3-1':'Especialista'};
+      const colorCell=(perf,pot)=>{
+        if(perf===3&&pot===3)return'rgba(196,163,90,.32)';
+        if(perf>=2&&pot>=2)return'rgba(196,163,90,.18)';
+        if(perf+pot<=3)return'rgba(168,106,31,.16)';
+        return'rgba(196,163,90,.08)';
+      };
+      let html=`<p class="dr-sub">${data?.length||0} avaliações ativas em ${new Set((data||[]).map(a=>a.perfil_id)).size} perfis.</p>
+        <button class="btn btn-primary" style="margin-bottom:18px" onclick="newAvaliacao()">+ Nova avaliação</button>
+        <div style="display:grid;grid-template-columns:auto repeat(3,1fr);gap:6px;margin-bottom:18px;font-family:var(--sans)">
+          <div></div>
+          <div style="text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);padding:6px">Perf. baixa</div>
+          <div style="text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);padding:6px">Perf. média</div>
+          <div style="text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);padding:6px">Perf. alta</div>`;
+      for(let pot=3;pot>=1;pot--){
+        const potLbl=pot===3?'Potencial alto':pot===2?'Potencial médio':'Potencial baixo';
+        html+=`<div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);padding:6px;writing-mode:vertical-rl;text-orientation:mixed;text-align:center">${potLbl}</div>`;
+        for(let perf=1;perf<=3;perf++){
+          const k=perf+'-'+pot;const cnt=grid[k]||0;
+          html+=`<div style="background:${colorCell(perf,pot)};border:1px solid var(--border);border-radius:6px;padding:14px 10px;text-align:center;min-height:90px;display:flex;flex-direction:column;justify-content:center">
+            <div style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px">${labels[k]}</div>
+            <div style="font-family:var(--serif);font-size:28px;font-weight:500;color:var(--navy);line-height:1">${cnt}</div>
+          </div>`;
+        }
+      }
+      html+=`</div>`;
+      // Lista resumida
+      if(data&&data.length){
+        html+=`<div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">Avaliações recentes</div>`;
+        const recents=[...data].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,8);
+        html+=recents.map(a=>`<div style="padding:8px 12px;border-bottom:1px solid var(--border2);font-size:12px;display:flex;justify-content:space-between"><span style="color:var(--ink2)">Perfil ${esc((a.perfil_id||'').slice(0,8))} <span style="color:var(--ink3);font-family:var(--mono);font-size:10px">P:${a.performance}/Pot:${a.potencial}</span></span><span style="font-family:var(--mono);font-size:10px;color:var(--ink3)">${a.created_at?new Date(a.created_at).toLocaleDateString('pt-BR'):''}</span></div>`).join('');
+      }
+      t.innerHTML=html;
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+async function newAvaliacao(){
+  openDrawer('Nova avaliação 9-Box','<div id="nav-body"><div class="dr-info">Carregando perfis...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#nav-body');if(!sb)return;
+    try{
+      const {data:perfis}=await sb.from('ip_perfil_colaborador').select('id, rotulo, papel, equipe').order('created_at',{ascending:false});
+      if(!perfis||!perfis.length){t.innerHTML='<div class="dr-empty">Cadastre perfis primeiro (card Perfil Anonimizado).</div>';return}
+      t.innerHTML=`<p class="dr-sub">Avalie um perfil em Performance (entrega atual) × Potencial (capacidade futura). Escala 1-3.</p>
+        <form id="av-form" class="dr-form">
+          <label><span class="dr-lab">Perfil</span><select name="perfil_id" required>${perfis.map(p=>`<option value="${esc(p.id)}">${esc(p.rotulo||p.papel||'(sem rótulo)')}${p.equipe?' · '+esc(p.equipe):''}</option>`).join('')}</select></label>
+          <label><span class="dr-lab">Performance (entrega nos últimos 12 meses)</span><select name="performance" required><option value="1">1 · abaixo do esperado</option><option value="2" selected>2 · dentro do esperado</option><option value="3">3 · acima do esperado</option></select></label>
+          <label><span class="dr-lab">Potencial (capacidade de crescer 1-2 níveis)</span><select name="potencial" required><option value="1">1 · baixo</option><option value="2" selected>2 · médio</option><option value="3">3 · alto</option></select></label>
+          <label><span class="dr-lab">Observações</span><textarea name="observacoes" rows="3"></textarea></label>
+          <div id="av-result"></div>
+          <button type="submit" class="btn btn-primary" style="padding:11px 20px">Registrar</button>
+        </form>`;
+      t.querySelector('#av-form').addEventListener('submit',async ev=>{
+        ev.preventDefault();const f=ev.target;const r=t.querySelector('#av-result');r.innerHTML='<div class="dr-info">Salvando...</div>';
+        try{
+          const autor=window.__IP_USER_EMAIL||'';
+          const {error}=await sb.from('ip_avaliacao_perfil').insert({perfil_id:f.perfil_id.value,performance:+f.performance.value,potencial:+f.potencial.value,avaliador:autor,observacoes:f.observacoes.value||null,ativo:true});
+          if(error)throw error;
+          r.innerHTML='<div class="dr-ok">✓ Avaliação registrada.</div>';
+          setTimeout(()=>open9Box(),900);
+        }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+      });
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+
+// ============================================================
+// SUCCESSION PLAN — ip_sucessao
+// ============================================================
+async function openSuccession(){
+  openDrawer('Succession Plan','<div id="sc-body"><div class="dr-info">Carregando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#sc-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_sucessao').select('*').eq('ativo',true).order('updated_at',{ascending:false}).limit(60);
+      if(error)throw error;
+      let html=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newSuccession()">+ Nova posição-chave</button>`;
+      if(!data||!data.length){html+='<div class="dr-empty">Nenhuma posição-chave mapeada. Comece pelas críticas — quais saídas paralisariam o ritmo?</div>';t.innerHTML=html;return}
+      const prCor={ready_now:'#2E8B6E','1y':'#A88440','2y':'#6B7280',indefinido:'#9B2C2C'};
+      const prLbl={ready_now:'Pronto agora','1y':'1 ano','2y':'2 anos',indefinido:'indefinido'};
+      html+=data.map(s=>`<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:8px">
+          <div style="font-family:var(--serif);font-size:19px;color:var(--navy);font-weight:500">${esc(s.posicao_chave)}</div>
+          <span style="font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:${prCor[s.prontidao||'indefinido']}1a;color:${prCor[s.prontidao||'indefinido']};padding:3px 10px;border-radius:10px;white-space:nowrap">${prLbl[s.prontidao||'indefinido']}</span>
+        </div>
+        ${s.motivo_criticidade?`<div style="font-family:var(--serif);font-size:14px;color:var(--ink2);font-style:italic;margin-bottom:10px;line-height:1.55">"${esc(s.motivo_criticidade)}"</div>`:''}
+        <div style="display:flex;gap:20px;font-size:11px;color:var(--ink3);flex-wrap:wrap;font-family:var(--mono);letter-spacing:.04em">
+          <span>titular: <strong style="color:var(--navy)">${esc((s.titular_perfil_id||'').slice(0,8))||'—'}</strong></span>
+          <span>sucessor: <strong style="color:${s.sucessor_perfil_id?'var(--emerald)':'var(--red)'}">${esc((s.sucessor_perfil_id||'').slice(0,8))||'NÃO DEFINIDO'}</strong></span>
+        </div>
+        ${s.observacoes?`<div style="font-size:12px;color:var(--ink2);margin-top:8px;line-height:1.5">${esc(s.observacoes)}</div>`:''}
+      </div>`).join('');
+      t.innerHTML=html;
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+async function newSuccession(){
+  openDrawer('Nova posição-chave','<div id="ns-body"><div class="dr-info">Carregando perfis...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#ns-body');if(!sb)return;
+    const {data:perfis}=await sb.from('ip_perfil_colaborador').select('id, rotulo, papel').order('created_at',{ascending:false});
+    const opts=(perfis||[]).map(p=>`<option value="${esc(p.id)}">${esc(p.rotulo||p.papel||'(sem rótulo)')}</option>`).join('');
+    t.innerHTML=`<p class="dr-sub">Toda posição cuja saída paralisaria o ritmo precisa de plano. Mesmo o sucessor "indefinido" é melhor que o silêncio.</p>
+      <form id="ns-form" class="dr-form">
+        <label><span class="dr-lab">Posição-chave</span><input type="text" name="posicao" required placeholder="ex: Coordenador de Cultura · Gerente de Obra"></label>
+        <label><span class="dr-lab">Por que é crítica</span><textarea name="motivo" rows="3" required placeholder="O que esta posição sustenta? O que pararia se ficasse vaga?"></textarea></label>
+        ${perfis&&perfis.length?`
+          <label><span class="dr-lab">Titular atual (perfil)</span><select name="titular"><option value="">— sem titular registrado —</option>${opts}</select></label>
+          <label><span class="dr-lab">Sucessor (perfil)</span><select name="sucessor"><option value="">— indefinido —</option>${opts}</select></label>
+        `:'<div class="dr-info">Sem perfis cadastrados. Adicione perfis primeiro para vincular titular/sucessor.</div>'}
+        <label><span class="dr-lab">Prontidão do sucessor</span><select name="prontidao"><option value="indefinido">indefinido</option><option value="ready_now">pronto agora</option><option value="1y">1 ano</option><option value="2y">2 anos</option></select></label>
+        <label><span class="dr-lab">Observações</span><textarea name="observacoes" rows="3"></textarea></label>
+        <div id="ns-result"></div>
+        <button type="submit" class="btn btn-primary" style="padding:11px 20px">Registrar</button>
+      </form>`;
+    t.querySelector('#ns-form').addEventListener('submit',async ev=>{
+      ev.preventDefault();const f=ev.target;const r=t.querySelector('#ns-result');r.innerHTML='<div class="dr-info">Salvando...</div>';
+      try{
+        const {error}=await sb.from('ip_sucessao').insert({posicao_chave:f.posicao.value,motivo_criticidade:f.motivo.value,titular_perfil_id:(f.titular?.value||null)||null,sucessor_perfil_id:(f.sucessor?.value||null)||null,prontidao:f.prontidao.value,observacoes:f.observacoes.value||null,ativo:true});
+        if(error)throw error;
+        r.innerHTML='<div class="dr-ok">✓ Posição registrada.</div>';setTimeout(()=>openSuccession(),900);
+      }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+    });
+  });
+}
+
+// ============================================================
+// COMPENSATION INTELLIGENCE — ip_compensacao
+// ============================================================
+async function openCompensation(){
+  openDrawer('Compensation Intelligence','<div id="cp-body"><div class="dr-info">Carregando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#cp-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_compensacao').select('*').eq('ativo',true).order('papel');
+      if(error)throw error;
+      let html=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newCompensation()">+ Nova banda</button>`;
+      if(!data||!data.length){html+='<div class="dr-empty">Nenhuma banda salarial cadastrada.</div>';t.innerHTML=html;return}
+      html+=`<table class="dt"><thead><tr><th>Papel</th><th class="num">Min</th><th class="num">Med</th><th class="num">Max</th><th class="num">N</th><th class="num">Dispersão</th></tr></thead><tbody>`;
+      data.forEach(c=>{
+        const fmt=v=>v?(+v).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0}):'—';
+        const corDisp=(+c.dispersao_pct||0)>30?'var(--red)':(+c.dispersao_pct||0)>15?'var(--amber)':'var(--ink2)';
+        html+=`<tr><td><strong style="color:var(--navy)">${esc(c.papel)}</strong>${c.benchmark_externo?`<div style="font-size:10px;color:var(--ink3);font-family:var(--mono);margin-top:2px">benchmark: ${esc(c.benchmark_externo)}</div>`:''}</td><td class="num">${fmt(c.banda_min)}</td><td class="num"><strong style="color:var(--navy)">${fmt(c.banda_med)}</strong></td><td class="num">${fmt(c.banda_max)}</td><td class="num">${c.n_pessoas||0}</td><td class="num" style="color:${corDisp}">${c.dispersao_pct!=null?(+c.dispersao_pct).toFixed(1)+'%':'—'}</td></tr>`;
+      });
+      html+='</tbody></table>';
+      const altaDisp=data.filter(c=>(+c.dispersao_pct||0)>30).length;
+      if(altaDisp){html+=`<div style="margin-top:14px;padding:12px;background:rgba(155,44,44,.06);border-left:3px solid var(--red);border-radius:4px;font-size:12px;color:var(--ink2)"><strong>${altaDisp}</strong> papéis com dispersão acima de 30% — risco de desequilíbrio interno.</div>`}
+      t.innerHTML=html;
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+function newCompensation(){
+  openDrawer('Nova banda salarial',`
+    <p class="dr-sub">Banda calibrada por valor entregue e dispersão interna. Sem nomes — só papel, intervalos e quantidade.</p>
+    <form id="nc-form" class="dr-form">
+      <label><span class="dr-lab">Papel / Cargo</span><input type="text" name="papel" required placeholder="ex: Gerente de Obras Sênior"></label>
+      <label><span class="dr-lab">Banda mínima (R$)</span><input type="number" name="min" step="100"></label>
+      <label><span class="dr-lab">Banda mediana (R$)</span><input type="number" name="med" step="100"></label>
+      <label><span class="dr-lab">Banda máxima (R$)</span><input type="number" name="max" step="100"></label>
+      <label><span class="dr-lab">Nº de pessoas na banda</span><input type="number" name="n" value="0" min="0"></label>
+      <label><span class="dr-lab">Dispersão interna (%, opcional)</span><input type="number" name="disp" step="0.1" min="0" max="100" placeholder="ex: 15"></label>
+      <label><span class="dr-lab">Benchmark externo (opcional)</span><input type="text" name="benchmark" placeholder="ex: Korn Ferry P50, Mercer SP"></label>
+      <label><span class="dr-lab">Observações</span><textarea name="obs" rows="3"></textarea></label>
+      <div id="nc-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:11px 20px">Registrar banda</button>
+    </form>
+  `,body=>{
+    body.querySelector('#nc-form').addEventListener('submit',async ev=>{
+      ev.preventDefault();const f=ev.target;const r=body.querySelector('#nc-result');r.innerHTML='<div class="dr-info">Salvando...</div>';
+      try{
+        const sb=window.__IP_SB;
+        const {error}=await sb.from('ip_compensacao').insert({papel:f.papel.value,banda_min:f.min.value?+f.min.value:null,banda_med:f.med.value?+f.med.value:null,banda_max:f.max.value?+f.max.value:null,n_pessoas:+f.n.value||0,dispersao_pct:f.disp.value?+f.disp.value:null,benchmark_externo:f.benchmark.value||null,observacoes:f.obs.value||null,ativo:true});
+        if(error)throw error;
+        r.innerHTML='<div class="dr-ok">✓ Banda registrada.</div>';setTimeout(()=>openCompensation(),900);
+      }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+    });
+  });
+}
+
+// ============================================================
+// PERFIL COLABORADOR — ip_perfil_colaborador
+// ============================================================
+async function openPerfis(){
+  openDrawer('Perfis anonimizados','<div id="pf-body"><div class="dr-info">Carregando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#pf-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_perfil_colaborador').select('*').order('created_at',{ascending:false}).limit(100);
+      if(error)throw error;
+      let html=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newPerfil()">+ Adicionar perfil</button>`;
+      if(!data||!data.length){html+='<div class="dr-empty">Nenhum perfil cadastrado. Use rótulos, papéis, equipes — nunca nomes individuais identificáveis.</div>';t.innerHTML=html;return}
+      html+=`<div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px">${data.length} perfis · zero PII direta</div>`;
+      html+=data.map(p=>{
+        const risco=+p.risco_saida_estimado||0;
+        const corRisco=risco>=7?'var(--red)':risco>=4?'var(--amber)':'var(--emerald)';
+        return `<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
+            <div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500">${esc(p.rotulo||'(sem rótulo)')}</div>
+            ${risco?`<span style="font-family:var(--mono);font-size:10px;background:${corRisco}1a;color:${corRisco};padding:3px 10px;border-radius:10px;letter-spacing:.04em">risco ${risco}/10</span>`:''}
+          </div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.06em;margin-bottom:8px">${esc(p.papel||'')}${p.equipe?` · ${esc(p.equipe)}`:''}${p.tempo_casa_meses?` · ${p.tempo_casa_meses}m de casa`:''}</div>
+          ${p.automatizabilidade_pct?`<div style="font-size:12px;color:var(--ink2);margin-bottom:6px">Automatizabilidade estimada: <strong>${p.automatizabilidade_pct}%</strong></div>`:''}
+          ${p.observacoes?`<div style="font-family:var(--serif);font-size:14px;color:var(--ink2);font-style:italic;line-height:1.5">${esc(p.observacoes)}</div>`:''}
+        </div>`;
+      }).join('');
+      t.innerHTML=html;
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+function newPerfil(){
+  openDrawer('Adicionar perfil anonimizado',`
+    <p class="dr-sub">Use rótulos descritivos, não nomes. O agregado serve a curadoria — a ficha individual não.</p>
+    <form id="np-form" class="dr-form">
+      <label><span class="dr-lab">Rótulo (interno, descritivo)</span><input type="text" name="rotulo" required placeholder="ex: Gerente A · Coordenadora B · Pleno SP"></label>
+      <label><span class="dr-lab">Papel</span><input type="text" name="papel" placeholder="ex: gerente, coordenador, pleno"></label>
+      <label><span class="dr-lab">Equipe</span><input type="text" name="equipe"></label>
+      <label><span class="dr-lab">Tempo de casa (meses)</span><input type="number" name="tempo" min="0"></label>
+      <label><span class="dr-lab">Automatizabilidade estimada (%)</span><input type="number" name="auto" min="0" max="100"></label>
+      <label><span class="dr-lab">Risco de saída estimado (0-10)</span><input type="number" name="risco" min="0" max="10"></label>
+      <label><span class="dr-lab">Observações qualitativas</span><textarea name="obs" rows="4"></textarea></label>
+      <div id="np-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:11px 20px">Registrar</button>
+    </form>
+  `,body=>{
+    body.querySelector('#np-form').addEventListener('submit',async ev=>{
+      ev.preventDefault();const f=ev.target;const r=body.querySelector('#np-result');r.innerHTML='<div class="dr-info">Salvando...</div>';
+      try{
+        const sb=window.__IP_SB;
+        const {error}=await sb.from('ip_perfil_colaborador').insert({rotulo:f.rotulo.value,papel:f.papel.value||null,equipe:f.equipe.value||null,tempo_casa_meses:f.tempo.value?+f.tempo.value:null,automatizabilidade_pct:f.auto.value?+f.auto.value:null,risco_saida_estimado:f.risco.value?+f.risco.value:null,observacoes:f.obs.value||null});
+        if(error)throw error;
+        r.innerHTML='<div class="dr-ok">✓ Perfil registrado.</div>';setTimeout(()=>openPerfis(),900);
+      }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+    });
+  });
+}
+
+// ============================================================
+// PROGRAMAS EVM — ip_programas + ip_programa_marcos + fn_ip_evm_resumo
+// ============================================================
+async function openProgramas(){
+  openDrawer('Programas com EVM','<div id="pg-body"><div class="dr-info">Carregando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#pg-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_programas').select('*').order('created_at',{ascending:false}).limit(50);
+      if(error)throw error;
+      let html=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newPrograma()">+ Novo programa</button>`;
+      if(!data||!data.length){html+='<div class="dr-empty">Nenhum programa registrado. Cultura, liderança, onboarding — qualquer iniciativa estruturada com horizonte e custo.</div>';t.innerHTML=html;return}
+      // Para cada programa busca EVM em paralelo
+      const evms=await Promise.all(data.map(p=>sb.rpc('fn_ip_evm_resumo',{p_programa_id:p.id}).then(r=>r.data).catch(()=>null)));
+      html+=data.map((p,i)=>{
+        const evm=evms[i]||{};
+        const cpi=evm.cpi!=null?(+evm.cpi).toFixed(2):'—';
+        const spi=evm.spi!=null?(+evm.spi).toFixed(2):'—';
+        const corCpi=evm.cpi==null?'var(--ink3)':+evm.cpi<.9?'var(--red)':+evm.cpi>1.1?'var(--emerald)':'var(--ink2)';
+        const corSpi=evm.spi==null?'var(--ink3)':+evm.spi<.9?'var(--red)':+evm.spi>1.1?'var(--emerald)':'var(--ink2)';
+        const statusCor={planejado:'var(--ink3)',em_andamento:'var(--gold-deep)',concluido:'var(--emerald)',cancelado:'var(--ink4)',pausado:'var(--amber)'}[p.status]||'var(--ink3)';
+        return `<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
+            <div>
+              <div style="font-family:var(--serif);font-size:19px;color:var(--navy);font-weight:500">${esc(p.nome)}</div>
+              <div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase;margin-top:2px">${esc(p.tipo||'—')}${p.responsavel?` · ${esc(p.responsavel)}`:''}</div>
+            </div>
+            <span style="font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:${statusCor}1a;color:${statusCor};padding:3px 10px;border-radius:10px;white-space:nowrap;height:fit-content">${esc(p.status||'?')}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px;font-size:11px">
+            <div style="text-align:center;padding:8px 4px;background:var(--cream2);border-radius:4px"><div style="font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.12em">PV</div><div style="font-family:var(--mono);font-size:13px;color:var(--navy);font-weight:500">${evm.pv?.toLocaleString('pt-BR',{maximumFractionDigits:0})||'—'}</div></div>
+            <div style="text-align:center;padding:8px 4px;background:var(--cream2);border-radius:4px"><div style="font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.12em">EV</div><div style="font-family:var(--mono);font-size:13px;color:var(--navy);font-weight:500">${evm.ev?.toLocaleString('pt-BR',{maximumFractionDigits:0})||'—'}</div></div>
+            <div style="text-align:center;padding:8px 4px;background:var(--cream2);border-radius:4px"><div style="font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.12em">AC</div><div style="font-family:var(--mono);font-size:13px;color:var(--navy);font-weight:500">${evm.ac?.toLocaleString('pt-BR',{maximumFractionDigits:0})||'—'}</div></div>
+            <div style="text-align:center;padding:8px 4px;background:var(--cream2);border-radius:4px"><div style="font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.12em">CPI</div><div style="font-family:var(--mono);font-size:13px;color:${corCpi};font-weight:500">${cpi}</div></div>
+            <div style="text-align:center;padding:8px 4px;background:var(--cream2);border-radius:4px"><div style="font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.12em">SPI</div><div style="font-family:var(--mono);font-size:13px;color:${corSpi};font-weight:500">${spi}</div></div>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:6px;font-size:11px;color:var(--ink3);flex-wrap:wrap">
+            ${p.inicio?`<span>início: ${new Date(p.inicio).toLocaleDateString('pt-BR')}</span>`:''}
+            ${p.fim_planejado?`<span>fim planejado: ${new Date(p.fim_planejado).toLocaleDateString('pt-BR')}</span>`:''}
+            <span style="margin-left:auto"><button onclick="openProgramaMarcos('${esc(p.id)}','${esc(p.nome)}')" style="padding:4px 10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--navy);color:var(--cream);border:none;border-radius:3px;cursor:pointer;font-family:inherit">Marcos (${evm.marcos||0})</button></span>
+          </div>
+        </div>`;
+      }).join('');
+      t.innerHTML=html;
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+function newPrograma(){
+  openDrawer('Novo programa',`
+    <p class="dr-sub">Programas se medem por valor agregado, não por entrega de tarefa. Defina o orçamento total (PV) e os marcos depois.</p>
+    <form id="ng-form" class="dr-form">
+      <label><span class="dr-lab">Nome</span><input type="text" name="nome" required placeholder="ex: Liderança 2026 · Onboarding 60d"></label>
+      <label><span class="dr-lab">Tipo</span><select name="tipo"><option value="cultura">cultura</option><option value="lideranca">liderança</option><option value="onboarding">onboarding</option><option value="succession">succession</option><option value="remuneracao">remuneração</option><option value="transformacao">transformação</option><option value="outro">outro</option></select></label>
+      <label><span class="dr-lab">Início</span><input type="date" name="inicio"></label>
+      <label><span class="dr-lab">Fim planejado</span><input type="date" name="fim"></label>
+      <label><span class="dr-lab">PV Total (Planned Value, R$)</span><input type="number" name="pv" step="100"></label>
+      <label><span class="dr-lab">Responsável</span><input type="text" name="responsavel" value="raphael@schifino.com.br"></label>
+      <label><span class="dr-lab">Observações</span><textarea name="obs" rows="3"></textarea></label>
+      <div id="ng-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:11px 20px">Criar programa</button>
+    </form>
+  `,body=>{
+    body.querySelector('#ng-form').addEventListener('submit',async ev=>{
+      ev.preventDefault();const f=ev.target;const r=body.querySelector('#ng-result');r.innerHTML='<div class="dr-info">Criando...</div>';
+      try{
+        const sb=window.__IP_SB;
+        const {error}=await sb.from('ip_programas').insert({nome:f.nome.value,tipo:f.tipo.value,inicio:f.inicio.value||null,fim_planejado:f.fim.value||null,pv_total:f.pv.value?+f.pv.value:null,responsavel:f.responsavel.value||null,observacoes:f.obs.value||null,status:'planejado'});
+        if(error)throw error;
+        r.innerHTML='<div class="dr-ok">✓ Programa criado. Agora adicione marcos com PV individual.</div>';setTimeout(()=>openProgramas(),900);
+      }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+    });
+  });
+}
+async function openProgramaMarcos(programaId,nome){
+  openDrawer('Marcos · '+nome,'<div id="mc-body"><div class="dr-info">Carregando marcos...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#mc-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_programa_marcos').select('*').eq('programa_id',programaId).order('ordem',{ascending:true}).order('data_planejada',{ascending:true});
+      if(error)throw error;
+      let html=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newMarco('${esc(programaId)}','${esc(nome)}')">+ Novo marco</button>`;
+      if(!data||!data.length){html+='<div class="dr-empty">Nenhum marco neste programa. Sem marcos, sem EVM.</div>';t.innerHTML=html;return}
+      html+=data.map(m=>{
+        const statusCor={aberto:'var(--ink3)',em_andamento:'var(--gold-deep)',concluido:'var(--emerald)',cancelado:'var(--red)'}[m.status]||'var(--ink3)';
+        return `<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
+            <div style="font-family:var(--serif);font-size:16px;color:var(--navy);font-weight:500">${esc(m.titulo)}</div>
+            <span style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;background:${statusCor}1a;color:${statusCor};padding:3px 8px;border-radius:10px">${esc(m.status||'?')}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:11px;margin:8px 0">
+            <div style="text-align:center;padding:6px;background:var(--cream2);border-radius:3px"><div style="font-family:var(--mono);font-size:9px;color:var(--ink3)">PV</div><div style="font-family:var(--mono);color:var(--navy)">${m.pv?(+m.pv).toLocaleString('pt-BR',{maximumFractionDigits:0}):'—'}</div></div>
+            <div style="text-align:center;padding:6px;background:var(--cream2);border-radius:3px"><div style="font-family:var(--mono);font-size:9px;color:var(--ink3)">EV</div><div style="font-family:var(--mono);color:var(--navy)">${m.ev?(+m.ev).toLocaleString('pt-BR',{maximumFractionDigits:0}):'—'}</div></div>
+            <div style="text-align:center;padding:6px;background:var(--cream2);border-radius:3px"><div style="font-family:var(--mono);font-size:9px;color:var(--ink3)">AC</div><div style="font-family:var(--mono);color:var(--navy)">${m.ac?(+m.ac).toLocaleString('pt-BR',{maximumFractionDigits:0}):'—'}</div></div>
+          </div>
+          <div style="display:flex;gap:14px;font-size:11px;color:var(--ink3);font-family:var(--mono);letter-spacing:.04em;margin-top:6px">
+            ${m.data_planejada?`<span>planejada: ${new Date(m.data_planejada).toLocaleDateString('pt-BR')}</span>`:''}
+            ${m.data_real?`<span>real: ${new Date(m.data_real).toLocaleDateString('pt-BR')}</span>`:''}
+            ${m.responsavel?`<span>${esc(m.responsavel)}</span>`:''}
+          </div>
+          <div style="margin-top:8px"><button onclick="apontarMarco('${esc(m.id)}','${esc(programaId)}','${esc(nome)}')" style="padding:4px 10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--ink2);border:1px solid var(--border);border-radius:3px;cursor:pointer;font-family:inherit">Apontar EV/AC</button></div>
+        </div>`;
+      }).join('');
+      t.innerHTML=html;
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+function newMarco(programaId,nome){
+  openDrawer('Novo marco · '+nome,`
+    <form id="nm-form" class="dr-form">
+      <label><span class="dr-lab">Título do marco</span><input type="text" name="titulo" required></label>
+      <label><span class="dr-lab">Ordem (sequencial)</span><input type="number" name="ordem" value="1" min="0"></label>
+      <label><span class="dr-lab">Planned Value (R$)</span><input type="number" name="pv" step="100"></label>
+      <label><span class="dr-lab">Data planejada</span><input type="date" name="data_planejada"></label>
+      <label><span class="dr-lab">Responsável</span><input type="text" name="responsavel"></label>
+      <label><span class="dr-lab">Observações</span><textarea name="obs" rows="3"></textarea></label>
+      <div id="nm-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:11px 20px">Criar marco</button>
+    </form>
+  `,body=>{
+    body.querySelector('#nm-form').addEventListener('submit',async ev=>{
+      ev.preventDefault();const f=ev.target;const r=body.querySelector('#nm-result');r.innerHTML='<div class="dr-info">Salvando...</div>';
+      try{
+        const sb=window.__IP_SB;
+        const {error}=await sb.from('ip_programa_marcos').insert({programa_id:programaId,titulo:f.titulo.value,ordem:+f.ordem.value||0,pv:f.pv.value?+f.pv.value:null,data_planejada:f.data_planejada.value||null,responsavel:f.responsavel.value||null,observacoes:f.obs.value||null,status:'aberto'});
+        if(error)throw error;
+        r.innerHTML='<div class="dr-ok">✓ Marco criado.</div>';setTimeout(()=>openProgramaMarcos(programaId,nome),900);
+      }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+    });
+  });
+}
+function apontarMarco(marcoId,programaId,nome){
+  openDrawer('Apontar EV / AC',`
+    <p class="dr-sub">EV = valor agregado (quanto do PV foi efetivamente entregue). AC = custo real incorrido até agora.</p>
+    <form id="am-form" class="dr-form">
+      <label><span class="dr-lab">Earned Value (EV) acumulado</span><input type="number" name="ev" step="100" required></label>
+      <label><span class="dr-lab">Actual Cost (AC) acumulado</span><input type="number" name="ac" step="100" required></label>
+      <label><span class="dr-lab">Status</span><select name="status"><option value="em_andamento">em andamento</option><option value="concluido">concluído</option><option value="aberto">aberto</option></select></label>
+      <label><span class="dr-lab">Data real (se concluído)</span><input type="date" name="data_real"></label>
+      <div id="am-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:11px 20px">Apontar</button>
+    </form>
+  `,body=>{
+    body.querySelector('#am-form').addEventListener('submit',async ev=>{
+      ev.preventDefault();const f=ev.target;const r=body.querySelector('#am-result');r.innerHTML='<div class="dr-info">Apontando...</div>';
+      try{
+        const sb=window.__IP_SB;
+        const upd={ev:+f.ev.value,ac:+f.ac.value,status:f.status.value};
+        if(f.data_real.value)upd.data_real=f.data_real.value;
+        const {error}=await sb.from('ip_programa_marcos').update(upd).eq('id',marcoId);
+        if(error)throw error;
+        r.innerHTML='<div class="dr-ok">✓ EV/AC apontados. Métricas EVM do programa recalculadas em tempo real.</div>';
+        setTimeout(()=>openProgramaMarcos(programaId,nome),900);
+      }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+    });
+  });
+}
+// Redireciona demos antigas para a versao real
+function openEvmPeople(){openProgramas()}
+function openForecaster(){openProgramas()}
+function openCpmDev(){openProgramas()}
+
 function notImpl(name){alert('Em construção: '+name+'\n\nO contrato de dados está mapeado — falta a UI dedicada na próxima rodada.')}
 </script>
 

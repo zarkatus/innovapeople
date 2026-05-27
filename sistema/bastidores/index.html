@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bastidores · InnovaPeople</title>
+<meta name="description" content="Backbone técnico, auditoria, canais e compliance — InnovaPeople">
+<meta name="robots" content="noindex,nofollow">
+
+<!-- IP-AUTH-GATE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script>
+(function ipAuthGate(){
+  const SUPA_URL='https://auth.innovasphere.ia.br';
+  const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br'];
+  function injectOverlay(){
+    if(document.getElementById('ip-auth-ovl'))return;
+    const ovl=document.createElement('div');ovl.id='ip-auth-ovl';
+    ovl.style.cssText='position:fixed;inset:0;background:#0A1628;color:#3DA882;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647;transition:opacity .35s';
+    ovl.innerHTML='<div style="text-align:center"><div style="margin-bottom:14px;font-size:11px;opacity:.5">InnovaPeople</div><div>Validando acesso<span>…</span></div></div>';
+    (document.body||document.documentElement).appendChild(ovl);
+  }
+  function removeOverlay(){const o=document.getElementById('ip-auth-ovl');if(!o)return;o.style.opacity='0';setTimeout(()=>{if(o.parentNode)o.parentNode.removeChild(o)},400)}
+  function deny(r){console.warn('[ip-auth] deny:',r);location.replace('/sistema/?from=bastidores')}
+  function allow(email){
+    removeOverlay();
+    window.__IP_USER_EMAIL=email||'';
+    const el=document.getElementById('user-display');if(el&&email)el.textContent=email;
+    if(typeof window.bastidoresBoot==='function'){try{window.bastidoresBoot()}catch(e){}}
+    else{setTimeout(()=>{if(typeof window.bastidoresBoot==='function'){try{window.bastidoresBoot()}catch(e){}}},300)}
+  }
+  if(document.body){injectOverlay()}else{document.addEventListener('DOMContentLoaded',injectOverlay,{once:true})}
+  const safety=setTimeout(()=>{allow('')},6000);
+  (async function run(){
+    try{
+      if(!window.supabase)throw new Error('SDK não carregou');
+      const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+      window.__IP_SB=sb;
+      const {data:{session},error}=await sb.auth.getSession();
+      if(error){clearTimeout(safety);deny('session-error');return}
+      if(!session){clearTimeout(safety);deny('no-session');return}
+      const email=session.user?.email||'';
+      if(!ALLOWED.includes(email)){await sb.auth.signOut();clearTimeout(safety);deny('email-not-authorized');return}
+      clearTimeout(safety);
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email);
+    }catch(e){clearTimeout(safety);allow('')}
+  })();
+})();
+</script>
+
+<link rel="icon" href="/sistema/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0A1628;--navy2:#0F1D32;
+  --cream:#F5F0E8;--cream2:#EFE9DD;--white:#FBFAF7;
+  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#A88440;
+  --emerald:#2E8B6E;--ink:#1A1A1A;--ink2:#3A3F47;--ink3:#6B7280;--ink4:#9CA3AF;
+  --border:rgba(10,22,40,.08);--border2:rgba(10,22,40,.04);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Outfit',-apple-system,Segoe UI,sans-serif;
+  --mono:'JetBrains Mono',Menlo,monospace;
+  --red:#9B2C2C;--amber:#A86A1F;--blue:#2C5282;
+  --nav-h:74px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+em{font-style:italic}
+
+.hdr{position:sticky;top:0;z-index:50;background:rgba(245,240,232,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:var(--nav-h);display:flex;align-items:center;padding:0 32px}
+.hdr-inner{max-width:1280px;margin:0 auto;width:100%;display:flex;align-items:center;gap:28px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:18px;font-style:italic}
+.brand .name{font-size:18px;color:var(--navy);letter-spacing:.04em}
+.brand .name em{color:var(--gold-deep);font-weight:500}
+.brand .sub{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink3);margin-left:8px;font-family:var(--mono)}
+.nav{display:flex;gap:24px;flex:1;justify-content:center;font-size:13px;letter-spacing:.06em}
+.nav a{color:var(--ink2);transition:color .2s}
+.nav a:hover,.nav a.active{color:var(--navy)}
+.nav a.active{font-weight:500}
+.usr{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--ink3);font-family:var(--mono)}
+.usr a{padding:6px 14px;border:1px solid var(--border);border-radius:18px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+
+.hero{padding:54px 32px 32px;background:linear-gradient(180deg,var(--cream) 0%,var(--cream2) 100%);border-bottom:1px solid var(--border)}
+.hero-inner{max-width:1280px;margin:0 auto}
+.hero h1{font-family:var(--serif);font-size:46px;font-weight:300;line-height:1.06;color:var(--navy);margin-bottom:14px;letter-spacing:-.01em}
+.hero h1 em{color:var(--gold-deep);font-weight:400}
+.hero .lede{font-size:15px;color:var(--ink2);max-width:680px;line-height:1.6;font-weight:300}
+.hero-meta{margin-top:24px;display:flex;flex-wrap:wrap;gap:28px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+.hero-meta span strong{color:var(--navy);font-weight:500}
+
+.main{max-width:1280px;margin:0 auto;padding:38px 32px 80px}
+.section{margin-bottom:54px;scroll-margin-top:96px}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.section-h h2{font-family:var(--serif);font-size:30px;font-weight:400;color:var(--navy);letter-spacing:-.005em}
+.section-h h2 em{color:var(--gold-deep);font-style:italic}
+.section-h .count{font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.14em;text-transform:uppercase}
+.section-sub{font-family:var(--serif);font-size:17px;color:var(--ink2);max-width:700px;line-height:1.55;margin-bottom:24px;font-style:italic}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:20px;display:flex;flex-direction:column;gap:12px;transition:all .25s}
+.card:hover{border-color:rgba(10,22,40,.18);box-shadow:0 8px 24px rgba(10,22,40,.06)}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.card-title{font-family:var(--serif);font-size:20px;font-weight:500;color:var(--navy);line-height:1.15}
+.card-promise{font-family:var(--serif);font-size:14px;color:var(--ink3);line-height:1.5;font-style:italic}
+.card-body{font-size:13px;color:var(--ink2);line-height:1.55}
+.card-actions{display:flex;gap:8px;margin-top:auto;padding-top:8px;border-top:1px solid var(--border2)}
+.btn{padding:8px 14px;border-radius:4px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;transition:all .2s;border:1px solid transparent}
+.btn-primary{background:var(--navy);color:var(--cream)}
+.btn-primary:hover{background:var(--navy2)}
+.btn-ghost{border:1px solid var(--border);color:var(--ink2)}
+.btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
+.status{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:12px;font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:400;white-space:nowrap;flex-shrink:0}
+.status::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
+.st-live{color:var(--emerald);background:rgba(46,139,110,.08)}
+.st-partial{color:var(--gold-deep);background:rgba(196,163,90,.1)}
+.dr-code{font-family:var(--mono);font-size:11px;color:var(--gold-deep);background:rgba(196,163,90,.08);padding:1px 6px;border-radius:3px;font-style:normal}
+.dt{width:100%;border-collapse:collapse;font-size:12px}
+.dt th{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:500}
+.dt td{padding:9px 10px;border-bottom:1px solid var(--border2);color:var(--ink2)}
+.dt .num{font-family:var(--mono);text-align:right}
+
+/* DRAWER */
+.dr-ovl{position:fixed;inset:0;background:rgba(10,22,40,.5);backdrop-filter:blur(4px);z-index:9000;opacity:0;pointer-events:none;transition:opacity .3s}
+.dr-ovl.on{opacity:1;pointer-events:auto}
+.dr{position:fixed;top:0;right:0;height:100vh;width:560px;max-width:96vw;background:var(--white);box-shadow:-16px 0 40px rgba(10,22,40,.22);z-index:9001;transform:translateX(100%);transition:transform .35s cubic-bezier(.34,1.4,.64,1);display:flex;flex-direction:column}
+.dr.on{transform:translateX(0)}
+.dr-h{padding:22px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--cream)}
+.dr-h h3{font-family:var(--serif);font-size:24px;color:var(--navy);font-weight:500}
+.dr-x{font-size:26px;color:var(--ink3);padding:4px 12px;border-radius:4px;background:none;border:none}
+.dr-x:hover{background:rgba(0,0,0,.06);color:var(--navy)}
+.dr-body{flex:1;overflow-y:auto;padding:24px 28px}
+.dr-sub{font-style:italic;font-family:var(--serif);font-size:17px;color:var(--ink2);margin-bottom:22px;line-height:1.5}
+.dr-info{padding:12px 14px;background:rgba(196,163,90,.08);border-radius:4px;font-size:13px;color:var(--ink2);font-style:italic}
+.dr-ok{padding:12px 14px;background:rgba(46,139,110,.1);border-radius:4px;font-size:13px;color:var(--emerald);line-height:1.5}
+.dr-err{padding:12px 14px;background:rgba(155,44,44,.08);border-radius:4px;font-size:13px;color:var(--red);line-height:1.5}
+.dr-empty{padding:32px;text-align:center;color:var(--ink3);font-family:var(--serif);font-size:18px;font-style:italic}
+.dr-form{display:flex;flex-direction:column;gap:16px}
+.dr-form label{display:flex;flex-direction:column;gap:6px}
+.dr-form input,.dr-form textarea,.dr-form select{padding:10px 12px;border:1px solid var(--border);border-radius:4px;font:inherit;font-size:13px;background:var(--white);color:var(--ink)}
+.dr-lab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500}
+
+.foot{margin-top:60px;padding:30px;border-top:1px solid var(--border);text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3)}
+
+@media(max-width:720px){.hero h1{font-size:32px}.hero,.main{padding-left:20px;padding-right:20px}.nav{display:none}.grid{grid-template-columns:1fr}.dr{width:100vw}}
+</style>
+</head>
+
+<body>
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <a href="/sistema/" class="brand">
+      <div class="mark">i</div>
+      <span class="name">Innova<em>People</em></span>
+      <span class="sub">Bastidores</span>
+    </a>
+    <nav class="nav">
+      <a href="/sistema/">Visão geral</a>
+      <a href="/sistema/agentes.html">Agentes</a>
+      <a href="/sistema/calendar.html">Calendário</a>
+      <a href="/sistema/chro/">Curadoria</a>
+      <a href="/sistema/bastidores/" class="active">Bastidores</a>
+    </nav>
+    <div class="usr">
+      <span id="user-display">—</span>
+      <a href="/sistema/">Sair</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Bastidores <em>do sistema.</em></h1>
+    <p class="lede">
+      O backbone que sustenta a curadoria sem aparecer no palco: EventBus relacional, trilha forense, canais externos, compliance.
+      Aqui mora o que precisa funcionar para que o resto pareça inevitável.
+    </p>
+    <div class="hero-meta">
+      <span>Tabelas <strong id="b-tables">26</strong></span>
+      <span>Edge Functions <strong id="b-efs">10</strong></span>
+      <span>Eventos 24h <strong id="b-ev24">—</strong></span>
+      <span>Outbox pendentes <strong id="b-ob">—</strong></span>
+      <span>RPCs ip_* <strong id="b-rpcs">16</strong></span>
+    </div>
+  </div>
+</section>
+
+<main class="main">
+
+<!-- EVENTBUS RELACIONAL -->
+<section id="eventbus" class="section">
+  <div class="section-h"><h2>EventBus <em>relacional</em></h2><span class="count">4 instrumentos · porta direta do AIPrev</span></div>
+  <p class="section-sub">Trinta gatilhos em dez tabelas, snapshot antes/depois com autor, fila saudável. O que muda fica auditável.</p>
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Triggers Relacionais</div><div class="card-promise">Captura silenciosa de toda mutação relevante.</div></div><span class="status st-live">Operacional</span></div>
+      <div class="card-body">Função <code class="dr-code">fn_ip_eventbus_capturar</code> em 6 tabelas centrais (mandatos, pulsos, decisões, relacionamentos, protocolos, sugestões).</div>
+      <div class="card-actions"><button class="btn btn-primary" onclick="openTriggers()">Tabela de triggers</button></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Trilha de Eventos</div><div class="card-promise">36 meses de memória forense, append-only.</div></div><span class="status st-live">Operacional</span></div>
+      <div class="card-body" id="ev-stats">Carregando…</div>
+      <div class="card-actions"><button class="btn btn-primary" onclick="openEventBus()">Abrir trilha</button></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Busca Forense</div><div class="card-promise">Toda mudança recuperável por termo, fonte, autor, janela.</div></div><span class="status st-live">Operacional</span></div>
+      <div class="card-body">RPC <code class="dr-code">fn_ip_historico_por_termo</code> com indexes em <code class="dr-code">ts DESC, source, actor</code>.</div>
+      <div class="card-actions"><button class="btn btn-primary" onclick="searchEvents()">Buscar termo</button></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Auditor Relacional</div><div class="card-promise">Padrões suspeitos no fluxo de mudanças.</div></div><span class="status st-partial">Espelho Rapheice</span></div>
+      <div class="card-body">A portar do Rapheice OS v28 (<code class="dr-code">auditor_relacional</code>): detecta sequências de mudança em relacionamentos críticos e decisões revogadas em ciclo curto.</div>
+      <div class="card-actions"><button class="btn btn-ghost" onclick="alert('Backlog: portar agente auditor_relacional do Rapheice OS')">Sobre o agente</button></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CANAIS EXTERNOS -->
+<section id="canais" class="section">
+  <div class="section-h"><h2>Canais <em>externos</em></h2><span class="count">3 canais · todos operacionais</span></div>
+  <p class="section-sub">A casa não fala sozinha. Quando precisa falar fora, faz por estes três caminhos.</p>
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">E-mail Outbox</div><div class="card-promise">Fila com retry, dispatcher de 5 em 5 minutos.</div></div><span class="status st-live">Operacional</span></div>
+      <div class="card-body" id="email-stats">Carregando estatísticas...</div>
+      <div class="card-actions"><button class="btn btn-primary" onclick="openOutbox()">Ver outbox</button><button class="btn btn-ghost" onclick="sendTestEmail()">Teste</button></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">WhatsApp Direto</div><div class="card-promise">Evolution API · canal urgente para alertas críticos.</div></div><span class="status st-live">Operacional</span></div>
+      <div class="card-body">EF <code class="dr-code">whatsapp-direto</code> via instância <code class="dr-code">picarras-hills</code>. Texto, imagem, OTP. Confirmação dupla obrigatória.</div>
+      <div class="card-actions"><button class="btn btn-primary" onclick="openWaSend()">Enviar mensagem</button><button class="btn btn-ghost" onclick="openWaTemplates()">Templates</button></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Google Calendar</div><div class="card-promise">Rituais sincronizados na agenda dos sócios.</div></div><span class="status st-live">Operacional</span></div>
+      <div class="card-body">3 EFs <code class="dr-code">innovapeople-calendar-*</code> (oauth-init, oauth-callback, agendar). OAuth 2-step ativo.</div>
+      <div class="card-actions"><a href="/sistema/calendar.html" class="btn btn-primary">Abrir agenda</a><button class="btn btn-ghost" onclick="syncCalNow()">Sincronizar agora</button></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EDGE FUNCTIONS -->
+<section id="efs" class="section">
+  <div class="section-h"><h2>Edge <em>Functions</em></h2><span class="count">10 deployadas</span></div>
+  <p class="section-sub">Os pequenos servidores stateless que executam decisões pontuais sem precisar do monolito.</p>
+  <div id="efs-list">
+    <table class="dt">
+      <thead><tr><th>Slug</th><th>Propósito</th><th>JWT</th></tr></thead>
+      <tbody>
+        <tr><td><code class="dr-code">innovapeople-pulso-disparar</code></td><td>Gera tokens anônimos + enfileira convites</td><td>obrigatório (sócio)</td></tr>
+        <tr><td><code class="dr-code">innovapeople-raio-x-submit</code></td><td>Captura submissão pública do funil Raio-X</td><td>público</td></tr>
+        <tr><td><code class="dr-code">innovapeople-email-dispatcher</code></td><td>Despacha outbox em batch a cada 5min</td><td>obrigatório</td></tr>
+        <tr><td><code class="dr-code">innovapeople-digest-semanal</code></td><td>Composer + envio do digest semanal aos sócios</td><td>obrigatório</td></tr>
+        <tr><td><code class="dr-code">innovapeople-relatorio-raio-x</code></td><td>Geração de PDF do Raio-X</td><td>obrigatório</td></tr>
+        <tr><td><code class="dr-code">innovapeople-contato-submit</code></td><td>Form de contato público</td><td>público</td></tr>
+        <tr><td><code class="dr-code">innovapeople-calendar-oauth-init</code></td><td>Inicia OAuth Google Calendar</td><td>obrigatório</td></tr>
+        <tr><td><code class="dr-code">innovapeople-calendar-oauth-callback</code></td><td>Callback do OAuth Calendar</td><td>obrigatório</td></tr>
+        <tr><td><code class="dr-code">innovapeople-calendar-agendar</code></td><td>Sincroniza rituais → eventos Google</td><td>obrigatório</td></tr>
+        <tr><td><code class="dr-code">innovapeople-concierge-chat</code></td><td>Claude Haiku 4.5 grounded em todos ip_*</td><td>obrigatório</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- COMPLIANCE -->
+<section id="compliance" class="section">
+  <div class="section-h"><h2>Compliance <em>&amp; LGPD</em></h2><span class="count">2 instrumentos</span></div>
+  <p class="section-sub">Anonimato no pulso, tokens descartáveis, audit trail imutável. Compliance é constitutivo, não bolt-on.</p>
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Painel LGPD</div><div class="card-promise">Métricas de retenção + garantias ativas.</div></div><span class="status st-live">Operacional</span></div>
+      <div class="card-body">K-anonimato ≥ 3, TTL de tokens 14d, audit trail 36 meses, zero PII em perfis.</div>
+      <div class="card-actions"><button class="btn btn-primary" onclick="openLgpd()">Abrir painel</button></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Audit Log Extendido</div><div class="card-promise">Tabela <code class="dr-code">ip_audit_log</code> para operações sensíveis.</div></div><span class="status st-partial">Backbone</span></div>
+      <div class="card-body">Registros de ação administrativa (criação/exclusão de mandatos, alteração de status crítico). Acessado via SQL direto por enquanto.</div>
+      <div class="card-actions"><button class="btn btn-ghost" onclick="openAuditLog()">Ver registros</button></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ESPELHO AIPREV -->
+<section id="aiprev" class="section">
+  <div class="section-h"><h2>Espelho <em>AIPrev</em></h2><span class="count">portações pendentes</span></div>
+  <p class="section-sub">O AIPrev da InnovaSphere já fez. Aqui se replica, com a mesma elegância de schema.</p>
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">EVM já vivo</div><div class="card-promise">Schema portado e operacional.</div></div><span class="status st-live">Operacional</span></div>
+      <div class="card-body">Tabelas <code class="dr-code">ip_programas</code> + <code class="dr-code">ip_programa_marcos</code> + RPC <code class="dr-code">fn_ip_evm_resumo</code> aplicadas. UI vive na aba Curadoria.</div>
+      <div class="card-actions"><a href="/sistema/chro/#curadoria" class="btn btn-ghost">Ver na Curadoria</a></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">CPM Forward/Backward</div><div class="card-promise">Caminho crítico de planos de desenvolvimento.</div></div><span class="status st-partial">A portar</span></div>
+      <div class="card-body">RPCs <code class="dr-code">fn_plat_cpm_forward</code>/<code class="dr-code">_backward</code>/<code class="dr-code">_executar</code> do AIPrev. Aplicação: grafos de marcos com dependências em <code class="dr-code">ip_plano_marcos</code>.</div>
+      <div class="card-actions"><button class="btn btn-ghost" onclick="alert('Backlog priorizado: portar 3 RPCs CPM do AIPrev')">Backlog</button></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Forecaster (real)</div><div class="card-promise">Previsão de turnover, headcount, folha 30/60/90d.</div></div><span class="status st-partial">A portar</span></div>
+      <div class="card-body">Schema base existe (<code class="dr-code">ip_perfil_colaborador.risco_saida_estimado</code> + <code class="dr-code">ip_compensacao</code>). Falta: RPC <code class="dr-code">fn_ip_forecaster</code> + 3 cenários (otimista/base/pessimista).</div>
+      <div class="card-actions"><button class="btn btn-ghost" onclick="alert('Backlog: portar fn_agent_forecaster do AIPrev e adaptar pra people')">Backlog</button></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Fila EventBus (rate-limit)</div><div class="card-promise">Dispatcher assíncrono com retry e rate limit.</div></div><span class="status st-partial">A portar</span></div>
+      <div class="card-body">AIPrev usa <code class="dr-code">eventbus_dispatch_v2 · _enqueue · _process_queue · _check_rate_limit</code>. Útil para notificações compostas e escalonamento de sugestões.</div>
+      <div class="card-actions"><button class="btn btn-ghost" onclick="alert('Backlog: portar fila assíncrona do AIPrev')">Backlog</button></div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<div class="foot"><strong style="color:var(--navy);font-weight:500">Bastidores</strong> · O que sustenta a curadoria</div>
+
+<!-- DRAWER -->
+<div class="dr-ovl" id="dr-ovl" onclick="closeDrawer()"></div>
+<div class="dr" id="dr">
+  <div class="dr-h"><h3 id="dr-title">—</h3><button class="dr-x" onclick="closeDrawer()">×</button></div>
+  <div class="dr-body" id="dr-body"></div>
+</div>
+
+<script>
+function esc(s){if(s==null)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML}
+function setText(id,v){const el=document.getElementById(id);if(el)el.textContent=v??'—'}
+function openDrawer(title,html,init){
+  const ovl=document.getElementById('dr-ovl'),dr=document.getElementById('dr');
+  document.getElementById('dr-title').textContent=title;
+  document.getElementById('dr-body').innerHTML=html;
+  ovl.classList.add('on');dr.classList.add('on');
+  setTimeout(()=>{if(typeof init==='function')try{init(document.getElementById('dr-body'))}catch(e){}},10);
+}
+function closeDrawer(){document.getElementById('dr-ovl')?.classList.remove('on');document.getElementById('dr')?.classList.remove('on')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+
+async function bastidoresBoot(){
+  const sb=window.__IP_SB;if(!sb)return;
+  try{
+    const d1=new Date(Date.now()-864e5).toISOString();
+    const [{count:ev24},{count:obPend},{data:evStats}]=await Promise.all([
+      sb.from('ip_eventos').select('*',{count:'exact',head:true}).gte('ts',d1),
+      sb.from('ip_email_outbox').select('*',{count:'exact',head:true}).eq('status','pendente'),
+      sb.from('ip_eventos').select('source,ts').gte('ts',new Date(Date.now()-7*864e5).toISOString()).limit(500),
+    ]);
+    setText('b-ev24',ev24??0);
+    setText('b-ob',obPend??0);
+    const evCard=document.getElementById('ev-stats');
+    if(evCard){
+      const sources=new Set((evStats||[]).map(e=>e.source));
+      evCard.innerHTML=`<strong style="color:var(--navy);font-weight:500">${ev24??0}</strong> eventos nas últimas 24h · <strong>${(evStats||[]).length}</strong> em 7 dias · <strong>${sources.size}</strong> fontes ativas`;
+    }
+    const emStats=document.getElementById('email-stats');
+    if(emStats){
+      const [{count:sent7d}]=await Promise.all([
+        sb.from('ip_email_outbox').select('*',{count:'exact',head:true}).eq('status','enviado').gte('created_at',new Date(Date.now()-7*864e5).toISOString()),
+      ]);
+      emStats.innerHTML=`Tabela <code class="dr-code">ip_email_outbox</code> · <strong style="color:var(--navy)">${obPend??0}</strong> na fila · <strong>${sent7d??0}</strong> enviados em 7d. CC governamental automático para destinatários @innovasphere.ia.br.`;
+    }
+  }catch(e){console.warn('[bastidores] boot err',e)}
+}
+window.bastidoresBoot=bastidoresBoot;
+
+// ============================================================
+// FEATURES (mesma lógica do chro/index.html, escopo TI)
+// ============================================================
+function openTriggers(){
+  openDrawer('Triggers ativos · EventBus',`
+    <p class="dr-sub">Função <code class="dr-code">fn_ip_eventbus_capturar</code> conectada como AFTER INSERT/UPDATE/DELETE em 6 tabelas centrais. Toda mutação vira evento append-only em <code class="dr-code">ip_eventos</code>.</p>
+    <table class="dt">
+      <thead><tr><th>Tabela</th><th>Eventos</th><th>Snapshot</th></tr></thead>
+      <tbody>
+        <tr><td><code class="dr-code">ip_mandatos</code></td><td>I · U · D</td><td>before+after</td></tr>
+        <tr><td><code class="dr-code">ip_pulsos</code></td><td>I (anônimo)</td><td>after</td></tr>
+        <tr><td><code class="dr-code">ip_decisoes</code></td><td>I · U · D</td><td>before+after</td></tr>
+        <tr><td><code class="dr-code">ip_relacionamentos</code></td><td>I · U · D</td><td>before+after</td></tr>
+        <tr><td><code class="dr-code">ip_protocolos</code></td><td>I · U · D</td><td>before+after</td></tr>
+        <tr><td><code class="dr-code">ip_agent_sugestoes</code></td><td>U (status)</td><td>before+after</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:16px;padding:12px 14px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.55">Modelo direto do AIPrev (<code class="dr-code">trg_eventbus_generico</code> em <code class="dr-code">plat_plano_*</code>). Retenção 36 meses.</div>
+  `);
+}
+
+async function openEventBus(){
+  openDrawer('Trilha de Eventos','<div id="eb-body"><div class="dr-info">Carregando últimos eventos...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#eb-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_eventos').select('*').order('ts',{ascending:false}).limit(100);
+      if(error)throw error;
+      if(!data||!data.length){t.innerHTML='<div class="dr-empty">Trilha vazia.</div>';return}
+      t.innerHTML=data.map(e=>`<div style="padding:10px 12px;border-bottom:1px solid var(--border2);font-size:12px;display:flex;gap:12px;align-items:flex-start">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);min-width:90px">${new Date(e.ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>
+        <div style="flex:1"><div style="color:var(--navy);font-weight:500">${esc(e.source)} <span style="color:var(--ink3);font-weight:400">· ${esc(e.event_type||'')}</span></div>${e.actor?'<div style="font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:2px">'+esc(e.actor)+'</div>':''}</div>
+      </div>`).join('');
+    }catch(err){t.innerHTML='<div class="dr-err">Erro: '+esc(err.message)+'</div>'}
+  });
+}
+async function searchEvents(){
+  const t=prompt('Termo a buscar na trilha:');if(!t)return;
+  const sb=window.__IP_SB;if(!sb)return;
+  openDrawer('Busca: '+t,'<div class="dr-info">Buscando...</div>',async body=>{
+    try{
+      const {data,error}=await sb.rpc('fn_ip_historico_por_termo',{p_termo:t});
+      if(error)throw error;
+      if(!data||!data.length){body.innerHTML='<div class="dr-empty">Nenhum evento contém "'+esc(t)+'".</div>';return}
+      body.innerHTML=data.slice(0,80).map(e=>`<div style="padding:10px 12px;border-bottom:1px solid var(--border2);font-size:12px"><strong>${esc(e.source||'')}</strong> <em>${esc(e.event_type||'')}</em> <span style="font-family:var(--mono);font-size:10px;color:var(--ink3);float:right">${e.ts?new Date(e.ts).toLocaleString('pt-BR'):''}</span></div>`).join('');
+    }catch(err){body.innerHTML='<div class="dr-err">Erro: '+esc(err.message)+'</div>'}
+  });
+}
+
+async function openOutbox(){
+  openDrawer('E-mail Outbox','<div id="ob-body"><div class="dr-info">Carregando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#ob-body');if(!sb)return;
+    try{
+      const [pend,env,err]=await Promise.all([
+        sb.from('ip_email_outbox').select('*').eq('status','pendente').order('created_at',{ascending:false}).limit(30),
+        sb.from('ip_email_outbox').select('*').eq('status','enviado').order('enviado_em',{ascending:false}).limit(20),
+        sb.from('ip_email_outbox').select('*').or('status.eq.erro,status.eq.falhou').order('created_at',{ascending:false}).limit(15),
+      ]);
+      const tabs=[
+        {label:'Pendentes',cor:'#A86A1F',data:pend.data||[]},
+        {label:'Enviados',cor:'#2E8B6E',data:env.data||[]},
+        {label:'Falhas',cor:'#9B2C2C',data:err.data||[]},
+      ];
+      window.__OB_TABS=tabs;
+      t.innerHTML=`<div style="display:flex;gap:8px;margin-bottom:18px">${tabs.map((tb,i)=>`<button onclick="obTab(${i})" data-obtab="${i}" style="flex:1;padding:12px 8px;border-radius:6px;border:1px solid var(--border);background:${i===0?tb.cor+'18':'var(--white)'};color:${i===0?tb.cor:'var(--ink2)'};cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase">${tb.label}<br><strong style="font-family:var(--serif);font-size:22px;font-weight:500;letter-spacing:0">${tb.data.length}</strong></button>`).join('')}</div><div id="ob-list"></div>`;
+      obTab(0);
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+function obTab(i){
+  const tabs=window.__OB_TABS;if(!tabs)return;
+  document.querySelectorAll('[data-obtab]').forEach((b,idx)=>{b.style.background=idx===i?tabs[idx].cor+'18':'var(--white)';b.style.color=idx===i?tabs[idx].cor:'var(--ink2)'});
+  const list=document.getElementById('ob-list');if(!list)return;
+  const data=tabs[i].data;
+  if(!data.length){list.innerHTML='<div class="dr-empty">Vazio.</div>';return}
+  list.innerHTML=data.map(e=>{
+    const para=Array.isArray(e.para)?e.para.join(', '):(e.para||'');
+    return `<div style="padding:11px 13px;background:var(--white);border:1px solid var(--border);border-radius:4px;margin-bottom:6px">
+      <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:4px"><div style="color:var(--navy);font-weight:500;font-family:var(--serif);font-size:15px">${esc(e.assunto||'(sem assunto)')}</div><div style="font-family:var(--mono);font-size:10px;color:var(--ink3);white-space:nowrap">${e.created_at?new Date(e.created_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):''}</div></div>
+      <div style="font-size:11px;color:var(--ink3);word-break:break-all">para: ${esc(para)}${e.tentativas?` · ${e.tentativas} tentativas`:''}</div>
+      ${e.erro?`<div style="font-size:11px;color:var(--red);font-family:var(--mono);background:rgba(155,44,44,.06);padding:6px 8px;border-radius:3px;margin-top:6px">${esc((e.erro||'').slice(0,250))}</div>`:''}
+    </div>`;
+  }).join('');
+}
+async function sendTestEmail(){
+  const dest=prompt('Enviar e-mail de teste para qual destinatário?');if(!dest)return;
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dest)){alert('E-mail inválido.');return}
+  const sb=window.__IP_SB;
+  try{
+    const {error}=await sb.from('ip_email_outbox').insert({para:[dest],assunto:'[TESTE] InnovaPeople Outbox',html:'<p style="font-family:Cormorant Garamond,Georgia,serif;font-size:18px;color:#0A1628">Teste de envio a partir dos Bastidores.</p>',contexto:'teste-manual',status:'pendente'});
+    if(error)throw error;
+    alert('✓ Mensagem enfileirada.');openOutbox();
+  }catch(e){alert('Erro: '+e.message)}
+}
+
+function openWaSend(){
+  openDrawer('Envio WhatsApp direto',`
+    <p class="dr-sub">Mensagem direta via Evolution API (instância <code class="dr-code">picarras-hills</code>). Confirma o destinatário antes de enviar.</p>
+    <form id="wa-form" class="dr-form">
+      <label><span class="dr-lab">Número (DDI · ex: 5511987654321)</span><input type="text" name="numero" required pattern="\\d{10,15}" placeholder="5511987654321"></label>
+      <label><span class="dr-lab">Mensagem</span><textarea name="texto" rows="5" required></textarea></label>
+      <label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" name="confirma" required><span style="font-size:13px;color:var(--ink2)">Confirmo número e conteúdo.</span></label>
+      <div id="wa-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:11px 20px">Enviar</button>
+    </form>
+  `,body=>{
+    body.querySelector('#wa-form').addEventListener('submit',async ev=>{
+      ev.preventDefault();const f=ev.target;const r=body.querySelector('#wa-result');r.innerHTML='<div class="dr-info">Enviando...</div>';
+      try{
+        const sb=window.__IP_SB;
+        const {error}=await sb.functions.invoke('whatsapp-direto',{body:{action:'send',type:'text',number:f.numero.value,text:f.texto.value}});
+        if(error)throw error;
+        r.innerHTML='<div class="dr-ok">✓ Mensagem enviada.</div>';
+      }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+    });
+  });
+}
+function openWaTemplates(){
+  const tpls=[
+    {nome:'Convite Raio-X',texto:'Olá. Há uma sala que reflete sobre sua organização — sem comércio. Posso te mostrar?\n\n→ innovapeople.com.br/raio-x'},
+    {nome:'Convite Ritual',texto:'Te aguardo no nosso ritual de [DIA] às [HORA]. Pauta breve abaixo.'},
+    {nome:'Confirmação de trabalho',texto:'Confirmando o início do trabalho. Documento de escopo em [LINK]. Qualquer ajuste antes de assinar?'},
+    {nome:'Pulso quinzenal',texto:'Olá. Está aberto o pulso quinzenal. Anônimo, 2 minutos.\n\n[LINK]'},
+  ];
+  window.__WA_TPLS=tpls;
+  openDrawer('Templates WhatsApp','<p class="dr-sub">Clique pra abrir o envio com o texto pronto.</p>'+
+    tpls.map((t,i)=>`<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
+      <div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500;margin-bottom:6px">${esc(t.nome)}</div>
+      <div style="font-family:var(--serif);font-size:15px;color:var(--ink2);line-height:1.55;white-space:pre-wrap;margin-bottom:10px;font-style:italic">${esc(t.texto)}</div>
+      <button onclick="waUseTemplate(${i})" style="padding:6px 14px;border-radius:4px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--navy);color:var(--cream);border:none;cursor:pointer;font-family:inherit">Usar este</button>
+    </div>`).join(''));
+}
+function waUseTemplate(i){
+  const t=window.__WA_TPLS?.[i];if(!t)return;
+  openWaSend();
+  setTimeout(()=>{const ta=document.querySelector('#wa-form textarea[name="texto"]');if(ta)ta.value=t.texto},200);
+}
+
+async function syncCalNow(){
+  if(!confirm('Sincronizar rituais ativos com Google Calendar?'))return;
+  const sb=window.__IP_SB;
+  try{
+    const {data,error}=await sb.functions.invoke('innovapeople-calendar-agendar',{body:{}});
+    if(error)throw error;
+    alert('✓ Sincronização disparada.\n\n'+JSON.stringify(data,null,2).slice(0,400));
+  }catch(e){alert('Erro: '+e.message)}
+}
+
+async function openLgpd(){
+  openDrawer('Painel LGPD','<div id="lg-body"><div class="dr-info">Auditando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#lg-body');if(!sb)return;
+    try{
+      const since36m=new Date(Date.now()-36*30*864e5).toISOString();
+      const [evCnt,evOld,emailCnt,pulsosCnt,tokensCnt,relacCnt]=await Promise.all([
+        sb.from('ip_eventos').select('*',{count:'exact',head:true}),
+        sb.from('ip_eventos').select('*',{count:'exact',head:true}).lt('ts',since36m),
+        sb.from('ip_email_outbox').select('*',{count:'exact',head:true}),
+        sb.from('ip_pulsos').select('*',{count:'exact',head:true}),
+        sb.from('ip_pulse_tokens').select('*',{count:'exact',head:true}),
+        sb.from('ip_relacionamentos').select('*',{count:'exact',head:true}),
+      ]);
+      t.innerHTML=`<p class="dr-sub">Compliance é constitutivo — anonimato no pulso (k≥3), tokens descartáveis (14d), audit trail (36m), zero PII direto.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
+        <div style="padding:14px;background:var(--cream2);border-radius:6px"><div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">Eventos auditáveis</div><div style="font-family:var(--serif);font-size:28px;font-weight:500;color:var(--navy)">${evCnt.count??0}</div><div style="font-size:11px;color:${(evOld.count||0)>0?'var(--amber)':'var(--ink3)'};margin-top:2px">${evOld.count||0} fora da janela 36m</div></div>
+        <div style="padding:14px;background:var(--cream2);border-radius:6px"><div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">Pulsos anônimos</div><div style="font-family:var(--serif);font-size:28px;font-weight:500;color:var(--navy)">${pulsosCnt.count??0}</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">k-anonimato ≥ 3</div></div>
+        <div style="padding:14px;background:var(--cream2);border-radius:6px"><div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">Tokens descartáveis</div><div style="font-family:var(--serif);font-size:28px;font-weight:500;color:var(--navy)">${tokensCnt.count??0}</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">TTL 14 dias</div></div>
+        <div style="padding:14px;background:var(--cream2);border-radius:6px"><div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">E-mails outbox</div><div style="font-family:var(--serif);font-size:28px;font-weight:500;color:var(--navy)">${emailCnt.count??0}</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">CC governamental</div></div>
+      </div>
+      <div style="padding:14px;background:rgba(46,139,110,.06);border-left:3px solid var(--emerald);border-radius:4px;font-size:12px;color:var(--ink2);line-height:1.6"><strong style="color:var(--navy)">Garantias ativas:</strong><br>· Audit trail append-only com snapshot before/after<br>· Tokens de pulso com expires_at = created_at + 14d<br>· Pulsos sem PII direto (apenas hash opcional)<br>· Perfil sem nome — só rótulo, papel, equipe<br>· ${relacCnt.count??0} relacionamentos com consentimento implícito</div>`;
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+async function openAuditLog(){
+  openDrawer('Audit Log Extendido','<div id="al-body"><div class="dr-info">Carregando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#al-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_audit_log').select('*').order('created_at',{ascending:false}).limit(100);
+      if(error)throw error;
+      if(!data||!data.length){t.innerHTML='<div class="dr-empty">Audit log vazio.</div>';return}
+      t.innerHTML=data.map(a=>`<div style="padding:10px 12px;border-bottom:1px solid var(--border2);font-size:12px">
+        <div style="display:flex;justify-content:space-between"><strong style="color:var(--navy)">${esc(a.acao||a.action||a.event||'(sem ação)')}</strong><span style="font-family:var(--mono);font-size:10px;color:var(--ink3)">${a.created_at?new Date(a.created_at).toLocaleString('pt-BR'):''}</span></div>
+        ${a.actor||a.actor_email?'<div style="font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:2px">'+esc(a.actor||a.actor_email)+'</div>':''}
+        ${a.target||a.alvo?'<div style="font-size:11px;color:var(--ink2);margin-top:4px">alvo: '+esc(a.target||a.alvo)+'</div>':''}
+      </div>`).join('');
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+</script>
+
+</body>
+</html>
