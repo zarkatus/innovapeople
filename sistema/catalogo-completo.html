@@ -172,7 +172,14 @@
 .kb-col-h{font-family:var(--mn);font-size:.42rem;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--brd)}
 .kb-card{background:var(--srf);border:1px solid var(--brd);border-radius:4px;padding:8px;margin-bottom:6px;font-size:.64rem;cursor:pointer;transition:all .15s}.kb-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.06)}
 @media(max-width:900px){.sb{display:none}.wrapper{margin-left:0}.stats{grid-template-columns:1fr 1fr}.cols,.cols3{grid-template-columns:1fr}.ag-grid{grid-template-columns:1fr 1fr}.inv-form{grid-template-columns:1fr}.kb{grid-template-columns:1fr 1fr}.ai-pn{width:calc(100% - 28px);right:14px;left:14px}}
+
+/* FAB Curadoria (link p/ /sistema/chro/) */
+.fab-curadoria-cat{position:fixed;top:24px;right:24px;width:108px;height:108px;border-radius:50%;background:linear-gradient(135deg,#D4BA7A 0%,#A88440 100%);color:#FBFAF7;display:flex;align-items:center;justify-content:center;text-decoration:none;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:20px;letter-spacing:.01em;box-shadow:0 10px 32px rgba(196,163,90,.45),inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1px rgba(255,255,255,.1);transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:9999;text-align:center;line-height:1;cursor:pointer}
+.fab-curadoria-cat::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(196,163,90,.22);pointer-events:none}
+.fab-curadoria-cat:hover{transform:scale(1.07) rotate(-2deg);box-shadow:0 14px 40px rgba(196,163,90,.6)}
+@media(max-width:720px){.fab-curadoria-cat{width:80px;height:80px;font-size:14px;top:14px;right:14px}}
 </style></head><body>
+<a href="/sistema/chro/" class="fab-curadoria-cat" title="Curadoria — Centro de Comando"><span>Curadoria</span></a>
 <!-- AUTH -->
 <div class="auth" id="auth"><div class="auth-card"><div class="auth-logo">Innova<span>Sphere</span></div><div class="auth-sub">CRM Operacional · crm.innovapeople.com.br</div><input class="ainp" id="aE" type="email" placeholder="E-mail"><input class="ainp" id="aP" type="password" placeholder="Senha"><button class="abtn" onclick="doLogin()">Acessar</button><div class="aerr" id="aErr"></div></div></div>
 <div class="toast" id="toast"></div>

@@ -179,8 +179,7 @@ footer a{color:rgba(255,255,255,.65)}
       <a href="#inbox" class="sys-link" onclick="toggleSection('inbox');setTimeout(()=>window.scrollTo(0,document.getElementById('inbox-section').offsetTop-90),100);return false">Caixa de entrada</a>
       <a href="/sistema/agentes.html" class="sys-link">Agentes IA</a>
       <a href="/sistema/calendar.html" class="sys-link">Calendário</a>
-      <a href="/sistema/catalogo-completo.html" class="sys-link">Catálogo</a>
-      <a href="/sistema/chro/" class="sys-link" style="color:var(--gold-deep);font-weight:600">CHRO</a>
+      <a href="/sistema/catalogo-completo.html" class="sys-link">Plataforma operacional</a>
     </nav>
     <div class="nav-user">
       <span class="user-name"><strong id="user-display">—</strong></span>
@@ -188,6 +187,18 @@ footer a{color:rgba(255,255,255,.65)}
     </div>
   </div>
 </header>
+
+<!-- FAB CURADORIA · botão de acesso ao Centro de Comando CHRO -->
+<a href="/sistema/chro/" class="fab-curadoria" title="Curadoria — Centro de Comando">
+  <span>Curadoria</span>
+</a>
+<style>
+.fab-curadoria{position:fixed;top:92px;right:28px;width:112px;height:112px;border-radius:50%;background:linear-gradient(135deg,#D4BA7A 0%,#A88440 100%);color:#FBFAF7;display:flex;align-items:center;justify-content:center;text-decoration:none;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:21px;letter-spacing:.01em;box-shadow:0 10px 32px rgba(196,163,90,.42),inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1px rgba(255,255,255,.08);transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:60;cursor:pointer;text-align:center;line-height:1}
+.fab-curadoria::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(196,163,90,.18);pointer-events:none}
+.fab-curadoria:hover{transform:scale(1.07) rotate(-2deg);box-shadow:0 14px 40px rgba(196,163,90,.58),inset 0 1px 0 rgba(255,255,255,.3),0 0 0 1px rgba(255,255,255,.15)}
+.fab-curadoria:active{transform:scale(1.02)}
+@media(max-width:720px){.fab-curadoria{width:84px;height:84px;font-size:16px;top:78px;right:16px}}
+</style>
 
 <!-- LOGIN GATE -->
 <section class="login-wrap" id="login-gate">
