@@ -860,13 +860,73 @@ async function editarTags(){
 }
 
 async function abrirAuditoria(convId){
+  // Drawer overlay sobreposto com chain + validação
+  let ovl=document.getElementById('audit-overlay');
+  if(!ovl){
+    ovl=document.createElement('div');
+    ovl.id='audit-overlay';
+    ovl.style.cssText='position:fixed;inset:0;background:rgba(10,22,40,.62);backdrop-filter:blur(8px);z-index:8000;display:none;align-items:center;justify-content:center;padding:30px';
+    ovl.onclick=e=>{if(e.target===ovl)ovl.style.display='none'};
+    document.body.appendChild(ovl);
+  }
+  ovl.innerHTML=`<div style="background:var(--white);border-radius:8px;max-width:880px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(10,22,40,.4);overflow:hidden">
+    <div style="padding:20px 28px;border-bottom:1px solid var(--border);background:var(--cream);display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <h3 style="font-family:var(--serif);font-size:24px;color:var(--navy);font-weight:500;margin:0">Auditoria forense <em style="color:var(--gold-deep);font-style:italic">com hash chain</em></h3>
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-top:4px">Conversa ${esc((convId||'').slice(0,8))}… · prev_hash → hash imutável</div>
+      </div>
+      <button onclick="document.getElementById('audit-overlay').style.display='none'" style="font-size:26px;color:var(--ink3);background:none;border:none;cursor:pointer;padding:4px 12px">×</button>
+    </div>
+    <div style="padding:18px 28px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(196,163,90,.06),transparent);display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <button onclick="validarChain()" style="padding:9px 20px;background:var(--navy);color:var(--cream);border:none;border-radius:5px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-family:inherit;cursor:pointer">Validar integridade global</button>
+      <div id="audit-resultado" style="flex:1;font-size:12px;color:var(--ink3);font-family:var(--serif);font-style:italic;font-size:14px"></div>
+    </div>
+    <div id="audit-trail" style="flex:1;overflow-y:auto;padding:18px 28px;font-family:var(--mono);font-size:11px">
+      <div style="text-align:center;color:var(--ink3);font-family:var(--serif);font-size:17px;font-style:italic;padding:30px">Carregando trilha…</div>
+    </div>
+  </div>`;
+  ovl.style.display='flex';
   try{
-    const {data,error}=await sb().from('wa_audit_log').select('*').eq('entidade','wa_conversation').eq('entidade_id',convId).order('ocorrido_em',{ascending:false}).limit(50);
+    // Busca audit log relacionado a esta conversa: por entidade_id da conversa OU mensagens da conversa
+    const c=_state.conversas.find(c=>c.conversa_id===convId);
+    const msgIds=_state.mensagens.map(m=>m.id).filter(Boolean);
+    const filtros=[
+      sb().from('wa_audit_log').select('*').eq('entidade_id',convId).order('ocorrido_em',{ascending:false}),
+    ];
+    if(c?.contato_id)filtros.push(sb().from('wa_audit_log').select('*').eq('entidade_id',c.contato_id).order('ocorrido_em',{ascending:false}));
+    if(msgIds.length)filtros.push(sb().from('wa_audit_log').select('*').in('entidade_id',msgIds).order('ocorrido_em',{ascending:false}));
+    const ress=await Promise.all(filtros);
+    const all=[];
+    ress.forEach(r=>{if(r.data)all.push(...r.data)});
+    // Dedup
+    const uniq=Array.from(new Map(all.map(a=>[a.id,a])).values()).sort((a,b)=>new Date(b.ocorrido_em)-new Date(a.ocorrido_em));
+    const trail=document.getElementById('audit-trail');
+    if(!uniq.length){trail.innerHTML='<div style="text-align:center;color:var(--ink3);font-family:var(--serif);font-size:17px;font-style:italic;padding:30px">Nenhum evento de auditoria relacionado a esta conversa ainda.</div>';return}
+    trail.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:11px">'+
+      '<thead><tr style="background:var(--cream2)"><th style="padding:8px 10px;text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500">Quando</th><th style="padding:8px 10px;text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500">Ação</th><th style="padding:8px 10px;text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500">Ator</th><th style="padding:8px 10px;text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500">prev_hash → hash</th></tr></thead><tbody>'+
+      uniq.slice(0,100).map(a=>`<tr style="border-bottom:1px solid var(--border2)">
+        <td style="padding:8px 10px;color:var(--ink2);white-space:nowrap">${new Date(a.ocorrido_em).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'})}</td>
+        <td style="padding:8px 10px"><span style="background:rgba(196,163,90,.1);color:var(--gold-deep);padding:2px 8px;border-radius:9px;font-size:10px;letter-spacing:.06em">${esc(a.acao||'')}</span> <span style="color:var(--ink3);font-size:10px;margin-left:6px">${esc(a.entidade||'')}</span></td>
+        <td style="padding:8px 10px;color:var(--ink2);font-size:11px">${esc(a.ator_email||'(sistema)')}</td>
+        <td style="padding:8px 10px;color:var(--ink3);font-size:10px;letter-spacing:.04em">${esc((a.prev_hash||'').slice(0,8))}… → ${esc((a.hash||'').slice(0,8))}…</td>
+      </tr>`).join('')+'</tbody></table>';
+  }catch(e){
+    document.getElementById('audit-trail').innerHTML='<div style="color:var(--red);padding:20px">Erro: '+esc(e.message)+'</div>';
+  }
+}
+
+async function validarChain(){
+  const r=document.getElementById('audit-resultado');
+  if(!r)return;
+  r.innerHTML='<em>Validando trilha completa…</em>';
+  try{
+    const {data,error}=await sb().rpc('fn_wa_audit_verify',{p_limit:5000});
     if(error)throw error;
-    if(!data||!data.length){alert('Nenhum evento de auditoria para esta conversa.');return}
-    const txt=data.map(a=>`${new Date(a.ocorrido_em).toLocaleString('pt-BR')} — ${a.acao} — ${a.ator_email||'(sistema)'}`).join('\n');
-    alert('Auditoria (últimos 50 eventos):\n\n'+txt);
-  }catch(e){alert('Erro: '+e.message)}
+    const ok=data.quebrados===0;
+    r.innerHTML=`<span style="color:${ok?'var(--emerald)':'var(--red)'}"><strong>${ok?'✓':'⚠'} ${data.integros}/${data.total} entries íntegras</strong></span> · integridade <strong>${data.integridade_pct}%</strong>${data.quebrados>0?` · <span style="color:var(--red)">primeira quebra em ${new Date(data.primeira_quebra_em).toLocaleString('pt-BR')}</span>`:' · cadeia completa válida'}`;
+  }catch(e){
+    r.innerHTML='<span style="color:var(--red)">Erro: '+esc(e.message)+'</span>';
+  }
 }
 
 // ============================================================
