@@ -1691,22 +1691,60 @@ async function openAcoesBib(){
   openDrawer('Biblioteca de ações curadas','<div id="ab-body"><div class="dr-info">Carregando...</div></div>',async body=>{
     const sb=window.__IP_SB;const t=body.querySelector('#ab-body');if(!sb)return;
     try{
-      const {data,error}=await sb.from('ip_acoes_template').select('*').order('ireu_score',{ascending:false}).limit(50);
+      const {data,error}=await sb.from('ip_acoes_template').select('*').eq('ativo',true).limit(50);
       if(error)throw error;
       if(!data||!data.length){t.innerHTML='<div class="dr-empty">Biblioteca vazia — seed inicial pendente.</div>';return}
-      t.innerHTML=data.map(a=>`<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px"><div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500">${esc(a.titulo||a.nome||'(sem título)')}</div><span style="font-family:var(--mono);font-size:11px;color:var(--gold-deep);background:rgba(196,163,90,.1);padding:2px 8px;border-radius:10px;letter-spacing:.04em">IREU ${a.ireu_score||0}</span></div>
-        <div style="font-size:12px;color:var(--ink2);line-height:1.5">${esc(a.descricao||'')}</div>
-      </div>`).join('');
+      // Ordena client-side por IRE (urgência só faz sentido por instância)
+      const sorted=[...data].sort((a,b)=>((+b.impacto||0)*(+b.relevancia||0)*(+b.efeito_borboleta||0))-((+a.impacto||0)*(+a.relevancia||0)*(+a.efeito_borboleta||0)));
+      t.innerHTML=`<div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px">${sorted.length} ações curadas · ordenadas por I × R × E</div>`+
+        sorted.map(a=>{
+          const ire=(+a.impacto||0)*(+a.relevancia||0)*(+a.efeito_borboleta||0);
+          return `<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
+              <div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500">${esc(a.titulo||'(sem título)')}</div>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--gold-deep);background:rgba(196,163,90,.1);padding:2px 10px;border-radius:10px;letter-spacing:.04em">IRE ${ire}</span>
+            </div>
+            ${a.frente?`<div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase;margin-bottom:8px">${esc(a.frente)}${a.prazo_dias?` · ${a.prazo_dias}d`:''}</div>`:''}
+            <div style="font-size:12px;color:var(--ink2);line-height:1.55;margin-bottom:8px">${esc(a.descricao||'')}</div>
+            <div style="display:flex;gap:14px;font-size:11px;color:var(--ink3);font-family:var(--mono);letter-spacing:.04em">
+              <span>I: <strong>${a.impacto||0}</strong></span>
+              <span>R: <strong>${a.relevancia||0}</strong></span>
+              <span>E: <strong>${a.efeito_borboleta||0}</strong></span>
+              ${a.esforco_estimado?`<span style="margin-left:auto">esforço: ${esc(a.esforco_estimado)}</span>`:''}
+            </div>
+          </div>`;
+        }).join('');
     }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
   });
 }
-function generatePlano(){
-  const id=prompt('ID do trabalho (mandato) para gerar plano:');if(!id)return;
-  const sb=window.__IP_SB;
-  sb.rpc('fn_ip_plano_gerar',{p_mandato_id:id}).then(({data,error})=>{
-    if(error)alert('Erro: '+error.message);else alert('Plano gerado:\n'+JSON.stringify(data,null,2).slice(0,400));
+async function generatePlano(){
+  openDrawer('Gerar plano de ações','<div id="gp-body"><div class="dr-info">Carregando trabalhos...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#gp-body');if(!sb)return;
+    try{
+      const {data}=await sb.from('ip_mandatos').select('id,empresa,estagio').neq('estagio','encerrado').order('created_at',{ascending:false});
+      if(!data||!data.length){t.innerHTML='<div class="dr-empty">Nenhum trabalho ativo. Crie um primeiro.</div>';return}
+      t.innerHTML=`<p class="dr-sub">A RPC <code class="dr-code">fn_ip_plano_gerar</code> combina templates aplicáveis + sugestões críticas + sintomas do Raio-X e retorna lista IREU-scored.</p>
+      <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px"><span class="dr-lab">Escolha o trabalho</span><select id="gp-sel" style="padding:10px 12px;border:1px solid var(--border);border-radius:4px;font:inherit">${data.map(m=>`<option value="${esc(m.id)}">${esc(m.empresa)} · ${esc(m.estagio||'—')}</option>`).join('')}</select></label>
+      <button class="btn btn-primary" onclick="runGeneratePlano()" style="padding:11px 22px">Gerar plano</button>
+      <div id="gp-result" style="margin-top:18px"></div>`;
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
   });
+}
+async function runGeneratePlano(){
+  const sel=document.getElementById('gp-sel');const res=document.getElementById('gp-result');
+  if(!sel||!sel.value)return;
+  res.innerHTML='<div class="dr-info">Gerando plano via RPC...</div>';
+  try{
+    const sb=window.__IP_SB;
+    const {data,error}=await sb.rpc('fn_ip_plano_gerar',{p_mandato_id:sel.value});
+    if(error)throw error;
+    const acoes=Array.isArray(data)?data:(data?.acoes||data?.plano||[]);
+    if(!acoes.length){res.innerHTML='<div class="dr-empty">RPC executou mas nenhuma ação foi gerada. Pode não haver sintomas ou sugestões críticas suficientes.</div>';return}
+    res.innerHTML=`<div class="dr-ok" style="margin-bottom:14px">✓ <strong>${acoes.length}</strong> ações geradas e inseridas em <code class="dr-code">ip_plano_acoes</code>.</div>`+
+      acoes.slice(0,12).map(a=>`<div style="background:var(--white);border:1px solid var(--border);border-radius:4px;padding:10px 13px;margin-bottom:6px;font-size:12px">
+        <div style="display:flex;justify-content:space-between;gap:10px"><div style="color:var(--navy);font-weight:500">${esc(a.titulo||a.descricao||'')}</div><span style="font-family:var(--mono);font-size:10px;color:var(--gold-deep)">IREU ${a.ireu_score||0}</span></div>
+      </div>`).join('');
+  }catch(e){res.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
 }
 
 async function openDecisoes(){
@@ -2169,16 +2207,250 @@ async function loadOlapData(janela){
   }
 }
 
-function syncCalNow(){notImpl('Sync Google Calendar (EF innovapeople-calendar-agendar)')}
-function previewDigest(){notImpl('Preview do digest semanal (v_ip_digest_semanal)')}
-function sendDigestNow(){notImpl('Disparar digest (EF innovapeople-digest-semanal)')}
-function openWaSend(){notImpl('Envio WhatsApp (EF whatsapp-direto)')}
-function openWaTemplates(){notImpl('Templates WhatsApp')}
-function openLgpd(){notImpl('Painel LGPD · auditoria de retenção')}
-function defineSpec(mod){alert('Spec aberta para: '+mod+'\n\nPróximo passo: definir contrato de dados, UI mínima viável e gatilhos de automação.')}
-function seedSkill(){notImpl('Popular ip_skill_map com sample')}
-function exportOlap(){notImpl('Exportar CSV de tendências (versão CSV)')}
-function openTriggers(){notImpl('Listar trg_* em ip_eventos')}
+// ============================================================
+// DIGEST SEMANAL — view v_ip_digest_semanal + EF innovapeople-digest-semanal
+// ============================================================
+async function previewDigest(){
+  openDrawer('Preview · Digest Semanal','<div id="dg-body"><div class="dr-info">Carregando dados do digest...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#dg-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('v_ip_digest_semanal').select('*');
+      if(error)throw error;
+      if(!data||!data.length){t.innerHTML='<div class="dr-empty">Nenhum trabalho ativo gera digest no momento.</div>';return}
+      t.innerHTML=`<p class="dr-sub">Composer do digest enviado todo domingo às 18h UTC. Cada trabalho ativo ganha um bloco com pulso 7d, score, delta, sugestões críticas pendentes.</p>
+        <button class="btn btn-primary" style="margin-bottom:16px" onclick="sendDigestNow()">Disparar agora (todos os trabalhos)</button>`+
+        data.map(d=>{
+          const delta=(+d.score_7d||0)-(+d.score_7d_anterior||0);
+          const cor=delta<-0.5?'var(--red)':delta>0.5?'var(--emerald)':'var(--ink2)';
+          return `<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:8px">
+              <div>
+                <div style="font-family:var(--serif);font-size:19px;color:var(--navy);font-weight:500">${esc(d.empresa)}</div>
+                <div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase;margin-top:2px">${esc(d.estagio||'—')}${d.socio_responsavel?` · ${esc(d.socio_responsavel)}`:''}</div>
+              </div>
+              <button onclick="sendDigestForMandato('${esc(d.mandato_id)}','${esc(d.empresa)}')" style="padding:6px 12px;border-radius:3px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--navy);color:var(--cream);border:none;cursor:pointer;font-family:inherit;height:fit-content">Enviar este</button>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:12px">
+              <div style="text-align:center;padding:10px;background:var(--cream2);border-radius:4px">
+                <div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)">Pulsos 7d</div>
+                <div style="font-family:var(--serif);font-size:22px;font-weight:500;color:var(--navy)">${d.pulsos_7d||0}</div>
+              </div>
+              <div style="text-align:center;padding:10px;background:var(--cream2);border-radius:4px">
+                <div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)">Score 7d</div>
+                <div style="font-family:var(--serif);font-size:22px;font-weight:500;color:var(--navy)">${(+d.score_7d||0).toFixed(1)}</div>
+                <div style="font-size:10px;color:${cor};font-family:var(--mono);margin-top:2px">${delta>=0?'+':''}${delta.toFixed(1)}</div>
+              </div>
+              <div style="text-align:center;padding:10px;background:${(d.sugestoes_criticas_pendentes||0)>0?'rgba(155,44,44,.06)':'var(--cream2)'};border-radius:4px">
+                <div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)">Críticas</div>
+                <div style="font-family:var(--serif);font-size:22px;font-weight:500;color:${(d.sugestoes_criticas_pendentes||0)>0?'var(--red)':'var(--ink2)'}">${d.sugestoes_criticas_pendentes||0}</div>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+async function sendDigestNow(){
+  if(!confirm('Disparar o digest para TODOS os trabalhos ativos AGORA?\n\nIsso envia e-mail real aos sócios responsáveis registrados em cada mandato.'))return;
+  const sb=window.__IP_SB;
+  try{
+    const {data,error}=await sb.functions.invoke('innovapeople-digest-semanal',{body:{}});
+    if(error)throw error;
+    alert('✓ Digest disparado.\n\n'+JSON.stringify(data,null,2).slice(0,500));
+  }catch(e){alert('Erro: '+e.message)}
+}
+async function sendDigestForMandato(id,empresa){
+  if(!confirm('Enviar digest somente para '+empresa+'?'))return;
+  const sb=window.__IP_SB;
+  try{
+    const {data,error}=await sb.functions.invoke('innovapeople-digest-semanal',{body:{mandato_id:id}});
+    if(error)throw error;
+    alert('✓ Enviado para '+empresa+'.\n\n'+JSON.stringify(data,null,2).slice(0,300));
+  }catch(e){alert('Erro: '+e.message)}
+}
+
+// ============================================================
+// GOOGLE CALENDAR — EF innovapeople-calendar-agendar
+// ============================================================
+async function syncCalNow(){
+  if(!confirm('Sincronizar rituais ativos com Google Calendar dos sócios?\n\nA EF innovapeople-calendar-agendar lê ip_rituais (ativo=true com proxima_em definida) e cria/atualiza eventos.'))return;
+  const sb=window.__IP_SB;
+  try{
+    const {data,error}=await sb.functions.invoke('innovapeople-calendar-agendar',{body:{}});
+    if(error)throw error;
+    alert('✓ Sincronização disparada.\n\n'+JSON.stringify(data,null,2).slice(0,400));
+  }catch(e){alert('Erro: '+e.message+'\n\nSe disser "OAuth necessário", abra primeiro o Calendar via /sistema/calendar.html')}
+}
+
+// ============================================================
+// WHATSAPP DIRETO — EF whatsapp-direto
+// ============================================================
+function openWaSend(){
+  openDrawer('Envio WhatsApp direto',`
+    <p class="dr-sub">Mensagem direta via Evolution API (instância <code class="dr-code">picarras-hills</code>). Confirma o destinatário antes de enviar.</p>
+    <form id="wa-form" class="dr-form">
+      <label><span class="dr-lab">Número (com DDI · ex: 5511987654321)</span><input type="text" name="numero" required pattern="\\d{10,15}" placeholder="5511987654321"></label>
+      <label><span class="dr-lab">Mensagem</span><textarea name="texto" rows="5" required></textarea></label>
+      <label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" name="confirma" required><span style="font-size:13px;color:var(--ink2)">Confirmo que este é o número certo e o conteúdo está aprovado.</span></label>
+      <div id="wa-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:11px 20px;font-size:13px">Enviar</button>
+    </form>
+  `,body=>{
+    body.querySelector('#wa-form').addEventListener('submit',async ev=>{
+      ev.preventDefault();const f=ev.target;const r=body.querySelector('#wa-result');r.innerHTML='<div class="dr-info">Enviando...</div>';
+      try{
+        const sb=window.__IP_SB;
+        const {data,error}=await sb.functions.invoke('whatsapp-direto',{body:{action:'send',type:'text',number:f.numero.value,text:f.texto.value}});
+        if(error)throw error;
+        r.innerHTML='<div class="dr-ok">✓ Mensagem enviada via Evolution.</div>';
+      }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+    });
+  });
+}
+function openWaTemplates(){
+  const tpls=[
+    {nome:'Convite Raio-X',texto:'Olá. Há uma sala que reflete sobre sua organização — sem comércio. Posso te mostrar?\n\n→ innovapeople.com.br/raio-x'},
+    {nome:'Convite Ritual',texto:'Te aguardo no nosso ritual de [DIA] às [HORA]. Pauta breve abaixo.'},
+    {nome:'Confirmação de trabalho',texto:'Confirmando o início do trabalho. O documento de escopo está em [LINK]. Qualquer ajuste antes de assinar?'},
+    {nome:'Pulso quinzenal',texto:'Olá. Está aberto o pulso quinzenal. Anônimo, 2 minutos, sem ninguém vendo respostas individuais.\n\n[LINK]'},
+  ];
+  openDrawer('Templates WhatsApp',`<p class="dr-sub">Clique para copiar e abrir o formulário de envio com o texto pronto.</p>`+
+    tpls.map((t,i)=>`<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
+      <div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500;margin-bottom:6px">${esc(t.nome)}</div>
+      <div style="font-size:13px;color:var(--ink2);line-height:1.55;white-space:pre-wrap;margin-bottom:10px;font-style:italic">${esc(t.texto)}</div>
+      <button onclick="waUseTemplate(${i})" style="padding:6px 14px;border-radius:4px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--navy);color:var(--cream);border:none;cursor:pointer;font-family:inherit">Usar este</button>
+    </div>`).join(''));
+  window.__WA_TPLS=tpls;
+}
+function waUseTemplate(i){
+  const t=window.__WA_TPLS?.[i];if(!t)return;
+  openWaSend();
+  setTimeout(()=>{const ta=document.querySelector('#wa-form textarea[name="texto"]');if(ta){ta.value=t.texto}},200);
+}
+
+// ============================================================
+// LGPD — Painel de auditoria + retenção
+// ============================================================
+async function openLgpd(){
+  openDrawer('Painel LGPD','<div id="lg-body"><div class="dr-info">Auditando retenções...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#lg-body');if(!sb)return;
+    try{
+      const since36m=new Date(Date.now()-36*30*864e5).toISOString();
+      const [evCnt,evOld,emailCnt,pulsosCnt,tokensCnt,relacCnt]=await Promise.all([
+        sb.from('ip_eventos').select('*',{count:'exact',head:true}),
+        sb.from('ip_eventos').select('*',{count:'exact',head:true}).lt('ts',since36m),
+        sb.from('ip_email_outbox').select('*',{count:'exact',head:true}),
+        sb.from('ip_pulsos').select('*',{count:'exact',head:true}),
+        sb.from('ip_pulse_tokens').select('*',{count:'exact',head:true}),
+        sb.from('ip_relacionamentos').select('*',{count:'exact',head:true}),
+      ]);
+      t.innerHTML=`<p class="dr-sub">Compliance é constitutivo — anonimato no pulso (k≥3), tokens descartáveis (14d), audit trail imutável (36m), zero PII anônima em <code class="dr-code">ip_perfil_colaborador</code>.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
+        <div style="padding:14px;background:var(--cream2);border-radius:6px">
+          <div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">Eventos auditáveis</div>
+          <div style="font-family:var(--serif);font-size:28px;font-weight:500;color:var(--navy)">${evCnt.count??0}</div>
+          <div style="font-size:11px;color:${(evOld.count||0)>0?'var(--amber)':'var(--ink3)'};margin-top:2px">${evOld.count||0} fora da janela 36m</div>
+        </div>
+        <div style="padding:14px;background:var(--cream2);border-radius:6px">
+          <div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">Pulsos anônimos</div>
+          <div style="font-family:var(--serif);font-size:28px;font-weight:500;color:var(--navy)">${pulsosCnt.count??0}</div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:2px">k-anonimato ≥ 3 garantido por agregação</div>
+        </div>
+        <div style="padding:14px;background:var(--cream2);border-radius:6px">
+          <div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">Tokens de pulso</div>
+          <div style="font-family:var(--serif);font-size:28px;font-weight:500;color:var(--navy)">${tokensCnt.count??0}</div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:2px">descartáveis · TTL 14 dias</div>
+        </div>
+        <div style="padding:14px;background:var(--cream2);border-radius:6px">
+          <div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">E-mails outbox</div>
+          <div style="font-family:var(--serif);font-size:28px;font-weight:500;color:var(--navy)">${emailCnt.count??0}</div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:2px">com CC governamental aos sócios</div>
+        </div>
+      </div>
+      <div style="padding:14px;background:rgba(46,139,110,.06);border-left:3px solid var(--emerald);border-radius:4px;font-size:12px;color:var(--ink2);line-height:1.6">
+        <strong style="color:var(--navy)">Garantias ativas:</strong><br>
+        · Audit trail append-only (<code class="dr-code">ip_eventos</code>) com snapshot before/after por actor<br>
+        · Tokens de pulso (<code class="dr-code">ip_pulse_tokens</code>) com expires_at = created_at + 14d, invalidados após uso<br>
+        · Pulsos sem PII direto — apenas hash opcional (<code class="dr-code">p_colaborador_hash</code>) para dedup<br>
+        · Perfil de colaborador (<code class="dr-code">ip_perfil_colaborador</code>) sem nome — só rótulo, papel, equipe<br>
+        · ${relacCnt.count??0} relacionamentos com consentimento implícito (contato profissional registrado pelo titular)
+      </div>`;
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+
+// ============================================================
+// SKILL MAP — ip_skill_map (anonimizado, agregado)
+// ============================================================
+async function openSkillMap(){
+  openDrawer('Skill Map · agregado anônimo','<div id="sk-body"><div class="dr-info">Carregando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#sk-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_skill_map').select('*').limit(500);
+      if(error)throw error;
+      if(!data||!data.length){t.innerHTML='<div class="dr-empty">Tabela <code class="dr-code">ip_skill_map</code> ainda vazia. Cadastre perfis de colaborador + suas competências primeiro.</div>';return}
+      // 6 dimensões: s_tecnica, s_orquestracao, s_julgamento, s_relacao, s_ia_automacao, s_gestao (0-10)
+      const dims=['s_tecnica','s_orquestracao','s_julgamento','s_relacao','s_ia_automacao','s_gestao'];
+      const labels={s_tecnica:'Técnica',s_orquestracao:'Orquestração',s_julgamento:'Julgamento',s_relacao:'Relação',s_ia_automacao:'IA / Automação',s_gestao:'Gestão'};
+      const avg={};dims.forEach(d=>{let s=0,n=0;data.forEach(r=>{if(typeof r[d]==='number'){s+=r[d];n++}});avg[d]=n?+(s/n).toFixed(1):0});
+      const maxVal=10;
+      t.innerHTML=`<p class="dr-sub">Seis competências em escala 0–10. Agregado por equipe, sem nomes individuais.</p>
+      <div style="margin-bottom:18px;display:grid;grid-template-columns:1fr;gap:8px">
+        ${dims.map(d=>{
+          const v=avg[d];const pct=(v/maxVal)*100;
+          const cor=v<4?'var(--red)':v<6?'var(--amber)':v<8?'var(--gold)':'var(--emerald)';
+          return `<div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px"><span style="color:var(--navy)">${labels[d]}</span><span style="font-family:var(--mono);color:${cor};font-weight:500">${v.toFixed(1)}/10</span></div>
+            <div style="height:8px;background:var(--cream2);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${cor};border-radius:4px;transition:width .5s"></div></div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px">${data.length} perfis avaliados</div>
+      <div style="padding:12px 14px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.5">
+        Próximo passo: heatmap individual (perfil × dimensão) com hover qualitativo e identificação de gaps colaborativos. Cruzamento com 9-Box Grid quando o schema estiver completo.
+      </div>`;
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+
+function defineSpec(mod){
+  // Atalhos pra módulos que já têm UI; senão exibe spec genérico
+  const map={'skill-map':openSkillMap,'perfil':openSkillMap,'evm-people':openEvmPeople,'cpm-dev':openCpmDev,'forecaster':openForecaster};
+  if(map[mod])return map[mod]();
+  alert('Spec aberta para: '+mod+'\n\nPróximo passo: definir contrato de dados, UI mínima viável e gatilhos de automação.');
+}
+function seedSkill(){openSkillMap()}
+function exportOlap(){
+  // Reusa dados do gráfico atual
+  if(!_olapChart){alert('Abra primeiro o painel de tendências.');return}
+  const labels=_olapChart.data.labels;
+  const cur=_olapChart.data.datasets[0].data;
+  const prev=_olapChart.data.datasets[1].data;
+  const csv=['dimensao,atual,anterior',...labels.map((l,i)=>`${l},${cur[i]},${prev[i]}`)].join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='innovapeople-tendencias-'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function openTriggers(){
+  openDrawer('Triggers ativos · EventBus',`
+    <p class="dr-sub">Função <code class="dr-code">fn_ip_eventbus_capturar</code> está conectada como AFTER INSERT/UPDATE/DELETE em 6 tabelas centrais. Toda mutação vira evento append-only em <code class="dr-code">ip_eventos</code>.</p>
+    <table class="dt">
+      <thead><tr><th>Tabela</th><th>Eventos capturados</th><th>Snapshot</th></tr></thead>
+      <tbody>
+        <tr><td><code class="dr-code">ip_mandatos</code></td><td>INSERT · UPDATE · DELETE</td><td>before+after</td></tr>
+        <tr><td><code class="dr-code">ip_pulsos</code></td><td>INSERT (anônimo)</td><td>after</td></tr>
+        <tr><td><code class="dr-code">ip_decisoes</code></td><td>INSERT · UPDATE · DELETE</td><td>before+after</td></tr>
+        <tr><td><code class="dr-code">ip_relacionamentos</code></td><td>INSERT · UPDATE · DELETE</td><td>before+after</td></tr>
+        <tr><td><code class="dr-code">ip_protocolos</code></td><td>INSERT · UPDATE · DELETE</td><td>before+after</td></tr>
+        <tr><td><code class="dr-code">ip_agent_sugestoes</code></td><td>UPDATE (status)</td><td>before+after</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:16px;padding:12px 14px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.55">
+      Modelo direto do AIPrev (<code class="dr-code">trg_eventbus_generico</code> em <code class="dr-code">plat_plano_*</code>). Retenção 36 meses por padrão. Indexes em <code class="dr-code">(ts DESC, source, actor)</code> para busca forense via <code class="dr-code">fn_ip_historico_por_termo</code>.
+    </div>
+  `);
+}
 function openMatteringStatus(){alert('Mattering — estado atual:\n\n· Agente Mattering Coach: operacional (vigia propósito + pertencimento < 6).\n· Frente conceitual: em construção na InnovaSphere ao lado do AIPrev.\n· Próximo passo conjunto: dimensão longitudinal (mattering trajectory) com retroalimentação visível ao colaborador.\n\nO que evoluir lá, importa para cá. O que aqui produzirmos de bom, modela lá.')}
 function notImpl(name){alert('Em construção: '+name+'\n\nO contrato de dados está mapeado — falta a UI dedicada na próxima rodada.')}
 </script>
