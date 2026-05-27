@@ -285,7 +285,13 @@ async function init() {
     await sb.auth.signOut();
     showLogin('E-mail não autorizado a acessar este sistema.');
   } else {
-    showLogin();
+    // Se veio de uma página interna que exige auth, contextualiza
+    try {
+      const params = new URLSearchParams(location.search);
+      const from = params.get('from');
+      const fromMap = { catalogo: 'Acesso ao Catálogo Completo exige autenticação.' };
+      showLogin(from && fromMap[from] ? fromMap[from] : '');
+    } catch(_) { showLogin(); }
   }
 }
 
@@ -322,6 +328,17 @@ function showLoginError(msg) {
 }
 
 function showDashboard(user) {
+  // Se o usuário veio de uma página interna que exige auth (ex: ?from=catalogo),
+  // redireciona de volta após login bem-sucedido
+  try {
+    const params = new URLSearchParams(location.search);
+    const from = params.get('from');
+    const redirectMap = { catalogo: '/sistema/catalogo-completo.html' };
+    if (from && redirectMap[from]) {
+      window.location.replace(redirectMap[from]);
+      return;
+    }
+  } catch(_){}
   document.getElementById('login-gate').style.display = 'none';
   document.getElementById('dashboard').classList.add('show');
   document.getElementById('topbar').style.display = 'block';
