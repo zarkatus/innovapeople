@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Organograma · CHRO · InnovaPeople</title>
+<meta name="robots" content="noindex,nofollow">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@v3.12.0/dist/pptxgen.bundle.js"></script>
+
+<script>
+(function ipAuthGate(){
+  const SUPA_URL='https://auth.innovasphere.ia.br';
+  const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br'];
+  function inj(){if(document.getElementById('ip-auth-ovl'))return;const o=document.createElement('div');o.id='ip-auth-ovl';o.style.cssText='position:fixed;inset:0;background:#0A1628;color:#3DA882;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647';o.innerHTML='<div>Validando acesso…</div>';(document.body||document.documentElement).appendChild(o)}
+  function rm(){const o=document.getElementById('ip-auth-ovl');if(o)o.remove()}
+  function allow(email){rm();window.__IP_USER_EMAIL=email;const el=document.getElementById('user-display');if(el&&email)el.textContent=email;if(typeof window.orgBoot==='function')try{window.orgBoot()}catch(e){}else setTimeout(()=>{if(typeof window.orgBoot==='function')try{window.orgBoot()}catch(e){}},300)}
+  if(document.body)inj();else document.addEventListener('DOMContentLoaded',inj,{once:true});
+  const s=setTimeout(()=>allow(''),6000);
+  (async()=>{try{if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=organograma');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
+})();
+</script>
+
+<link rel="icon" href="/sistema/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@200;300;400;500;600;700;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0A1628;--navy2:#0F1D32;--navy3:#152740;
+  --cream:#F5F0E8;--cream2:#EFE9DD;--cream3:#E8E2D3;--white:#FBFAF7;
+  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#A88440;--gold-soft:#E6D9B5;
+  --emerald:#2E8B6E;--emerald2:#3DA882;
+  --ink:#1A1A1A;--ink2:#3A3F47;--ink3:#6B7280;--ink4:#9CA3AF;
+  --border:rgba(10,22,40,.08);--border2:rgba(10,22,40,.04);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Outfit',-apple-system,Segoe UI,sans-serif;
+  --mono:'JetBrains Mono',Menlo,monospace;
+  --red:#9B2C2C;--amber:#A86A1F;--blue:#2C5282;
+  --vacancia:#A86A1F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+em{font-style:italic}
+input,textarea,select{font:inherit}
+
+/* ============ HEADER ============ */
+.hdr{background:var(--navy);color:var(--cream);padding:16px 36px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--gold);flex-wrap:wrap;gap:14px}
+.hdr-left{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy3),var(--navy));border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:17px;font-style:italic}
+.brand .nm{font-family:var(--serif);font-size:22px;letter-spacing:.02em;color:var(--cream);font-weight:400}
+.brand .nm em{color:var(--gold);font-weight:500}
+.divider-v{width:1px;height:24px;background:rgba(245,240,232,.18)}
+.subtitulo{font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-soft);font-weight:300}
+.subtitulo strong{color:var(--cream);font-weight:500}
+.tag-modo{padding:4px 12px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;border-radius:10px}
+.tag-modo.editor{background:var(--gold);color:var(--navy)}
+.tag-modo.viewer{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+
+.barras-deco{display:flex;align-items:flex-end;gap:2px;height:20px}
+.barras-deco span{display:inline-block;background:var(--gold);opacity:.5;width:2px;height:100%}
+.barras-deco span:nth-child(odd){width:1px;opacity:.35}
+.barras-deco span:nth-child(3n){height:65%}
+.barras-deco span:nth-child(5n){height:80%}
+
+.toolbar{display:flex;gap:6px;flex-wrap:wrap}
+.btn-tool{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.1em;padding:7px 12px;background:transparent;color:var(--cream);border:1px solid rgba(245,240,232,.22);cursor:pointer;text-transform:uppercase;transition:all .2s;border-radius:14px}
+.btn-tool:hover{background:rgba(196,163,90,.18);border-color:var(--gold)}
+.btn-tool.primary{background:linear-gradient(135deg,var(--gold),var(--gold-deep));color:var(--navy);border-color:var(--gold);font-weight:600}
+.btn-tool.primary:hover{filter:brightness(1.08)}
+.btn-tool.danger:hover{background:rgba(155,44,44,.16);border-color:var(--red);color:var(--red)}
+
+/* AVISO */
+.aviso{background:linear-gradient(180deg,rgba(196,163,90,.1),rgba(196,163,90,.04));color:var(--ink2);padding:10px 36px;font-size:12px;font-family:var(--sans);display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.aviso strong{color:var(--gold-deep);font-weight:600}
+.aviso .alerta-orfaos{margin-left:auto;background:var(--amber);color:var(--cream);padding:4px 10px;font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;border-radius:10px}
+
+/* KPI BAR */
+.kpi-bar{background:var(--white);padding:18px 36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:18px;border-bottom:1px solid var(--border)}
+.kpi{display:flex;flex-direction:column;gap:3px;border-left:3px solid var(--gold);padding-left:12px}
+.kpi-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);font-weight:500}
+.kpi-valor{font-family:var(--serif);font-size:30px;font-weight:500;line-height:1;color:var(--navy);letter-spacing:-.01em}
+.kpi-sub{font-size:10px;color:var(--ink3);font-family:var(--mono);letter-spacing:.04em}
+.kpi.atencao .kpi-valor{color:var(--amber)}
+.kpi.alerta .kpi-valor{color:var(--red)}
+.kpi.alerta{border-left-color:var(--red)}
+.kpi.atencao{border-left-color:var(--amber)}
+
+/* TABS */
+.tabs{background:var(--white);padding:0 36px;display:flex;gap:2px;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto}
+.tab{padding:14px 18px;font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;cursor:pointer;background:none;border-radius:0}
+.tab:hover{background:var(--cream2)}
+.tab.ativo{border-bottom-color:var(--gold);color:var(--navy);font-weight:600}
+
+/* CONTEÚDO */
+.main{padding:24px 36px 60px;max-width:1480px;margin:0 auto}
+.pagina{display:none}
+.pagina.ativa{display:block}
+
+/* FILTROS */
+.filtros{background:var(--white);padding:14px 18px;margin-bottom:14px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;border-left:3px solid var(--gold);border-radius:0 6px 6px 0}
+.filtro-grupo{display:flex;flex-direction:column;gap:4px}
+.filtro-grupo label{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500}
+.filtro-grupo select,.filtro-grupo input{padding:7px 10px;border:1px solid var(--border);background:var(--white);font:inherit;font-size:12px;min-width:140px;border-radius:4px}
+.filtro-grupo select:focus,.filtro-grupo input:focus{outline:2px solid var(--gold);outline-offset:-1px}
+.busca{flex:1;min-width:200px}
+
+/* TABELA */
+.tabela-wrap{background:var(--white);overflow-x:auto;border:1px solid var(--border);max-height:72vh;overflow-y:auto;border-radius:4px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead{background:var(--navy);color:var(--cream);position:sticky;top:0;z-index:5}
+th{text-align:left;padding:10px 12px;font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--border2);vertical-align:middle}
+tbody tr:hover{background:var(--cream2)}
+tbody tr.linha-vacancia{background:rgba(168,106,31,.06)}
+tbody tr.linha-vacancia:hover{background:rgba(168,106,31,.12)}
+.num{text-align:right;font-family:var(--mono);font-weight:500}
+
+td[contenteditable="true"]:hover{background:rgba(196,163,90,.1);cursor:text;outline:1px dashed var(--gold)}
+td[contenteditable="true"]:focus{background:rgba(196,163,90,.06);outline:2px solid var(--gold);outline-offset:-1px}
+td select.inline-edit{width:100%;padding:4px;border:1px solid transparent;background:transparent;font:inherit;font-size:inherit;border-radius:3px}
+td select.inline-edit:hover{border-color:var(--gold);background:rgba(196,163,90,.06)}
+td select.inline-edit:focus{outline:2px solid var(--gold);background:var(--white)}
+
+/* BADGES */
+.nivel-badge{display:inline-block;padding:3px 9px;font-family:var(--mono);font-weight:600;font-size:9.5px;letter-spacing:.06em;min-width:30px;text-align:center;border-radius:10px}
+.nivel-badge.N0{background:var(--navy);color:var(--gold);border:1px solid var(--gold)}
+.nivel-badge.N1{background:var(--navy);color:var(--cream)}
+.nivel-badge.N2{background:var(--navy3);color:var(--cream)}
+.nivel-badge.N3{background:var(--gold);color:var(--navy)}
+.nivel-badge.N4{background:var(--gold-soft);color:var(--navy);border:1px solid var(--gold)}
+.nivel-badge.N5{background:var(--cream2);color:var(--ink2)}
+
+.contrato-badge{display:inline-block;padding:2px 8px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.08em;border-radius:10px}
+.contrato-badge.CLT{background:rgba(46,82,130,.1);color:var(--blue);border:1px solid rgba(46,82,130,.3)}
+.contrato-badge.PJ{background:rgba(168,106,31,.1);color:var(--amber);border:1px solid rgba(168,106,31,.3)}
+.contrato-badge.ESTAGIO{background:rgba(46,139,110,.1);color:var(--emerald);border:1px solid rgba(46,139,110,.3)}
+.contrato-badge.APRENDIZ{background:rgba(196,163,90,.14);color:var(--gold-deep);border:1px solid rgba(196,163,90,.3)}
+.contrato-badge.SOCIO{background:var(--navy);color:var(--gold);border:1px solid var(--gold)}
+
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.status-Ativa .status-dot{background:var(--emerald)}
+.status-Vacância .status-dot{background:var(--vacancia)}
+.status-Em-transição .status-dot{background:var(--gold)}
+.status-Bloqueada .status-dot{background:var(--red)}
+
+.orfao-badge{display:inline-block;background:var(--amber);color:var(--cream);padding:2px 7px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.06em;margin-left:6px;border-radius:8px}
+.vacancia-tag{display:inline-block;background:linear-gradient(135deg,var(--vacancia),#C28448);color:var(--cream);padding:3px 11px;font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;border-radius:10px;font-style:normal}
+.vacancia-tag::before{content:'△ ';font-weight:600}
+
+/* ORGANOGRAMA CLÁSSICO */
+.org-controls{display:flex;gap:12px;margin-bottom:16px;align-items:center;flex-wrap:wrap;background:var(--white);padding:12px 16px;border:1px solid var(--border);border-radius:4px}
+.org-controls label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+.org-controls select,.org-controls button{padding:6px 12px;border:1px solid var(--border);font:inherit;font-size:11.5px;background:var(--white);border-radius:4px;cursor:pointer}
+.org-toggle{display:flex;gap:4px}
+.org-toggle .toggle-btn{padding:6px 14px;background:var(--white);border:1px solid var(--border);font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);cursor:pointer;border-radius:4px}
+.org-toggle .toggle-btn.ativo{background:var(--navy);color:var(--cream);border-color:var(--navy)}
+
+.org-wrap{background:var(--white);padding:32px 24px;overflow:auto;min-height:540px;border:1px solid var(--border);border-radius:4px}
+.org-classico{display:flex;flex-direction:column;align-items:center;min-width:max-content;position:relative}
+.org-classico .nivel-row{display:flex;justify-content:center;gap:16px;position:relative;padding:0;margin:0}
+
+.org-card{background:var(--white);border:1.5px solid var(--navy);padding:10px 14px;min-width:180px;max-width:220px;text-align:left;cursor:pointer;transition:all .2s;position:relative;z-index:2;border-radius:4px}
+.org-card:hover{border-color:var(--gold);box-shadow:0 6px 16px rgba(196,163,90,.22);transform:translateY(-2px)}
+.org-card.N0{border:2.5px solid var(--gold);background:var(--navy);color:var(--cream)}
+.org-card.N0 .card-cargo,.org-card.N0 .card-id{color:var(--gold-soft)}
+.org-card.N1{border-color:var(--navy);background:var(--navy);color:var(--cream)}
+.org-card.N1 .card-cargo,.org-card.N1 .card-id{color:var(--gold)}
+.org-card.N2{border-top:4px solid var(--navy)}
+.org-card.N3{border-top:4px solid var(--gold)}
+.org-card.N4{border-top:4px solid var(--gold-soft)}
+.org-card.N5{border-top:4px solid var(--cream2)}
+.org-card.vacante{border:2px dashed var(--vacancia) !important;background:rgba(168,106,31,.04) !important;color:var(--ink) !important}
+.org-card.vacante .card-cargo{color:var(--vacancia)}
+.org-card.vacante .card-nome{color:var(--vacancia);font-style:italic}
+
+.card-cargo{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500;margin-bottom:3px}
+.card-nome{font-family:var(--serif);font-weight:500;font-size:15px;line-height:1.15;letter-spacing:-.005em}
+.card-meta{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:10px;flex-wrap:wrap}
+.card-id{font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--ink3);margin-left:auto}
+
+.cards-empilhados{display:flex;flex-direction:column;gap:24px}
+.cards-nivel-titulo{font-family:var(--mono);font-weight:600;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.cards-nivel-titulo::after{content:'';flex:1;height:1px;background:var(--border)}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+
+.connector-svg{position:absolute;pointer-events:none;z-index:1;top:0;left:0}
+.connector-line{stroke:rgba(196,163,90,.4);stroke-width:1.5;fill:none}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(10,22,40,.62);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal-bg.on{display:flex}
+.modal{background:var(--white);max-width:640px;width:100%;max-height:90vh;overflow-y:auto;padding:0;border-top:3px solid var(--gold);border-radius:6px;overflow:hidden}
+.modal-h{padding:22px 26px;background:linear-gradient(180deg,var(--cream),transparent);border-bottom:1px solid var(--border)}
+.modal-h h2{font-family:var(--serif);font-size:22px;font-weight:500;color:var(--navy);letter-spacing:-.005em;margin-bottom:4px}
+.modal-h .sub{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3)}
+.modal-body{padding:18px 26px}
+.modal-secao{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);margin:18px 0 10px 0;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.modal-secao:first-child{margin-top:0}
+.form-row{display:grid;grid-template-columns:170px 1fr;gap:10px;margin-bottom:10px;align-items:center}
+.form-row label{font-size:12px;font-weight:500;color:var(--ink2)}
+.form-row input,.form-row select,.form-row textarea{padding:9px 11px;border:1px solid var(--border);font:inherit;font-size:13px;background:var(--white);border-radius:4px;color:var(--ink)}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:2px solid var(--gold);outline-offset:-1px}
+.modal-acoes{display:flex;gap:8px;justify-content:flex-end;padding:14px 26px;background:var(--cream2);border-top:1px solid var(--border);flex-wrap:wrap}
+.modal-acoes .esq{margin-right:auto}
+.btn{padding:8px 16px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;border-radius:4px;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--ink2)}
+.btn:hover{border-color:var(--navy);color:var(--navy)}
+.btn.primary{background:var(--navy);color:var(--cream);border-color:var(--navy)}
+.btn.primary:hover{background:var(--navy2)}
+.btn.danger{color:var(--red);border-color:rgba(155,44,44,.3)}
+.btn.danger:hover{background:var(--red);color:var(--cream);border-color:var(--red)}
+.btn.gold{background:linear-gradient(135deg,var(--gold),var(--gold-deep));color:var(--navy);border-color:var(--gold);font-weight:600}
+.btn.warning{color:var(--amber);border-color:rgba(168,106,31,.4)}
+.btn.warning:hover{background:var(--amber);color:var(--cream)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:var(--cream);padding:11px 20px;font-size:13px;border-left:3px solid var(--gold);display:none;z-index:300;max-width:340px;border-radius:0 4px 4px 0;font-family:var(--sans)}
+.toast.on{display:block}
+
+/* FOOTER */
+.foot{background:var(--navy);padding:20px 36px;display:flex;align-items:center;gap:16px;justify-content:space-between;border-top:3px solid var(--gold)}
+.foot .info{color:var(--cream2);font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase}
+.foot .info strong{color:var(--gold);font-weight:500}
+
+/* EXPORT DLG */
+.exp-bg{position:fixed;inset:0;background:rgba(10,22,40,.62);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:250;padding:20px}
+.exp-bg.on{display:flex}
+.exp-dlg{background:var(--white);max-width:520px;width:100%;border-radius:6px;border-top:3px solid var(--gold);overflow:hidden}
+.exp-h{padding:20px 24px;border-bottom:1px solid var(--border)}
+.exp-h h3{font-family:var(--serif);font-size:20px;color:var(--navy);font-weight:500}
+.exp-body{padding:18px 24px}
+.exp-opt{display:block;padding:14px 16px;border:1px solid var(--border);margin-bottom:8px;cursor:pointer;border-radius:4px;transition:all .15s}
+.exp-opt:hover{border-color:var(--gold);background:rgba(196,163,90,.04)}
+.exp-opt input{margin-right:10px}
+.exp-opt-titulo{font-family:var(--serif);font-weight:500;font-size:15px;color:var(--navy)}
+.exp-opt-desc{font-size:11.5px;color:var(--ink3);margin-top:4px;line-height:1.45}
+.exp-acoes{padding:14px 24px;background:var(--cream2);display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border)}
+
+@media(max-width:980px){.hdr{padding:14px 18px}.aviso,.tabs,.main,.foot{padding-left:18px;padding-right:18px}.kpi-bar{padding-left:18px;padding-right:18px;grid-template-columns:repeat(2,1fr)}.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+
+<body>
+
+<header class="hdr">
+  <div class="hdr-left">
+    <a href="/sistema/chro/" class="brand">
+      <div class="mark">i</div>
+      <span class="nm">Innova<em>People</em></span>
+    </a>
+    <div class="divider-v"></div>
+    <div class="subtitulo">Curadoria · <strong>Editor de Cadeiras</strong></div>
+    <span class="tag-modo editor" id="tag-modo">Edição</span>
+    <div class="barras-deco" id="barras-deco"></div>
+  </div>
+  <div class="toolbar">
+    <button class="btn-tool" id="btn-export-json">Exportar JSON</button>
+    <button class="btn-tool" id="btn-export-csv">Exportar CSV</button>
+    <button class="btn-tool primary" id="btn-export-pptx">Exportar PPTX</button>
+    <button class="btn-tool" id="btn-import">Importar JSON</button>
+    <input type="file" id="file-import" accept=".json" style="display:none">
+    <button class="btn-tool danger" id="btn-reset">Limpar tudo</button>
+  </div>
+</header>
+
+<div class="aviso">
+  <strong>Edição ativa.</strong> Alterações persistem no Supabase (<code style="font-family:var(--mono);font-size:11px;color:var(--gold-deep)">ip_organograma_cadeira</code>). Versão pode ser exportada para envio ou compartilhamento.
+  <span style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--gold-deep);letter-spacing:.1em" id="info-versao">—</span>
+  <span class="alerta-orfaos" id="alerta-orfaos" style="display:none"></span>
+</div>
+
+<div class="kpi-bar" id="kpi-bar"></div>
+
+<nav class="tabs">
+  <button class="tab ativo" data-tab="organograma" onclick="trocarTab(this,'organograma')">Organograma</button>
+  <button class="tab" data-tab="tabela" onclick="trocarTab(this,'tabela')">Tabela &amp; edição</button>
+  <button class="tab" data-tab="vacancias" onclick="trocarTab(this,'vacancias')">Vacâncias &amp; atenção</button>
+  <button class="tab" data-tab="frentes" onclick="trocarTab(this,'frentes')">Resumo por frente</button>
+</nav>
+
+<main class="main">
+
+  <!-- ORGANOGRAMA -->
+  <div class="pagina ativa" id="p-organograma">
+    <div class="org-controls">
+      <div class="org-toggle">
+        <button class="toggle-btn ativo" data-modo="classico" onclick="setModoOrg('classico')">Clássico</button>
+        <button class="toggle-btn" data-modo="cards" onclick="setModoOrg('cards')">Cards por camada</button>
+      </div>
+      <label>· Recorte:</label>
+      <select id="org-recorte" onchange="renderOrganograma()">
+        <option value="todos">Toda a estrutura · do topo até a camada escolhida</option>
+        <option value="por-frente">Por frente</option>
+        <option value="por-mandato">Por trabalho (mandato cliente)</option>
+      </select>
+      <select id="org-frente" style="display:none" onchange="renderOrganograma()"></select>
+      <select id="org-mandato" style="display:none" onchange="renderOrganograma()"></select>
+      <label>· Camada máxima:</label>
+      <select id="org-camada-max" onchange="renderOrganograma()">
+        <option value="0">Só N0</option>
+        <option value="1">Até N1</option>
+        <option value="2">Até N2</option>
+        <option value="3" selected>Até N3</option>
+        <option value="4">Até N4</option>
+        <option value="5">Tudo</option>
+      </select>
+    </div>
+    <div class="org-wrap" id="org-wrap"></div>
+  </div>
+
+  <!-- TABELA -->
+  <div class="pagina" id="p-tabela">
+    <div class="filtros">
+      <div class="filtro-grupo"><label>Frente / Diretoria</label><select id="f-diretoria"><option value="">Todas</option></select></div>
+      <div class="filtro-grupo"><label>Subárea</label><select id="f-subarea"><option value="">Todas</option></select></div>
+      <div class="filtro-grupo"><label>Camada</label><select id="f-nivel">
+        <option value="">Todas</option><option>N0</option><option>N1</option><option>N2</option><option>N3</option><option>N4</option><option>N5</option>
+      </select></div>
+      <div class="filtro-grupo"><label>Status</label><select id="f-status">
+        <option value="">Todos</option><option>Ativa</option><option>Vacância</option><option>Em transição</option><option>Bloqueada</option>
+      </select></div>
+      <div class="filtro-grupo"><label>Contrato</label><select id="f-contrato">
+        <option value="">Todos</option><option>CLT</option><option>PJ</option><option>ESTAGIO</option><option>APRENDIZ</option><option>SOCIO</option>
+      </select></div>
+      <div class="filtro-grupo busca"><label>Buscar (nome, cargo, código)</label><input type="text" id="f-busca" placeholder="Digite para filtrar…"></div>
+      <button class="btn gold" id="btn-nova-cadeira">+ Nova cadeira</button>
+    </div>
+    <div class="tabela-wrap">
+      <table id="tabela-cadeiras">
+        <thead><tr>
+          <th>Código</th><th>Ocupante</th><th>Cargo</th><th>Frente</th><th>Subárea</th>
+          <th>Camada</th><th>Grau</th><th>Contrato</th><th>Status</th><th>Reporta a</th><th>Admissão</th><th></th>
+        </tr></thead>
+        <tbody id="tbody-cadeiras"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- VACÂNCIAS -->
+  <div class="pagina" id="p-vacancias">
+    <div class="tabela-wrap">
+      <table><thead><tr>
+        <th>Código</th><th>Cargo</th><th>Frente</th><th>Camada</th><th>Contrato</th><th>Status</th><th>Reporta a</th><th>Observação</th>
+      </tr></thead><tbody id="tbody-vacancias"></tbody></table>
+    </div>
+  </div>
+
+  <!-- FRENTES -->
+  <div class="pagina" id="p-frentes">
+    <div class="tabela-wrap">
+      <table><thead><tr>
+        <th>Frente / Diretoria</th><th class="num">Total</th><th class="num">Ativas</th><th class="num">Vacâncias</th><th class="num">N1</th><th class="num">N2</th><th class="num">N3</th><th class="num">N4-5</th>
+      </tr></thead><tbody id="tbody-frentes"></tbody></table>
+    </div>
+  </div>
+
+</main>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <div class="modal-h">
+      <h2 id="modal-titulo">Cadeira</h2>
+      <div class="sub" id="modal-sub"></div>
+    </div>
+    <div class="modal-body" id="modal-form"></div>
+    <div class="modal-acoes">
+      <button class="btn warning esq" id="btn-modal-desocupar">Desocupar cadeira</button>
+      <button class="btn danger" id="btn-modal-excluir">Excluir cadeira</button>
+      <button class="btn" id="btn-modal-cancelar">Cancelar</button>
+      <button class="btn primary" id="btn-modal-salvar">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="exp-bg" id="exp-bg">
+  <div class="exp-dlg">
+    <div class="exp-h"><h3>Exportar Organograma para PowerPoint</h3></div>
+    <div class="exp-body">
+      <label class="exp-opt">
+        <input type="radio" name="export-pptx" value="atual" checked>
+        <span class="exp-opt-titulo">Visualização atual</span>
+        <div class="exp-opt-desc">Exporta exatamente o que está no organograma agora (mesmo recorte e camada).</div>
+      </label>
+      <label class="exp-opt">
+        <input type="radio" name="export-pptx" value="completo">
+        <span class="exp-opt-titulo">Estrutura completa</span>
+        <div class="exp-opt-desc">Todas as cadeiras, do topo até N5. Pode gerar slide largo.</div>
+      </label>
+      <label class="exp-opt">
+        <input type="radio" name="export-pptx" value="por-frente">
+        <span class="exp-opt-titulo">Por frente (um slide para cada)</span>
+        <div class="exp-opt-desc">Um slide por frente + um slide consolidado do topo (N0 e N1).</div>
+      </label>
+    </div>
+    <div class="exp-acoes">
+      <button class="btn" id="btn-export-cancel">Cancelar</button>
+      <button class="btn gold" id="btn-export-confirm">Gerar PPTX</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer class="foot">
+  <div class="barras-deco" id="barras-foot"></div>
+  <div class="info"><strong>Editor de Cadeiras</strong> · InnovaPeople 2026 · Backbone <code style="font-family:var(--mono);color:var(--gold-soft)">ip_organograma_cadeira</code></div>
+</footer>
+
+<script>
+const sb=()=>window.__IP_SB;
+const esc=s=>{if(s==null)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML};
+const ordemNivel={N0:0,N1:1,N2:2,N3:3,N4:4,N5:5};
+
+let cadeiras=[];
+let mandatos=[];
+let modoOrg='classico';
+let editandoId=null;
+
+// ============ DECORATIVE BARS ============
+function gerarBarras(id,qtd){
+  const el=document.getElementById(id);if(!el)return;
+  for(let i=0;i<qtd;i++){
+    const b=document.createElement('span');
+    b.style.height=(Math.random()*70+30)+'%';
+    el.appendChild(b);
+  }
+}
+gerarBarras('barras-deco',60);
+gerarBarras('barras-foot',80);
+
+// ============ TOAST ============
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2400)}
+
+// ============ BOOT ============
+async function orgBoot(){
+  if(!sb())return;
+  await Promise.all([loadCadeiras(),loadMandatos()]);
+  document.getElementById('info-versao').textContent=cadeiras.length+' cadeira(s) · sincronizado '+new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  renderTudo();
+}
+window.orgBoot=orgBoot;
+
+async function loadCadeiras(){
+  try{
+    const {data,error}=await sb().from('ip_organograma_cadeira').select('*').limit(2000);
+    if(error)throw error;
+    cadeiras=data||[];
+  }catch(e){console.warn('[org] load cadeiras',e);cadeiras=[]}
+}
+async function loadMandatos(){
+  try{
+    const {data}=await sb().from('ip_mandatos').select('id,empresa,estagio').order('empresa').limit(100);
+    mandatos=data||[];
+    const sel=document.getElementById('org-mandato');
+    sel.innerHTML='<option value="">Escolha um trabalho</option>'+mandatos.map(m=>`<option value="${esc(m.id)}">${esc(m.empresa)} · ${esc(m.estagio||'—')}</option>`).join('');
+  }catch(e){mandatos=[]}
+}
+
+function vacante(c){return c.status==='Vacância'||!c.nome}
+function gestorDe(c){if(!c.gestor_id)return null;return cadeiras.find(x=>x.id===c.gestor_id)}
+function reportesDe(c){return cadeiras.filter(x=>x.gestor_id===c.id)}
+function statusClass(s){return 'status-'+(s||'Ativa').replace(/\s/g,'-')}
+function orfao(c){return c.gestor_id&&!cadeiras.find(x=>x.id===c.gestor_id)}
+
+// ============ KPIs ============
+function renderKpis(){
+  const total=cadeiras.length;
+  const ativas=cadeiras.filter(c=>c.status==='Ativa').length;
+  const vac=cadeiras.filter(c=>c.status==='Vacância').length;
+  const trans=cadeiras.filter(c=>c.status==='Em transição').length;
+  const orfaos=cadeiras.filter(orfao).length;
+  const semContrato=cadeiras.filter(c=>c.status==='Ativa'&&!c.modelo_contrato).length;
+  const ocupacao=total?((ativas/total)*100).toFixed(1).replace('.',',')+'%':'0%';
+  document.getElementById('kpi-bar').innerHTML=`
+    <div class="kpi"><div class="kpi-label">Cadeiras totais</div><div class="kpi-valor">${total}</div><div class="kpi-sub">Posições registradas</div></div>
+    <div class="kpi"><div class="kpi-label">Ocupadas</div><div class="kpi-valor">${ativas}</div><div class="kpi-sub">Ativas</div></div>
+    <div class="kpi atencao"><div class="kpi-label">Vacâncias</div><div class="kpi-valor">${vac}</div><div class="kpi-sub">Em aberto</div></div>
+    <div class="kpi"><div class="kpi-label">Em transição</div><div class="kpi-valor">${trans}</div><div class="kpi-sub">Mudanças em curso</div></div>
+    <div class="kpi alerta"><div class="kpi-label">Reportes órfãos</div><div class="kpi-valor">${orfaos}</div><div class="kpi-sub">Gestor fora da base</div></div>
+    <div class="kpi atencao"><div class="kpi-label">Sem contrato</div><div class="kpi-valor">${semContrato}</div><div class="kpi-sub">Ativas a definir</div></div>
+    <div class="kpi"><div class="kpi-label">% ocupação</div><div class="kpi-valor">${ocupacao}</div><div class="kpi-sub">Ativas / total</div></div>
+  `;
+  const alertaEl=document.getElementById('alerta-orfaos');
+  if(orfaos>0){alertaEl.style.display='inline-block';alertaEl.textContent=`△ ${orfaos} reporte(s) a gestor fora da base`}
+  else alertaEl.style.display='none';
+}
+
+// ============ FILTROS POPULATE ============
+function popularFiltros(){
+  const dirs=[...new Set(cadeiras.map(c=>c.diretoria).filter(Boolean))].sort();
+  const subs=[...new Set(cadeiras.map(c=>c.subarea).filter(Boolean))].sort();
+  const dSel=document.getElementById('f-diretoria');
+  const sSel=document.getElementById('f-subarea');
+  const orgFrente=document.getElementById('org-frente');
+  const vD=dSel.value,vS=sSel.value,vF=orgFrente.value;
+  dSel.innerHTML='<option value="">Todas</option>'+dirs.map(d=>`<option ${d===vD?'selected':''}>${esc(d)}</option>`).join('');
+  sSel.innerHTML='<option value="">Todas</option>'+subs.map(s=>`<option ${s===vS?'selected':''}>${esc(s)}</option>`).join('');
+  orgFrente.innerHTML='<option value="">Escolha uma frente</option>'+dirs.map(d=>`<option ${d===vF?'selected':''}>${esc(d)}</option>`).join('');
+}
+
+// ============ ORGANOGRAMA ============
+function setModoOrg(m){
+  modoOrg=m;
+  document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.toggle('ativo',b.dataset.modo===m));
+  renderOrganograma();
+}
+
+function renderOrganograma(){
+  const rec=document.getElementById('org-recorte').value;
+  document.getElementById('org-frente').style.display=rec==='por-frente'?'inline-block':'none';
+  document.getElementById('org-mandato').style.display=rec==='por-mandato'?'inline-block':'none';
+  if(modoOrg==='classico')renderClassico();
+  else renderCards();
+}
+
+function filtrarOrg(){
+  const rec=document.getElementById('org-recorte').value;
+  const cMax=parseInt(document.getElementById('org-camada-max').value);
+  let lista=cadeiras.filter(c=>(ordemNivel[c.nivel]??9)<=cMax);
+  if(rec==='por-frente'){
+    const f=document.getElementById('org-frente').value;
+    if(f){
+      const daFrente=lista.filter(c=>c.diretoria===f);
+      const topo=lista.filter(c=>c.nivel==='N0'||c.nivel==='N1');
+      lista=[...new Map([...topo,...daFrente].map(x=>[x.id,x])).values()];
+    }
+  }else if(rec==='por-mandato'){
+    const m=document.getElementById('org-mandato').value;
+    lista=lista.filter(c=>c.mandato_id===m||(!c.mandato_id&&['N0','N1'].includes(c.nivel)));
+  }else{
+    // Toda estrutura: só interno (mandato_id=null)
+    lista=lista.filter(c=>!c.mandato_id);
+  }
+  return lista;
+}
+
+function renderClassico(){
+  const lista=filtrarOrg();
+  const porNivel={};
+  lista.forEach(c=>{const n=c.nivel||'N5';if(!porNivel[n])porNivel[n]=[];porNivel[n].push(c)});
+  const nv=Object.keys(porNivel).sort((a,b)=>(ordemNivel[a]??9)-(ordemNivel[b]??9));
+  nv.forEach(n=>porNivel[n].sort((a,b)=>(a.gestor_nome||'').localeCompare(b.gestor_nome||'')||(a.nome||'').localeCompare(b.nome||'')));
+  const cont=document.getElementById('org-wrap');
+  if(!lista.length){cont.innerHTML='<div style="text-align:center;padding:48px;color:var(--ink3);font-family:var(--serif);font-size:18px;font-style:italic">Nenhuma cadeira nesse filtro. Comece criando uma pela aba Tabela.</div>';return}
+  let html='<div class="org-classico" id="org-inner">';
+  nv.forEach((n,i)=>{
+    html+=`<div class="nivel-row" data-n="${n}" style="margin-top:${i?'42px':'0'}">`;
+    porNivel[n].forEach(c=>{
+      const cls=vacante(c)?`org-card ${n} vacante`:`org-card ${n}`;
+      const contrato=c.modelo_contrato?`<span class="contrato-badge ${c.modelo_contrato}">${c.modelo_contrato}</span>`:'';
+      html+=`<div class="${cls}" data-id="${esc(c.id)}" onclick="abrirEdicao('${esc(c.id)}')">
+        <div class="card-cargo">${esc(c.cargo||'—')}${c.subarea?' · '+esc(c.subarea):''}</div>
+        <div class="card-nome">${vacante(c)?'<span class="vacancia-tag">Posição em aberto</span>':esc(c.nome||'—')}</div>
+        <div class="card-meta">
+          <span class="nivel-badge ${n}">${n}</span>
+          ${contrato}
+          <span class="card-id">${esc((c.codigo||c.id.slice(0,8)))}</span>
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  cont.innerHTML=html;
+  setTimeout(()=>desenharConectores(porNivel,nv),40);
+}
+
+function desenharConectores(porNivel,niveis){
+  const inner=document.getElementById('org-inner');if(!inner)return;
+  const old=inner.querySelector('svg.connector-svg');if(old)old.remove();
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.classList.add('connector-svg');
+  svg.style.width=inner.scrollWidth+'px';
+  svg.style.height=inner.scrollHeight+'px';
+  svg.setAttribute('width',inner.scrollWidth);
+  svg.setAttribute('height',inner.scrollHeight);
+  for(let i=1;i<niveis.length;i++){
+    porNivel[niveis[i]].forEach(c=>{
+      const g=gestorDe(c);if(!g)return;
+      const cF=inner.querySelector(`.org-card[data-id="${c.id}"]`);
+      const cP=inner.querySelector(`.org-card[data-id="${g.id}"]`);
+      if(!cF||!cP)return;
+      const rF=cF.getBoundingClientRect(),rP=cP.getBoundingClientRect(),rI=inner.getBoundingClientRect();
+      const x1=rP.left+rP.width/2-rI.left,y1=rP.bottom-rI.top;
+      const x2=rF.left+rF.width/2-rI.left,y2=rF.top-rI.top;
+      const yM=y1+(y2-y1)/2;
+      const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+      p.setAttribute('d',`M ${x1} ${y1} L ${x1} ${yM} L ${x2} ${yM} L ${x2} ${y2}`);
+      p.classList.add('connector-line');
+      svg.appendChild(p);
+    });
+  }
+  inner.appendChild(svg);
+}
+
+function renderCards(){
+  const labels={N0:'N0 · Topo',N1:'N1 · Diretoria',N2:'N2 · Gerência',N3:'N3 · Coordenação',N4:'N4 · Especialistas',N5:'N5 · Operacional'};
+  const lista=filtrarOrg();
+  const porNivel={};
+  lista.forEach(c=>{const n=c.nivel||'N5';if(!porNivel[n])porNivel[n]=[];porNivel[n].push(c)});
+  const nv=Object.keys(porNivel).sort((a,b)=>(ordemNivel[a]??9)-(ordemNivel[b]??9));
+  const cont=document.getElementById('org-wrap');
+  if(!lista.length){cont.innerHTML='<div style="text-align:center;padding:48px;color:var(--ink3);font-family:var(--serif);font-size:18px;font-style:italic">Nenhuma cadeira nesse filtro.</div>';return}
+  let html='<div class="cards-empilhados">';
+  nv.forEach(n=>{
+    const items=porNivel[n].sort((a,b)=>(a.diretoria||'').localeCompare(b.diretoria||'')||(a.nome||'').localeCompare(b.nome||''));
+    html+=`<div class="cards-nivel"><div class="cards-nivel-titulo">${labels[n]||n} · ${items.length} cadeiras</div><div class="cards-grid">`;
+    items.forEach(c=>{
+      const cls=vacante(c)?`org-card ${n} vacante`:`org-card ${n}`;
+      const contrato=c.modelo_contrato?`<span class="contrato-badge ${c.modelo_contrato}">${c.modelo_contrato}</span>`:'';
+      html+=`<div class="${cls}" data-id="${esc(c.id)}" onclick="abrirEdicao('${esc(c.id)}')">
+        <div class="card-cargo">${esc(c.cargo||'—')}${c.subarea?' · '+esc(c.subarea):''}</div>
+        <div class="card-nome">${vacante(c)?'<span class="vacancia-tag">Posição em aberto</span>':esc(c.nome||'—')}</div>
+        <div class="card-meta"><span class="nivel-badge ${n}">${n}</span>${contrato}<span class="card-id">${esc(c.codigo||c.id.slice(0,8))}</span></div>
+      </div>`;
+    });
+    html+='</div></div>';
+  });
+  html+='</div>';
+  cont.innerHTML=html;
+}
+
+// ============ TABELA ============
+function renderTabela(){
+  const fD=document.getElementById('f-diretoria').value;
+  const fS=document.getElementById('f-subarea').value;
+  const fN=document.getElementById('f-nivel').value;
+  const fSt=document.getElementById('f-status').value;
+  const fC=document.getElementById('f-contrato').value;
+  const fB=document.getElementById('f-busca').value.toLowerCase().trim();
+  let lista=cadeiras.filter(c=>{
+    if(fD&&c.diretoria!==fD)return false;
+    if(fS&&c.subarea!==fS)return false;
+    if(fN&&c.nivel!==fN)return false;
+    if(fSt&&c.status!==fSt)return false;
+    if(fC&&c.modelo_contrato!==fC)return false;
+    if(fB){const txt=`${c.nome} ${c.cargo} ${c.codigo} ${c.gestor_nome}`.toLowerCase();if(!txt.includes(fB))return false}
+    return true;
+  });
+  lista.sort((a,b)=>{
+    if(a.diretoria!==b.diretoria)return(a.diretoria||'').localeCompare(b.diretoria||'');
+    if(a.nivel!==b.nivel)return(ordemNivel[a.nivel]??9)-(ordemNivel[b.nivel]??9);
+    return(a.nome||'').localeCompare(b.nome||'');
+  });
+  const tbody=document.getElementById('tbody-cadeiras');
+  if(!lista.length){tbody.innerHTML='<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--ink3);font-family:var(--serif);font-size:17px;font-style:italic">Nenhuma cadeira no filtro. Crie a primeira pelo botão "+ Nova cadeira".</td></tr>';return}
+  tbody.innerHTML=lista.map(c=>{
+    const niveis=['N0','N1','N2','N3','N4','N5'];
+    const contratos=['','CLT','PJ','ESTAGIO','APRENDIZ','SOCIO'];
+    const statuses=['Ativa','Vacância','Em transição','Bloqueada'];
+    return `<tr data-id="${esc(c.id)}" class="${vacante(c)?'linha-vacancia':''}">
+      <td><strong style="font-family:var(--mono);font-size:11px;color:var(--gold-deep)">${esc(c.codigo||c.id.slice(0,8))}</strong></td>
+      <td>${vacante(c)?'<span class="vacancia-tag">Posição em aberto</span>':esc(c.nome||'—')}</td>
+      <td>${esc(c.cargo||'—')}</td>
+      <td>${esc(c.diretoria||'—')}</td>
+      <td>${esc(c.subarea||'—')}</td>
+      <td><select class="inline-edit" data-campo="nivel" data-id="${esc(c.id)}">${niveis.map(n=>`<option ${c.nivel===n?'selected':''}>${n}</option>`).join('')}</select></td>
+      <td contenteditable="true" data-campo="grau" data-id="${esc(c.id)}">${esc(c.grau||'')}</td>
+      <td><select class="inline-edit" data-campo="modelo_contrato" data-id="${esc(c.id)}">${contratos.map(v=>`<option value="${v}" ${c.modelo_contrato===v||(!c.modelo_contrato&&!v)?'selected':''}>${v||'—'}</option>`).join('')}</select></td>
+      <td class="${statusClass(c.status)}"><select class="inline-edit" data-campo="status" data-id="${esc(c.id)}">${statuses.map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}</select></td>
+      <td>${esc(c.gestor_nome||'—')}${orfao(c)?'<span class="orfao-badge">Fora da base</span>':''}</td>
+      <td style="font-family:var(--mono);font-size:11px">${c.data_admissao?new Date(c.data_admissao).toLocaleDateString('pt-BR'):'—'}</td>
+      <td><button class="btn" style="padding:4px 10px;font-size:10px" onclick="abrirEdicao('${esc(c.id)}')">Editar</button></td>
+    </tr>`;
+  }).join('');
+  // Wire inline edits
+  tbody.querySelectorAll('[contenteditable="true"]').forEach(el=>{
+    el.addEventListener('blur',()=>salvarInline(el));
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();el.blur()}});
+  });
+  tbody.querySelectorAll('select.inline-edit').forEach(el=>el.addEventListener('change',()=>salvarInline(el)));
+}
+
+async function salvarInline(el){
+  const id=el.dataset.id,campo=el.dataset.campo;
+  const valor=el.tagName==='SELECT'?el.value:el.textContent.trim();
+  const c=cadeiras.find(x=>x.id===id);if(!c)return;
+  if(c[campo]===valor)return;
+  c[campo]=valor;
+  try{
+    const upd={};upd[campo]=valor||null;
+    const {error}=await sb().from('ip_organograma_cadeira').update(upd).eq('id',id);
+    if(error)throw error;
+    renderKpis();
+    if(campo==='status'||campo==='nivel'||campo==='modelo_contrato')renderOrganograma();
+    toast(`${c.codigo||c.cargo} atualizado: ${campo} = ${valor||'(vazio)'}`);
+  }catch(e){toast('Erro: '+e.message)}
+}
+
+// ============ VACÂNCIAS ============
+function renderVacancias(){
+  const lista=cadeiras.filter(c=>c.status==='Vacância'||c.status==='Em transição');
+  const tbody=document.getElementById('tbody-vacancias');
+  if(!lista.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--ink3);font-family:var(--serif);font-size:17px;font-style:italic">Nenhuma cadeira vaga ou em transição. Tudo ocupado.</td></tr>';return}
+  tbody.innerHTML=lista.map(c=>`<tr onclick="abrirEdicao('${esc(c.id)}')" style="cursor:pointer">
+    <td><strong style="font-family:var(--mono);color:var(--gold-deep)">${esc(c.codigo||c.id.slice(0,8))}</strong></td>
+    <td>${esc(c.cargo||'—')}</td>
+    <td>${esc(c.diretoria||'—')}</td>
+    <td><span class="nivel-badge ${c.nivel}">${esc(c.nivel||'—')}</span></td>
+    <td>${c.modelo_contrato?`<span class="contrato-badge ${c.modelo_contrato}">${c.modelo_contrato}</span>`:'—'}</td>
+    <td class="${statusClass(c.status)}"><span class="status-dot"></span>${esc(c.status)}</td>
+    <td>${esc(c.gestor_nome||'—')}</td>
+    <td>${esc(c.observacoes||'')}</td>
+  </tr>`).join('');
+}
+
+// ============ FRENTES ============
+function renderFrentes(){
+  const stats={};
+  cadeiras.forEach(c=>{
+    const d=c.diretoria||'(sem frente)';
+    if(!stats[d])stats[d]={total:0,ativas:0,vacancias:0,N0:0,N1:0,N2:0,N3:0,N4:0,N5:0};
+    stats[d].total++;
+    stats[d][c.nivel]=(stats[d][c.nivel]||0)+1;
+    if(c.status==='Ativa')stats[d].ativas++;
+    if(c.status==='Vacância')stats[d].vacancias++;
+  });
+  const linhas=Object.entries(stats).sort((a,b)=>b[1].total-a[1].total);
+  const tbody=document.getElementById('tbody-frentes');
+  if(!linhas.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--ink3);font-style:italic;font-family:var(--serif);font-size:17px">Sem frentes registradas ainda.</td></tr>';return}
+  tbody.innerHTML=linhas.map(([d,s])=>`<tr>
+    <td><strong>${esc(d)}</strong></td>
+    <td class="num">${s.total}</td>
+    <td class="num">${s.ativas}</td>
+    <td class="num" style="color:${s.vacancias>0?'var(--amber)':'var(--ink3)'}">${s.vacancias||'—'}</td>
+    <td class="num">${s.N1||'—'}</td>
+    <td class="num">${s.N2||'—'}</td>
+    <td class="num">${s.N3||'—'}</td>
+    <td class="num">${(s.N4||0)+(s.N5||0)||'—'}</td>
+  </tr>`).join('');
+}
+
+// ============ MODAL EDIÇÃO ============
+const campos=[
+  {sec:'Identificação da cadeira'},
+  {key:'codigo',label:'Código interno'},
+  {key:'cargo',label:'Cargo *',required:true},
+  {key:'diretoria',label:'Frente / Diretoria'},
+  {key:'subarea',label:'Subárea'},
+  {key:'nivel',label:'Camada *',opts:['N0','N1','N2','N3','N4','N5']},
+  {key:'grau',label:'Grau (Mercer IPE)'},
+  {sec:'Ocupante'},
+  {key:'nome',label:'Nome do ocupante'},
+  {key:'modelo_contrato',label:'Contrato',opts:['','CLT','PJ','ESTAGIO','APRENDIZ','SOCIO']},
+  {key:'data_admissao',label:'Admissão',type:'date'},
+  {key:'email',label:'E-mail corporativo',type:'email'},
+  {key:'ramal',label:'Ramal'},
+  {sec:'Vínculos e status'},
+  {key:'papel',label:'Papel',opts:['Colaborador','Gestor','Administrador']},
+  {key:'status',label:'Status',opts:['Ativa','Vacância','Em transição','Bloqueada']},
+  {key:'gestor_id',label:'Gestor direto',is_gestor:true},
+  {key:'observacoes',label:'Observações',textarea:true},
+];
+
+function abrirEdicao(id){
+  const c=cadeiras.find(x=>x.id===id);
+  if(!c){toast('Cadeira não encontrada');return}
+  editandoId=id;
+  document.getElementById('modal-titulo').textContent=(c.nome?'Editar cadeira · ':'Cadeira vaga · ')+(c.cargo||'—');
+  document.getElementById('modal-sub').textContent=(c.codigo||'')+' · '+(c.diretoria||'sem frente');
+  const form=document.getElementById('modal-form');
+  form.innerHTML=campos.map(f=>{
+    if(f.sec)return `<div class="modal-secao">${f.sec}</div>`;
+    const v=c[f.key]||'';
+    if(f.is_gestor){
+      const opts=cadeiras.filter(x=>x.id!==id).sort((a,b)=>(a.nome||a.cargo||'').localeCompare(b.nome||b.cargo||'')).map(x=>`<option value="${esc(x.id)}" ${x.id===v?'selected':''}>${esc((x.nome||'(vaga)')+' · '+(x.cargo||'—')+' · '+(x.nivel||''))}</option>`).join('');
+      return `<div class="form-row"><label>${f.label}</label><select data-k="${f.key}"><option value="">— sem gestor (topo)</option>${opts}</select></div>`;
+    }
+    if(f.opts)return `<div class="form-row"><label>${f.label}</label><select data-k="${f.key}">${f.opts.map(o=>`<option value="${o}" ${v===o?'selected':''}>${o||'—'}</option>`).join('')}</select></div>`;
+    if(f.textarea)return `<div class="form-row"><label>${f.label}</label><textarea data-k="${f.key}" rows="3">${esc(v)}</textarea></div>`;
+    return `<div class="form-row"><label>${f.label}</label><input data-k="${f.key}" type="${f.type||'text'}" value="${esc(v).replace(/"/g,'&quot;')}"></div>`;
+  }).join('');
+  document.getElementById('btn-modal-desocupar').style.display=vacante(c)?'none':'inline-block';
+  document.getElementById('modal-bg').classList.add('on');
+}
+window.abrirEdicao=abrirEdicao;
+
+function fecharModal(){document.getElementById('modal-bg').classList.remove('on');editandoId=null}
+
+async function salvarCadeira(){
+  if(!editandoId)return;
+  const c=cadeiras.find(x=>x.id===editandoId);if(!c)return;
+  const upd={};
+  document.querySelectorAll('#modal-form [data-k]').forEach(el=>{
+    let val=el.value.trim();if(val==='')val=null;
+    upd[el.dataset.k]=val;
+  });
+  // Sincroniza gestor_nome
+  if(upd.gestor_id){const g=cadeiras.find(x=>x.id===upd.gestor_id);upd.gestor_nome=g?(g.nome||g.cargo):null}else{upd.gestor_nome=null}
+  try{
+    const {data,error}=await sb().from('ip_organograma_cadeira').update(upd).eq('id',editandoId).select().single();
+    if(error)throw error;
+    Object.assign(c,data);
+    toast('Cadeira salva');
+    fecharModal();
+    renderTudo();
+  }catch(e){toast('Erro: '+e.message)}
+}
+
+async function excluirCadeira(){
+  if(!editandoId)return;
+  const c=cadeiras.find(x=>x.id===editandoId);if(!c)return;
+  if(!confirm('Excluir DEFINITIVAMENTE a cadeira "'+(c.cargo||'—')+'"?\n\nIsso remove a cadeira inteira da base. Cadeiras que reportam a essa virarão órfãs.\n\nUse "Desocupar" se quiser apenas vagar mantendo a cadeira.'))return;
+  try{
+    const {error}=await sb().from('ip_organograma_cadeira').delete().eq('id',editandoId);
+    if(error)throw error;
+    cadeiras=cadeiras.filter(x=>x.id!==editandoId);
+    fecharModal();
+    toast('Cadeira excluída');
+    renderTudo();
+  }catch(e){toast('Erro: '+e.message)}
+}
+
+async function desocuparCadeira(){
+  if(!editandoId)return;
+  const c=cadeiras.find(x=>x.id===editandoId);if(!c)return;
+  if(!confirm('Desocupar "'+(c.cargo||'—')+'"?\n\nO ocupante ('+(c.nome||'—')+') será removido. A cadeira fica VAGA mas mantém cargo, frente, camada e linha de reporte.'))return;
+  try{
+    const upd={nome:null,email:null,ramal:null,modelo_contrato:null,data_admissao:null,status:'Vacância'};
+    const {error}=await sb().from('ip_organograma_cadeira').update(upd).eq('id',editandoId);
+    if(error)throw error;
+    Object.assign(c,upd);
+    fecharModal();
+    toast('Cadeira desocupada');
+    renderTudo();
+  }catch(e){toast('Erro: '+e.message)}
+}
+
+async function novaCadeira(){
+  const codigo='IP-'+String(cadeiras.length+1).padStart(3,'0');
+  const novo={
+    codigo,cargo:'Nova cadeira',nivel:'N5',status:'Vacância',papel:'Colaborador',
+  };
+  try{
+    const {data,error}=await sb().from('ip_organograma_cadeira').insert(novo).select().single();
+    if(error)throw error;
+    cadeiras.push(data);
+    abrirEdicao(data.id);
+    renderTudo();
+  }catch(e){toast('Erro: '+e.message)}
+}
+
+// ============ EXPORT ============
+function exportarJSON(){
+  const payload={
+    _metadata:{
+      casa:'InnovaPeople',
+      exportado_em:new Date().toISOString(),
+      exportado_em_br:new Date().toLocaleString('pt-BR'),
+      total_cadeiras:cadeiras.length,
+      versao_schema:'ip_organograma_cadeira v1'
+    },
+    cadeiras
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  const dt=new Date().toISOString().slice(0,10);
+  const hr=String(new Date().getHours()).padStart(2,'0')+'h'+String(new Date().getMinutes()).padStart(2,'0');
+  a.download=`organograma_innovapeople_${dt}_${hr}.json`;a.click();
+  URL.revokeObjectURL(url);toast('JSON exportado · '+a.download);
+}
+
+function exportarCSV(){
+  const cab=['Código','Ocupante','Cargo','Frente','Subárea','Camada','Grau','Papel','Status','Contrato','Gestor','Admissão','E-mail','Ramal','Observações'];
+  const linhas=cadeiras.map(c=>[c.codigo,c.nome,c.cargo,c.diretoria,c.subarea,c.nivel,c.grau,c.papel,c.status,c.modelo_contrato,c.gestor_nome,c.data_admissao,c.email,c.ramal,c.observacoes].map(v=>{
+    const s=(v||'').toString();
+    return s.includes(',')||s.includes('"')||s.includes('\n')?'"'+s.replace(/"/g,'""')+'"':s;
+  }).join(','));
+  const csv='﻿'+[cab.join(','),...linhas].join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download=`organograma_innovapeople_${new Date().toISOString().slice(0,10)}.csv`;a.click();
+  URL.revokeObjectURL(url);toast('CSV exportado');
+}
+
+// ============ IMPORT ============
+function importarJSON(file){
+  const reader=new FileReader();
+  reader.onload=async e=>{
+    try{
+      const raw=JSON.parse(e.target.result);
+      let lista,meta=null;
+      if(Array.isArray(raw)){lista=raw}
+      else if(raw&&Array.isArray(raw.cadeiras)){lista=raw.cadeiras;meta=raw._metadata}
+      else throw new Error('Formato inválido. Esperado: array de cadeiras ou objeto {_metadata,cadeiras}');
+      if(!confirm('Importar '+lista.length+' cadeira(s)? '+(meta&&meta.exportado_em_br?'\n\nGerado em: '+meta.exportado_em_br:'')+'\n\nIsso SUBSTITUIRÁ as cadeiras atuais (no Supabase real).'))return;
+      // Delete tudo
+      await sb().from('ip_organograma_cadeira').delete().neq('id','00000000-0000-0000-0000-000000000000');
+      // Insere lote
+      const chunks=[];for(let i=0;i<lista.length;i+=50)chunks.push(lista.slice(i,i+50));
+      let ok=0;for(const ch of chunks){
+        const dados=ch.map(c=>{const{id,created_at,updated_at,...rest}=c;return rest});
+        const {error}=await sb().from('ip_organograma_cadeira').insert(dados);
+        if(error){console.warn('chunk err',error);continue}
+        ok+=ch.length;
+      }
+      toast(ok+' cadeiras importadas');
+      await loadCadeiras();renderTudo();
+    }catch(err){alert('Erro ao importar: '+err.message)}
+  };
+  reader.readAsText(file);
+}
+
+// ============ PPTX EXPORT ============
+function abrirDlgPptx(){document.getElementById('exp-bg').classList.add('on')}
+function fecharDlgPptx(){document.getElementById('exp-bg').classList.remove('on')}
+
+async function gerarPptx(){
+  const opcao=document.querySelector('input[name="export-pptx"]:checked').value;
+  fecharDlgPptx();
+  toast('Gerando PPTX…');
+  if(typeof PptxGenJS==='undefined'){alert('Biblioteca PptxGenJS não carregou.');return}
+  const pres=new PptxGenJS();
+  pres.layout='LAYOUT_WIDE';
+  const COR={navy:'0A1628',cream:'F5F0E8',gold:'C4A35A',goldDeep:'A88440',goldSoft:'E6D9B5',ink:'1A1A1A',ink3:'6B7280',border:'D9D2C9',vacancia:'A86A1F'};
+  if(opcao==='atual'){
+    const lista=filtrarOrg();
+    const rec=document.getElementById('org-recorte').value;
+    const cmx=document.getElementById('org-camada-max').value;
+    const tit=rec==='por-frente'&&document.getElementById('org-frente').value?'Organograma · '+document.getElementById('org-frente').value:'Organograma · até N'+cmx;
+    addSlideOrg(pres,lista,tit,COR);
+  }else if(opcao==='completo'){
+    addSlideOrg(pres,cadeiras.filter(c=>!c.mandato_id),'Organograma InnovaPeople · estrutura completa',COR);
+  }else if(opcao==='por-frente'){
+    const consol=cadeiras.filter(c=>!c.mandato_id&&['N0','N1','N2'].includes(c.nivel));
+    addSlideOrg(pres,consol,'Visão executiva · Topo + Diretorias',COR);
+    const frentes=[...new Set(cadeiras.filter(c=>!c.mandato_id).map(c=>c.diretoria).filter(Boolean))].sort();
+    frentes.forEach(f=>{
+      const daF=cadeiras.filter(c=>!c.mandato_id&&c.diretoria===f);
+      const topo=cadeiras.filter(c=>!c.mandato_id&&(c.nivel==='N0'||c.nivel==='N1'));
+      const lista=[...new Map([...topo,...daF].map(x=>[x.id,x])).values()];
+      addSlideOrg(pres,lista,'Frente · '+f,COR);
+    });
+  }
+  await pres.writeFile({fileName:`organograma_innovapeople_${new Date().toISOString().slice(0,10)}.pptx`});
+  toast('PPTX gerado');
+}
+
+function addSlideOrg(pres,lista,titulo,COR){
+  const slide=pres.addSlide();
+  slide.background={color:COR.cream};
+  slide.addText(titulo,{x:.3,y:.2,w:12.7,h:.5,fontSize:22,fontFace:'Cormorant Garamond',bold:true,color:COR.navy});
+  slide.addText(`InnovaPeople · gerado em ${new Date().toLocaleDateString('pt-BR')} · ${lista.length} cadeiras`,{x:.3,y:.7,w:12.7,h:.3,fontSize:10,fontFace:'Outfit',italic:true,color:COR.ink3});
+  const porNivel={};
+  lista.forEach(c=>{if(!porNivel[c.nivel])porNivel[c.nivel]=[];porNivel[c.nivel].push(c)});
+  const nv=Object.keys(porNivel).sort((a,b)=>(ordemNivel[a]??9)-(ordemNivel[b]??9));
+  nv.forEach(n=>porNivel[n].sort((a,b)=>(a.gestor_nome||'').localeCompare(b.gestor_nome||'')||(a.nome||'').localeCompare(b.nome||'')));
+  const slideW=13.33,topY=1.2,bottomY=7.2,yAv=bottomY-topY;
+  const cardW=1.75,cardH=1.05;
+  const yStep=nv.length>1?yAv/nv.length:0;
+  const posCards={};
+  nv.forEach((n,i)=>{
+    const cards=porNivel[n];
+    const total=cards.length*cardW+(cards.length-1)*0.15;
+    const startX=Math.max(.3,(slideW-total)/2);
+    const y=topY+i*yStep;
+    cards.forEach((c,j)=>{
+      const x=startX+j*(cardW+0.15);
+      posCards[c.id]={x,y,w:cardW,h:cardH,c};
+    });
+  });
+  // Connectors
+  for(let i=1;i<nv.length;i++){
+    porNivel[nv[i]].forEach(c=>{
+      if(!c.gestor_id||!posCards[c.gestor_id])return;
+      const p=posCards[c.gestor_id],f=posCards[c.id];
+      const x1=p.x+p.w/2,y1=p.y+p.h,x2=f.x+f.w/2,y2=f.y,yM=(y1+y2)/2;
+      slide.addShape(pres.ShapeType.line,{x:x1,y:y1,w:.001,h:yM-y1,line:{color:COR.gold,width:1}});
+      slide.addShape(pres.ShapeType.line,{x:Math.min(x1,x2),y:yM,w:Math.abs(x2-x1),h:.001,line:{color:COR.gold,width:1}});
+      slide.addShape(pres.ShapeType.line,{x:x2,y:yM,w:.001,h:y2-yM,line:{color:COR.gold,width:1}});
+    });
+  }
+  // Cards
+  Object.values(posCards).forEach(({x,y,w,h,c})=>{
+    const isV=(c.status==='Vacância'||!c.nome);
+    let fill,bord,txtCor,carCor;
+    if(isV){fill='FFF8E1';bord=COR.vacancia;txtCor=COR.vacancia;carCor=COR.vacancia}
+    else if(c.nivel==='N0'||c.nivel==='N1'){fill=COR.navy;bord=COR.gold;txtCor=COR.cream;carCor=COR.goldSoft}
+    else{fill='FBFAF7';bord=COR.gold;txtCor=COR.navy;carCor=COR.ink3}
+    slide.addShape(pres.ShapeType.rect,{x,y,w,h,fill:{color:fill},line:{color:bord,width:(c.nivel==='N0'||c.nivel==='N1')?2:1.5,dashType:isV?'dash':'solid'}});
+    if(!isV&&c.nivel!=='N0'&&c.nivel!=='N1'){
+      slide.addShape(pres.ShapeType.rect,{x,y,w,h:0.06,fill:{color:bord},line:{color:bord,width:0}});
+    }
+    slide.addText((c.cargo||'—')+(c.subarea?' · '+c.subarea:''),{x:x+.08,y:y+.05,w:w-.16,h:.22,fontSize:7,fontFace:'Outfit',bold:true,color:carCor,valign:'top',shrinkText:true});
+    slide.addText(isV?'POSIÇÃO EM ABERTO':(c.nome||'—'),{x:x+.08,y:y+.3,w:w-.16,h:.5,fontSize:10,fontFace:'Cormorant Garamond',bold:true,color:txtCor,valign:'top',italic:isV,shrinkText:true});
+    slide.addText(`${c.nivel||''}${c.modelo_contrato?' · '+c.modelo_contrato:''} · ${c.codigo||''}`,{x:x+.08,y:y+h-.22,w:w-.16,h:.18,fontSize:7,fontFace:'JetBrains Mono',color:carCor,valign:'bottom'});
+  });
+}
+
+// ============ TROCAR TAB ============
+function trocarTab(el,id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('ativo'));
+  document.querySelectorAll('.pagina').forEach(p=>p.classList.remove('ativa'));
+  el.classList.add('ativo');
+  document.getElementById('p-'+id).classList.add('ativa');
+  if(id==='organograma')setTimeout(renderOrganograma,30);
+}
+
+function renderTudo(){popularFiltros();renderKpis();renderTabela();renderVacancias();renderFrentes();renderOrganograma()}
+
+// ============ LIMPAR TUDO ============
+async function limparTudo(){
+  if(!confirm('LIMPAR TODAS as cadeiras do organograma?\n\nIsso apaga 100% das cadeiras no Supabase. Use só se quiser começar do zero ou antes de importar JSON externo.'))return;
+  try{
+    const {error}=await sb().from('ip_organograma_cadeira').delete().neq('id','00000000-0000-0000-0000-000000000000');
+    if(error)throw error;
+    cadeiras=[];renderTudo();toast('Base limpa');
+  }catch(e){toast('Erro: '+e.message)}
+}
+
+// ============ LISTENERS ============
+['f-diretoria','f-subarea','f-nivel','f-status','f-contrato','f-busca'].forEach(id=>document.getElementById(id).addEventListener('input',renderTabela));
+document.getElementById('btn-export-json').addEventListener('click',exportarJSON);
+document.getElementById('btn-export-csv').addEventListener('click',exportarCSV);
+document.getElementById('btn-export-pptx').addEventListener('click',abrirDlgPptx);
+document.getElementById('btn-export-cancel').addEventListener('click',fecharDlgPptx);
+document.getElementById('btn-export-confirm').addEventListener('click',gerarPptx);
+document.getElementById('exp-bg').addEventListener('click',e=>{if(e.target.id==='exp-bg')fecharDlgPptx()});
+document.getElementById('btn-import').addEventListener('click',()=>document.getElementById('file-import').click());
+document.getElementById('file-import').addEventListener('change',e=>{if(e.target.files[0])importarJSON(e.target.files[0]);e.target.value=''});
+document.getElementById('btn-reset').addEventListener('click',limparTudo);
+document.getElementById('btn-nova-cadeira').addEventListener('click',novaCadeira);
+document.getElementById('btn-modal-cancelar').addEventListener('click',fecharModal);
+document.getElementById('btn-modal-salvar').addEventListener('click',salvarCadeira);
+document.getElementById('btn-modal-excluir').addEventListener('click',excluirCadeira);
+document.getElementById('btn-modal-desocupar').addEventListener('click',desocuparCadeira);
+document.getElementById('modal-bg').addEventListener('click',e=>{if(e.target.id==='modal-bg')fecharModal()});
+window.addEventListener('resize',()=>{if(document.querySelector('.tab.ativo')?.dataset.tab==='organograma'&&modoOrg==='classico')setTimeout(renderOrganograma,80)});
+</script>
+
+</body>
+</html>
