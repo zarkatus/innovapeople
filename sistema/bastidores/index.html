@@ -495,7 +495,7 @@ function openWaSend(){
       ev.preventDefault();const f=ev.target;const r=body.querySelector('#wa-result');r.innerHTML='<div class="dr-info">Enviando...</div>';
       try{
         const sb=window.__IP_SB;
-        const {error}=await sb.functions.invoke('whatsapp-direto',{body:{action:'send',type:'text',number:f.numero.value,text:f.texto.value}});
+        const {error}=await sb.functions.invoke('whatsapp-direto',{body:{phone:f.numero.value,text:f.texto.value,contexto:'bastidores-drawer',actor_email:window.__IP_USER_EMAIL||null}});
         if(error)throw error;
         r.innerHTML='<div class="dr-ok">✓ Mensagem enviada.</div>';
       }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}

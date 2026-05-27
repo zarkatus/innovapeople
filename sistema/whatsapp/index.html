@@ -547,28 +547,19 @@ async function enviarMensagem(){
   renderThread();
 
   try{
-    const payload={action:'send',number:numero};
-    if(msgType==='image'){
-      payload.type='image';payload.url=mediaUrl;payload.caption=txt||'';
-    }else{
-      payload.type='text';payload.text=txt;
-    }
+    // EF whatsapp-direto v9 espera {phone, text, image_url?, contact_name?, contexto?, actor_email?}
+    const payload={
+      phone:numero,
+      text:txt,
+      contact_name:c.contato_nome||null,
+      contexto:'inbox-innovapeople',
+      actor_email:window.__IP_USER_EMAIL||null,
+    };
+    if(msgType==='image'&&mediaUrl){payload.image_url=mediaUrl}
     const {data,error}=await sb().functions.invoke('whatsapp-direto',{body:payload});
     if(error)throw error;
-    try{
-      await sb().from('wa_messages').insert({
-        conversation_id:_state.convId,
-        contact_id:c.contato_id,
-        direction:'outbound',
-        message_type:msgType,
-        content:txt,
-        media_url:mediaUrl,
-        status:'sent',
-        sent_by:window.__IP_USER_EMAIL||'',
-        evo_message_id:data?.messageId||data?.id||null,
-      });
-      await sb().from('wa_conversations').update({last_message_preview:(txt||'[imagem]').slice(0,200),last_message_at:new Date().toISOString()}).eq('id',_state.convId);
-    }catch(insErr){console.warn('[wa] insert fallback',insErr)}
+    if(data&&data.persist_error)console.warn('[wa] persist warn:',data.persist_error);
+    // EF v9 ja persiste em wa_messages + wa_contacts + wa_conversations + wa_audit_log (hash chain)
     toast('Mensagem enviada');
     await loadMensagens(_state.convId);
     loadConversas();
