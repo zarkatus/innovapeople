@@ -15,7 +15,7 @@
 (function ipAuthGate(){
   const SUPA_URL='https://auth.innovasphere.ia.br';
   const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
-  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br'];
+  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br','rapheice@schifino.com.br'];
   function deny(){location.replace('/sistema/?from=toolbox')}
   function ovl(){if(document.getElementById('ipovl'))return;const o=document.createElement('div');o.id='ipovl';o.style.cssText='position:fixed;inset:0;background:#FAF7F1;color:#5B3A7A;display:flex;align-items:center;justify-content:center;font:300 12px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647';o.innerHTML='<div style="text-align:center"><div style="margin-bottom:14px;font-size:10px;opacity:.6">InnovaPeople</div><div>Validando acesso…</div></div>';(document.body||document.documentElement).appendChild(o)}
   function rmovl(){const o=document.getElementById('ipovl');if(o)o.remove()}
