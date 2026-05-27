@@ -406,7 +406,7 @@ function renderConversas(){
 async function abrirConversa(convId,contatoId){
   _state.convId=convId;
   document.querySelectorAll('.conv-item').forEach(it=>it.classList.toggle('on',it.dataset.id===convId));
-  document.getElementById('center-empty').style.display='none';
+  const ce=document.getElementById('center-empty');if(ce)ce.style.display='none';
   document.getElementById('app').classList.add('show-thread');
   document.getElementById('app').classList.remove('show-list');
   renderThreadLoading();
@@ -727,18 +727,18 @@ async function handleAttach(input){
   _attach={file,reader:null};
   const reader=new FileReader();
   reader.onload=e=>{
-    document.getElementById('att-thumb').src=e.target.result;
-    document.getElementById('att-name').textContent=file.name;
-    document.getElementById('att-size').textContent='· '+(file.size/1024).toFixed(0)+'KB';
-    document.getElementById('att-preview').style.display='flex';
+    const th=document.getElementById('att-thumb');if(th)th.src=e.target.result;
+    const nm=document.getElementById('att-name');if(nm)nm.textContent=file.name;
+    const sz=document.getElementById('att-size');if(sz)sz.textContent='· '+(file.size/1024).toFixed(0)+'KB';
+    const prv=document.getElementById('att-preview');if(prv)prv.style.display='flex';
     _attach.dataUrl=e.target.result;
   };
   reader.readAsDataURL(file);
 }
 function removeAttach(){
   _attach=null;
-  document.getElementById('att-input').value='';
-  document.getElementById('att-preview').style.display='none';
+  const inp=document.getElementById('att-input');if(inp)inp.value='';
+  const prv=document.getElementById('att-preview');if(prv)prv.style.display='none';
 }
 async function uploadAttach(){
   if(!_attach)return null;
