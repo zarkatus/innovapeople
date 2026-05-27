@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CHRO · InnovaPeople</title>
+<meta name="description" content="Centro de comando de pessoas, cultura e curadoria de talento — InnovaPeople">
+<meta name="robots" content="noindex,nofollow">
+
+<!-- IP-AUTH-GATE (overlay, fail-open) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script>
+(function ipAuthGate(){
+  const SUPA_URL='https://auth.innovasphere.ia.br';
+  const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br'];
+  window.__IP_SUPA_URL=SUPA_URL;window.__IP_SUPA_ANON=SUPA_ANON;
+  function injectOverlay(){
+    if(document.getElementById('ip-auth-ovl'))return;
+    const ovl=document.createElement('div');ovl.id='ip-auth-ovl';
+    ovl.style.cssText='position:fixed;inset:0;background:#0A1628;color:#3DA882;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647;transition:opacity .35s';
+    ovl.innerHTML='<div style="text-align:center"><div style="margin-bottom:14px;font-size:11px;opacity:.5">InnovaPeople</div><div>Validando acesso<span>…</span></div></div>';
+    (document.body||document.documentElement).appendChild(ovl);
+  }
+  function removeOverlay(){const o=document.getElementById('ip-auth-ovl');if(!o)return;o.style.opacity='0';setTimeout(()=>{if(o.parentNode)o.parentNode.removeChild(o)},400)}
+  function deny(r){console.warn('[ip-auth] deny:',r);location.replace('/sistema/?from=chro')}
+  function allow(email){
+    removeOverlay();
+    window.__IP_USER_EMAIL=email||'';
+    const el=document.getElementById('user-display');if(el&&email)el.textContent=email;
+    if(typeof window.chroBoot==='function'){try{window.chroBoot()}catch(e){console.warn('boot err',e)}}
+    else{setTimeout(()=>{if(typeof window.chroBoot==='function'){try{window.chroBoot()}catch(e){}}},300)}
+  }
+  if(document.body){injectOverlay()}else{document.addEventListener('DOMContentLoaded',injectOverlay,{once:true})}
+  const safety=setTimeout(()=>{console.warn('[ip-auth] timeout');allow('')},6000);
+  (async function run(){
+    try{
+      if(!window.supabase)throw new Error('SDK não carregou');
+      const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+      window.__IP_SB=sb;
+      const {data:{session},error}=await sb.auth.getSession();
+      if(error){clearTimeout(safety);deny('session-error');return}
+      if(!session){clearTimeout(safety);deny('no-session');return}
+      const email=session.user?.email||'';
+      if(!ALLOWED.includes(email)){await sb.auth.signOut();clearTimeout(safety);deny('email-not-authorized');return}
+      clearTimeout(safety);console.log('[ip-auth] OK',email);
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email);
+    }catch(e){console.error('[ip-auth] erro:',e);clearTimeout(safety);allow('')}
+  })();
+})();
+</script>
+
+<link rel="icon" href="/sistema/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0A1628;--navy2:#0F1D32;--navy3:#152740;
+  --cream:#F5F0E8;--cream2:#EFE9DD;--white:#FBFAF7;
+  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#A88440;
+  --emerald:#2E8B6E;--emerald2:#3DA882;
+  --ink:#1A1A1A;--ink2:#3A3F47;--ink3:#6B7280;--ink4:#9CA3AF;
+  --border:rgba(10,22,40,.08);--border2:rgba(10,22,40,.04);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Outfit',-apple-system,Segoe UI,sans-serif;
+  --mono:'JetBrains Mono',Menlo,monospace;
+  --green:#22863a;--amber:#A86A1F;--red:#9B2C2C;--blue:#2C5282;
+  --nav-h:74px;--side-w:268px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased}
+body{min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+em{font-style:italic}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:50;background:rgba(245,240,232,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:var(--nav-h);display:flex;align-items:center;padding:0 32px}
+.hdr-inner{max-width:1480px;margin:0 auto;width:100%;display:flex;align-items:center;gap:28px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:400;letter-spacing:.04em}
+.brand .mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:18px;font-style:italic}
+.brand .name{font-size:18px;color:var(--navy)}
+.brand .name em{color:var(--gold-deep);font-weight:500}
+.brand .sub{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink3);margin-left:8px;font-family:var(--mono)}
+.nav{display:flex;gap:24px;flex:1;justify-content:center;font-size:13px;letter-spacing:.06em}
+.nav a{color:var(--ink2);transition:color .2s}
+.nav a:hover,.nav a.active{color:var(--navy)}
+.nav a.active{font-weight:500}
+.nav .gold{color:var(--gold-deep);font-weight:500}
+.usr{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--ink3);font-family:var(--mono)}
+.usr .logout{padding:6px 14px;border:1px solid var(--border);border-radius:18px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);transition:all .2s}
+.usr .logout:hover{border-color:var(--navy);color:var(--navy)}
+
+/* HERO */
+.hero{padding:64px 32px 38px;background:linear-gradient(180deg,var(--cream) 0%,var(--cream2) 100%);border-bottom:1px solid var(--border)}
+.hero-inner{max-width:1480px;margin:0 auto}
+.hero h1{font-family:var(--serif);font-size:54px;font-weight:300;line-height:1.06;color:var(--navy);margin-bottom:18px;letter-spacing:-.01em}
+.hero h1 em{color:var(--gold-deep);font-weight:400}
+.hero .lede{font-size:16px;color:var(--ink2);max-width:680px;line-height:1.6;font-weight:300}
+.hero .lede strong{font-weight:500;color:var(--navy)}
+.hero-meta{margin-top:28px;display:flex;flex-wrap:wrap;gap:32px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+.hero-meta span strong{color:var(--navy);font-weight:500}
+
+/* LAYOUT */
+.layout{max-width:1480px;margin:0 auto;display:grid;grid-template-columns:var(--side-w) 1fr;gap:0}
+.side{padding:38px 24px 64px;position:sticky;top:var(--nav-h);align-self:start;height:calc(100vh - var(--nav-h));overflow-y:auto;border-right:1px solid var(--border)}
+.side-h{font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;padding-left:4px}
+.side-group{margin-bottom:24px}
+.side-link{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;font-size:13px;color:var(--ink2);border-radius:6px;transition:all .2s;cursor:pointer;border-left:2px solid transparent}
+.side-link:hover{background:rgba(196,163,90,.08);color:var(--navy)}
+.side-link.active{background:rgba(196,163,90,.12);color:var(--navy);border-left-color:var(--gold);font-weight:500}
+.side-link .count{font-family:var(--mono);font-size:10px;color:var(--ink4);background:rgba(0,0,0,.04);padding:2px 7px;border-radius:10px}
+
+.main{padding:38px 38px 80px;min-width:0}
+
+/* SECTION */
+.section{margin-bottom:64px;scroll-margin-top:96px}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.section-h h2{font-family:var(--serif);font-size:34px;font-weight:400;color:var(--navy);letter-spacing:-.005em}
+.section-h h2 em{color:var(--gold-deep);font-style:italic}
+.section-h .count{font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.14em;text-transform:uppercase}
+.section-sub{font-size:14px;color:var(--ink2);max-width:700px;line-height:1.55;margin-bottom:28px;font-style:italic;font-family:var(--serif);font-size:18px}
+
+/* CARD */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:22px;display:flex;flex-direction:column;gap:14px;transition:all .25s;position:relative;overflow:hidden}
+.card:hover{border-color:rgba(10,22,40,.18);box-shadow:0 8px 24px rgba(10,22,40,.06);transform:translateY(-1px)}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.card-title{font-family:var(--serif);font-size:22px;font-weight:500;color:var(--navy);line-height:1.15;letter-spacing:-.005em}
+.card-promise{font-size:13px;color:var(--ink3);line-height:1.5;font-style:italic;font-family:var(--serif);font-size:15px}
+.card-body{font-size:13px;color:var(--ink2);line-height:1.55}
+.card-stats{display:flex;gap:18px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink3);padding-top:8px;border-top:1px dashed var(--border)}
+.card-stats strong{display:block;font-size:18px;color:var(--navy);font-family:var(--serif);font-weight:500;letter-spacing:0;margin-bottom:2px}
+.card-actions{display:flex;gap:8px;margin-top:auto;padding-top:10px;border-top:1px solid var(--border2)}
+.btn{padding:8px 14px;border-radius:4px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;transition:all .2s;border:1px solid transparent}
+.btn-primary{background:var(--navy);color:var(--cream)}
+.btn-primary:hover{background:var(--navy2)}
+.btn-ghost{border:1px solid var(--border);color:var(--ink2)}
+.btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
+.btn-gold{background:transparent;color:var(--gold-deep);border:1px solid var(--gold)}
+.btn-gold:hover{background:var(--gold);color:var(--white)}
+
+/* STATUS */
+.status{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:12px;font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:400;white-space:nowrap;flex-shrink:0}
+.status::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
+.st-live{color:var(--emerald);background:rgba(46,139,110,.08)}
+.st-partial{color:var(--gold-deep);background:rgba(196,163,90,.1)}
+.st-spec{color:var(--blue);background:rgba(44,82,130,.08)}
+.st-todo{color:var(--ink3);background:rgba(0,0,0,.04)}
+.st-todo::before{background:var(--ink4)}
+
+/* DATA TABLE */
+.dt{width:100%;border-collapse:collapse;font-size:12px}
+.dt th{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:500}
+.dt td{padding:9px 10px;border-bottom:1px solid var(--border2);color:var(--ink2);vertical-align:middle}
+.dt tr:last-child td{border-bottom:none}
+.dt .num{font-family:var(--mono);text-align:right}
+
+/* HIGHLIGHT */
+.spark{display:flex;align-items:flex-end;gap:3px;height:36px;margin-top:8px}
+.spark span{flex:1;background:var(--gold);opacity:.6;border-radius:1px 1px 0 0;min-height:2px;transition:all .3s}
+.spark span:last-child{opacity:1;background:var(--gold-deep)}
+
+/* PILL */
+.pill{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;letter-spacing:.08em;background:rgba(10,22,40,.06);color:var(--ink2);margin-right:4px;margin-bottom:4px}
+.pill.gold{background:rgba(196,163,90,.14);color:var(--gold-deep)}
+.pill.emerald{background:rgba(46,139,110,.1);color:var(--emerald)}
+
+/* LOADING */
+.skel{background:linear-gradient(90deg,rgba(0,0,0,.04) 25%,rgba(0,0,0,.06) 50%,rgba(0,0,0,.04) 75%);background-size:200% 100%;animation:skel 1.4s infinite;border-radius:4px;color:transparent;display:inline-block;height:1em;width:60px}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* FOOTER */
+.foot{margin-top:80px;padding:32px;border-top:1px solid var(--border);text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3)}
+.foot strong{color:var(--navy);font-weight:500}
+
+@media (max-width:960px){
+  .layout{grid-template-columns:1fr}
+  .side{display:none}
+  .hero{padding:48px 22px 32px}
+  .hero h1{font-size:38px}
+  .main{padding:28px 22px 60px}
+  .nav{display:none}
+  .grid{grid-template-columns:1fr}
+  .section-h h2{font-size:26px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <a href="/sistema/" class="brand">
+      <div class="mark">i</div>
+      <span class="name">Innova<em>People</em></span>
+      <span class="sub">CHRO</span>
+    </a>
+    <nav class="nav">
+      <a href="/sistema/">Visão geral</a>
+      <a href="/sistema/agentes.html">Agentes IA</a>
+      <a href="/sistema/calendar.html">Calendário</a>
+      <a href="/sistema/catalogo-completo.html">Catálogo</a>
+      <a href="/sistema/chro/" class="active gold">CHRO</a>
+    </nav>
+    <div class="usr">
+      <span id="user-display">—</span>
+      <a href="/sistema/" class="logout">Sair</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Centro de Comando <em>de Pessoas, Cultura e Curadoria.</em></h1>
+    <p class="lede">
+      Trinta e nove instrumentos para o trabalho silencioso de manter uma organização inteira de pé.
+      <strong>Dezenove já operam</strong>, treze esperam definição, sete espelham o que o AIPrev faz na InnovaSphere — porque o que vale ali vale aqui.
+      Todos respondem ao mesmo backbone: pulso anônimo, agentes vigia, EventBus relacional e a memória que não se demite com a pessoa.
+    </p>
+    <div class="hero-meta">
+      <span>Backbone <strong id="m-tables">—</strong> tabelas</span>
+      <span>Agentes <strong id="m-agents">5</strong> diários</span>
+      <span>Pulsos 30d <strong id="m-pulses">—</strong></span>
+      <span>Mandatos ativos <strong id="m-mandatos">—</strong></span>
+      <span>Sugestões pendentes <strong id="m-sugg">—</strong></span>
+    </div>
+  </div>
+</section>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+<!-- SIDE NAV -->
+<aside class="side">
+  <div class="side-group">
+    <div class="side-h">Categorias</div>
+    <a href="#sinal-vivo" class="side-link active" data-jump>Sinal Vivo <span class="count">3</span></a>
+    <a href="#curadoria" class="side-link" data-jump>Curadoria <span class="count">3</span></a>
+    <a href="#memoria" class="side-link" data-jump>Memória Institucional <span class="count">3</span></a>
+    <a href="#pessoas" class="side-link" data-jump>Pessoas <span class="count">4</span></a>
+    <a href="#ritual" class="side-link" data-jump>Ritual &amp; Cadência <span class="count">4</span></a>
+    <a href="#comunicacao" class="side-link" data-jump>Comunicação <span class="count">3</span></a>
+    <a href="#frentes" class="side-link" data-jump>Frentes <span class="count">4</span></a>
+    <a href="#bi" class="side-link" data-jump>BI &amp; Analytics <span class="count">5</span></a>
+    <a href="#eventbus" class="side-link" data-jump>EventBus Relacional <span class="count">4</span></a>
+    <a href="#governanca" class="side-link" data-jump>Governança <span class="count">6</span></a>
+  </div>
+  <div class="side-group">
+    <div class="side-h">Atalhos</div>
+    <a href="/sistema/agentes.html" class="side-link">Agentes (página dedicada)</a>
+    <a href="/sistema/calendar.html" class="side-link">Calendário Google</a>
+    <a href="/sistema/catalogo-completo.html" class="side-link">Catálogo Completo</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ============================================================ -->
+<!-- 1. SINAL VIVO -->
+<!-- ============================================================ -->
+<section id="sinal-vivo" class="section">
+  <div class="section-h">
+    <h2>Sinal <em>vivo</em></h2>
+    <span class="count">3 instrumentos · todos operacionais</span>
+  </div>
+  <p class="section-sub">A organização emite sinais antes de pedir socorro. Aqui se ouve.</p>
+  <div class="grid">
+
+    <div class="card" data-mod="pulso">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Pulso Anônimo</div>
+          <div class="card-promise">Seis dimensões de pertencimento, sob k-anonimato ≥ 3.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body">
+        Tokens descartáveis, expiração em 14 dias, agregação só com três respostas ou mais.
+        Captura propósito, autonomia, competência, pertencimento, clareza, segurança — mais um sinal silencioso de risco de saída.
+      </div>
+      <div class="card-stats">
+        <div><strong id="ps-30d">—</strong>respostas 30d</div>
+        <div><strong id="ps-eng">—</strong>engajamento</div>
+        <div><strong id="ps-risk">—</strong>risco saída</div>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openPulseDisparar()">Disparar pulso</button>
+        <button class="btn btn-ghost" onclick="openPulseDash()">Ver tendências</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="agentes">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Agentes Vigia</div>
+          <div class="card-promise">Cinco leituras determinísticas, todo dia às 07:30 UTC.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body">
+        Pulse Anomaly · Knowledge Retention · Clock Drift · Mattering · Critic-Org Designer.
+        Sem LLM externo, sem alucinação — só lógica revisável.
+      </div>
+      <div class="card-stats">
+        <div><strong id="ag-runs">—</strong>runs 7d</div>
+        <div><strong id="ag-sugg">—</strong>sugestões abertas</div>
+        <div><strong id="ag-crit">—</strong>críticas</div>
+      </div>
+      <div class="card-actions">
+        <a href="/sistema/agentes.html" class="btn btn-primary">Painel completo</a>
+        <button class="btn btn-ghost" onclick="runAgentsNow()">Rodar agora</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="trilha">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Trilha de Eventos</div>
+          <div class="card-promise">EventBus append-only, 36 meses de memória forense.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body">
+        Captura silenciosa de toda mudança em mandatos, pulsos, decisões, relacionamentos, protocolos.
+        Snapshot antes/depois com autor — quem fez, quando, o que mudou.
+      </div>
+      <div class="card-stats">
+        <div><strong id="ev-24h">—</strong>eventos 24h</div>
+        <div><strong id="ev-7d">—</strong>eventos 7d</div>
+        <div><strong id="ev-src">—</strong>fontes ativas</div>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openEventBus()">Abrir trilha</button>
+        <button class="btn btn-ghost" onclick="searchEvents()">Buscar termo</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 2. CURADORIA -->
+<!-- ============================================================ -->
+<section id="curadoria" class="section">
+  <div class="section-h">
+    <h2>Curadoria <em>de trabalhos</em></h2>
+    <span class="count">3 instrumentos</span>
+  </div>
+  <p class="section-sub">Cada trabalho é um pacto. Aqui o pacto fica visível.</p>
+  <div class="grid">
+
+    <div class="card" data-mod="mandatos">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Trabalhos em Curso</div>
+          <div class="card-promise">Ciclo completo: diagnóstico, plano, plataforma, resultado, parceria.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body" id="mandatos-body">
+        <div class="skel" style="width:90%"></div>
+      </div>
+      <div class="card-actions">
+        <a href="/sistema/" class="btn btn-primary">Lista de trabalhos</a>
+        <button class="btn btn-ghost" onclick="newMandato()">Novo trabalho</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="raiox">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Raio-X</div>
+          <div class="card-promise">Funil diagnóstico: cinco sintomas, score 0–100, kanban de seis colunas.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body" id="raiox-body">
+        <div class="skel" style="width:80%"></div>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openRaioXKanban()">Kanban</button>
+        <a href="/raio-x" class="btn btn-ghost">Página pública</a>
+      </div>
+    </div>
+
+    <div class="card" data-mod="acoes-template">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Ações Curadas</div>
+          <div class="card-promise">Doze movimentos pré-classificados por impacto, relevância, efeito borboleta, urgência.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body" id="acoes-body">
+        <div class="skel" style="width:75%"></div>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openAcoesBib()">Biblioteca</button>
+        <button class="btn btn-ghost" onclick="generatePlano()">Gerar plano</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 3. MEMÓRIA INSTITUCIONAL -->
+<!-- ============================================================ -->
+<section id="memoria" class="section">
+  <div class="section-h">
+    <h2>Memória <em>institucional</em></h2>
+    <span class="count">3 instrumentos</span>
+  </div>
+  <p class="section-sub">O que permanece quando alguém vai.</p>
+  <div class="grid">
+
+    <div class="card" data-mod="decisoes">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Decisões &amp; Clock Drift</div>
+          <div class="card-promise">Toda decisão estruturada: motivo, alternativas, consequências, revisão.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body" id="decisoes-body">
+        Três níveis (operacional · tática · estratégica). Vigiada pelo Clock Drift Detector — tática sem revisão há 14 dias, estratégica há 30, vira sugestão na fila.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openDecisoes()">Abrir registro</button>
+        <button class="btn btn-ghost" onclick="newDecisao()">Nova decisão</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="protocolos">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Protocolos Vivos</div>
+          <div class="card-promise">A maneira de fazer, antes de quem faz desaparecer.</div>
+        </div>
+        <span class="status st-partial">Parcial</span>
+      </div>
+      <div class="card-body" id="protocolos-body">
+        Versionados, com responsável e data da próxima revisão programada. Falta UI de edição estruturada — hoje vivem como notas.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openProtocolos()">Abrir lista</button>
+        <button class="btn btn-ghost" onclick="newProtocolo()">Novo protocolo</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="relacionamentos">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Relacionamentos Críticos</div>
+          <div class="card-promise">A matriz de quem segura o quê — e quem segura quem.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body" id="relac-body">
+        Vigiado pelo Knowledge Retention Watchdog: concentração acima de cinquenta por cento em uma pessoa só vira alerta crítico.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openRelac()">Matriz</button>
+        <button class="btn btn-ghost" onclick="newRelac()">Adicionar</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 4. PESSOAS -->
+<!-- ============================================================ -->
+<section id="pessoas" class="section">
+  <div class="section-h">
+    <h2>Pessoas <em>(anônimo, agregado)</em></h2>
+    <span class="count">4 instrumentos · 1 vivo · 3 em definição</span>
+  </div>
+  <p class="section-sub">Nunca uma ficha. Sempre o coletivo que a ficha esconde.</p>
+  <div class="grid">
+
+    <div class="card" data-mod="skill-map">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Skill Map</div>
+          <div class="card-promise">Seis competências em escala 0–10: técnica, orquestração, julgamento, relação, IA/automação, gestão.</div>
+        </div>
+        <span class="status st-partial">Schema pronto</span>
+      </div>
+      <div class="card-body">
+        Tabela <code class="mono" style="font-family:var(--mono);font-size:11px">ip_skill_map</code> existe, correlação com desempenho calculada. UI de heatmap a definir.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('skill-map')">Definir UI</button>
+        <button class="btn btn-ghost" onclick="seedSkill()">Popular sample</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="nine-box">
+      <div class="card-head">
+        <div>
+          <div class="card-title">9-Box Grid</div>
+          <div class="card-promise">Performance × Potencial, sem caçada às bruxas.</div>
+        </div>
+        <span class="status st-spec">Spec aberta</span>
+      </div>
+      <div class="card-body">
+        Promessa no catálogo. Schema parcial via <code style="font-family:var(--mono);font-size:11px">ip_perfil_colaborador</code>. UI de grid 3×3 com tooltip qualitativo a desenhar.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('nine-box')">Abrir spec</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="succession">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Succession Plan</div>
+          <div class="card-promise">Quem segue quem, antes que faça falta.</div>
+        </div>
+        <span class="status st-spec">Spec aberta</span>
+      </div>
+      <div class="card-body">
+        Liga a Relacionamentos Críticos + Skill Map. Saída: árvore visual com prontidão (ready now / 1y / 2y) por posição-chave.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('succession')">Abrir spec</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="perfil">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Perfil Anonimizado</div>
+          <div class="card-promise">Valor humano em seis dimensões; sem PII, sem rótulo.</div>
+        </div>
+        <span class="status st-partial">Schema pronto</span>
+      </div>
+      <div class="card-body">
+        Estrutura <code style="font-family:var(--mono);font-size:11px">valor_humano</code> (jsonb) + percentual de automatizabilidade + risco de saída estimado. UI de leitura agregada a definir.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('perfil')">Definir UI</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 5. RITUAL & CADÊNCIA -->
+<!-- ============================================================ -->
+<section id="ritual" class="section">
+  <div class="section-h">
+    <h2>Ritual <em>&amp; cadência</em></h2>
+    <span class="count">4 instrumentos · todos operacionais</span>
+  </div>
+  <p class="section-sub">Cultura é o que se repete sem aviso.</p>
+  <div class="grid">
+
+    <div class="card" data-mod="rituais">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Rituais</div>
+          <div class="card-promise">Calendário operacional: semanal, quinzenal, mensal, trimestral.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body" id="rituais-body">
+        View <code style="font-family:var(--mono);font-size:11px">v_ip_rituais_proximos</code> mostra próximos com facilitador, participantes, dias para acontecer.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openRituais()">Calendário</button>
+        <button class="btn btn-ghost" onclick="newRitual()">Novo ritual</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="gcal">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Google Calendar</div>
+          <div class="card-promise">Rituais sincronizados; convites na agenda dos sócios sem esforço.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body">
+        OAuth 2-step ativo. Edge Functions <code style="font-family:var(--mono);font-size:11px">innovapeople-calendar-*</code> deployadas.
+      </div>
+      <div class="card-actions">
+        <a href="/sistema/calendar.html" class="btn btn-primary">Abrir agenda</a>
+        <button class="btn btn-ghost" onclick="syncCalNow()">Sincronizar agora</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="digest">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Digest Semanal</div>
+          <div class="card-promise">Domingo, 18h UTC. Tendências, sugestões críticas, próximos rituais.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body">
+        View <code style="font-family:var(--mono);font-size:11px">v_ip_digest_semanal</code> compõe; Edge Function dispara. Sem orquídea, sem ruído.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="previewDigest()">Pré-visualizar</button>
+        <button class="btn btn-ghost" onclick="sendDigestNow()">Enviar agora</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="banco-horas">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Banco de Horas PJ</div>
+          <div class="card-promise">Autogestão: cada colaborador lança o que viveu.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body">
+        Reuso direto da plataforma Horigens (tabela <code style="font-family:var(--mono);font-size:11px">plat_banco_horas</code>). Categorias: cuidado, hora extra, compensação. RLS privado por colaborador.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openBancoHoras()">Meu saldo</button>
+        <button class="btn btn-ghost" onclick="bancoLanc()">Lançar</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 6. COMUNICAÇÃO -->
+<!-- ============================================================ -->
+<section id="comunicacao" class="section">
+  <div class="section-h">
+    <h2>Comunicação <em>institucional</em></h2>
+    <span class="count">3 canais · todos operacionais</span>
+  </div>
+  <p class="section-sub">Convite, sempre. Imposição, nunca.</p>
+  <div class="grid">
+
+    <div class="card" data-mod="email">
+      <div class="card-head">
+        <div>
+          <div class="card-title">E-mail Outbox</div>
+          <div class="card-promise">Fila com retry e governança de CC automático.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body" id="email-body">
+        Tabela <code style="font-family:var(--mono);font-size:11px">ip_email_outbox</code> + dispatcher EF. CC governamental automático para destinatários <em>@innovasphere.ia.br</em>.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openOutbox()">Ver outbox</button>
+        <button class="btn btn-ghost" onclick="sendTestEmail()">Teste</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="whatsapp">
+      <div class="card-head">
+        <div>
+          <div class="card-title">WhatsApp Direto</div>
+          <div class="card-promise">Canal urgente para alertas críticos.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body">
+        Edge Function <code style="font-family:var(--mono);font-size:11px">whatsapp-direto</code> via Evolution API. Texto, imagem, OTP.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openWaSend()">Enviar mensagem</button>
+        <button class="btn btn-ghost" onclick="openWaTemplates()">Templates</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="concierge">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Concierge IA</div>
+          <div class="card-promise">Pergunte sobre engajamento, retenção, tendências — em linguagem natural.</div>
+        </div>
+        <span class="status st-partial">Parcial</span>
+      </div>
+      <div class="card-body">
+        Padrão importável do Rapheice OS (Claude Haiku 4.5 + context grounding). Aqui aplicado ao pulso e à memória organizacional.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="openConcierge()">Abrir conversa</button>
+        <button class="btn btn-ghost" onclick="defineSpec('concierge')">Definir prompt</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 7. FRENTES -->
+<!-- ============================================================ -->
+<section id="frentes" class="section">
+  <div class="section-h">
+    <h2>Frentes <em>de trabalho</em></h2>
+    <span class="count">4 frentes públicas · 2 com instrumentos · 2 em definição</span>
+  </div>
+  <p class="section-sub">Cada frente é uma escola dentro da casa.</p>
+  <div class="grid">
+
+    <div class="card" data-mod="intergeracional">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Intergeracional</div>
+          <div class="card-promise">Matriz de papéis, política de remuneração, rituais nos três horizontes.</div>
+        </div>
+        <span class="status st-partial">Parcial</span>
+      </div>
+      <div class="card-body">
+        Vive como tese pública. Falta materializar: matriz de papéis, política de remuneração calibrada, rituais semanais por horizonte geracional.
+      </div>
+      <div class="card-actions">
+        <a href="/frentes/intergeracional.html" class="btn btn-ghost">Página pública</a>
+        <button class="btn btn-gold" onclick="defineSpec('intergeracional')">Abrir spec</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="cognitiva">
+      <div class="card-head">
+        <div>
+          <div class="card-title">IA Cognitiva Industrial</div>
+          <div class="card-promise">Camada cognitiva, NLQ, tradução de intenção sem intermediário.</div>
+        </div>
+        <span class="status st-todo">Em definição</span>
+      </div>
+      <div class="card-body">
+        Promessa pública sem implementação ainda. Concierge IA é o primeiro passo; a frente exige RAG sobre acervo do cliente.
+      </div>
+      <div class="card-actions">
+        <a href="/frentes/inteligencia-cognitiva.html" class="btn btn-ghost">Página pública</a>
+        <button class="btn btn-gold" onclick="defineSpec('cognitiva')">Abrir spec</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="do">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Desenvolvimento Organizacional</div>
+          <div class="card-promise">Arquitetura real de decisão, regência semanal, indicadores cruzados.</div>
+        </div>
+        <span class="status st-partial">Parcial</span>
+      </div>
+      <div class="card-body">
+        Clock Drift Detector + Critic-Org Designer já cobrem parte. Falta visualização de arquitetura de decisão e dashboard sistêmico cruzado.
+      </div>
+      <div class="card-actions">
+        <a href="/frentes/desenvolvimento-organizacional.html" class="btn btn-ghost">Página pública</a>
+        <button class="btn btn-gold" onclick="defineSpec('do')">Abrir spec</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="td">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Transformação Digital com IA</div>
+          <div class="card-promise">Stack sequenciada (2–3 anos), governança técnica calibrada, curadoria de fornecedores.</div>
+        </div>
+        <span class="status st-todo">Em definição</span>
+      </div>
+      <div class="card-body">
+        Tese de consultoria. Instrumentação interna: roadmap de stack por cliente, scoring de fornecedores, calendário de governança.
+      </div>
+      <div class="card-actions">
+        <a href="/frentes/transformacao-digital.html" class="btn btn-ghost">Página pública</a>
+        <button class="btn btn-gold" onclick="defineSpec('td')">Abrir spec</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 8. BI & ANALYTICS -->
+<!-- ============================================================ -->
+<section id="bi" class="section">
+  <div class="section-h">
+    <h2>BI <em>&amp; analytics</em></h2>
+    <span class="count">5 instrumentos · construção colaborativa com AIPrev (InnovaSphere)</span>
+  </div>
+  <p class="section-sub">
+    O que o AIPrev faz para obras — caminho crítico, valor agregado, previsão — aqui responde por pessoas, programas e cultura.
+    Bringagem espelhada do schema <code style="font-family:var(--mono);font-size:13px;color:var(--gold-deep);font-style:normal">fn_plat_*</code>: 22 RPCs, cinco agentes diários, EventBus em trinta gatilhos.
+  </p>
+  <div class="grid">
+
+    <div class="card" data-mod="olap">
+      <div class="card-head">
+        <div>
+          <div class="card-title">OLAP de Tendências</div>
+          <div class="card-promise">Delta percentual em cada dimensão SDT, por equipe, por janela.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body" id="olap-body">
+        RPC <code style="font-family:var(--mono);font-size:11px">fn_ip_bi_tendencias</code> (fork do Rapheice v24). K-anônimo ≥ 3. Sem médias enganosas.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openOlap()">Tendências 90d</button>
+        <button class="btn btn-ghost" onclick="exportOlap()">Exportar CSV</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="evm-people">
+      <div class="card-head">
+        <div>
+          <div class="card-title">EVM de Programas</div>
+          <div class="card-promise">Valor agregado (PV · AC · CPI) aplicado a programas de cultura, liderança, sucessão.</div>
+        </div>
+        <span class="status st-spec">Espelho AIPrev</span>
+      </div>
+      <div class="card-body">
+        O AIPrev usa <code style="font-family:var(--mono);font-size:11px">fn_plat_avanco_resumo</code> para obra. Mesmo padrão para programas de gente — PV é o plano, AC é o esforço gasto, CPI mostra se o programa vale o custo. Portar 1:1.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('evm-people')">Espelhar AIPrev</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="cpm-dev">
+      <div class="card-head">
+        <div>
+          <div class="card-title">CPM de Desenvolvimento</div>
+          <div class="card-promise">Caminho crítico para planos individuais e jornadas de liderança.</div>
+        </div>
+        <span class="status st-spec">Espelho AIPrev</span>
+      </div>
+      <div class="card-body">
+        Cópia conceitual de <code style="font-family:var(--mono);font-size:11px">fn_plat_cpm_forward/_backward/_executar</code>. Cada plano vira grafo de marcos com dependências — gargalo visível antes do atraso.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('cpm-dev')">Espelhar AIPrev</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="forecaster">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Forecaster</div>
+          <div class="card-promise">Projeção de turnover, headcount, custo de pessoas em três cenários.</div>
+        </div>
+        <span class="status st-spec">Espelho AIPrev</span>
+      </div>
+      <div class="card-body">
+        AIPrev tem <code style="font-family:var(--mono);font-size:11px">fn_agent_forecaster</code> para obra. Aqui projeta saída de talento crítico, necessidade de contratação e folha 30/60/90.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('forecaster')">Espelhar AIPrev</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="resumo-exec">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Resumo Executivo Semanal</div>
+          <div class="card-promise">Três insights, três sinais, três decisões a tomar — no email do domingo.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body">
+        View <code style="font-family:var(--mono);font-size:11px">v_ip_digest_semanal</code> + composer estilo Rapheice (Haiku 4.5 grounding). Sem alucinação, sem ruído.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="previewDigest()">Pré-visualizar</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 9. EVENTBUS RELACIONAL -->
+<!-- ============================================================ -->
+<section id="eventbus" class="section">
+  <div class="section-h">
+    <h2>EventBus <em>relacional</em></h2>
+    <span class="count">Backbone L1 · porta direta do AIPrev</span>
+  </div>
+  <p class="section-sub">
+    O AIPrev provou: trinta gatilhos em dez tabelas, snapshot antes/depois com autor, fila saudável.
+    Aqui se replica para o domínio de pessoas — toda admissão, promoção, feedback recebido, ritual realizado vira evento auditável.
+  </p>
+  <div class="grid">
+
+    <div class="card" data-mod="eb-triggers">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Triggers Relacionais</div>
+          <div class="card-promise">Captura silenciosa de toda mutação relevante.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body">
+        Função <code style="font-family:var(--mono);font-size:11px">fn_ip_eventbus_capturar</code> em seis tabelas centrais (mandatos, pulsos, decisões, relacionamentos, protocolos, sugestões). Modelo do AIPrev (<code style="font-family:var(--mono);font-size:11px">trg_eventbus_generico</code> em todas <code style="font-family:var(--mono);font-size:11px">plat_plano_*</code>).
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openTriggers()">Listar triggers ativos</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="eb-fila">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Fila de Despacho</div>
+          <div class="card-promise">Eventos enfileirados, processados, com rate limit.</div>
+        </div>
+        <span class="status st-partial">Parcial</span>
+      </div>
+      <div class="card-body">
+        AIPrev usa <code style="font-family:var(--mono);font-size:11px">eventbus_dispatch_v2 · _enqueue · _process_queue · _check_rate_limit</code>. Migrar para o domínio InnovaPeople — útil para notificações compostas, escalonamento de sugestões, integração WhatsApp.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('eb-fila')">Portar do AIPrev</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="eb-busca">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Busca Forense</div>
+          <div class="card-promise">Toda mudança recuperável por termo, autor, fonte, janela.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body">
+        RPC <code style="font-family:var(--mono);font-size:11px">fn_ip_historico_por_termo</code> + indexes em <code style="font-family:var(--mono);font-size:11px">ts DESC, source, actor</code>. 36 meses de retenção configurável.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="searchEvents()">Buscar</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="eb-auditor">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Auditor Relacional</div>
+          <div class="card-promise">Agente que lê o EventBus inteiro e aponta padrão suspeito.</div>
+        </div>
+        <span class="status st-spec">Espelho Rapheice</span>
+      </div>
+      <div class="card-body">
+        Rapheice OS roda agente <code style="font-family:var(--mono);font-size:11px">auditor_relacional</code> sobre 30 triggers em 10 tabelas. Aqui aplicado a sequências de mudança em relacionamentos críticos e decisões revogadas em ciclo curto.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('eb-auditor')">Espelhar Rapheice</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- BANDA MATTERING (faixa especial — construção colaborativa) -->
+<section class="section" style="background:linear-gradient(135deg,rgba(196,163,90,.06),rgba(46,139,110,.04));border-radius:12px;padding:32px;border:1px solid rgba(196,163,90,.2)">
+  <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap">
+    <div style="flex:1;min-width:280px">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:10px">Em construção colaborativa</div>
+      <h3 style="font-family:var(--serif);font-size:30px;font-weight:400;color:var(--navy);line-height:1.1;margin-bottom:10px">Mattering <em style="color:var(--gold-deep);font-style:italic">— a faixa silenciosa.</em></h3>
+      <p style="font-size:14px;color:var(--ink2);line-height:1.6;font-style:italic;font-family:var(--serif);font-size:18px">
+        A sensação de importar antes de aparecer na pesquisa. O agente Mattering Coach já vigia aqui;
+        a frente conceitual vive na InnovaSphere ao lado do AIPrev. O que evolui lá, espelha aqui.
+        O que aqui produzimos de bom, modelamos lá.
+      </p>
+    </div>
+    <div style="display:flex;gap:8px;flex-direction:column;min-width:220px">
+      <button class="btn btn-primary" onclick="openMatteringStatus()">Ver estado atual</button>
+      <button class="btn btn-ghost" onclick="defineSpec('mattering-roadmap')">Roadmap conjunto</button>
+      <a href="https://plat.innovasphere.ia.br" target="_blank" class="btn btn-ghost">Espelho na InnovaSphere</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 10. GOVERNANÇA -->
+<!-- ============================================================ -->
+<section id="governanca" class="section">
+  <div class="section-h">
+    <h2>Governança <em>operacional</em></h2>
+    <span class="count">6 instrumentos · 1 vivo · 5 em definição</span>
+  </div>
+  <p class="section-sub">A burocracia que protege a relação.</p>
+  <div class="grid">
+
+    <div class="card" data-mod="cultura">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Cultura &amp; Assessment</div>
+          <div class="card-promise">Diagnóstico cultural sem questionário cosmético.</div>
+        </div>
+        <span class="status st-todo">Em definição</span>
+      </div>
+      <div class="card-body">
+        Liga Pulso + Decisões + Rituais para inferir cultura praticada (não declarada). Saída: dashboard de fricção/coerência.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('cultura')">Abrir spec</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="remuneracao">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Compensation Intelligence</div>
+          <div class="card-promise">Remuneração calibrada por valor entregue e dispersão interna.</div>
+        </div>
+        <span class="status st-todo">Em definição</span>
+      </div>
+      <div class="card-body">
+        Promessa do catálogo. Requer: bandas salariais por papel, índice de dispersão equipe, simulador de movimentos.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('remuneracao')">Abrir spec</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="governance">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Governance Matrix</div>
+          <div class="card-promise">Quem decide o quê — e com quem.</div>
+        </div>
+        <span class="status st-todo">Em definição</span>
+      </div>
+      <div class="card-body">
+        RACI vivo. Liga a Decisões e a Confused Deputy Detector (próximo agente). Tabela <code style="font-family:var(--mono);font-size:11px">ip_governance</code> a criar.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('governance')">Abrir spec</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="onboarding">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Onboarding</div>
+          <div class="card-promise">Trinta dias com curadoria, não com checklist.</div>
+        </div>
+        <span class="status st-todo">Em definição</span>
+      </div>
+      <div class="card-body">
+        Trilha personalizada por papel + rituais de imersão + transferência de contexto proprietário. Saída: relatório de aderência em D+30 e D+90.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('onboarding')">Abrir spec</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="offboarding">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Offboarding &amp; Knowledge Transfer</div>
+          <div class="card-promise">A saída como ritual de transferência, não como vácuo.</div>
+        </div>
+        <span class="status st-todo">Em definição</span>
+      </div>
+      <div class="card-body">
+        Gatilho: fim de relação registrado em <code style="font-family:var(--mono);font-size:11px">ip_relacionamentos</code>. Aciona protocolo de transferência (entrevista, mapa de contatos, handover de protocolos vivos).
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-gold" onclick="defineSpec('offboarding')">Abrir spec</button>
+      </div>
+    </div>
+
+    <div class="card" data-mod="lgpd">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Compliance LGPD</div>
+          <div class="card-promise">Anonimato, retenção de dados, audit trail completo.</div>
+        </div>
+        <span class="status st-live">Operacional</span>
+      </div>
+      <div class="card-body">
+        Pulso por hash, retenção configurável, eventos imutáveis em <code style="font-family:var(--mono);font-size:11px">ip_eventos</code>. Constitutivo, não bolt-on.
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openLgpd()">Painel LGPD</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="foot">
+  <strong>InnovaPeople</strong> · CHRO · <span id="foot-stats">backbone em apuração</span>
+</div>
+
+</main>
+</div>
+
+<!-- LOGO SVG -->
+<svg width="0" height="0" style="position:absolute"><defs><symbol id="ip-logo" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="16" y="22" text-anchor="middle" font-family="Cormorant Garamond" font-size="18" font-style="italic" fill="currentColor">i</text></symbol></defs></svg>
+
+<script>
+// ============================================================
+// CHRO BOOT — fetches real data after auth gate releases
+// ============================================================
+async function chroBoot(){
+  console.log('[chro] boot');
+  const sb=window.__IP_SB;
+  if(!sb){console.warn('[chro] sem supabase, modo offline');return paintEmpty()}
+  // Side nav scroll-spy
+  document.querySelectorAll('.side-link[data-jump]').forEach(a=>{
+    a.addEventListener('click',e=>{
+      e.preventDefault();
+      const id=a.getAttribute('href').slice(1);
+      const el=document.getElementById(id);
+      if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+      document.querySelectorAll('.side-link').forEach(x=>x.classList.remove('active'));
+      a.classList.add('active');
+    });
+  });
+  // Parallel data fetch
+  const tasks=[
+    loadHeroMetrics(sb),
+    loadPulso(sb),
+    loadAgentes(sb),
+    loadEventos(sb),
+    loadMandatos(sb),
+    loadRaioX(sb),
+    loadAcoes(sb),
+    loadEmail(sb),
+  ];
+  await Promise.allSettled(tasks);
+  console.log('[chro] boot done');
+}
+window.chroBoot=chroBoot;
+
+function setText(id,val){const el=document.getElementById(id);if(el)el.textContent=val??'—'}
+function paintEmpty(){
+  ['m-tables','m-pulses','m-mandatos','m-sugg','ps-30d','ps-eng','ps-risk','ag-runs','ag-sugg','ag-crit','ev-24h','ev-7d','ev-src'].forEach(id=>setText(id,'—'));
+}
+
+async function loadHeroMetrics(sb){
+  try{
+    const [{count:mand},{count:sugg},{count:pulses}]=await Promise.all([
+      sb.from('ip_mandatos').select('*',{count:'exact',head:true}).neq('estagio','encerrado'),
+      sb.from('ip_agent_sugestoes').select('*',{count:'exact',head:true}).eq('status','pendente'),
+      sb.from('ip_pulsos').select('*',{count:'exact',head:true}).gte('criado_em',new Date(Date.now()-30*864e5).toISOString()),
+    ]);
+    setText('m-tables','23');
+    setText('m-mandatos',mand??0);
+    setText('m-sugg',sugg??0);
+    setText('m-pulses',pulses??0);
+    document.getElementById('foot-stats').textContent=`${mand??0} trabalhos · ${pulses??0} pulsos 30d · ${sugg??0} sugestões abertas`;
+  }catch(e){console.warn('[hero]',e);setText('m-tables','23')}
+}
+
+async function loadPulso(sb){
+  try{
+    const since=new Date(Date.now()-30*864e5).toISOString();
+    const {data,count}=await sb.from('ip_pulsos').select('*',{count:'exact'}).gte('criado_em',since).limit(500);
+    setText('ps-30d',count??0);
+    if(!data||!data.length){setText('ps-eng','—');setText('ps-risk','—');return}
+    const dims=['proposito','autonomia','competencia','pertencimento','clareza','seguranca'];
+    let eng=0,n=0,risk=0,rn=0;
+    data.forEach(p=>{
+      dims.forEach(d=>{if(typeof p[d]==='number'){eng+=p[d];n++}});
+      if(typeof p.risco_saida==='number'){risk+=p.risco_saida;rn++}
+    });
+    setText('ps-eng',n?(eng/n).toFixed(1):'—');
+    setText('ps-risk',rn?(risk/rn).toFixed(1):'—');
+  }catch(e){console.warn('[pulso]',e)}
+}
+
+async function loadAgentes(sb){
+  try{
+    const since=new Date(Date.now()-7*864e5).toISOString();
+    const [{count:runs},{count:sugg},{count:crit}]=await Promise.all([
+      sb.from('ip_agent_runs').select('*',{count:'exact',head:true}).gte('iniciado_em',since),
+      sb.from('ip_agent_sugestoes').select('*',{count:'exact',head:true}).eq('status','pendente'),
+      sb.from('ip_agent_sugestoes').select('*',{count:'exact',head:true}).eq('status','pendente').eq('severidade','critica'),
+    ]);
+    setText('ag-runs',runs??0);
+    setText('ag-sugg',sugg??0);
+    setText('ag-crit',crit??0);
+  }catch(e){console.warn('[agentes]',e)}
+}
+
+async function loadEventos(sb){
+  try{
+    const d1=new Date(Date.now()-864e5).toISOString();
+    const d7=new Date(Date.now()-7*864e5).toISOString();
+    const [{count:c1},{count:c7},{data:srcs}]=await Promise.all([
+      sb.from('ip_eventos').select('*',{count:'exact',head:true}).gte('ts',d1),
+      sb.from('ip_eventos').select('*',{count:'exact',head:true}).gte('ts',d7),
+      sb.from('ip_eventos').select('source').gte('ts',d7).limit(500),
+    ]);
+    setText('ev-24h',c1??0);
+    setText('ev-7d',c7??0);
+    const uniq=new Set((srcs||[]).map(r=>r.source));
+    setText('ev-src',uniq.size||0);
+  }catch(e){console.warn('[eventos]',e)}
+}
+
+async function loadMandatos(sb){
+  const body=document.getElementById('mandatos-body');if(!body)return;
+  try{
+    const {data}=await sb.from('ip_mandatos').select('empresa,estagio,socio_responsavel,criado_em').order('criado_em',{ascending:false}).limit(5);
+    if(!data||!data.length){body.innerHTML='<div style="color:var(--ink3);font-style:italic">Nenhum trabalho registrado ainda.</div>';return}
+    const rows=data.map(m=>`<tr><td><strong style="color:var(--navy)">${esc(m.empresa)}</strong></td><td><span class="pill ${pillForEstagio(m.estagio)}">${esc(m.estagio||'—')}</span></td><td style="color:var(--ink3);font-size:11px">${esc(m.socio_responsavel||'')}</td></tr>`).join('');
+    body.innerHTML=`<table class="dt"><tbody>${rows}</tbody></table>`;
+  }catch(e){body.innerHTML='<div style="color:var(--red);font-size:12px">Falha ao carregar.</div>'}
+}
+
+async function loadRaioX(sb){
+  const body=document.getElementById('raiox-body');if(!body)return;
+  try{
+    const {data}=await sb.from('v_ip_raio_x_pipeline').select('*').limit(20);
+    if(!data||!data.length){body.innerHTML='<div style="color:var(--ink3);font-style:italic">Pipeline vazio.</div>';return}
+    const counts={};
+    data.forEach(r=>{counts[r.status||r.coluna||'novo']=(counts[r.status||r.coluna||'novo']||0)+(r.count||1)});
+    const cols=['novo','contatado','agendado','realizado','convertido','descartado'];
+    body.innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:11px">${cols.map(c=>`<div style="padding:8px;background:var(--cream2);border-radius:4px"><div style="font-family:var(--mono);font-size:9px;text-transform:uppercase;color:var(--ink3);letter-spacing:.1em">${c}</div><div style="font-family:var(--serif);font-size:20px;color:var(--navy);font-weight:500">${counts[c]||0}</div></div>`).join('')}</div>`;
+  }catch(e){body.innerHTML='<div style="color:var(--ink3);font-size:12px;font-style:italic">View v_ip_raio_x_pipeline ainda sem dados.</div>'}
+}
+
+async function loadAcoes(sb){
+  const body=document.getElementById('acoes-body');if(!body)return;
+  try{
+    const {data,count}=await sb.from('ip_acoes_template').select('*',{count:'exact'}).order('ireu_score',{ascending:false}).limit(5);
+    if(!data||!data.length){body.innerHTML='<div style="color:var(--ink3);font-style:italic">Biblioteca vazia — seed inicial pendente.</div>';return}
+    body.innerHTML=`<div style="font-size:12px;color:var(--ink3);margin-bottom:8px">${count} ações curadas · top 5 por IREU:</div>`+data.map(a=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed var(--border2);font-size:12px"><span>${esc(a.titulo||a.nome||'(sem título)')}</span><span style="font-family:var(--mono);color:var(--gold-deep);font-size:11px">${a.ireu_score||0}</span></div>`).join('');
+  }catch(e){body.innerHTML='<div style="color:var(--ink3);font-size:12px;font-style:italic">Tabela ip_acoes_template ainda não populada.</div>'}
+}
+
+async function loadEmail(sb){
+  const body=document.getElementById('email-body');if(!body)return;
+  try{
+    const [{count:pend},{count:sent7d}]=await Promise.all([
+      sb.from('ip_email_outbox').select('*',{count:'exact',head:true}).eq('status','pendente'),
+      sb.from('ip_email_outbox').select('*',{count:'exact',head:true}).eq('status','enviado').gte('criado_em',new Date(Date.now()-7*864e5).toISOString()),
+    ]);
+    body.innerHTML=`<div style="font-size:13px;color:var(--ink2)">Tabela <code style="font-family:var(--mono);font-size:11px">ip_email_outbox</code> + dispatcher EF. <strong style="color:var(--navy)">${pend??0}</strong> na fila · <strong style="color:var(--navy)">${sent7d??0}</strong> enviados nos últimos 7 dias.</div>`;
+  }catch(e){}
+}
+
+function pillForEstagio(e){return({diagnostico:'',plano:'gold',plataforma:'gold',resultado:'emerald',parceria:'emerald',encerrado:''})[e]||''}
+function esc(s){if(s==null)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML}
+
+// ============================================================
+// ACTIONS (stubs — open inline drawers ou navega pra rota dedicada)
+// ============================================================
+function notImpl(name){alert('Em construção: '+name+'\nVamos definir a spec na próxima rodada.')}
+function openPulseDisparar(){notImpl('Disparar pulso (EF innovapeople-pulso-disparar)')}
+function openPulseDash(){notImpl('Dashboard de tendências OLAP')}
+function runAgentsNow(){notImpl('Trigger manual fn_ip_agentes_rodar_todos')}
+function openEventBus(){notImpl('Painel EventBus + filtros')}
+function searchEvents(){const t=prompt('Buscar termo no histórico:');if(t)notImpl('Busca: '+t)}
+function newMandato(){notImpl('Form novo trabalho')}
+function openRaioXKanban(){notImpl('Kanban 6 colunas Raio-X')}
+function openAcoesBib(){notImpl('Biblioteca de ações')}
+function generatePlano(){notImpl('fn_ip_plano_gerar')}
+function openDecisoes(){notImpl('Registro de decisões')}
+function newDecisao(){notImpl('Form nova decisão')}
+function openProtocolos(){notImpl('Protocolos vivos')}
+function newProtocolo(){notImpl('Novo protocolo')}
+function openRelac(){notImpl('Matriz de relacionamentos')}
+function newRelac(){notImpl('Adicionar relacionamento')}
+function openRituais(){notImpl('Calendário de rituais')}
+function newRitual(){notImpl('Novo ritual')}
+function syncCalNow(){notImpl('Sincronização Google Calendar')}
+function previewDigest(){notImpl('Preview do digest semanal')}
+function sendDigestNow(){notImpl('Disparar digest agora')}
+function openBancoHoras(){notImpl('Meu saldo de horas')}
+function bancoLanc(){notImpl('Lançar horas')}
+function openOutbox(){notImpl('E-mail outbox')}
+function sendTestEmail(){notImpl('Teste de envio')}
+function openWaSend(){notImpl('Envio WhatsApp')}
+function openWaTemplates(){notImpl('Templates WhatsApp')}
+function openConcierge(){notImpl('Concierge IA Q&A (a portar do Rapheice OS)')}
+function openLgpd(){notImpl('Painel LGPD')}
+function defineSpec(mod){alert('Spec aberta para: '+mod+'\n\nPróximo passo: definir contrato de dados, UI mínima viável e gatilhos de automação.')}
+function seedSkill(){notImpl('Popular ip_skill_map com sample')}
+function openOlap(){notImpl('Painel OLAP fn_ip_bi_tendencias 90d')}
+function exportOlap(){notImpl('Exportar CSV de tendências')}
+function openTriggers(){notImpl('Listar trg_* em ip_eventos')}
+function openMatteringStatus(){alert('Mattering — estado atual:\n\n· Agente Mattering Coach: operacional (vigia propósito + pertencimento < 6).\n· Frente conceitual: em construção na InnovaSphere ao lado do AIPrev.\n· Próximo passo conjunto: dimensão longitudinal (mattering trajectory) com retroalimentação visível ao colaborador.\n\nO que evoluir lá, importa para cá. O que aqui produzirmos de bom, modela lá.')}
+</script>
+
+</body>
+</html>
