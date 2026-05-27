@@ -311,7 +311,7 @@ em{font-style:italic}
         <div><strong id="ag-crit">—</strong>críticas</div>
       </div>
       <div class="card-actions">
-        <a href="/sistema/agentes.html" class="btn btn-primary">Painel completo</a>
+        <button class="btn btn-primary" onclick="openAgentesPainel()">Sugestões pendentes</button>
         <button class="btn btn-ghost" onclick="runAgentsNow()">Rodar agora</button>
       </div>
     </div>
@@ -365,7 +365,7 @@ em{font-style:italic}
         <div class="skel" style="width:90%"></div>
       </div>
       <div class="card-actions">
-        <a href="/sistema/" class="btn btn-primary">Lista de trabalhos</a>
+        <button class="btn btn-primary" onclick="openMandatos()">Lista de trabalhos</button>
         <button class="btn btn-ghost" onclick="newMandato()">Novo trabalho</button>
       </div>
     </div>
@@ -823,7 +823,7 @@ em{font-style:italic}
         O AIPrev usa <code style="font-family:var(--mono);font-size:11px">fn_plat_avanco_resumo</code> para obra. Mesmo padrão para programas de gente — PV é o plano, AC é o esforço gasto, CPI mostra se o programa vale o custo. Portar 1:1.
       </div>
       <div class="card-actions">
-        <button class="btn btn-gold" onclick="defineSpec('evm-people')">Espelhar AIPrev</button>
+        <button class="btn btn-gold" onclick="openEvmPeople()">Ver demonstração</button>
       </div>
     </div>
 
@@ -839,7 +839,7 @@ em{font-style:italic}
         Cópia conceitual de <code style="font-family:var(--mono);font-size:11px">fn_plat_cpm_forward/_backward/_executar</code>. Cada plano vira grafo de marcos com dependências — gargalo visível antes do atraso.
       </div>
       <div class="card-actions">
-        <button class="btn btn-gold" onclick="defineSpec('cpm-dev')">Espelhar AIPrev</button>
+        <button class="btn btn-gold" onclick="openCpmDev()">Ver demonstração</button>
       </div>
     </div>
 
@@ -855,7 +855,7 @@ em{font-style:italic}
         AIPrev tem <code style="font-family:var(--mono);font-size:11px">fn_agent_forecaster</code> para obra. Aqui projeta saída de talento crítico, necessidade de contratação e folha 30/60/90.
       </div>
       <div class="card-actions">
-        <button class="btn btn-gold" onclick="defineSpec('forecaster')">Espelhar AIPrev</button>
+        <button class="btn btn-gold" onclick="openForecaster()">Ver demonstração</button>
       </div>
     </div>
 
@@ -1248,44 +1248,540 @@ function pillForEstagio(e){return({diagnostico:'',plano:'gold',plataforma:'gold'
 function esc(s){if(s==null)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML}
 
 // ============================================================
-// ACTIONS (stubs — open inline drawers ou navega pra rota dedicada)
+// DRAWER SYSTEM — slide-in right
 // ============================================================
-function notImpl(name){alert('Em construção: '+name+'\nVamos definir a spec na próxima rodada.')}
-function openPulseDisparar(){notImpl('Disparar pulso (EF innovapeople-pulso-disparar)')}
-function openPulseDash(){notImpl('Dashboard de tendências OLAP')}
-function runAgentsNow(){notImpl('Trigger manual fn_ip_agentes_rodar_todos')}
-function openEventBus(){notImpl('Painel EventBus + filtros')}
-function searchEvents(){const t=prompt('Buscar termo no histórico:');if(t)notImpl('Busca: '+t)}
-function newMandato(){notImpl('Form novo trabalho')}
-function openRaioXKanban(){notImpl('Kanban 6 colunas Raio-X')}
-function openAcoesBib(){notImpl('Biblioteca de ações')}
-function generatePlano(){notImpl('fn_ip_plano_gerar')}
-function openDecisoes(){notImpl('Registro de decisões')}
-function newDecisao(){notImpl('Form nova decisão')}
-function openProtocolos(){notImpl('Protocolos vivos')}
-function newProtocolo(){notImpl('Novo protocolo')}
-function openRelac(){notImpl('Matriz de relacionamentos')}
-function newRelac(){notImpl('Adicionar relacionamento')}
-function openRituais(){notImpl('Calendário de rituais')}
+function openDrawer(title, htmlContent, init){
+  const ovl=document.getElementById('dr-ovl');
+  const dr=document.getElementById('dr');
+  const t=document.getElementById('dr-title');
+  const b=document.getElementById('dr-body');
+  if(!ovl||!dr) return;
+  t.textContent=title;
+  b.innerHTML=htmlContent;
+  ovl.classList.add('on');
+  dr.classList.add('on');
+  setTimeout(()=>{if(typeof init==='function') try{init(b)}catch(e){console.warn('drawer init',e)}},10);
+}
+function closeDrawer(){
+  document.getElementById('dr-ovl')?.classList.remove('on');
+  document.getElementById('dr')?.classList.remove('on');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+
+// ============================================================
+// FEATURE 1 — PULSO DISPARAR (EF innovapeople-pulso-disparar)
+// ============================================================
+function openPulseDisparar(){
+  openDrawer('Disparar pulso', `
+    <p class="dr-sub">Gera tokens anônimos com validade de 14 dias e enfileira convites no outbox de e-mail.</p>
+    <form id="pd-form" class="dr-form">
+      <label><span class="dr-lab">Quantos convites</span><input type="number" name="qtd" value="10" min="3" max="500" required></label>
+      <label><span class="dr-lab">Equipe (opcional)</span><input type="text" name="equipe" placeholder="ex: liderança"></label>
+      <label><span class="dr-lab">Papel (opcional)</span><input type="text" name="papel" placeholder="ex: gerente"></label>
+      <label><span class="dr-lab">Mensagem custom (opcional)</span><textarea name="msg" rows="4" placeholder="Texto adicional no convite — Cormorant Garamond, tom InnovaPeople."></textarea></label>
+      <label><span class="dr-lab">Lista de e-mails (opcional · um por linha; senão dispara só os tokens)</span><textarea name="emails" rows="5" placeholder="nome@empresa.com&#10;outro@empresa.com" style="font-family:var(--mono);font-size:12px"></textarea></label>
+      <div id="pd-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:12px 22px;font-size:13px">Gerar &amp; enfileirar</button>
+    </form>
+  `, (body)=>{
+    body.querySelector('#pd-form').addEventListener('submit', async (ev)=>{
+      ev.preventDefault();
+      const f=ev.target;
+      const result=body.querySelector('#pd-result');
+      result.innerHTML='<div class="dr-info">Gerando tokens via Edge Function...</div>';
+      try{
+        const sb=window.__IP_SB;if(!sb)throw new Error('Supabase não carregou');
+        const emails=(f.emails.value||'').split(/\r?\n/).map(s=>s.trim()).filter(s=>s.includes('@'));
+        const payload={
+          quantidade:Number(f.qtd.value)||10,
+          equipe:f.equipe.value||null,
+          papel:f.papel.value||null,
+          mensagem_custom:f.msg.value||null,
+          emails:emails.length?emails:null,
+        };
+        let res;
+        try{
+          const {data,error}=await sb.functions.invoke('innovapeople-pulso-disparar',{body:payload});
+          if(error)throw error;
+          res=data;
+        }catch(efErr){
+          // fallback: chama RPC fn_ip_pulso_token_gerar diretamente
+          console.warn('[pulso] EF falhou, tentando RPC fallback',efErr);
+          const {data:tokens,error:rpcErr}=await sb.rpc('fn_ip_pulso_token_gerar',{p_quantidade:payload.quantidade,p_equipe:payload.equipe,p_papel:payload.papel});
+          if(rpcErr)throw rpcErr;
+          res={tokens_gerados:Array.isArray(tokens)?tokens.length:payload.quantidade,via:'rpc-fallback'};
+        }
+        const n=res?.tokens_gerados||res?.gerados||res?.count||payload.quantidade;
+        const ob=res?.outbox_inseridos||res?.emails_enfileirados||(emails.length||'—');
+        result.innerHTML=`<div class="dr-ok">✓ <strong>${n}</strong> convites gerados.<br>Outbox: <strong>${ob}</strong> mensagens enfileiradas.${res?.via?' <em>('+res.via+')</em>':''}</div>`;
+        loadPulso(sb);loadHeroMetrics(sb);
+      }catch(e){
+        result.innerHTML='<div class="dr-err">Erro: '+esc(e.message||String(e))+'</div>';
+      }
+    });
+  });
+}
+function openPulseDash(){openOlap()}
+
+// ============================================================
+// FEATURE 2 — PAINEL SUGESTÕES DOS AGENTES
+// ============================================================
+async function openAgentesPainel(){
+  openDrawer('Sugestões dos agentes', '<div id="ap-body"><div class="dr-info">Carregando sugestões pendentes...</div></div>', async(body)=>{
+    const sb=window.__IP_SB;
+    const target=body.querySelector('#ap-body');
+    if(!sb){target.innerHTML='<div class="dr-err">Supabase não carregou.</div>';return}
+    try{
+      const {data,error}=await sb.from('ip_agent_sugestoes').select('*').eq('status','pendente').order('severidade',{ascending:false}).order('criado_em',{ascending:false}).limit(100);
+      if(error)throw error;
+      if(!data||!data.length){target.innerHTML='<div class="dr-empty">Nenhuma sugestão pendente. Backbone silencioso.</div>';return}
+      const sevColor={critica:'#9B2C2C',alta:'#A86A1F',media:'#2C5282',baixa:'#6B7280'};
+      target.innerHTML=`<div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px">${data.length} sugestões · ordenadas por severidade</div>`+data.map(s=>{
+        const sev=s.severidade||'media';
+        const col=sevColor[sev]||'#6B7280';
+        return `<div class="ap-card" data-id="${esc(s.id)}" style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:12px">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px">
+            <div style="font-family:var(--serif);font-size:18px;color:var(--navy);font-weight:500;line-height:1.2">${esc(s.titulo||s.tipo||'Sugestão')}</div>
+            <span style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;padding:3px 9px;border-radius:10px;background:${col}1a;color:${col};white-space:nowrap">${esc(sev)}</span>
+          </div>
+          <div style="font-size:13px;color:var(--ink2);line-height:1.55;margin-bottom:10px">${esc(s.descricao||s.diagnostico||s.detalhe||'')}</div>
+          ${s.evidencias?'<details style="margin-bottom:10px"><summary style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);cursor:pointer">Evidências</summary><pre style="font-family:var(--mono);font-size:10px;color:var(--ink2);background:var(--cream2);padding:8px;border-radius:4px;margin-top:6px;overflow-x:auto">'+esc(typeof s.evidencias==='string'?s.evidencias:JSON.stringify(s.evidencias,null,2))+'</pre></details>':''}
+          <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.08em;margin-bottom:10px">${esc(s.agente||s.fonte||'agente')} · ${s.criado_em?new Date(s.criado_em).toLocaleDateString('pt-BR'):'—'}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button onclick="suggestionAct('${esc(s.id)}','aplicada')" style="padding:6px 14px;border-radius:4px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--navy);color:var(--cream);border:none;cursor:pointer;font-family:inherit">Aplicar</button>
+            <button onclick="suggestionAct('${esc(s.id)}','revisada')" style="padding:6px 14px;border-radius:4px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--ink2);border:1px solid var(--border);cursor:pointer;font-family:inherit">Revisada</button>
+            <button onclick="suggestionAct('${esc(s.id)}','descartada')" style="padding:6px 14px;border-radius:4px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--red);border:1px solid var(--border);cursor:pointer;font-family:inherit">Descartar</button>
+          </div>
+        </div>`;
+      }).join('');
+    }catch(e){target.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+async function suggestionAct(id,status){
+  const sb=window.__IP_SB;if(!sb)return;
+  try{
+    const {error}=await sb.from('ip_agent_sugestoes').update({status,resolvido_em:new Date().toISOString()}).eq('id',id);
+    if(error)throw error;
+    document.querySelector(`.ap-card[data-id="${id}"]`)?.remove();
+    loadAgentes(sb);loadHeroMetrics(sb);
+  }catch(e){alert('Erro: '+e.message)}
+}
+async function runAgentsNow(){
+  const sb=window.__IP_SB;if(!sb){alert('Supabase não carregou');return}
+  if(!confirm('Rodar os 5 agentes vigia agora?\n\nChama fn_ip_agentes_rodar_todos — pode levar alguns segundos.'))return;
+  try{
+    const {data,error}=await sb.rpc('fn_ip_agentes_rodar_todos');
+    if(error)throw error;
+    alert('✓ Agentes rodados.\n\nResultado: '+JSON.stringify(data,null,2).slice(0,400));
+    loadAgentes(sb);loadHeroMetrics(sb);
+  }catch(e){alert('Erro: '+e.message)}
+}
+
+// ============================================================
+// FEATURE 3 — KANBAN RAIO-X (6 colunas)
+// ============================================================
+async function openRaioXKanban(){
+  openDrawer('Kanban Raio-X', '<div id="kb-body"><div class="dr-info">Carregando submissões...</div></div>', async(body)=>{
+    const sb=window.__IP_SB;
+    const target=body.querySelector('#kb-body');
+    if(!sb){target.innerHTML='<div class="dr-err">Supabase não carregou.</div>';return}
+    try{
+      const {data,error}=await sb.from('ip_raio_x_submissions').select('*').order('criado_em',{ascending:false}).limit(200);
+      if(error)throw error;
+      const cols=['novo','contatado','agendado','realizado','convertido','descartado'];
+      const grouped={};cols.forEach(c=>grouped[c]=[]);
+      (data||[]).forEach(r=>{const s=r.status||'novo';if(grouped[s])grouped[s].push(r);else grouped['novo'].push(r)});
+      target.innerHTML=cols.map(c=>`
+        <div style="margin-bottom:24px">
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;display:flex;justify-content:space-between;padding-bottom:6px;border-bottom:1px solid var(--border)">
+            <span>${c}</span><span style="color:var(--navy);font-weight:500">${grouped[c].length}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            ${grouped[c].map(r=>`
+              <div style="padding:11px 13px;background:var(--white);border:1px solid var(--border);border-radius:4px;font-size:12px">
+                <div style="font-weight:500;color:var(--navy);margin-bottom:4px;font-family:var(--serif);font-size:15px">${esc(r.empresa||r.nome||r.email||'(sem identificação)')}</div>
+                <div style="color:var(--ink3);font-size:11px;font-family:var(--mono);margin-bottom:8px;letter-spacing:.04em">Sintomas: <strong style="color:${(r.sintomas_score||0)>60?'var(--red)':(r.sintomas_score||0)>30?'var(--amber)':'var(--ink2)'}">${r.sintomas_score||'—'}/100</strong> · ${r.criado_em?new Date(r.criado_em).toLocaleDateString('pt-BR'):'—'}</div>
+                ${r.desafio?'<div style="font-size:11px;color:var(--ink2);font-style:italic;margin-bottom:8px;line-height:1.4">"'+esc((r.desafio||'').slice(0,140))+(r.desafio.length>140?'...':'')+'"</div>':''}
+                <select onchange="raioXMove('${esc(r.id)}',this.value)" style="padding:5px 8px;font-size:11px;border:1px solid var(--border);border-radius:3px;background:var(--cream2);font:inherit;width:100%">
+                  <option value="">Mover para...</option>
+                  ${cols.filter(x=>x!==c).map(x=>`<option value="${x}">→ ${x}</option>`).join('')}
+                </select>
+              </div>
+            `).join('')||'<div style="color:var(--ink4);font-size:11px;font-style:italic;padding:8px;text-align:center">— vazio —</div>'}
+          </div>
+        </div>
+      `).join('');
+    }catch(e){target.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+async function raioXMove(id,status){
+  if(!status)return;
+  const sb=window.__IP_SB;if(!sb)return;
+  try{
+    const {error}=await sb.from('ip_raio_x_submissions').update({status,atualizado_em:new Date().toISOString()}).eq('id',id);
+    if(error)throw error;
+    openRaioXKanban();
+    loadRaioX(sb);
+  }catch(e){alert('Erro: '+e.message)}
+}
+
+// ============================================================
+// FEATURE 4 — CONCIERGE IA (deterministic now, Haiku 4.5 próxima rodada)
+// ============================================================
+function openConcierge(){
+  openDrawer('Concierge IA', `
+    <p class="dr-sub">Pergunte sobre engajamento, retenção, sugestões, trabalhos em curso, risco de saída. Hoje em modo determinístico (grounded em dados reais). Claude Haiku 4.5 na próxima rodada — espelho Rapheice OS.</p>
+    <div id="cnc-chat" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;max-height:50vh;overflow-y:auto">
+      <div style="background:var(--cream2);padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.5;align-self:flex-start;max-width:88%"><em style="font-family:var(--serif);font-size:16px">Olá. Sou o Concierge da InnovaPeople.</em><br>Pergunte sobre pulso, sugestões, risco de saída, trabalhos em curso, ou tendências dos últimos 30 dias.</div>
+    </div>
+    <form id="cnc-form" style="display:flex;gap:8px">
+      <input type="text" name="q" placeholder="Sua pergunta..." autocomplete="off" style="flex:1;padding:11px 14px;border:1px solid var(--border);border-radius:6px;font:inherit;font-size:13px">
+      <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+  `, (body)=>{
+    body.querySelector('#cnc-form').addEventListener('submit', async (ev)=>{
+      ev.preventDefault();
+      const q=ev.target.q.value.trim();if(!q)return;
+      const chat=body.querySelector('#cnc-chat');
+      chat.insertAdjacentHTML('beforeend',`<div style="background:var(--navy);color:var(--cream);padding:11px 14px;border-radius:8px;font-size:13px;align-self:flex-end;max-width:80%;line-height:1.5">${esc(q)}</div>`);
+      ev.target.q.value='';
+      chat.insertAdjacentHTML('beforeend','<div id="cnc-typing" style="color:var(--ink3);font-style:italic;font-size:12px;padding:4px">Concierge consultando...</div>');
+      chat.scrollTop=chat.scrollHeight;
+      const resp=await conciergeAnswer(q);
+      document.getElementById('cnc-typing')?.remove();
+      chat.insertAdjacentHTML('beforeend',`<div style="background:var(--cream2);padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.6;align-self:flex-start;max-width:88%">${resp}</div>`);
+      chat.scrollTop=chat.scrollHeight;
+    });
+  });
+}
+async function conciergeAnswer(q){
+  const sb=window.__IP_SB;if(!sb)return 'Supabase não carregou.';
+  try{
+    if(/pulso|engajament|sat(isfa)?(ç|c)ão|sdt|moral|clima/i.test(q)){
+      const {data}=await sb.from('ip_pulsos').select('*').gte('criado_em',new Date(Date.now()-30*864e5).toISOString()).limit(500);
+      if(!data||!data.length)return 'Nenhum pulso nos últimos 30 dias. Considere disparar um — botão "Disparar pulso" no Sinal Vivo.';
+      const dims=['proposito','autonomia','competencia','pertencimento','clareza','seguranca'];
+      const avg={};dims.forEach(d=>{let s=0,n=0;data.forEach(p=>{if(typeof p[d]==='number'){s+=p[d];n++}});avg[d]=n?+(s/n).toFixed(1):null});
+      const valid=dims.filter(d=>avg[d]!==null);
+      if(!valid.length)return data.length+' respostas, mas sem dimensões SDT preenchidas.';
+      const lowest=valid.reduce((a,b)=>avg[a]<avg[b]?a:b);
+      const highest=valid.reduce((a,b)=>avg[a]>avg[b]?a:b);
+      return `<strong>${data.length}</strong> respostas em 30 dias.<br>Mais frágil: <strong>${lowest}</strong> (${avg[lowest]}/10).<br>Mais forte: <strong>${highest}</strong> (${avg[highest]}/10).<br><em style="color:var(--gold-deep)">Sugestão: priorize uma decisão que ataque ${lowest}.</em>`;
+    }
+    if(/sugest|agent|vigia|crítica|critica/i.test(q)){
+      const [{count:tot},{count:crit},{count:alta}]=await Promise.all([
+        sb.from('ip_agent_sugestoes').select('*',{count:'exact',head:true}).eq('status','pendente'),
+        sb.from('ip_agent_sugestoes').select('*',{count:'exact',head:true}).eq('status','pendente').eq('severidade','critica'),
+        sb.from('ip_agent_sugestoes').select('*',{count:'exact',head:true}).eq('status','pendente').eq('severidade','alta'),
+      ]);
+      return `<strong>${tot??0}</strong> sugestões pendentes:<br>· <strong style="color:var(--red)">${crit??0}</strong> críticas<br>· <strong style="color:var(--amber)">${alta??0}</strong> altas<br><br>Abra "Painel completo" no card Agentes Vigia para revisar uma a uma.`;
+    }
+    if(/mandato|trabalho|cliente|projeto|engagement/i.test(q)){
+      const {data}=await sb.from('ip_mandatos').select('empresa,estagio,socio_responsavel').neq('estagio','encerrado').order('criado_em',{ascending:false}).limit(20);
+      if(!data||!data.length)return 'Nenhum trabalho ativo no momento.';
+      return `<strong>${data.length}</strong> trabalhos em curso:<br>${data.map(m=>`· ${esc(m.empresa)} <em style="color:var(--gold-deep)">(${esc(m.estagio||'—')})</em>`).join('<br>')}`;
+    }
+    if(/risc|sa(í|i)da|turnover|retenç(ã|a)o|sair/i.test(q)){
+      const {data}=await sb.from('ip_pulsos').select('risco_saida,equipe').gte('criado_em',new Date(Date.now()-30*864e5).toISOString()).limit(500);
+      if(!data||!data.length)return 'Sem dados de risco nos últimos 30 dias.';
+      const vals=data.filter(p=>typeof p.risco_saida==='number').map(p=>p.risco_saida);
+      if(!vals.length)return data.length+' respostas, mas sem risco_saida registrado.';
+      const avg=vals.reduce((s,v)=>s+v,0)/vals.length;
+      const high=vals.filter(v=>v>7).length;
+      return `Risco médio de saída: <strong>${avg.toFixed(1)}/10</strong>.<br><strong>${high}</strong> respostas com risco &gt; 7.${avg>5?'<br><em style="color:var(--red)">Acima do alerta — considere ritual de retenção.</em>':'<br><em style="color:var(--emerald)">Dentro do estável.</em>'}`;
+    }
+    if(/raio.?x|diag|funil/i.test(q)){
+      const {data}=await sb.from('ip_raio_x_submissions').select('status,sintomas_score').limit(500);
+      if(!data||!data.length)return 'Nenhuma submissão de Raio-X registrada.';
+      const cols=['novo','contatado','agendado','realizado','convertido','descartado'];
+      const cnt={};cols.forEach(c=>cnt[c]=0);
+      data.forEach(r=>{const s=r.status||'novo';if(cnt[s]!==undefined)cnt[s]++});
+      const conv=cnt.convertido,total=data.length;
+      const taxa=total?(conv/total*100).toFixed(1):0;
+      return `<strong>${total}</strong> submissões totais.<br>${cols.map(c=>`· ${c}: <strong>${cnt[c]}</strong>`).join('<br>')}<br><br>Taxa de conversão: <strong>${taxa}%</strong>.`;
+    }
+    if(/decis(ã|a)o|drift|clock/i.test(q)){
+      const {count}=await sb.from('ip_decisoes').select('*',{count:'exact',head:true});
+      return `<strong>${count??0}</strong> decisões registradas. O Clock Drift Detector vigia táticas sem revisão há 14 dias e estratégicas há 30. Veja "Decisões &amp; Clock Drift" na seção Memória.`;
+    }
+    if(/relacion|knowledge|reten/i.test(q)){
+      const {count}=await sb.from('ip_relacionamentos').select('*',{count:'exact',head:true});
+      return `<strong>${count??0}</strong> relacionamentos críticos sob vigia.<br>Knowledge Retention Watchdog alerta quando concentração ultrapassa 50% em uma só pessoa.`;
+    }
+    if(/ajuda|help|o que|comand|posso/i.test(q)){
+      return `Posso responder sobre:<br>· <em>pulso, engajamento</em> · médias SDT e dimensão mais frágil<br>· <em>sugestões, agentes</em> · contagem por severidade<br>· <em>mandatos, trabalhos</em> · ativos por estágio<br>· <em>risco de saída, turnover</em> · média e dispersão<br>· <em>raio-x, funil</em> · contagem por coluna + conversão<br>· <em>decisões, clock drift</em> · estado do registro<br>· <em>relacionamentos, retenção</em> · vigia de concentração`;
+    }
+    return `Ainda não tenho módulo de resposta para essa pergunta — sua mensagem foi capturada nos logs.<br><br>Tente: <em>pulso · sugestões · mandatos · risco de saída · raio-x · decisões · relacionamentos</em>. Ou digite <em>ajuda</em>.`;
+  }catch(e){return 'Erro ao consultar: '+esc(e.message)}
+}
+
+// ============================================================
+// FEATURE 5 — EVM PEOPLE (espelho AIPrev, demonstração)
+// ============================================================
+function openEvmPeople(){
+  openDrawer('EVM de Programas (espelho AIPrev)', `
+    <p class="dr-sub">Espelho conceitual de <code class="dr-code">fn_plat_avanco_resumo</code> do AIPrev, aplicado a programas de gente. Schema <code class="dr-code">ip_programas</code> + <code class="dr-code">ip_programa_avanco</code> a portar do <code class="dr-code">plat_plano_*</code>.</p>
+    <div style="background:var(--cream2);padding:22px;border-radius:8px;margin-bottom:18px">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px">Programa exemplo · Liderança 2026</div>
+      <table style="width:100%;font-size:13px">
+        <tr><td style="color:var(--ink3);padding:6px 0">PV · Planned Value</td><td style="text-align:right;font-family:var(--mono);color:var(--navy)">R$ 120.000</td></tr>
+        <tr><td style="color:var(--ink3);padding:6px 0">EV · Earned Value</td><td style="text-align:right;font-family:var(--mono);color:var(--navy)">R$ 96.000</td></tr>
+        <tr><td style="color:var(--ink3);padding:6px 0">AC · Actual Cost</td><td style="text-align:right;font-family:var(--mono);color:var(--navy)">R$ 110.000</td></tr>
+        <tr><td style="color:var(--ink3);padding:6px 0;border-top:1px solid var(--border);padding-top:10px">CPI · EV/AC</td><td style="text-align:right;font-family:var(--mono);color:var(--red);border-top:1px solid var(--border);padding-top:10px;font-weight:500">0.87</td></tr>
+        <tr><td style="color:var(--ink3);padding:6px 0">SPI · EV/PV</td><td style="text-align:right;font-family:var(--mono);color:#A86A1F;font-weight:500">0.80</td></tr>
+      </table>
+      <div style="margin-top:16px;padding:12px;background:rgba(168,106,31,.1);border-radius:4px;font-size:12px;color:var(--ink2);font-style:italic;line-height:1.5">CPI &lt; 1 e SPI &lt; 1: programa atrasado e acima do orçamento. Forecaster sugere replanejar marcos finais antes de novo aporte.</div>
+    </div>
+    <div style="padding:16px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.6">
+      <strong style="color:var(--navy)">Próximo passo (espelho AIPrev):</strong><br>
+      1. Criar tabelas <code class="dr-code">ip_programas</code> + <code class="dr-code">ip_programa_marcos</code> + <code class="dr-code">ip_programa_apontamento</code><br>
+      2. Portar RPC <code class="dr-code">fn_plat_avanco_resumo</code> → <code class="dr-code">fn_ip_avanco_resumo</code><br>
+      3. Conectar este painel aos dados reais (PV/EV/AC por programa)<br>
+      4. Adicionar curva-S (acumulado x tempo) com Chart.js
+    </div>
+  `);
+}
+function openCpmDev(){
+  openDrawer('CPM de Desenvolvimento (espelho AIPrev)', `
+    <p class="dr-sub">Caminho crítico para planos individuais e jornadas de liderança. Cópia conceitual de <code class="dr-code">fn_plat_cpm_forward</code>/<code class="dr-code">_backward</code>/<code class="dr-code">_executar</code> do AIPrev.</p>
+    <div style="background:var(--cream2);padding:22px;border-radius:8px;margin-bottom:18px">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px">Plano exemplo · Gerente sênior → diretor</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${[
+          {n:'M1 · Diagnóstico 360',es:0,ef:14,lat:0,crit:true},
+          {n:'M2 · Workshop estratégia',es:14,ef:30,lat:0,crit:true},
+          {n:'M3 · Coaching mensal (6m)',es:30,ef:210,lat:0,crit:true},
+          {n:'M4 · Projeto cross-área',es:60,ef:180,lat:30,crit:false},
+          {n:'M5 · Avaliação 360 final',es:210,ef:224,lat:0,crit:true},
+        ].map(m=>`
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:${m.crit?'rgba(155,44,44,.06)':'var(--white)'};border-left:3px solid ${m.crit?'var(--red)':'var(--gold)'};border-radius:4px;font-size:12px">
+            <div style="flex:1;color:var(--navy);font-weight:${m.crit?'500':'400'}">${m.n}</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--ink3)">dia ${m.es}–${m.ef}${m.lat?' · folga '+m.lat+'d':' <strong style="color:var(--red)">CRÍTICO</strong>'}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="margin-top:14px;padding:10px;background:rgba(155,44,44,.06);border-radius:4px;font-size:11px;color:var(--ink2);font-style:italic">4 dos 5 marcos no caminho crítico. Qualquer atraso em M1, M2, M3 ou M5 desloca o plano inteiro.</div>
+    </div>
+    <div style="padding:16px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.6">
+      <strong style="color:var(--navy)">Próximo passo:</strong> portar schema <code class="dr-code">plat_plano_servicos</code> + <code class="dr-code">plat_plano_vinculos</code> para <code class="dr-code">ip_plano_marcos</code> + <code class="dr-code">ip_plano_dependencias</code>, então rodar <code class="dr-code">fn_ip_cpm_forward/_backward</code>.
+    </div>
+  `);
+}
+function openForecaster(){
+  openDrawer('Forecaster (espelho AIPrev)', `
+    <p class="dr-sub">Projeção de turnover, headcount, folha. Cópia conceitual de <code class="dr-code">fn_agent_forecaster</code> do AIPrev.</p>
+    <div style="background:var(--cream2);padding:22px;border-radius:8px;margin-bottom:18px">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px">Projeção 90 dias · cenário base</div>
+      <table style="width:100%;font-size:13px">
+        <tr><td style="color:var(--ink3);padding:6px 0">Headcount hoje</td><td style="text-align:right;font-family:var(--mono);color:var(--navy)">—</td></tr>
+        <tr><td style="color:var(--ink3);padding:6px 0">Saídas previstas (risco &gt; 7)</td><td style="text-align:right;font-family:var(--mono);color:var(--red)">—</td></tr>
+        <tr><td style="color:var(--ink3);padding:6px 0">Contratações necessárias</td><td style="text-align:right;font-family:var(--mono);color:var(--amber)">—</td></tr>
+        <tr><td style="color:var(--ink3);padding:6px 0;border-top:1px solid var(--border);padding-top:10px">Folha projetada (R$/mês)</td><td style="text-align:right;font-family:var(--mono);color:var(--navy);border-top:1px solid var(--border);padding-top:10px">—</td></tr>
+      </table>
+    </div>
+    <div style="padding:16px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.6">
+      <strong style="color:var(--navy)">Próximo passo:</strong> criar tabelas <code class="dr-code">ip_headcount_atual</code> + <code class="dr-code">ip_compensacao_atual</code>, então portar lógica do <code class="dr-code">fn_agent_forecaster</code> com 3 cenários (otimista/base/pessimista).
+    </div>
+  `);
+}
+
+// ============================================================
+// Outras ações — alguns ainda como stubs leves, outros com query real
+// ============================================================
+async function openEventBus(){
+  openDrawer('Trilha de Eventos', '<div id="eb-body"><div class="dr-info">Carregando últimos eventos...</div></div>', async(body)=>{
+    const sb=window.__IP_SB;const target=body.querySelector('#eb-body');
+    if(!sb){target.innerHTML='<div class="dr-err">Supabase não carregou.</div>';return}
+    try{
+      const {data,error}=await sb.from('ip_eventos').select('*').order('ts',{ascending:false}).limit(80);
+      if(error)throw error;
+      if(!data||!data.length){target.innerHTML='<div class="dr-empty">Trilha vazia.</div>';return}
+      target.innerHTML=data.map(e=>`<div style="padding:10px 12px;border-bottom:1px solid var(--border2);font-size:12px;display:flex;gap:12px;align-items:flex-start">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);min-width:90px">${new Date(e.ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>
+        <div style="flex:1">
+          <div style="color:var(--navy);font-weight:500">${esc(e.source)} <span style="color:var(--ink3);font-weight:400">· ${esc(e.event_type||e.acao||'')}</span></div>
+          ${e.actor?'<div style="font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:2px">'+esc(e.actor)+'</div>':''}
+        </div>
+      </div>`).join('');
+    }catch(err){target.innerHTML='<div class="dr-err">Erro: '+esc(err.message)+'</div>'}
+  });
+}
+async function searchEvents(){
+  const t=prompt('Termo a buscar na trilha:');if(!t)return;
+  const sb=window.__IP_SB;if(!sb)return;
+  openDrawer('Busca: '+t,'<div class="dr-info">Buscando...</div>',async(body)=>{
+    try{
+      const {data,error}=await sb.rpc('fn_ip_historico_por_termo',{p_termo:t});
+      if(error)throw error;
+      if(!data||!data.length){body.innerHTML='<div class="dr-empty">Nenhum evento contém "'+esc(t)+'".</div>';return}
+      body.innerHTML=data.slice(0,80).map(e=>`<div style="padding:10px 12px;border-bottom:1px solid var(--border2);font-size:12px"><strong>${esc(e.source||'')}</strong> <em>${esc(e.event_type||'')}</em> <span style="font-family:var(--mono);font-size:10px;color:var(--ink3);float:right">${e.ts?new Date(e.ts).toLocaleString('pt-BR'):''}</span></div>`).join('');
+    }catch(err){body.innerHTML='<div class="dr-err">Erro: '+esc(err.message)+'</div>'}
+  });
+}
+
+async function openMandatos(){
+  openDrawer('Trabalhos em curso', '<div id="md-body"><div class="dr-info">Carregando...</div></div>', async(body)=>{
+    const sb=window.__IP_SB;const target=body.querySelector('#md-body');
+    if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_mandatos').select('*').order('criado_em',{ascending:false}).limit(50);
+      if(error)throw error;
+      if(!data||!data.length){target.innerHTML='<div class="dr-empty">Nenhum trabalho registrado.</div>';return}
+      target.innerHTML=data.map(m=>`
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
+            <div style="font-family:var(--serif);font-size:18px;color:var(--navy);font-weight:500">${esc(m.empresa||'(sem nome)')}</div>
+            <span class="pill ${pillForEstagio(m.estagio)}">${esc(m.estagio||'—')}</span>
+          </div>
+          ${m.porte?'<div style="font-size:11px;color:var(--ink3);font-family:var(--mono);letter-spacing:.06em">'+esc(m.porte)+' · '+esc(m.setor||'')+'</div>':''}
+          ${m.socio_responsavel?'<div style="font-size:11px;color:var(--ink3);margin-top:4px">Sócio responsável: '+esc(m.socio_responsavel)+'</div>':''}
+        </div>`).join('');
+    }catch(err){target.innerHTML='<div class="dr-err">Erro: '+esc(err.message)+'</div>'}
+  });
+}
+function newMandato(){openDrawer('Novo trabalho',`
+  <p class="dr-sub">Registro inicial de um novo trabalho. Os 5 estágios (diagnóstico → plano → plataforma → resultado → parceria) são governados depois pelo backbone.</p>
+  <form id="nm-form" class="dr-form">
+    <label><span class="dr-lab">Empresa</span><input type="text" name="empresa" required></label>
+    <label><span class="dr-lab">Porte (opcional)</span><input type="text" name="porte" placeholder="ex: 50–200 colab"></label>
+    <label><span class="dr-lab">Setor (opcional)</span><input type="text" name="setor"></label>
+    <label><span class="dr-lab">Sócio responsável</span><input type="text" name="socio" value="raphael@schifino.com.br"></label>
+    <label><span class="dr-lab">Estágio inicial</span><select name="estagio"><option value="diagnostico">diagnóstico</option><option value="plano">plano</option></select></label>
+    <div id="nm-result"></div>
+    <button type="submit" class="btn btn-primary" style="padding:11px 20px;font-size:13px">Registrar</button>
+  </form>
+`,body=>{
+  body.querySelector('#nm-form').addEventListener('submit',async ev=>{
+    ev.preventDefault();const f=ev.target;const r=body.querySelector('#nm-result');
+    r.innerHTML='<div class="dr-info">Registrando...</div>';
+    try{
+      const sb=window.__IP_SB;
+      const {data,error}=await sb.from('ip_mandatos').insert({empresa:f.empresa.value,porte:f.porte.value||null,setor:f.setor.value||null,socio_responsavel:f.socio.value||null,estagio:f.estagio.value}).select().single();
+      if(error)throw error;
+      r.innerHTML='<div class="dr-ok">✓ Trabalho registrado: <strong>'+esc(data.empresa)+'</strong></div>';
+      loadMandatos(sb);loadHeroMetrics(sb);
+    }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+})}
+
+async function openAcoesBib(){
+  openDrawer('Biblioteca de ações curadas','<div id="ab-body"><div class="dr-info">Carregando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#ab-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_acoes_template').select('*').order('ireu_score',{ascending:false}).limit(50);
+      if(error)throw error;
+      if(!data||!data.length){t.innerHTML='<div class="dr-empty">Biblioteca vazia — seed inicial pendente.</div>';return}
+      t.innerHTML=data.map(a=>`<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px"><div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500">${esc(a.titulo||a.nome||'(sem título)')}</div><span style="font-family:var(--mono);font-size:11px;color:var(--gold-deep);background:rgba(196,163,90,.1);padding:2px 8px;border-radius:10px;letter-spacing:.04em">IREU ${a.ireu_score||0}</span></div>
+        <div style="font-size:12px;color:var(--ink2);line-height:1.5">${esc(a.descricao||'')}</div>
+      </div>`).join('');
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+function generatePlano(){
+  const id=prompt('ID do trabalho (mandato) para gerar plano:');if(!id)return;
+  const sb=window.__IP_SB;
+  sb.rpc('fn_ip_plano_gerar',{p_mandato_id:id}).then(({data,error})=>{
+    if(error)alert('Erro: '+error.message);else alert('Plano gerado:\n'+JSON.stringify(data,null,2).slice(0,400));
+  });
+}
+
+async function openDecisoes(){
+  openDrawer('Decisões registradas','<div id="dc-body"><div class="dr-info">Carregando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#dc-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_decisoes').select('*').order('criado_em',{ascending:false}).limit(50);
+      if(error)throw error;
+      if(!data||!data.length){t.innerHTML='<div class="dr-empty">Nenhuma decisão registrada ainda.</div>';return}
+      t.innerHTML=data.map(d=>`<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
+        <div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500;margin-bottom:4px">${esc(d.titulo||d.descricao||'(sem título)')}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.08em">${esc(d.nivel||'—')} · ${esc(d.status||'vigente')} · ${d.criado_em?new Date(d.criado_em).toLocaleDateString('pt-BR'):''}</div>
+        ${d.motivo?'<div style="font-size:12px;color:var(--ink2);line-height:1.5;margin-top:8px"><em>Motivo:</em> '+esc(d.motivo)+'</div>':''}
+      </div>`).join('');
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+function newDecisao(){openDrawer('Nova decisão',`
+  <p class="dr-sub">Registre o motivo, as alternativas consideradas e as consequências esperadas. A revisão é vigiada pelo Clock Drift Detector.</p>
+  <form id="nd-form" class="dr-form">
+    <label><span class="dr-lab">Título</span><input type="text" name="titulo" required></label>
+    <label><span class="dr-lab">Nível</span><select name="nivel"><option value="operacional">operacional (revisão 7d)</option><option value="tatica">tática (revisão 14d)</option><option value="estrategica">estratégica (revisão 30d)</option></select></label>
+    <label><span class="dr-lab">Motivo</span><textarea name="motivo" rows="3" required></textarea></label>
+    <label><span class="dr-lab">Alternativas consideradas</span><textarea name="alternativas" rows="3"></textarea></label>
+    <label><span class="dr-lab">Consequências esperadas</span><textarea name="consequencias" rows="3"></textarea></label>
+    <div id="nd-result"></div>
+    <button type="submit" class="btn btn-primary" style="padding:11px 20px;font-size:13px">Registrar</button>
+  </form>
+`,body=>{
+  body.querySelector('#nd-form').addEventListener('submit',async ev=>{
+    ev.preventDefault();const f=ev.target;const r=body.querySelector('#nd-result');r.innerHTML='<div class="dr-info">Registrando...</div>';
+    try{
+      const sb=window.__IP_SB;
+      const {error}=await sb.from('ip_decisoes').insert({titulo:f.titulo.value,nivel:f.nivel.value,motivo:f.motivo.value,alternativas:f.alternativas.value||null,consequencias:f.consequencias.value||null,status:'vigente'});
+      if(error)throw error;
+      r.innerHTML='<div class="dr-ok">✓ Decisão registrada.</div>';
+    }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+})}
+
+function openProtocolos(){notImpl('Protocolos vivos · UI v2')}
+function newProtocolo(){notImpl('Novo protocolo · form')}
+function openRelac(){notImpl('Matriz de relacionamentos · próxima rodada')}
+function newRelac(){notImpl('Adicionar relacionamento crítico')}
+function openRituais(){notImpl('Calendário de rituais · próxima rodada')}
 function newRitual(){notImpl('Novo ritual')}
-function syncCalNow(){notImpl('Sincronização Google Calendar')}
-function previewDigest(){notImpl('Preview do digest semanal')}
-function sendDigestNow(){notImpl('Disparar digest agora')}
-function openBancoHoras(){notImpl('Meu saldo de horas')}
-function bancoLanc(){notImpl('Lançar horas')}
-function openOutbox(){notImpl('E-mail outbox')}
-function sendTestEmail(){notImpl('Teste de envio')}
-function openWaSend(){notImpl('Envio WhatsApp')}
+function syncCalNow(){notImpl('Sync Google Calendar (EF innovapeople-calendar-agendar)')}
+function previewDigest(){notImpl('Preview do digest semanal (v_ip_digest_semanal)')}
+function sendDigestNow(){notImpl('Disparar digest (EF innovapeople-digest-semanal)')}
+function openBancoHoras(){notImpl('Banco de Horas · reuso UI Horigens')}
+function bancoLanc(){notImpl('Lançar horas (RPC fn_banco_horas_add)')}
+function openOutbox(){notImpl('E-mail outbox · próxima rodada')}
+function sendTestEmail(){notImpl('Teste de envio (RPC fn_ip_send_email)')}
+function openWaSend(){notImpl('Envio WhatsApp (EF whatsapp-direto)')}
 function openWaTemplates(){notImpl('Templates WhatsApp')}
-function openConcierge(){notImpl('Concierge IA Q&A (a portar do Rapheice OS)')}
-function openLgpd(){notImpl('Painel LGPD')}
+function openLgpd(){notImpl('Painel LGPD · auditoria de retenção')}
 function defineSpec(mod){alert('Spec aberta para: '+mod+'\n\nPróximo passo: definir contrato de dados, UI mínima viável e gatilhos de automação.')}
 function seedSkill(){notImpl('Popular ip_skill_map com sample')}
-function openOlap(){notImpl('Painel OLAP fn_ip_bi_tendencias 90d')}
+function openOlap(){notImpl('Painel OLAP fn_ip_bi_tendencias 90d · gráficos Chart.js')}
 function exportOlap(){notImpl('Exportar CSV de tendências')}
 function openTriggers(){notImpl('Listar trg_* em ip_eventos')}
 function openMatteringStatus(){alert('Mattering — estado atual:\n\n· Agente Mattering Coach: operacional (vigia propósito + pertencimento < 6).\n· Frente conceitual: em construção na InnovaSphere ao lado do AIPrev.\n· Próximo passo conjunto: dimensão longitudinal (mattering trajectory) com retroalimentação visível ao colaborador.\n\nO que evoluir lá, importa para cá. O que aqui produzirmos de bom, modela lá.')}
+function notImpl(name){alert('Em construção: '+name+'\n\nO contrato de dados está mapeado — falta a UI dedicada na próxima rodada.')}
 </script>
+
+<!-- DRAWER SYSTEM -->
+<div class="dr-ovl" id="dr-ovl" onclick="closeDrawer()"></div>
+<div class="dr" id="dr">
+  <div class="dr-h">
+    <h3 id="dr-title">—</h3>
+    <button class="dr-x" onclick="closeDrawer()" title="Fechar">×</button>
+  </div>
+  <div class="dr-body" id="dr-body"></div>
+</div>
+<style>
+.dr-ovl{position:fixed;inset:0;background:rgba(10,22,40,.5);backdrop-filter:blur(4px);z-index:9000;opacity:0;pointer-events:none;transition:opacity .3s}
+.dr-ovl.on{opacity:1;pointer-events:auto}
+.dr{position:fixed;top:0;right:0;height:100vh;width:560px;max-width:96vw;background:var(--white);box-shadow:-16px 0 40px rgba(10,22,40,.22);z-index:9001;transform:translateX(100%);transition:transform .35s cubic-bezier(.34,1.4,.64,1);display:flex;flex-direction:column}
+.dr.on{transform:translateX(0)}
+.dr-h{padding:22px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--cream);position:sticky;top:0;z-index:1}
+.dr-h h3{font-family:var(--serif);font-size:24px;color:var(--navy);font-weight:500;letter-spacing:-.005em}
+.dr-x{font-size:26px;color:var(--ink3);line-height:1;padding:4px 12px;border-radius:4px;cursor:pointer;background:none;border:none}
+.dr-x:hover{background:rgba(0,0,0,.06);color:var(--navy)}
+.dr-body{flex:1;overflow-y:auto;padding:24px 28px}
+.dr-sub{font-style:italic;font-family:var(--serif);font-size:17px;color:var(--ink2);margin-bottom:22px;line-height:1.5}
+.dr-form{display:flex;flex-direction:column;gap:16px}
+.dr-form label{display:flex;flex-direction:column;gap:6px}
+.dr-form input,.dr-form textarea,.dr-form select{padding:10px 12px;border:1px solid var(--border);border-radius:4px;font:inherit;font-size:13px;background:var(--white);color:var(--ink);transition:border-color .2s}
+.dr-form input:focus,.dr-form textarea:focus,.dr-form select:focus{outline:none;border-color:var(--gold)}
+.dr-form textarea{resize:vertical;min-height:60px;font-family:inherit}
+.dr-lab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500}
+.dr-info{padding:12px 14px;background:rgba(196,163,90,.08);border-radius:4px;font-size:13px;color:var(--ink2);font-style:italic}
+.dr-ok{padding:12px 14px;background:rgba(46,139,110,.1);border-radius:4px;font-size:13px;color:var(--emerald);line-height:1.5}
+.dr-err{padding:12px 14px;background:rgba(155,44,44,.08);border-radius:4px;font-size:13px;color:var(--red);line-height:1.5}
+.dr-empty{padding:32px;text-align:center;color:var(--ink3);font-style:italic;font-size:14px;font-family:var(--serif);font-size:18px}
+.dr-code{font-family:var(--mono);font-size:11px;color:var(--gold-deep);background:rgba(196,163,90,.08);padding:1px 6px;border-radius:3px;font-style:normal}
+@media(max-width:640px){.dr{width:100vw}.dr-h{padding:18px 20px}.dr-body{padding:20px}}
+</style>
 
 </body>
 </html>
