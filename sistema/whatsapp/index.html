@@ -519,13 +519,19 @@ async function refreshThread(){
 // ENVIO DE MENSAGENS — via EF whatsapp-direto
 // ============================================================
 async function enviarMensagem(){
+  console.log('[wa-DIAG] enviarMensagem() chamado');
   const ta=document.getElementById('composer-input');
   const txt=(ta?.value||'').trim();
-  if(!txt&&!_attach)return;
+  console.log('[wa-DIAG] texto:',txt,'attach:',!!_attach);
+  if(!txt&&!_attach){console.log('[wa-DIAG] sem texto e sem anexo, abortando');return}
+  console.log('[wa-DIAG] convId atual:',_state.convId);
   const c=_state.conversas.find(c=>c.conversa_id===_state.convId);
-  if(!c){toast('Conversa não encontrada');return}
+  if(!c){console.error('[wa-DIAG] conversa não encontrada no _state.conversas');toast('Conversa não encontrada — abra uma conversa primeiro');return}
+  console.log('[wa-DIAG] conversa:',c);
   const numero=(c.numero_e164||'').replace(/\D/g,'');
-  if(!numero){toast('Número inválido');return}
+  console.log('[wa-DIAG] numero raw:',c.numero_e164,'numero limpo:',numero);
+  if(!numero){console.error('[wa-DIAG] numero vazio');toast('Número da conversa está vazio — verifique no perfil');return}
+  if(numero.length<10||numero.length>15){console.error('[wa-DIAG] numero suspeito (tamanho '+numero.length+')',numero);toast('Número suspeito: '+numero+' (tamanho '+numero.length+'). Veja console.');return}
 
   document.getElementById('send-btn').disabled=true;
 
@@ -556,16 +562,22 @@ async function enviarMensagem(){
       actor_email:window.__IP_USER_EMAIL||null,
     };
     if(msgType==='image'&&mediaUrl){payload.image_url=mediaUrl}
+    console.log('[wa-DIAG] chamando EF whatsapp-direto com payload:',payload);
     const {data,error}=await sb().functions.invoke('whatsapp-direto',{body:payload});
-    if(error)throw error;
-    if(data&&data.persist_error)console.warn('[wa] persist warn:',data.persist_error);
-    // EF v9 ja persiste em wa_messages + wa_contacts + wa_conversations + wa_audit_log (hash chain)
+    console.log('[wa-DIAG] EF retornou data:',data,'error:',error);
+    if(error){
+      console.error('[wa-DIAG] EF erro completo:',JSON.stringify(error,Object.getOwnPropertyNames(error)));
+      throw error;
+    }
+    if(data&&data.error){console.error('[wa-DIAG] EF retornou erro no body:',data);throw new Error(data.error+(data.detail?' · '+data.detail:''))}
+    if(data&&data.persist_error)console.warn('[wa-DIAG] persist warn:',data.persist_error);
+    console.log('[wa-DIAG] envio OK, evolution_status:',data?.evolution_status,'persisted_id:',data?.persisted_id);
     toast('Mensagem enviada');
     await loadMensagens(_state.convId);
     loadConversas();
   }catch(e){
-    console.error('[wa] enviar',e);
-    toast('Erro: '+e.message);
+    console.error('[wa-DIAG] erro capturado:',e,'stack:',e?.stack);
+    toast('Erro: '+(e.message||e.toString()||'desconhecido')+' (veja console F12)');
     const m=_state.mensagens.find(m=>m.id===tempId);
     if(m){m.status='failed';renderThread()}
   }finally{
