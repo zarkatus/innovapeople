@@ -682,16 +682,16 @@ em{font-style:italic}
       <div class="card-head">
         <div>
           <div class="card-title">Concierge IA</div>
-          <div class="card-promise">Pergunte sobre engajamento, retenção, tendências — em linguagem natural.</div>
+          <div class="card-promise">Pergunte sobre engajamento, retenção, tendências, qualquer trabalho — em linguagem natural.</div>
         </div>
-        <span class="status st-partial">Parcial</span>
+        <span class="status st-live">Operacional</span>
       </div>
       <div class="card-body">
-        Padrão importável do Rapheice OS (Claude Haiku 4.5 + context grounding). Aqui aplicado ao pulso e à memória organizacional.
+        Claude Haiku 4.5 com grounding em <strong>23 tabelas <code style="font-family:var(--mono);font-size:11px">ip_*</code></strong>, 5 agentes, EventBus 7d, decisões, relacionamentos, raio-x. Sem alucinação.
       </div>
       <div class="card-actions">
-        <button class="btn btn-gold" onclick="openConcierge()">Abrir conversa</button>
-        <button class="btn btn-ghost" onclick="defineSpec('concierge')">Definir prompt</button>
+        <button class="btn btn-primary" onclick="openConcierge()">Abrir conversa</button>
+        <button class="btn btn-ghost" onclick="cncQuick('Resumo da plataforma agora')">Resumo agora</button>
       </div>
     </div>
 
@@ -1442,93 +1442,101 @@ async function raioXMove(id,status){
 }
 
 // ============================================================
-// FEATURE 4 — CONCIERGE IA (deterministic now, Haiku 4.5 próxima rodada)
+// FEATURE 4 — CONCIERGE IA · Claude Haiku 4.5 + grounding completo
+// EF: innovapeople-concierge-chat (verify_jwt=true, sócios only)
 // ============================================================
+window.__CNC_HISTORY=window.__CNC_HISTORY||[];
 function openConcierge(){
   openDrawer('Concierge IA', `
-    <p class="dr-sub">Pergunte sobre engajamento, retenção, sugestões, trabalhos em curso, risco de saída. Hoje em modo determinístico (grounded em dados reais). Claude Haiku 4.5 na próxima rodada — espelho Rapheice OS.</p>
-    <div id="cnc-chat" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;max-height:50vh;overflow-y:auto">
-      <div style="background:var(--cream2);padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.5;align-self:flex-start;max-width:88%"><em style="font-family:var(--serif);font-size:16px">Olá. Sou o Concierge da InnovaPeople.</em><br>Pergunte sobre pulso, sugestões, risco de saída, trabalhos em curso, ou tendências dos últimos 30 dias.</div>
-    </div>
+    <p class="dr-sub">Claude Haiku 4.5 grounded em dados reais da plataforma — trabalhos, pulso, sugestões dos agentes, decisões, relacionamentos críticos, raio-x, rituais, atividade do EventBus. Pergunte qualquer coisa.</p>
+    <div id="cnc-chat" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;max-height:54vh;overflow-y:auto;padding-right:6px"></div>
     <form id="cnc-form" style="display:flex;gap:8px">
-      <input type="text" name="q" placeholder="Sua pergunta..." autocomplete="off" style="flex:1;padding:11px 14px;border:1px solid var(--border);border-radius:6px;font:inherit;font-size:13px">
-      <button type="submit" class="btn btn-primary">Enviar</button>
+      <input type="text" name="q" placeholder="Pergunte sobre qualquer coisa da plataforma..." autocomplete="off" style="flex:1;padding:11px 14px;border:1px solid var(--border);border-radius:6px;font:inherit;font-size:13px">
+      <button type="submit" class="btn btn-primary" style="white-space:nowrap">Enviar</button>
     </form>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;font-size:11px">
+      <button onclick="cncQuick('Resumo da plataforma agora')" class="cnc-chip">Resumo agora</button>
+      <button onclick="cncQuick('Quais trabalhos estão em andamento e em que estágio?')" class="cnc-chip">Trabalhos ativos</button>
+      <button onclick="cncQuick('Como está o pulso nos últimos 30 dias?')" class="cnc-chip">Pulso 30d</button>
+      <button onclick="cncQuick('Tem alguma sugestão crítica dos agentes que eu deva olhar?')" class="cnc-chip">Sugestões críticas</button>
+      <button onclick="cncQuick('O que é Clock Drift e como ele me ajuda?')" class="cnc-chip">Sobre Clock Drift</button>
+      <button onclick="cncResetChat()" class="cnc-chip" style="margin-left:auto;color:var(--ink3)">↻ Limpar</button>
+    </div>
+    <style>
+      .cnc-msg-u{background:var(--navy);color:var(--cream);padding:11px 14px;border-radius:8px 8px 2px 8px;font-size:13px;align-self:flex-end;max-width:84%;line-height:1.55;white-space:pre-wrap;word-wrap:break-word}
+      .cnc-msg-a{background:var(--cream2);color:var(--ink);padding:13px 16px;border-radius:8px 8px 8px 2px;font-size:13.5px;line-height:1.65;align-self:flex-start;max-width:90%;white-space:pre-wrap;word-wrap:break-word;border-left:2px solid var(--gold)}
+      .cnc-msg-a strong{color:var(--navy);font-weight:600}
+      .cnc-msg-a em{color:var(--gold-deep);font-style:italic}
+      .cnc-msg-a code{font-family:var(--mono);font-size:11.5px;background:rgba(196,163,90,.1);padding:1px 5px;border-radius:3px}
+      .cnc-typing{color:var(--ink3);font-style:italic;font-size:12px;padding:6px 12px;display:flex;align-items:center;gap:8px;align-self:flex-start}
+      .cnc-typing::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);animation:cncpulse 1s infinite}
+      @keyframes cncpulse{0%,100%{opacity:.3}50%{opacity:1}}
+      .cnc-chip{padding:5px 10px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--ink2);font-size:11px;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:all .2s}
+      .cnc-chip:hover{border-color:var(--gold);color:var(--gold-deep);background:rgba(196,163,90,.06)}
+      .cnc-err{background:rgba(155,44,44,.08);color:var(--red);padding:10px 14px;border-radius:6px;font-size:12px;align-self:flex-start;max-width:88%;line-height:1.5}
+    </style>
   `, (body)=>{
+    const chat=body.querySelector('#cnc-chat');
+    // Render history if any
+    if(window.__CNC_HISTORY.length){
+      window.__CNC_HISTORY.forEach(m=>{
+        chat.insertAdjacentHTML('beforeend',`<div class="cnc-msg-${m.role==='user'?'u':'a'}">${m.role==='assistant'?renderConciergeMd(m.content):esc(m.content)}</div>`);
+      });
+    }else{
+      chat.insertAdjacentHTML('beforeend',`<div class="cnc-msg-a"><em style="font-family:var(--serif);font-size:17px">Olá.</em> Sou o concierge da InnovaPeople. Conheço os trabalhos em curso, o pulso, as sugestões dos agentes, as decisões registradas, os relacionamentos críticos e tudo que aconteceu no EventBus nos últimos sete dias. Pergunte.</div>`);
+    }
+    chat.scrollTop=chat.scrollHeight;
     body.querySelector('#cnc-form').addEventListener('submit', async (ev)=>{
       ev.preventDefault();
       const q=ev.target.q.value.trim();if(!q)return;
-      const chat=body.querySelector('#cnc-chat');
-      chat.insertAdjacentHTML('beforeend',`<div style="background:var(--navy);color:var(--cream);padding:11px 14px;border-radius:8px;font-size:13px;align-self:flex-end;max-width:80%;line-height:1.5">${esc(q)}</div>`);
       ev.target.q.value='';
-      chat.insertAdjacentHTML('beforeend','<div id="cnc-typing" style="color:var(--ink3);font-style:italic;font-size:12px;padding:4px">Concierge consultando...</div>');
-      chat.scrollTop=chat.scrollHeight;
-      const resp=await conciergeAnswer(q);
-      document.getElementById('cnc-typing')?.remove();
-      chat.insertAdjacentHTML('beforeend',`<div style="background:var(--cream2);padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.6;align-self:flex-start;max-width:88%">${resp}</div>`);
-      chat.scrollTop=chat.scrollHeight;
+      await cncSend(q);
     });
   });
 }
-async function conciergeAnswer(q){
-  const sb=window.__IP_SB;if(!sb)return 'Supabase não carregou.';
+function cncQuick(q){
+  const f=document.querySelector('#cnc-form');if(!f){openConcierge();setTimeout(()=>cncSend(q),300);return}
+  cncSend(q);
+}
+function cncResetChat(){
+  window.__CNC_HISTORY=[];
+  const chat=document.querySelector('#cnc-chat');if(chat){chat.innerHTML=`<div class="cnc-msg-a"><em style="font-family:var(--serif);font-size:17px">Conversa reiniciada.</em> Pergunte de novo.</div>`}
+}
+async function cncSend(q){
+  const chat=document.querySelector('#cnc-chat');if(!chat)return;
+  chat.insertAdjacentHTML('beforeend',`<div class="cnc-msg-u">${esc(q)}</div>`);
+  chat.insertAdjacentHTML('beforeend','<div class="cnc-typing" id="cnc-typing">Consultando dados reais e formulando resposta...</div>');
+  chat.scrollTop=chat.scrollHeight;
   try{
-    if(/pulso|engajament|sat(isfa)?(ç|c)ão|sdt|moral|clima/i.test(q)){
-      const {data}=await sb.from('ip_pulsos').select('*').gte('criado_em',new Date(Date.now()-30*864e5).toISOString()).limit(500);
-      if(!data||!data.length)return 'Nenhum pulso nos últimos 30 dias. Considere disparar um — botão "Disparar pulso" no Sinal Vivo.';
-      const dims=['proposito','autonomia','competencia','pertencimento','clareza','seguranca'];
-      const avg={};dims.forEach(d=>{let s=0,n=0;data.forEach(p=>{if(typeof p[d]==='number'){s+=p[d];n++}});avg[d]=n?+(s/n).toFixed(1):null});
-      const valid=dims.filter(d=>avg[d]!==null);
-      if(!valid.length)return data.length+' respostas, mas sem dimensões SDT preenchidas.';
-      const lowest=valid.reduce((a,b)=>avg[a]<avg[b]?a:b);
-      const highest=valid.reduce((a,b)=>avg[a]>avg[b]?a:b);
-      return `<strong>${data.length}</strong> respostas em 30 dias.<br>Mais frágil: <strong>${lowest}</strong> (${avg[lowest]}/10).<br>Mais forte: <strong>${highest}</strong> (${avg[highest]}/10).<br><em style="color:var(--gold-deep)">Sugestão: priorize uma decisão que ataque ${lowest}.</em>`;
-    }
-    if(/sugest|agent|vigia|crítica|critica/i.test(q)){
-      const [{count:tot},{count:crit},{count:alta}]=await Promise.all([
-        sb.from('ip_agent_sugestoes').select('*',{count:'exact',head:true}).eq('status','pendente'),
-        sb.from('ip_agent_sugestoes').select('*',{count:'exact',head:true}).eq('status','pendente').eq('severidade','critica'),
-        sb.from('ip_agent_sugestoes').select('*',{count:'exact',head:true}).eq('status','pendente').eq('severidade','alta'),
-      ]);
-      return `<strong>${tot??0}</strong> sugestões pendentes:<br>· <strong style="color:var(--red)">${crit??0}</strong> críticas<br>· <strong style="color:var(--amber)">${alta??0}</strong> altas<br><br>Abra "Painel completo" no card Agentes Vigia para revisar uma a uma.`;
-    }
-    if(/mandato|trabalho|cliente|projeto|engagement/i.test(q)){
-      const {data}=await sb.from('ip_mandatos').select('empresa,estagio,socio_responsavel').neq('estagio','encerrado').order('criado_em',{ascending:false}).limit(20);
-      if(!data||!data.length)return 'Nenhum trabalho ativo no momento.';
-      return `<strong>${data.length}</strong> trabalhos em curso:<br>${data.map(m=>`· ${esc(m.empresa)} <em style="color:var(--gold-deep)">(${esc(m.estagio||'—')})</em>`).join('<br>')}`;
-    }
-    if(/risc|sa(í|i)da|turnover|retenç(ã|a)o|sair/i.test(q)){
-      const {data}=await sb.from('ip_pulsos').select('risco_saida,equipe').gte('criado_em',new Date(Date.now()-30*864e5).toISOString()).limit(500);
-      if(!data||!data.length)return 'Sem dados de risco nos últimos 30 dias.';
-      const vals=data.filter(p=>typeof p.risco_saida==='number').map(p=>p.risco_saida);
-      if(!vals.length)return data.length+' respostas, mas sem risco_saida registrado.';
-      const avg=vals.reduce((s,v)=>s+v,0)/vals.length;
-      const high=vals.filter(v=>v>7).length;
-      return `Risco médio de saída: <strong>${avg.toFixed(1)}/10</strong>.<br><strong>${high}</strong> respostas com risco &gt; 7.${avg>5?'<br><em style="color:var(--red)">Acima do alerta — considere ritual de retenção.</em>':'<br><em style="color:var(--emerald)">Dentro do estável.</em>'}`;
-    }
-    if(/raio.?x|diag|funil/i.test(q)){
-      const {data}=await sb.from('ip_raio_x_submissions').select('status,sintomas_score').limit(500);
-      if(!data||!data.length)return 'Nenhuma submissão de Raio-X registrada.';
-      const cols=['novo','contatado','agendado','realizado','convertido','descartado'];
-      const cnt={};cols.forEach(c=>cnt[c]=0);
-      data.forEach(r=>{const s=r.status||'novo';if(cnt[s]!==undefined)cnt[s]++});
-      const conv=cnt.convertido,total=data.length;
-      const taxa=total?(conv/total*100).toFixed(1):0;
-      return `<strong>${total}</strong> submissões totais.<br>${cols.map(c=>`· ${c}: <strong>${cnt[c]}</strong>`).join('<br>')}<br><br>Taxa de conversão: <strong>${taxa}%</strong>.`;
-    }
-    if(/decis(ã|a)o|drift|clock/i.test(q)){
-      const {count}=await sb.from('ip_decisoes').select('*',{count:'exact',head:true});
-      return `<strong>${count??0}</strong> decisões registradas. O Clock Drift Detector vigia táticas sem revisão há 14 dias e estratégicas há 30. Veja "Decisões &amp; Clock Drift" na seção Memória.`;
-    }
-    if(/relacion|knowledge|reten/i.test(q)){
-      const {count}=await sb.from('ip_relacionamentos').select('*',{count:'exact',head:true});
-      return `<strong>${count??0}</strong> relacionamentos críticos sob vigia.<br>Knowledge Retention Watchdog alerta quando concentração ultrapassa 50% em uma só pessoa.`;
-    }
-    if(/ajuda|help|o que|comand|posso/i.test(q)){
-      return `Posso responder sobre:<br>· <em>pulso, engajamento</em> · médias SDT e dimensão mais frágil<br>· <em>sugestões, agentes</em> · contagem por severidade<br>· <em>mandatos, trabalhos</em> · ativos por estágio<br>· <em>risco de saída, turnover</em> · média e dispersão<br>· <em>raio-x, funil</em> · contagem por coluna + conversão<br>· <em>decisões, clock drift</em> · estado do registro<br>· <em>relacionamentos, retenção</em> · vigia de concentração`;
-    }
-    return `Ainda não tenho módulo de resposta para essa pergunta — sua mensagem foi capturada nos logs.<br><br>Tente: <em>pulso · sugestões · mandatos · risco de saída · raio-x · decisões · relacionamentos</em>. Ou digite <em>ajuda</em>.`;
-  }catch(e){return 'Erro ao consultar: '+esc(e.message)}
+    const sb=window.__IP_SB;if(!sb)throw new Error('Supabase não carregou');
+    const {data,error}=await sb.functions.invoke('innovapeople-concierge-chat',{
+      body:{pergunta:q, history:window.__CNC_HISTORY.slice(-6)}
+    });
+    document.getElementById('cnc-typing')?.remove();
+    if(error)throw error;
+    if(data?.erro)throw new Error(data.erro);
+    const resposta=data?.resposta||'(resposta vazia)';
+    window.__CNC_HISTORY.push({role:'user',content:q});
+    window.__CNC_HISTORY.push({role:'assistant',content:resposta});
+    chat.insertAdjacentHTML('beforeend',`<div class="cnc-msg-a">${renderConciergeMd(resposta)}</div>`);
+    chat.scrollTop=chat.scrollHeight;
+  }catch(e){
+    document.getElementById('cnc-typing')?.remove();
+    chat.insertAdjacentHTML('beforeend',`<div class="cnc-err">Concierge falhou: ${esc(e.message||String(e))}<br><small>Se persistir, verifique se ANTHROPIC_API_KEY está configurada no Supabase.</small></div>`);
+    chat.scrollTop=chat.scrollHeight;
+  }
+}
+// Markdown leve → HTML
+function renderConciergeMd(text){
+  if(!text)return'';
+  let html=esc(text);
+  // **bold**
+  html=html.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  // *italic*
+  html=html.replace(/(^|\s)\*([^*\n]+)\*(?=\s|$|[.,!?])/g,'$1<em>$2</em>');
+  // `code`
+  html=html.replace(/`([^`]+)`/g,'<code>$1</code>');
+  return html;
 }
 
 // ============================================================
