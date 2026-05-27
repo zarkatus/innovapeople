@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>ToolBox · Tier One</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script>
+(function ipAuthGate(){
+  const SUPA_URL='https://auth.innovasphere.ia.br';
+  const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br'];
+  function deny(){location.replace('/sistema/?from=toolbox')}
+  function ovl(){if(document.getElementById('ipovl'))return;const o=document.createElement('div');o.id='ipovl';o.style.cssText='position:fixed;inset:0;background:#FAF7F1;color:#5B3A7A;display:flex;align-items:center;justify-content:center;font:300 12px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647';o.innerHTML='<div style="text-align:center"><div style="margin-bottom:14px;font-size:10px;opacity:.6">InnovaPeople</div><div>Validando acesso…</div></div>';(document.body||document.documentElement).appendChild(o)}
+  function rmovl(){const o=document.getElementById('ipovl');if(o)o.remove()}
+  if(document.body)ovl();else document.addEventListener('DOMContentLoaded',ovl,{once:true});
+  const safety=setTimeout(()=>{rmovl();deny()},6000);
+  (async()=>{
+    try{
+      const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+      window.__IP_SB=sb;
+      const {data:{session}}=await sb.auth.getSession();
+      if(!session){clearTimeout(safety);deny();return}
+      const email=session.user?.email||'';
+      if(!ALLOWED.includes(email)){await sb.auth.signOut();clearTimeout(safety);deny();return}
+      clearTimeout(safety);
+      window.__IP_USER_EMAIL=email;
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{rmovl();if(typeof boot==='function')boot()},{once:true});
+      else{rmovl();if(typeof boot==='function')boot()}
+    }catch(e){clearTimeout(safety);deny()}
+  })();
+})();
+</script>
+
+<style>
+:root{
+  --violet:#5B3A7A; --violet-deep:#3F2756; --violet-light:#7B5AA8; --violet-soft:#F4EFFA;
+  --gold:#C4A35A; --gold-deep:#9C7E3B; --gold-soft:#F7EFDD;
+  --ink:#1A1614; --ink-soft:#3D3531; --muted:#7A6F66;
+  --rule:#D9D2C9; --paper:#FAF7F1; --paper-deep:#F2EDE3; --white:#FFFFFF;
+  --success:#2E7D52; --warn:#C0742D; --danger:#B23B3B; --info:#3D6F9E;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Inter',-apple-system,Segoe UI,sans-serif;
+  --mono:'JetBrains Mono',Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;min-height:100vh}
+a{color:var(--violet);text-decoration:none}
+a:hover{color:var(--violet-deep)}
+
+/* TOP NAV */
+.top{background:var(--paper-deep);border-bottom:1px solid var(--rule);padding:12px 0;position:sticky;top:0;z-index:50}
+.top .row{max-width:1280px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:500;color:var(--violet-deep)}
+.brand svg{width:28px;height:28px;color:var(--violet)}
+.brand .wm{font-size:18px}
+.brand .sub{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;border-left:1px solid var(--rule);padding-left:10px;margin-left:6px;font-family:var(--sans)}
+.nav{display:flex;gap:24px;flex:1;justify-content:center}
+.nav a{font-size:12.5px;color:var(--ink-soft);font-weight:500;padding:4px 0;border-bottom:1.5px solid transparent;transition:all .2s;letter-spacing:.02em}
+.nav a:hover{color:var(--violet)}
+.nav a.active{color:var(--violet-deep);border-bottom-color:var(--gold)}
+.user{font-size:12px;color:var(--muted)}
+.user strong{color:var(--violet-deep);font-weight:600}
+
+/* HERO */
+.hero{padding:40px 0 24px;border-bottom:1px solid var(--rule);background:linear-gradient(180deg,rgba(196,163,90,.04),transparent)}
+.hero .wrap{max-width:1280px;margin:0 auto;padding:0 28px}
+.hero .eyebrow{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:10px}
+.hero h1{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:42px;line-height:1.05;letter-spacing:-.02em;margin-bottom:8px}
+.hero h1 em{font-style:italic;color:var(--gold-deep)}
+.hero .tagline{font-family:var(--serif);font-style:italic;color:var(--ink-soft);font-size:17px;line-height:1.4;max-width:640px}
+.hero .toolbar{margin-top:20px;display:flex;align-items:center;gap:14px;font-size:11.5px;color:var(--muted);letter-spacing:.02em}
+.hero .pulse{width:8px;height:8px;border-radius:50%;background:var(--success);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:.9;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}
+.hero .toolbar .last-up{font-family:var(--mono);color:var(--ink-soft)}
+.hero .toolbar button{background:transparent;border:1px solid var(--rule);color:var(--violet);padding:5px 12px;border-radius:6px;font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.04em;cursor:pointer;margin-left:auto}
+.hero .toolbar button:hover{background:var(--violet-soft);border-color:var(--violet-light)}
+
+/* KPI BAR */
+.kpis{max-width:1280px;margin:24px auto;padding:0 28px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media(max-width:880px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--white);border:1px solid var(--rule);border-radius:10px;padding:18px 22px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.kpi:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(63,39,86,.08)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--gold))}
+.kpi .lab{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px}
+.kpi .val{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:30px;line-height:1;letter-spacing:-.02em}
+.kpi .val .un{font-size:13px;color:var(--gold-deep);font-style:italic;margin-left:2px}
+.kpi .note{margin-top:6px;font-size:11px;color:var(--muted)}
+.kpi.alert::before{background:linear-gradient(90deg,var(--warn),var(--danger))}
+.kpi.alert .val{color:var(--warn)}
+
+/* HUB GRID — painéis vivos */
+.hub{max-width:1280px;margin:8px auto 60px;padding:0 28px;display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.panel{background:var(--white);border:1px solid var(--rule);border-radius:10px;padding:0;overflow:hidden;display:flex;flex-direction:column}
+.panel.s6{grid-column:span 6}
+.panel.s4{grid-column:span 4}
+.panel.s8{grid-column:span 8}
+.panel.s12{grid-column:span 12}
+@media(max-width:880px){.panel.s6,.panel.s4,.panel.s8{grid-column:span 12}}
+.p-h{padding:14px 20px;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(196,163,90,.03),transparent)}
+.p-h .t{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:17px;letter-spacing:-.005em;display:flex;align-items:center;gap:8px}
+.p-h .t .dot{width:7px;height:7px;border-radius:50%;background:var(--success)}
+.p-h .t .dot.idle{background:var(--muted);opacity:.5}
+.p-h .t .dot.warn{background:var(--warn)}
+.p-h .openlink{font-size:11px;color:var(--violet);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.p-h .openlink:hover{color:var(--violet-deep)}
+.p-b{padding:14px 20px;flex:1;overflow:hidden}
+.p-empty{color:var(--muted);font-style:italic;font-family:var(--serif);font-size:15px;text-align:center;padding:20px 0}
+
+/* row genérico (item dentro de painel) */
+.row-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(217,210,201,.5)}
+.row-item:last-child{border-bottom:none}
+.row-item .ico{width:32px;height:32px;border-radius:50%;background:var(--paper-deep);display:flex;align-items:center;justify-content:center;color:var(--violet);font-family:var(--serif);font-weight:500;font-size:13px;flex-shrink:0}
+.row-item .body{flex:1;min-width:0}
+.row-item .body .nm{font-size:13.5px;color:var(--ink);font-weight:500;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-item .body .desc{font-size:11.5px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-item .tag{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;font-family:var(--mono);padding:3px 7px;border-radius:3px;flex-shrink:0}
+.row-item .tag.ok{background:rgba(46,125,82,.1);color:var(--success)}
+.row-item .tag.warn{background:rgba(192,116,45,.1);color:var(--warn)}
+.row-item .tag.danger{background:rgba(178,59,59,.1);color:var(--danger)}
+.row-item .tag.info{background:rgba(91,58,122,.08);color:var(--violet)}
+.row-item .tag.muted{background:rgba(122,111,102,.08);color:var(--muted)}
+.row-item .time{font-size:10.5px;color:var(--muted);font-family:var(--mono);flex-shrink:0}
+
+/* badge counter no header */
+.p-h .counter{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--violet);padding:2px 8px;background:rgba(91,58,122,.08);border-radius:10px;letter-spacing:.04em;margin-left:6px}
+
+/* footer */
+.foot{max-width:1280px;margin:30px auto 0;padding:30px 28px 60px;border-top:1px solid var(--rule);color:var(--muted);font-size:11px;text-align:center;letter-spacing:.06em}
+.foot strong{color:var(--violet-deep);font-weight:600}
+
+/* toast */
+#toast{position:fixed;bottom:30px;right:30px;background:var(--ink);color:var(--white);padding:12px 18px;border-radius:8px;font-size:13px;z-index:9999;opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none;max-width:300px}
+#toast.on{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="row">
+    <a class="brand" href="/sistema/">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="14"/><path d="M16 6 v20 M6 16 h20"/></svg>
+      <div><span class="wm">innova · people</span><span class="sub">Tier One</span></div>
+    </a>
+    <div class="nav">
+      <a href="/sistema/">Dashboard</a>
+      <a href="/sistema/toolbox/" class="active">ToolBox</a>
+      <a href="/sistema/chro/">CHRO</a>
+      <a href="/sistema/agentes.html">Agentes IA</a>
+      <a href="/sistema/whatsapp/">WhatsApp</a>
+      <a href="/sistema/bastidores/">Bastidores</a>
+    </div>
+    <div class="user">olá, <strong id="uname">—</strong></div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Comando · Tier One</div>
+    <h1>Tool<em>Box</em></h1>
+    <div class="tagline">Instrumentos de leitura sistêmica em tempo real. Consolidação operacional das frentes de curadoria, sinal vivo, memória, comunicação e governança.</div>
+    <div class="toolbar">
+      <span class="pulse"></span>
+      <span>Sistema operacional</span>
+      <span>·</span>
+      <span class="last-up" id="lastup">atualizado agora</span>
+      <button onclick="loadAll()">↻ Atualizar</button>
+    </div>
+  </div>
+</section>
+
+<div class="kpis">
+  <div class="kpi"><div class="lab">Trabalhos ativos</div><div class="val" id="k-mandatos">—</div><div class="note" id="k-mandatos-n">trabalhos em curadoria</div></div>
+  <div class="kpi" id="k-raio-card"><div class="lab">Raio-X pendentes</div><div class="val" id="k-raio">—</div><div class="note" id="k-raio-n">aguardando contato</div></div>
+  <div class="kpi" id="k-sug-card"><div class="lab">Sugestões IA</div><div class="val" id="k-sug">—</div><div class="note" id="k-sug-n">pendentes de revisão</div></div>
+  <div class="kpi"><div class="lab">Score 30d</div><div class="val" id="k-score">—<span class="un">/100</span></div><div class="note">média ponderada dos trabalhos</div></div>
+</div>
+
+<div class="hub">
+  <!-- AGENTES IA -->
+  <div class="panel s6">
+    <div class="p-h">
+      <div class="t"><span class="dot" id="d-agents"></span>Agentes IA <span class="counter" id="c-agents">0</span></div>
+      <a class="openlink" href="/sistema/agentes.html">abrir →</a>
+    </div>
+    <div class="p-b" id="b-agents"><div class="p-empty">Carregando…</div></div>
+  </div>
+
+  <!-- SINAL VIVO (Raio-X + Pulso) -->
+  <div class="panel s6">
+    <div class="p-h">
+      <div class="t"><span class="dot" id="d-sinal"></span>Sinal Vivo <span class="counter" id="c-sinal">0</span></div>
+      <a class="openlink" href="/sistema/">abrir →</a>
+    </div>
+    <div class="p-b" id="b-sinal"><div class="p-empty">Carregando…</div></div>
+  </div>
+
+  <!-- TRABALHOS / MANDATOS -->
+  <div class="panel s8">
+    <div class="p-h">
+      <div class="t"><span class="dot" id="d-mand"></span>Trabalhos em Curadoria <span class="counter" id="c-mand">0</span></div>
+      <a class="openlink" href="/sistema/chro/">abrir CHRO →</a>
+    </div>
+    <div class="p-b" id="b-mand"><div class="p-empty">Carregando…</div></div>
+  </div>
+
+  <!-- COMUNICAÇÃO -->
+  <div class="panel s4">
+    <div class="p-h">
+      <div class="t"><span class="dot" id="d-com"></span>Comunicação <span class="counter" id="c-com">0</span></div>
+      <a class="openlink" href="/sistema/whatsapp/">abrir →</a>
+    </div>
+    <div class="p-b" id="b-com"><div class="p-empty">Carregando…</div></div>
+  </div>
+
+  <!-- MEMÓRIA / EVENTBUS -->
+  <div class="panel s6">
+    <div class="p-h">
+      <div class="t"><span class="dot" id="d-mem"></span>Memória · EventBus <span class="counter" id="c-mem">0</span></div>
+      <a class="openlink" href="/sistema/bastidores/">abrir →</a>
+    </div>
+    <div class="p-b" id="b-mem"><div class="p-empty">Carregando…</div></div>
+  </div>
+
+  <!-- GOVERNANÇA -->
+  <div class="panel s6">
+    <div class="p-h">
+      <div class="t"><span class="dot" id="d-gov"></span>Governança <span class="counter" id="c-gov">—</span></div>
+      <a class="openlink" href="/sistema/bastidores/">audit →</a>
+    </div>
+    <div class="p-b" id="b-gov"><div class="p-empty">Carregando…</div></div>
+  </div>
+</div>
+
+<div class="foot">ToolBox <strong>Tier One</strong> · InnovaPeople · área interna · auto-refresh 60s</div>
+
+<div id="toast"></div>
+
+<script>
+const sb=window.__IP_SB;
+const $=(id)=>document.getElementById(id);
+const esc=(s)=>String(s??'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+const fmtRel=(d)=>{if(!d)return'—';const t=Date.now()-new Date(d).getTime(),m=Math.floor(t/60000),h=Math.floor(m/60),dd=Math.floor(h/24);if(m<1)return'agora';if(m<60)return m+'min';if(h<24)return h+'h';if(dd<7)return dd+'d';return new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})};
+const fmtFull=(d)=>d?new Date(d).toLocaleString('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'—';
+const toast=(msg)=>{const t=$('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2600)};
+const safe=async(fn,fallback)=>{try{return await fn()}catch(e){console.warn(e);return fallback}};
+const initials=(s)=>(s||'').split(/\s+/).filter(Boolean).slice(0,2).map(p=>p[0]).join('').toUpperCase()||'·';
+
+function boot(){
+  $('uname').textContent=window.__IP_USER_EMAIL||'';
+  loadAll();
+  setInterval(loadAll,60000);
+}
+
+async function loadAll(){
+  $('lastup').textContent='atualizando…';
+  await Promise.all([loadKpis(),loadAgents(),loadSinal(),loadMandatos(),loadComunicacao(),loadMemoria(),loadGovernanca()]);
+  $('lastup').textContent='atualizado '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+}
+
+async function loadKpis(){
+  const [m,r,s]=await Promise.all([
+    safe(()=>sb.from('v_ip_mandatos_overview').select('*').eq('status','ativo'),{data:[]}),
+    safe(()=>sb.from('ip_raio_x_submissions').select('id,sintomas_score').in('status',['novo','contatado','agendado']),{data:[]}),
+    safe(()=>sb.from('ip_agent_sugestoes').select('id',{count:'exact',head:true}).eq('status','pendente'),{count:0}),
+  ]);
+  const mand=(m.data||[]).length;
+  const raio=(r.data||[]).length;
+  const sug=s.count||0;
+  $('k-mandatos').textContent=mand;
+  $('k-raio').textContent=raio;
+  $('k-sug').textContent=sug;
+  // alerta visual se há sugestões pendentes
+  $('k-sug-card').classList.toggle('alert',sug>0);
+  $('k-raio-card').classList.toggle('alert',raio>2);
+  const scores=(m.data||[]).map(x=>x.score_30d).filter(Boolean);
+  const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;
+  $('k-score').innerHTML=avg?avg+'<span class="un">/100</span>':'—<span class="un">/100</span>';
+}
+
+// AGENTES IA — feed dos 5 agentes + última run
+async function loadAgents(){
+  const AGENTES=[
+    {k:'pulse_anomaly',n:'Pulse Anomaly',d:'Detecta variação anômala no engajamento'},
+    {k:'knowledge_retention',n:'Knowledge Retention',d:'Identifica concentração de conhecimento'},
+    {k:'clock_drift',n:'Clock Drift',d:'Vigia defasagem entre decisão e execução'},
+    {k:'mattering',n:'Mattering',d:'Mede sentido de pertencimento'},
+    {k:'critic_org',n:'Critic-Org',d:'Crítica organizacional sistêmica'},
+  ];
+  const [runs,sug]=await Promise.all([
+    safe(()=>sb.from('ip_agent_runs').select('agente_key,iniciado_em,status,sugestoes_geradas').order('iniciado_em',{ascending:false}).limit(50),{data:[]}),
+    safe(()=>sb.from('ip_agent_sugestoes').select('agente_key,severidade,titulo,criado_em').eq('status','pendente').order('criado_em',{ascending:false}).limit(3),{data:[]}),
+  ]);
+  // última run por agente
+  const ultRun={};
+  for(const r of (runs.data||[])){if(!ultRun[r.agente_key])ultRun[r.agente_key]=r}
+  const lines=AGENTES.map(a=>{
+    const u=ultRun[a.k];
+    const tag=u?(u.status==='concluido'?'<span class="tag ok">ok</span>':'<span class="tag warn">'+esc(u.status)+'</span>'):'<span class="tag muted">idle</span>';
+    const t=u?fmtRel(u.iniciado_em):'nunca';
+    return `<div class="row-item"><div class="ico">${initials(a.n)}</div><div class="body"><div class="nm">${esc(a.n)}</div><div class="desc">${esc(a.d)}</div></div>${tag}<div class="time">${esc(t)}</div></div>`;
+  }).join('');
+  // top 3 sugestões pendentes embaixo
+  const sugList=(sug.data||[]).map(s=>{
+    const sev=s.severidade==='alta'?'danger':(s.severidade==='media'?'warn':'info');
+    return `<div class="row-item"><div class="ico" style="background:rgba(196,163,90,.12);color:var(--gold-deep)">!</div><div class="body"><div class="nm">${esc(s.titulo||'sugestão')}</div><div class="desc">${esc(s.agente_key||'')}</div></div><span class="tag ${sev}">${esc(s.severidade||'—')}</span><div class="time">${esc(fmtRel(s.criado_em))}</div></div>`;
+  }).join('');
+  $('b-agents').innerHTML=lines+(sugList?'<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--rule);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600">sugestões pendentes</div>'+sugList:'');
+  $('c-agents').textContent=AGENTES.length;
+  $('d-agents').className='dot'+(Object.keys(ultRun).length>=3?'':' warn');
+}
+
+// SINAL VIVO — Raio-X + Pulso
+async function loadSinal(){
+  const [raio,pulso]=await Promise.all([
+    safe(()=>sb.from('ip_raio_x_submissions').select('id,empresa,nome,sintomas_score,urgencia,created_at,status').in('status',['novo','contatado','agendado']).order('created_at',{ascending:false}).limit(6),{data:[]}),
+    safe(()=>sb.from('ip_pulse_tokens').select('id',{count:'exact',head:true}),{count:0}),
+  ]);
+  const lines=(raio.data||[]).map(r=>{
+    const urgTag=r.urgencia==='alta'?'<span class="tag danger">alta</span>':(r.urgencia==='media'?'<span class="tag warn">media</span>':'<span class="tag info">baixa</span>');
+    return `<div class="row-item"><div class="ico">${initials(r.empresa||r.nome)}</div><div class="body"><div class="nm">${esc(r.empresa||'(sem empresa)')}</div><div class="desc">${esc(r.nome||'')} · score ${r.sintomas_score||'—'}</div></div>${urgTag}<div class="time">${esc(fmtRel(r.created_at))}</div></div>`;
+  }).join('')||'<div class="p-empty">Sem Raio-X pendente.</div>';
+  const extra=`<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--rule);font-size:11px;color:var(--muted)"><strong style="color:var(--violet-deep);font-family:var(--serif);font-size:15px;font-weight:500">${pulso.count||0}</strong> tokens de pulso emitidos · k≥3 anônimo</div>`;
+  $('b-sinal').innerHTML=lines+extra;
+  $('c-sinal').textContent=(raio.data||[]).length;
+  $('d-sinal').className='dot'+((raio.data||[]).length>2?' warn':'');
+}
+
+// MANDATOS — top 5 ativos
+async function loadMandatos(){
+  const {data}=await safe(()=>sb.from('v_ip_mandatos_overview').select('id,empresa,setor,estagio,score_30d,raio_x_score,criado_em,socio_responsavel').eq('status','ativo').order('criado_em',{ascending:false}).limit(8),{data:[]});
+  const lines=(data||[]).map(m=>{
+    const stagMap={diagnostico:'Diagnóstico',plano:'Plano',execucao:'Execução',rituais:'Rituais',escala:'Escala'};
+    const stag=stagMap[m.estagio]||m.estagio||'—';
+    const sc=m.score_30d?'<span class="tag ok">'+m.score_30d+'/100</span>':'<span class="tag muted">sem score</span>';
+    return `<a class="row-item" href="/sistema/mandato.html?id=${esc(m.id)}" style="text-decoration:none;color:inherit"><div class="ico">${initials(m.empresa)}</div><div class="body"><div class="nm">${esc(m.empresa)} <span style="color:var(--muted);font-weight:400;font-size:11px">· ${esc(m.setor||'—')}</span></div><div class="desc">${esc(stag)} · sócio ${esc(m.socio_responsavel||'—')}</div></div>${sc}<div class="time">${esc(fmtRel(m.criado_em))}</div></a>`;
+  }).join('')||'<div class="p-empty">Nenhum trabalho ativo.</div>';
+  $('b-mand').innerHTML=lines;
+  $('c-mand').textContent=(data||[]).length;
+  $('d-mand').className='dot';
+}
+
+// COMUNICAÇÃO — WA + email recentes
+async function loadComunicacao(){
+  const [wa,email]=await Promise.all([
+    safe(()=>sb.from('wa_mensagem').select('id,direcao,conteudo,criado_em').order('criado_em',{ascending:false}).limit(4),{data:[]}),
+    safe(()=>sb.from('ip_email_outbox').select('id,status',{count:'exact',head:true}).eq('status','pending'),{count:0}),
+  ]);
+  const lines=(wa.data||[]).map(m=>{
+    const dirT=m.direcao==='saida'?'<span class="tag info">out</span>':'<span class="tag ok">in</span>';
+    const preview=(m.conteudo||'(sem texto)').slice(0,40);
+    return `<div class="row-item"><div class="body"><div class="nm" style="font-size:12.5px">${esc(preview)}${m.conteudo&&m.conteudo.length>40?'…':''}</div></div>${dirT}<div class="time">${esc(fmtRel(m.criado_em))}</div></div>`;
+  }).join('')||'<div class="p-empty">Sem mensagens.</div>';
+  const extra=`<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--rule);font-size:11px;color:var(--muted)"><strong style="color:var(--violet-deep);font-family:var(--serif);font-size:15px;font-weight:500">${email.count||0}</strong> e-mails na outbox aguardando dispatch</div>`;
+  $('b-com').innerHTML=lines+extra;
+  $('c-com').textContent=(wa.data||[]).length;
+  $('d-com').className='dot';
+}
+
+// MEMÓRIA — eventos recentes (EventBus)
+async function loadMemoria(){
+  const {data}=await safe(()=>sb.from('ip_eventos').select('id,tipo,entidade,resumo,criado_em').order('criado_em',{ascending:false}).limit(6),{data:[]});
+  const lines=(data||[]).map(e=>{
+    return `<div class="row-item"><div class="ico" style="background:rgba(91,58,122,.08);color:var(--violet);font-size:10px;font-family:var(--mono)">EV</div><div class="body"><div class="nm" style="font-size:12.5px">${esc(e.tipo||'evento')}</div><div class="desc">${esc((e.resumo||e.entidade||'').slice(0,60))}</div></div><div class="time">${esc(fmtRel(e.criado_em))}</div></div>`;
+  }).join('')||'<div class="p-empty">Sem eventos recentes.</div>';
+  $('b-mem').innerHTML=lines;
+  const {count}=await safe(()=>sb.from('ip_eventos').select('id',{count:'exact',head:true}),{count:0});
+  $('c-mem').textContent=count||0;
+  $('d-mem').className='dot';
+}
+
+// GOVERNANÇA — Decisões + Relacionamentos + Audit chain
+async function loadGovernanca(){
+  const [dec,rel,wAud]=await Promise.all([
+    safe(()=>sb.from('ip_decisoes').select('id',{count:'exact',head:true}),{count:0}),
+    safe(()=>sb.from('ip_relacionamentos').select('id',{count:'exact',head:true}),{count:0}),
+    safe(()=>sb.from('wa_audit_log').select('id',{count:'exact',head:true}),{count:0}),
+  ]);
+  $('b-gov').innerHTML=`
+    <div class="row-item"><div class="ico" style="background:rgba(46,125,82,.08);color:var(--success)">D</div><div class="body"><div class="nm">Decisões registradas</div><div class="desc">Patrimônio decisório · clock drift</div></div><span class="tag ok">${dec.count||0}</span></div>
+    <div class="row-item"><div class="ico" style="background:rgba(91,58,122,.08);color:var(--violet)">R</div><div class="body"><div class="nm">Relacionamentos críticos</div><div class="desc">Vigia concentração · key persons</div></div><span class="tag info">${rel.count||0}</span></div>
+    <div class="row-item"><div class="ico" style="background:rgba(196,163,90,.12);color:var(--gold-deep)">∞</div><div class="body"><div class="nm">Audit Log WhatsApp</div><div class="desc">Hash chain append-only</div></div><span class="tag muted">${wAud.count||0}</span></div>
+    <div style="margin-top:12px;padding:10px 14px;background:var(--paper-deep);border-radius:6px;font-size:11px;color:var(--muted);line-height:1.5">Conformidade contínua: LGPD opt-out checada em cada disparo · trilha imutável · acesso restrito a sócios.</div>
+  `;
+  $('c-gov').textContent=(dec.count||0)+(rel.count||0);
+  $('d-gov').className='dot';
+}
+</script>
+</body>
+</html>

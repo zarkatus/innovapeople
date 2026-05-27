@@ -302,7 +302,7 @@ async function init() {
     try {
       const params = new URLSearchParams(location.search);
       const from = params.get('from');
-      const fromMap = { catalogo: 'Acesso ao Catálogo Completo exige autenticação.' };
+      const fromMap = { catalogo: 'Acesso à ToolBox exige autenticação.', toolbox: 'Acesso à ToolBox exige autenticação.' };
       showLogin(from && fromMap[from] ? fromMap[from] : '');
     } catch(_) { showLogin(); }
   }
@@ -346,7 +346,7 @@ function showDashboard(user) {
   try {
     const params = new URLSearchParams(location.search);
     const from = params.get('from');
-    const redirectMap = { catalogo: '/sistema/catalogo-completo.html' };
+    const redirectMap = { catalogo: '/sistema/toolbox/', toolbox: '/sistema/toolbox/' };
     if (from && redirectMap[from]) {
       window.location.replace(redirectMap[from]);
       return;
