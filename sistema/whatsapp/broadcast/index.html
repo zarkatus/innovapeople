@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Broadcast WhatsApp · InnovaPeople</title>
+<meta name="robots" content="noindex,nofollow">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script>
+(function ipAuthGate(){
+  const SUPA_URL='https://auth.innovasphere.ia.br';
+  const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br'];
+  function inj(){if(document.getElementById('ip-auth-ovl'))return;const o=document.createElement('div');o.id='ip-auth-ovl';o.style.cssText='position:fixed;inset:0;background:#0A1628;color:#3DA882;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647';o.innerHTML='<div>Validando acesso…</div>';(document.body||document.documentElement).appendChild(o)}
+  function rm(){const o=document.getElementById('ip-auth-ovl');if(o)o.remove()}
+  function allow(email){rm();window.__IP_USER_EMAIL=email;const el=document.getElementById('user-display');if(el&&email)el.textContent=email;if(typeof window.bcBoot==='function')try{window.bcBoot()}catch(e){}else setTimeout(()=>{if(typeof window.bcBoot==='function')try{window.bcBoot()}catch(e){}},300)}
+  if(document.body)inj();else document.addEventListener('DOMContentLoaded',inj,{once:true});
+  const s=setTimeout(()=>allow(''),6000);
+  (async()=>{try{if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=broadcast');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
+})();
+</script>
+
+<link rel="icon" href="/sistema/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0A1628;--navy2:#0F1D32;
+  --cream:#F5F0E8;--cream2:#EFE9DD;--white:#FBFAF7;
+  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#A88440;--gold-soft:#E6D9B5;
+  --emerald:#2E8B6E;--ink:#1A1A1A;--ink2:#3A3F47;--ink3:#6B7280;--ink4:#9CA3AF;
+  --border:rgba(10,22,40,.08);--border2:rgba(10,22,40,.04);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Outfit',-apple-system,Segoe UI,sans-serif;
+  --mono:'JetBrains Mono',Menlo,monospace;
+  --red:#9B2C2C;--amber:#A86A1F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+em{font-style:italic}
+
+.hdr{height:64px;background:rgba(245,240,232,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;position:sticky;top:0;z-index:50}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:17px;font-style:italic}
+.brand .name{font-size:17px;color:var(--navy);letter-spacing:.04em}
+.brand .name em{color:var(--gold-deep);font-weight:500}
+.brand .sub{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink3);margin-left:8px;font-family:var(--mono)}
+.nav{display:flex;gap:22px;flex:1;justify-content:center;font-size:13px;letter-spacing:.06em}
+.nav a{color:var(--ink2)}
+.nav a:hover,.nav a.active{color:var(--navy)}
+.nav a.active{font-weight:500}
+.usr{font-family:var(--mono);font-size:12px;color:var(--ink3);display:flex;gap:12px;align-items:center}
+.hdr-inner{width:100%;display:flex;align-items:center;gap:28px}
+
+.hero{padding:48px 32px 28px;background:linear-gradient(180deg,var(--cream),var(--cream2));border-bottom:1px solid var(--border)}
+.hero-inner{max-width:1280px;margin:0 auto}
+.hero h1{font-family:var(--serif);font-size:44px;font-weight:300;line-height:1.06;color:var(--navy);margin-bottom:12px}
+.hero h1 em{color:var(--gold-deep);font-weight:400}
+.hero .lede{font-size:15px;color:var(--ink2);max-width:680px;line-height:1.6}
+.hero .crumb{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px}
+.hero .crumb a{color:var(--gold-deep)}
+
+.main{max-width:1280px;margin:0 auto;padding:38px 32px 80px}
+
+.section{margin-bottom:48px}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.section-h h2{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--navy)}
+.section-h h2 em{color:var(--gold-deep);font-style:italic}
+.section-h button.add{padding:9px 18px;background:var(--navy);color:var(--cream);border-radius:6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-family:inherit;border:none;cursor:pointer}
+.section-h button.add:hover{background:var(--navy2)}
+
+.bc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:18px}
+.bc-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:20px;transition:all .25s}
+.bc-card:hover{box-shadow:0 8px 24px rgba(10,22,40,.06)}
+.bc-card-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
+.bc-card-title{font-family:var(--serif);font-size:21px;color:var(--navy);font-weight:500}
+.bc-status{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:10px;font-weight:500;white-space:nowrap}
+.bc-status.preparando{background:rgba(196,163,90,.1);color:var(--gold-deep)}
+.bc-status.em_execucao{background:rgba(46,139,110,.1);color:var(--emerald)}
+.bc-status.concluido,.bc-status.concluida{background:rgba(46,139,110,.06);color:var(--ink3)}
+.bc-status.pausada,.bc-status.pausado{background:rgba(168,106,31,.1);color:var(--amber)}
+.bc-status.erro{background:rgba(155,44,44,.08);color:var(--red)}
+.bc-card-meta{font-family:var(--mono);font-size:11px;color:var(--ink3);margin-bottom:14px;letter-spacing:.04em}
+
+.bc-progress{height:8px;background:var(--cream2);border-radius:4px;overflow:hidden;margin-bottom:12px}
+.bc-progress-bar{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-deep));border-radius:4px;transition:width .5s}
+.bc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.bc-stat{text-align:center;padding:10px 4px;background:var(--cream2);border-radius:4px}
+.bc-stat-k{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px}
+.bc-stat-v{font-family:var(--serif);font-size:20px;color:var(--navy);font-weight:500;line-height:1}
+.bc-card-actions{display:flex;gap:6px}
+.btn{padding:7px 14px;border-radius:4px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;transition:all .2s;border:1px solid transparent;cursor:pointer;font-family:inherit}
+.btn-primary{background:var(--navy);color:var(--cream)}
+.btn-primary:hover{background:var(--navy2)}
+.btn-ghost{border:1px solid var(--border);color:var(--ink2)}
+.btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
+
+.empty{padding:48px;text-align:center;color:var(--ink3);font-family:var(--serif);font-size:20px;font-style:italic;background:var(--white);border-radius:8px}
+
+/* DRAWER */
+.dr-ovl{position:fixed;inset:0;background:rgba(10,22,40,.5);backdrop-filter:blur(4px);z-index:9000;opacity:0;pointer-events:none;transition:opacity .3s}
+.dr-ovl.on{opacity:1;pointer-events:auto}
+.dr{position:fixed;top:0;right:0;height:100vh;width:580px;max-width:96vw;background:var(--white);box-shadow:-16px 0 40px rgba(10,22,40,.22);z-index:9001;transform:translateX(100%);transition:transform .35s cubic-bezier(.34,1.4,.64,1);display:flex;flex-direction:column}
+.dr.on{transform:translateX(0)}
+.dr-h{padding:22px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--cream)}
+.dr-h h3{font-family:var(--serif);font-size:24px;color:var(--navy);font-weight:500}
+.dr-x{font-size:26px;color:var(--ink3);padding:4px 12px;background:none;border:none}
+.dr-x:hover{background:rgba(0,0,0,.06)}
+.dr-body{flex:1;overflow-y:auto;padding:24px 28px}
+.dr-sub{font-style:italic;font-family:var(--serif);font-size:17px;color:var(--ink2);margin-bottom:22px;line-height:1.5}
+.dr-form{display:flex;flex-direction:column;gap:14px}
+.dr-form label{display:flex;flex-direction:column;gap:5px}
+.dr-form input,.dr-form textarea,.dr-form select{padding:10px 12px;border:1px solid var(--border);border-radius:4px;font:inherit;font-size:13px;background:var(--white)}
+.dr-lab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500}
+.dr-ok{padding:12px 14px;background:rgba(46,139,110,.1);border-radius:4px;font-size:13px;color:var(--emerald)}
+.dr-err{padding:12px 14px;background:rgba(155,44,44,.08);border-radius:4px;font-size:13px;color:var(--red)}
+.dr-info{padding:12px 14px;background:rgba(196,163,90,.08);border-radius:4px;font-size:13px;color:var(--ink2);font-style:italic}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:11px 22px;background:var(--navy);color:var(--cream);border-radius:6px;font-size:12px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.on{opacity:1}
+
+@media(max-width:720px){.hero h1{font-size:30px}.bc-grid{grid-template-columns:1fr}.dr{width:100vw}}
+</style>
+</head>
+
+<body>
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <a href="/sistema/" class="brand">
+      <div class="mark">i</div>
+      <span class="name">Innova<em>People</em></span>
+      <span class="sub">Broadcast</span>
+    </a>
+    <nav class="nav">
+      <a href="/sistema/">Visão geral</a>
+      <a href="/sistema/agentes.html">Agentes</a>
+      <a href="/sistema/chro/">Curadoria</a>
+      <a href="/sistema/bastidores/">Bastidores</a>
+      <a href="/sistema/whatsapp/" class="active">WhatsApp</a>
+    </nav>
+    <div class="usr"><span id="user-display">—</span><a href="/sistema/" style="padding:6px 14px;border:1px solid var(--border);border-radius:18px;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Sair</a></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="crumb"><a href="/sistema/whatsapp/">WhatsApp</a> · Broadcast</div>
+    <h1>Mensagens <em>em escala — sem perder a entonação.</em></h1>
+    <p class="lede">Cap diário, janela horária, intervalos aleatórios. O broadcast respeita o ritmo humano — disparo de banco, não de bot.</p>
+  </div>
+</section>
+
+<main class="main">
+
+  <div class="section">
+    <div class="section-h">
+      <h2>Em <em>curso</em></h2>
+      <button class="add" onclick="abrirNovoBc()">+ Novo broadcast</button>
+    </div>
+    <div id="bc-ativos"><div class="empty">Carregando…</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-h">
+      <h2>Histórico <em>recente</em></h2>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.1em" id="hist-count">—</span>
+    </div>
+    <div id="bc-hist"><div class="empty">Carregando…</div></div>
+  </div>
+
+</main>
+
+<div class="dr-ovl" id="dr-ovl" onclick="closeDrawer()"></div>
+<div class="dr" id="dr">
+  <div class="dr-h"><h3 id="dr-title">—</h3><button class="dr-x" onclick="closeDrawer()">×</button></div>
+  <div class="dr-body" id="dr-body"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const sb=()=>window.__IP_SB;
+const esc=s=>{if(s==null)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML};
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2400)}
+function openDrawer(title,html,init){
+  document.getElementById('dr-title').textContent=title;
+  document.getElementById('dr-body').innerHTML=html;
+  document.getElementById('dr-ovl').classList.add('on');
+  document.getElementById('dr').classList.add('on');
+  setTimeout(()=>{if(typeof init==='function')try{init(document.getElementById('dr-body'))}catch(e){}},10);
+}
+function closeDrawer(){document.getElementById('dr-ovl').classList.remove('on');document.getElementById('dr').classList.remove('on')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+
+let _templates=[];
+
+async function bcBoot(){
+  if(!sb())return;
+  await Promise.all([loadAtivos(),loadHist(),loadTemplates()]);
+}
+window.bcBoot=bcBoot;
+
+async function loadTemplates(){
+  try{
+    const {data}=await sb().from('wa_templates').select('id, name, content, category').eq('is_active',true);
+    _templates=data||[];
+  }catch(e){}
+}
+
+async function loadAtivos(){
+  try{
+    // Tenta view v_wa_broadcasts_ativos primeiro
+    let {data,error}=await sb().from('v_wa_broadcasts_ativos').select('*').limit(20);
+    if(error){
+      console.warn('view falhou, tentando wa_broadcast',error);
+      const r=await sb().from('wa_broadcast').select('*').neq('estado','concluida').neq('estado','cancelada').order('criado_em',{ascending:false}).limit(20);
+      if(r.error)throw r.error;
+      data=(r.data||[]).map(b=>({id:b.id,nome:b.nome,estado:b.estado,total_destinatarios:b.total_destinatarios,total_enviados:b.total_enviados,total_falhas:b.total_falhas,cap_diario:b.cap_diario,horario_inicio:b.horario_inicio,horario_fim:b.horario_fim,progresso_pct:b.total_destinatarios?Math.round(100*(b.total_enviados||0)/b.total_destinatarios):0,pendentes:(b.total_destinatarios||0)-(b.total_enviados||0)-(b.total_falhas||0)}));
+    }
+    renderAtivos(data||[]);
+  }catch(e){
+    document.getElementById('bc-ativos').innerHTML=`<div class="empty" style="color:var(--red)">Erro: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderAtivos(list){
+  const el=document.getElementById('bc-ativos');
+  if(!list.length){el.innerHTML='<div class="empty">Nenhum broadcast em curso. O silêncio também é estratégia.</div>';return}
+  el.innerHTML='<div class="bc-grid">'+list.map(b=>{
+    const pct=+b.progresso_pct||0;
+    return `<div class="bc-card">
+      <div class="bc-card-h">
+        <div>
+          <div class="bc-card-title">${esc(b.nome||'(sem nome)')}</div>
+          ${b.template_nome?`<div style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--ink3);margin-top:4px">template: ${esc(b.template_nome)}</div>`:''}
+        </div>
+        <span class="bc-status ${esc(b.estado||'')}">${esc(b.estado||'?')}</span>
+      </div>
+      <div class="bc-card-meta">
+        cap diário: <strong>${b.cap_diario||'∞'}</strong> ·
+        janela: ${b.horario_inicio||'00:00'}–${b.horario_fim||'23:59'} ·
+        ${b.remetente_nome?'remetente: '+esc(b.remetente_nome):''}
+      </div>
+      <div class="bc-progress"><div class="bc-progress-bar" style="width:${pct}%"></div></div>
+      <div class="bc-stats">
+        <div class="bc-stat"><div class="bc-stat-k">Total</div><div class="bc-stat-v">${b.total_destinatarios||0}</div></div>
+        <div class="bc-stat"><div class="bc-stat-k">Enviados</div><div class="bc-stat-v" style="color:var(--emerald)">${b.total_enviados||0}</div></div>
+        <div class="bc-stat"><div class="bc-stat-k">Pendentes</div><div class="bc-stat-v" style="color:var(--gold-deep)">${b.pendentes||0}</div></div>
+        <div class="bc-stat"><div class="bc-stat-k">Falhas</div><div class="bc-stat-v" style="color:${b.total_falhas>0?'var(--red)':'var(--ink3)'}">${b.total_falhas||0}</div></div>
+      </div>
+      <div class="bc-card-actions">
+        ${b.estado==='em_execucao'||b.estado==='preparando'?`<button class="btn btn-ghost" onclick="pausarBc('${esc(b.id)}')">Pausar</button>`:''}
+        ${b.estado==='pausada'||b.estado==='pausado'?`<button class="btn btn-primary" onclick="retomarBc('${esc(b.id)}')">Retomar</button>`:''}
+        <button class="btn btn-ghost" onclick="verDetalhe('${esc(b.id)}','${esc(b.nome)}')">Detalhes</button>
+        ${b.proximo_envio_em?`<span style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink3);align-self:center">próximo: ${new Date(b.proximo_envio_em).toLocaleString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span>`:''}
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+async function loadHist(){
+  try{
+    const {data,error}=await sb().from('wa_broadcasts').select('*').in('status',['completed','concluido','failed']).order('completed_at',{ascending:false,nullsLast:true}).limit(20);
+    if(error)throw error;
+    document.getElementById('hist-count').textContent=(data||[]).length+' concluídos';
+    if(!data||!data.length){document.getElementById('bc-hist').innerHTML='<div class="empty">Sem histórico.</div>';return}
+    document.getElementById('bc-hist').innerHTML='<div class="bc-grid">'+data.map(b=>{
+      const tot=b.total_recipients||0,sent=b.sent_count||0,fail=b.failed_count||0;
+      const pct=tot?Math.round(100*sent/tot):0;
+      return `<div class="bc-card" style="opacity:.85">
+        <div class="bc-card-h">
+          <div class="bc-card-title">${esc(b.name||'(sem nome)')}</div>
+          <span class="bc-status concluido">${esc(b.status||'?')}</span>
+        </div>
+        <div class="bc-card-meta">${b.completed_at?new Date(b.completed_at).toLocaleString('pt-BR'):''} · taxa entrega: ${pct}%</div>
+        <div class="bc-stats">
+          <div class="bc-stat"><div class="bc-stat-k">Total</div><div class="bc-stat-v">${tot}</div></div>
+          <div class="bc-stat"><div class="bc-stat-k">Enviados</div><div class="bc-stat-v" style="color:var(--emerald)">${sent}</div></div>
+          <div class="bc-stat"><div class="bc-stat-k">Lidos</div><div class="bc-stat-v">${b.read_count||0}</div></div>
+          <div class="bc-stat"><div class="bc-stat-k">Falhas</div><div class="bc-stat-v" style="color:${fail>0?'var(--red)':'var(--ink3)'}">${fail}</div></div>
+        </div>
+      </div>`;
+    }).join('')+'</div>';
+  }catch(e){
+    document.getElementById('bc-hist').innerHTML=`<div class="empty" style="color:var(--red)">Erro: ${esc(e.message)}</div>`;
+  }
+}
+
+function abrirNovoBc(){
+  openDrawer('Novo broadcast',`
+    <p class="dr-sub">Defina o template, segmentação, cap diário e janela horária. O dispatcher respeita os limites.</p>
+    <form id="bc-form" class="dr-form">
+      <label><span class="dr-lab">Nome interno</span><input type="text" name="nome" required placeholder="ex: Boas-vindas Q1 2026"></label>
+      <label><span class="dr-lab">Template</span><select name="template_id">
+        <option value="">— mensagem livre (sem template aprovado) —</option>
+        ${_templates.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}${t.category?' · '+esc(t.category):''}</option>`).join('')}
+      </select></label>
+      <label><span class="dr-lab">Mensagem (use {{nome}}, {{empresa}})</span><textarea name="message" rows="4" placeholder="Olá, {{nome}}. Há uma sala que continua sua..."></textarea></label>
+      <label><span class="dr-lab">Segmento (jsonb — ex: {"tag":"raio-x","estagio":"agendado"})</span><textarea name="segment" rows="2" placeholder='{"tag":"raio-x"}'></textarea></label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <label><span class="dr-lab">Cap diário</span><input type="number" name="cap" value="50" min="1" max="500"></label>
+        <label><span class="dr-lab">Iniciar em</span><input type="datetime-local" name="scheduled"></label>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <label><span class="dr-lab">Início janela</span><input type="time" name="hi" value="09:00"></label>
+        <label><span class="dr-lab">Fim janela</span><input type="time" name="hf" value="18:00"></label>
+      </div>
+      <label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" name="confirma" required><span style="font-size:13px;color:var(--ink2)">Confirmo conteúdo + segmentação aprovados. Disparo será real.</span></label>
+      <div id="bc-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:11px 22px;margin-top:6px">Criar broadcast</button>
+    </form>
+  `,body=>{
+    body.querySelector('#bc-form').addEventListener('submit',async ev=>{
+      ev.preventDefault();const f=ev.target;const r=body.querySelector('#bc-result');r.innerHTML='<div class="dr-info">Criando…</div>';
+      try{
+        let seg=null;
+        if(f.segment.value.trim()){try{seg=JSON.parse(f.segment.value)}catch{throw new Error('Segment não é JSON válido')}}
+        const payload={
+          name:f.nome.value,
+          template_id:f.template_id.value||null,
+          message_content:f.message.value||null,
+          segment_filter:seg,
+          status:f.scheduled.value?'scheduled':'preparando',
+          scheduled_at:f.scheduled.value||null,
+          created_by:window.__IP_USER_EMAIL||null,
+          total_recipients:0,sent_count:0,failed_count:0,
+        };
+        const {error}=await sb().from('wa_broadcasts').insert(payload);
+        if(error)throw error;
+        r.innerHTML='<div class="dr-ok">✓ Broadcast criado. O dispatcher vai materializar destinatários conforme o segmento.</div>';
+        setTimeout(()=>{closeDrawer();loadAtivos()},1000);
+      }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+    });
+  });
+}
+
+async function pausarBc(id){
+  if(!confirm('Pausar este broadcast? Pode ser retomado depois.'))return;
+  try{const {error}=await sb().from('wa_broadcast').update({estado:'pausada'}).eq('id',id);if(error)throw error;toast('Pausado');loadAtivos()}catch(e){toast('Erro: '+e.message)}
+}
+async function retomarBc(id){
+  try{const {error}=await sb().from('wa_broadcast').update({estado:'em_execucao'}).eq('id',id);if(error)throw error;toast('Retomado');loadAtivos()}catch(e){toast('Erro: '+e.message)}
+}
+function verDetalhe(id,nome){
+  openDrawer('Detalhes · '+nome,'<div class="dr-info">Carregando histórico de envios…</div>',async body=>{
+    try{
+      const {data,error}=await sb().from('wa_messages').select('*').eq('broadcast_id',id).order('created_at',{ascending:false}).limit(100);
+      if(error)throw error;
+      if(!data||!data.length){body.innerHTML='<div class="dr-info">Sem mensagens enviadas ainda neste broadcast.</div>';return}
+      body.innerHTML=`<div class="dr-sub">${data.length} mensagens enviadas (top 100)</div>`+data.map(m=>{
+        const stCor={sent:'var(--ink3)',delivered:'var(--gold-deep)',read:'var(--emerald)',failed:'var(--red)'}[m.status]||'var(--ink3)';
+        return `<div style="padding:10px 12px;border-bottom:1px solid var(--border2);font-size:12px;display:flex;justify-content:space-between;gap:10px">
+          <div style="flex:1;min-width:0"><strong style="color:var(--navy);font-family:var(--mono)">${esc((m.contact_id||'').slice(0,8))}…</strong><div style="color:var(--ink2);margin-top:2px;line-height:1.4">${esc((m.content||'').slice(0,80))}</div></div>
+          <div style="text-align:right;flex-shrink:0">
+            <span style="font-family:var(--mono);font-size:10px;color:${stCor};letter-spacing:.1em;text-transform:uppercase">${esc(m.status||'?')}</span>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:2px">${m.created_at?new Date(m.created_at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):''}</div>
+          </div>
+        </div>`;
+      }).join('');
+    }catch(e){body.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+</script>
+
+</body>
+</html>

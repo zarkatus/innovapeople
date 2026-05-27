@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sequências WhatsApp · InnovaPeople</title>
+<meta name="robots" content="noindex,nofollow">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script>
+(function ipAuthGate(){
+  const SUPA_URL='https://auth.innovasphere.ia.br';
+  const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br'];
+  function inj(){if(document.getElementById('ip-auth-ovl'))return;const o=document.createElement('div');o.id='ip-auth-ovl';o.style.cssText='position:fixed;inset:0;background:#0A1628;color:#3DA882;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647';o.innerHTML='<div>Validando acesso…</div>';(document.body||document.documentElement).appendChild(o)}
+  function rm(){const o=document.getElementById('ip-auth-ovl');if(o)o.remove()}
+  function allow(email){rm();window.__IP_USER_EMAIL=email;const el=document.getElementById('user-display');if(el&&email)el.textContent=email;if(typeof window.seqBoot==='function')try{window.seqBoot()}catch(e){}else setTimeout(()=>{if(typeof window.seqBoot==='function')try{window.seqBoot()}catch(e){}},300)}
+  if(document.body)inj();else document.addEventListener('DOMContentLoaded',inj,{once:true});
+  const s=setTimeout(()=>allow(''),6000);
+  (async()=>{try{if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=sequencias');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
+})();
+</script>
+
+<link rel="icon" href="/sistema/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0A1628;--navy2:#0F1D32;
+  --cream:#F5F0E8;--cream2:#EFE9DD;--white:#FBFAF7;
+  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#A88440;--gold-soft:#E6D9B5;
+  --emerald:#2E8B6E;--ink:#1A1A1A;--ink2:#3A3F47;--ink3:#6B7280;--ink4:#9CA3AF;
+  --border:rgba(10,22,40,.08);--border2:rgba(10,22,40,.04);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Outfit',-apple-system,Segoe UI,sans-serif;
+  --mono:'JetBrains Mono',Menlo,monospace;
+  --red:#9B2C2C;--amber:#A86A1F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+em{font-style:italic}
+
+.hdr{height:64px;background:rgba(245,240,232,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;position:sticky;top:0;z-index:50}
+.hdr-inner{width:100%;display:flex;align-items:center;gap:28px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:17px;font-style:italic}
+.brand .name{font-size:17px;color:var(--navy);letter-spacing:.04em}
+.brand .name em{color:var(--gold-deep);font-weight:500}
+.brand .sub{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink3);margin-left:8px;font-family:var(--mono)}
+.nav{display:flex;gap:22px;flex:1;justify-content:center;font-size:13px;letter-spacing:.06em}
+.nav a{color:var(--ink2)}
+.nav a:hover,.nav a.active{color:var(--navy)}
+.nav a.active{font-weight:500}
+.usr{font-family:var(--mono);font-size:12px;color:var(--ink3);display:flex;gap:12px;align-items:center}
+
+.hero{padding:48px 32px 28px;background:linear-gradient(180deg,var(--cream),var(--cream2));border-bottom:1px solid var(--border)}
+.hero-inner{max-width:1280px;margin:0 auto}
+.hero h1{font-family:var(--serif);font-size:44px;font-weight:300;line-height:1.06;color:var(--navy);margin-bottom:12px}
+.hero h1 em{color:var(--gold-deep);font-weight:400}
+.hero .lede{font-size:15px;color:var(--ink2);max-width:680px;line-height:1.6;font-weight:300}
+.hero .crumb{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px}
+.hero .crumb a{color:var(--gold-deep)}
+
+.main{max-width:1280px;margin:0 auto;padding:38px 32px 80px}
+
+.section{margin-bottom:48px}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.section-h h2{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--navy)}
+.section-h h2 em{color:var(--gold-deep);font-style:italic}
+.section-h button.add{padding:9px 18px;background:var(--navy);color:var(--cream);border-radius:6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border:none;font-family:inherit}
+.section-h button.add:hover{background:var(--navy2)}
+
+.seq-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:18px}
+.seq-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:22px;transition:all .25s}
+.seq-card:hover{border-color:rgba(10,22,40,.18);box-shadow:0 8px 24px rgba(10,22,40,.06)}
+.seq-card-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
+.seq-card-title{font-family:var(--serif);font-size:22px;color:var(--navy);font-weight:500;line-height:1.15}
+.seq-card-trigger{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);background:rgba(196,163,90,.1);padding:3px 10px;border-radius:10px;white-space:nowrap}
+.seq-card-meta{font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.04em;margin-bottom:14px}
+.seq-card-stages{display:flex;flex-direction:column;gap:4px;padding:10px 0;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border);margin-bottom:14px}
+.stage-row{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink2);padding:4px 0}
+.stage-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--gold-soft);color:var(--navy);font-family:var(--mono);font-size:11px;font-weight:500;flex-shrink:0}
+.stage-txt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stage-delay{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.04em}
+.seq-card-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat{text-align:center;padding:8px 4px;background:var(--cream2);border-radius:4px}
+.stat-k{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px}
+.stat-v{font-family:var(--serif);font-size:20px;color:var(--navy);font-weight:500}
+.seq-card-actions{display:flex;gap:6px}
+.btn{padding:7px 14px;border-radius:4px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;transition:all .2s;border:1px solid transparent;cursor:pointer;font-family:inherit}
+.btn-primary{background:var(--navy);color:var(--cream)}
+.btn-primary:hover{background:var(--navy2)}
+.btn-ghost{border:1px solid var(--border);color:var(--ink2)}
+.btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
+.toggle{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:rgba(46,139,110,.1);color:var(--emerald);font-family:var(--mono);font-weight:500}
+.toggle.off{background:rgba(155,44,44,.08);color:var(--red)}
+
+.empty{padding:48px;text-align:center;color:var(--ink3);font-family:var(--serif);font-size:20px;font-style:italic;background:var(--white);border-radius:8px}
+
+.dt{width:100%;border-collapse:collapse;font-size:12px;background:var(--white);border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.dt th{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);font-weight:500;background:var(--cream2)}
+.dt td{padding:11px 14px;border-bottom:1px solid var(--border2);color:var(--ink2)}
+.dt tr:last-child td{border-bottom:none}
+
+/* DRAWER */
+.dr-ovl{position:fixed;inset:0;background:rgba(10,22,40,.5);backdrop-filter:blur(4px);z-index:9000;opacity:0;pointer-events:none;transition:opacity .3s}
+.dr-ovl.on{opacity:1;pointer-events:auto}
+.dr{position:fixed;top:0;right:0;height:100vh;width:600px;max-width:96vw;background:var(--white);box-shadow:-16px 0 40px rgba(10,22,40,.22);z-index:9001;transform:translateX(100%);transition:transform .35s cubic-bezier(.34,1.4,.64,1);display:flex;flex-direction:column}
+.dr.on{transform:translateX(0)}
+.dr-h{padding:22px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--cream)}
+.dr-h h3{font-family:var(--serif);font-size:24px;color:var(--navy);font-weight:500}
+.dr-x{font-size:26px;color:var(--ink3);padding:4px 12px;border-radius:4px;background:none;border:none}
+.dr-x:hover{background:rgba(0,0,0,.06);color:var(--navy)}
+.dr-body{flex:1;overflow-y:auto;padding:24px 28px}
+.dr-sub{font-style:italic;font-family:var(--serif);font-size:17px;color:var(--ink2);margin-bottom:22px;line-height:1.5}
+.dr-form{display:flex;flex-direction:column;gap:14px}
+.dr-form label{display:flex;flex-direction:column;gap:5px}
+.dr-form input,.dr-form textarea,.dr-form select{padding:10px 12px;border:1px solid var(--border);border-radius:4px;font:inherit;font-size:13px;background:var(--white)}
+.dr-lab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500}
+.dr-ok{padding:12px 14px;background:rgba(46,139,110,.1);border-radius:4px;font-size:13px;color:var(--emerald)}
+.dr-err{padding:12px 14px;background:rgba(155,44,44,.08);border-radius:4px;font-size:13px;color:var(--red)}
+.dr-info{padding:12px 14px;background:rgba(196,163,90,.08);border-radius:4px;font-size:13px;color:var(--ink2);font-style:italic}
+.dr-code{font-family:var(--mono);font-size:11px;color:var(--gold-deep);background:rgba(196,163,90,.08);padding:1px 6px;border-radius:3px;font-style:normal}
+
+.stage-editor{border:1px solid var(--border);border-radius:6px;padding:12px;margin-bottom:10px;background:var(--cream2)}
+.stage-editor-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+.stage-editor-h button.rm{color:var(--red);background:none;border:none;cursor:pointer;font-size:10px;letter-spacing:.1em}
+.stage-editor textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:3px;font:inherit;font-size:12px;background:var(--white);min-height:60px;resize:vertical}
+.stage-editor-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.stage-editor-row input,.stage-editor-row select{padding:6px 8px;border:1px solid var(--border);border-radius:3px;font:inherit;font-size:11px;background:var(--white)}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:11px 22px;background:var(--navy);color:var(--cream);border-radius:6px;font-size:12px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.on{opacity:1}
+
+@media(max-width:720px){.hero h1{font-size:30px}.seq-grid{grid-template-columns:1fr}.dr{width:100vw}}
+</style>
+</head>
+
+<body>
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <a href="/sistema/" class="brand">
+      <div class="mark">i</div>
+      <span class="name">Innova<em>People</em></span>
+      <span class="sub">Sequências</span>
+    </a>
+    <nav class="nav">
+      <a href="/sistema/">Visão geral</a>
+      <a href="/sistema/agentes.html">Agentes</a>
+      <a href="/sistema/chro/">Curadoria</a>
+      <a href="/sistema/bastidores/">Bastidores</a>
+      <a href="/sistema/whatsapp/" class="active">WhatsApp</a>
+    </nav>
+    <div class="usr"><span id="user-display">—</span><a href="/sistema/" style="padding:6px 14px;border:1px solid var(--border);border-radius:18px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)">Sair</a></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="crumb"><a href="/sistema/whatsapp/">WhatsApp</a> · Sequências</div>
+    <h1>Jornadas <em>automatizadas.</em></h1>
+    <p class="lede">
+      Fluxos de mensagens disparados por evento: cadastro no Raio-X, novo mandato, decisão registrada, conversão.
+      Cada etapa com seu delay próprio — a casa fala no ritmo do interlocutor.
+    </p>
+  </div>
+</section>
+
+<main class="main">
+
+  <div class="section">
+    <div class="section-h">
+      <h2>Sequências <em>cadastradas</em></h2>
+      <button class="add" onclick="abrirNovaSeq()">+ Nova sequência</button>
+    </div>
+    <div id="seq-list">
+      <div class="empty">Carregando…</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-h">
+      <h2>Execuções <em>em curso</em></h2>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.1em" id="exec-count">—</span>
+    </div>
+    <div id="exec-list">
+      <div class="empty">Carregando…</div>
+    </div>
+  </div>
+
+</main>
+
+<div class="dr-ovl" id="dr-ovl" onclick="closeDrawer()"></div>
+<div class="dr" id="dr">
+  <div class="dr-h"><h3 id="dr-title">—</h3><button class="dr-x" onclick="closeDrawer()">×</button></div>
+  <div class="dr-body" id="dr-body"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const sb=()=>window.__IP_SB;
+const esc=s=>{if(s==null)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML};
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2400)}
+function openDrawer(title,html,init){
+  document.getElementById('dr-title').textContent=title;
+  document.getElementById('dr-body').innerHTML=html;
+  document.getElementById('dr-ovl').classList.add('on');
+  document.getElementById('dr').classList.add('on');
+  setTimeout(()=>{if(typeof init==='function')try{init(document.getElementById('dr-body'))}catch(e){}},10);
+}
+function closeDrawer(){document.getElementById('dr-ovl').classList.remove('on');document.getElementById('dr').classList.remove('on')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+
+let _state={sequencias:[],execucoes:[]};
+
+async function seqBoot(){
+  if(!sb())return;
+  await Promise.all([loadSeq(),loadExec()]);
+}
+window.seqBoot=seqBoot;
+
+async function loadSeq(){
+  try{
+    const {data,error}=await sb().from('wa_sequencia').select('*').order('atualizado_em',{ascending:false}).limit(50);
+    if(error)throw error;
+    _state.sequencias=data||[];
+    renderSeq();
+  }catch(e){
+    document.getElementById('seq-list').innerHTML=`<div class="empty" style="color:var(--red)">Erro: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderSeq(){
+  const list=document.getElementById('seq-list');
+  if(!_state.sequencias.length){
+    list.innerHTML='<div class="empty">Nenhuma sequência cadastrada. Comece pela mais óbvia: "boas-vindas pós-Raio-X".</div>';
+    return;
+  }
+  list.innerHTML='<div class="seq-grid">'+_state.sequencias.map(s=>{
+    const etapas=Array.isArray(s.etapas)?s.etapas:[];
+    return `<div class="seq-card">
+      <div class="seq-card-h">
+        <div class="seq-card-title">${esc(s.nome)}</div>
+        <span class="seq-card-trigger">${esc(s.trigger_evento||'manual')}</span>
+      </div>
+      <div class="seq-card-meta">
+        <span class="toggle${s.ativo?'':' off'}">${s.ativo?'ativa':'pausada'}</span>
+        · ${etapas.length} etapas
+        · atualizada ${s.atualizado_em?new Date(s.atualizado_em).toLocaleDateString('pt-BR'):'—'}
+      </div>
+      <div class="seq-card-stages">
+        ${etapas.length?etapas.slice(0,5).map((e,i)=>`<div class="stage-row">
+          <span class="stage-num">${i+1}</span>
+          <span class="stage-txt">${esc((e.texto||e.template||e.mensagem||'(etapa)').slice(0,60))}</span>
+          <span class="stage-delay">${e.delay_h?'+'+e.delay_h+'h':e.delay_min?'+'+e.delay_min+'min':e.delay?'+'+e.delay:'imediato'}</span>
+        </div>`).join(''):'<div style="color:var(--ink3);font-style:italic;font-size:12px;padding:6px">Sem etapas — adicione pelo editor</div>'}
+        ${etapas.length>5?`<div style="font-family:var(--mono);font-size:10px;color:var(--ink3);text-align:center;padding:4px">+${etapas.length-5} etapas</div>`:''}
+      </div>
+      <div class="seq-card-actions">
+        <button class="btn btn-primary" onclick="editarSeq('${esc(s.id)}')">Editar</button>
+        <button class="btn btn-ghost" onclick="toggleSeq('${esc(s.id)}',${!s.ativo})">${s.ativo?'Pausar':'Ativar'}</button>
+        <button class="btn btn-ghost" onclick="dispararSeq('${esc(s.id)}','${esc(s.nome)}')">Disparar manual</button>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+async function loadExec(){
+  try{
+    const {data,error}=await sb().from('wa_sequencia_execucao').select('*, wa_sequencia(nome)').neq('estado','concluida').order('iniciado_em',{ascending:false}).limit(30);
+    if(error)throw error;
+    _state.execucoes=data||[];
+    renderExec();
+  }catch(e){
+    document.getElementById('exec-list').innerHTML=`<div class="empty" style="color:var(--red)">Erro: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderExec(){
+  document.getElementById('exec-count').textContent=_state.execucoes.length+' em curso';
+  const list=document.getElementById('exec-list');
+  if(!_state.execucoes.length){
+    list.innerHTML='<div class="empty">Nenhuma execução em andamento. Dispare manualmente um teste.</div>';
+    return;
+  }
+  list.innerHTML=`<table class="dt">
+    <thead><tr><th>Sequência</th><th>Candidato</th><th>Etapa</th><th>Estado</th><th>Próximo envio</th></tr></thead>
+    <tbody>${_state.execucoes.map(e=>`<tr>
+      <td><strong style="color:var(--navy)">${esc(e.wa_sequencia?.nome||'(sem nome)')}</strong></td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--ink3)">${esc((e.candidato_id||'').slice(0,8))}…</td>
+      <td style="font-family:var(--mono)">${e.etapa_atual||0}</td>
+      <td><span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:10px;background:rgba(196,163,90,.1);color:var(--gold-deep)">${esc(e.estado||'?')}</span></td>
+      <td style="font-family:var(--mono);font-size:11px">${e.proxima_etapa_em?new Date(e.proxima_etapa_em).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—'}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+// ============================================================
+// EDITOR DE SEQUÊNCIA
+// ============================================================
+let _editing=null;
+
+function abrirNovaSeq(){
+  _editing={nome:'',trigger_evento:'manual',etapas:[],ativo:true};
+  renderEditor();
+}
+function editarSeq(id){
+  const s=_state.sequencias.find(x=>x.id===id);if(!s)return;
+  _editing={...s,etapas:Array.isArray(s.etapas)?[...s.etapas]:[]};
+  renderEditor();
+}
+
+function renderEditor(){
+  const e=_editing;
+  const triggers=['manual','raio_x_submetido','mandato_criado','decisao_critica','sugestao_aplicada','pulso_disparado','onboarding'];
+  openDrawer(e.id?'Editar sequência':'Nova sequência',`
+    <p class="dr-sub">Cada etapa envia uma mensagem. O delay é contado a partir da etapa anterior.</p>
+    <form id="ed-form" class="dr-form">
+      <label><span class="dr-lab">Nome interno</span><input type="text" name="nome" required value="${esc(e.nome||'')}" placeholder="ex: Boas-vindas pós-Raio-X"></label>
+      <label><span class="dr-lab">Evento que dispara</span><select name="trigger">${triggers.map(t=>`<option value="${t}" ${e.trigger_evento===t?'selected':''}>${t}</option>`).join('')}</select></label>
+      <label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" name="ativo" ${e.ativo?'checked':''}><span style="font-size:13px;color:var(--ink2)">Ativa (executa quando o evento dispara)</span></label>
+
+      <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span class="dr-lab">Etapas (${e.etapas.length})</span>
+          <button type="button" onclick="addEtapa()" class="btn btn-ghost" style="padding:5px 12px">+ Etapa</button>
+        </div>
+        <div id="etapas-list">${renderEtapas()}</div>
+      </div>
+
+      <div id="ed-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:12px 22px;margin-top:8px">${e.id?'Salvar alterações':'Criar sequência'}</button>
+    </form>
+  `,body=>{
+    body.querySelector('#ed-form').addEventListener('submit',salvarSeq);
+  });
+}
+
+function renderEtapas(){
+  if(!_editing.etapas.length)return'<div style="color:var(--ink3);font-style:italic;font-size:13px;padding:10px;font-family:var(--serif);font-size:15px">Sem etapas. Adicione a primeira.</div>';
+  return _editing.etapas.map((et,i)=>`<div class="stage-editor">
+    <div class="stage-editor-h"><span>Etapa ${i+1}</span><button type="button" class="rm" onclick="rmEtapa(${i})">Remover</button></div>
+    <textarea placeholder="Texto da mensagem (use {{nome}}, {{empresa}} para variáveis)" oninput="updEtapa(${i},'texto',this.value)">${esc(et.texto||et.template||et.mensagem||'')}</textarea>
+    <div class="stage-editor-row">
+      <input type="number" placeholder="Delay (horas)" value="${et.delay_h||''}" oninput="updEtapa(${i},'delay_h',this.value?+this.value:null)" min="0" step="0.5">
+      <select onchange="updEtapa(${i},'tipo',this.value)">
+        <option value="text" ${et.tipo==='text'||!et.tipo?'selected':''}>texto</option>
+        <option value="template" ${et.tipo==='template'?'selected':''}>template aprovado</option>
+        <option value="imagem" ${et.tipo==='imagem'?'selected':''}>imagem + texto</option>
+      </select>
+    </div>
+  </div>`).join('');
+}
+
+function addEtapa(){
+  _editing.etapas.push({texto:'',delay_h:24,tipo:'text'});
+  document.getElementById('etapas-list').innerHTML=renderEtapas();
+}
+function rmEtapa(i){
+  _editing.etapas.splice(i,1);
+  document.getElementById('etapas-list').innerHTML=renderEtapas();
+}
+function updEtapa(i,k,v){
+  if(!_editing.etapas[i])return;
+  _editing.etapas[i][k]=v;
+}
+
+async function salvarSeq(ev){
+  ev.preventDefault();const f=ev.target;
+  const r=document.getElementById('ed-result');
+  r.innerHTML='<div class="dr-info">Salvando…</div>';
+  const payload={
+    nome:f.nome.value,
+    trigger_evento:f.trigger.value,
+    etapas:_editing.etapas,
+    ativo:f.ativo.checked,
+  };
+  try{
+    let res;
+    if(_editing.id){
+      res=await sb().from('wa_sequencia').update(payload).eq('id',_editing.id);
+    }else{
+      res=await sb().from('wa_sequencia').insert(payload);
+    }
+    if(res.error)throw res.error;
+    r.innerHTML='<div class="dr-ok">✓ Sequência salva.</div>';
+    setTimeout(()=>{closeDrawer();loadSeq()},800);
+  }catch(e){
+    r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>';
+  }
+}
+
+async function toggleSeq(id,novoEstado){
+  try{
+    const {error}=await sb().from('wa_sequencia').update({ativo:novoEstado}).eq('id',id);
+    if(error)throw error;
+    toast(novoEstado?'Sequência ativada':'Sequência pausada');
+    loadSeq();
+  }catch(e){toast('Erro: '+e.message)}
+}
+
+async function dispararSeq(id,nome){
+  const candId=prompt('Disparar a sequência "'+nome+'" para qual candidato/contato?\n\nCole o UUID do candidato ou contato:');
+  if(!candId)return;
+  try{
+    const {error}=await sb().from('wa_sequencia_execucao').insert({
+      sequencia_id:id,
+      candidato_id:candId.trim(),
+      iniciado_em:new Date().toISOString(),
+      etapa_atual:0,
+      proxima_etapa_em:new Date().toISOString(),
+      estado:'em_curso',
+    });
+    if(error)throw error;
+    toast('Disparada — primeira etapa enfileirada');
+    loadExec();
+  }catch(e){toast('Erro: '+e.message)}
+}
+</script>
+
+</body>
+</html>

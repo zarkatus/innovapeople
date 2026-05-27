@@ -245,6 +245,10 @@ input,textarea,select{font:inherit}
     <div class="left-h">
       <h2>Conversas <em>vivas</em></h2>
       <div class="sub" id="conv-count">— em curso</div>
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+        <a href="/sistema/whatsapp/sequencias/" style="padding:5px 10px;border:1px solid var(--gold);border-radius:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep);font-family:var(--mono)">Sequências</a>
+        <a href="/sistema/whatsapp/broadcast/" style="padding:5px 10px;border:1px solid var(--gold);border-radius:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep);font-family:var(--mono)">Broadcast</a>
+      </div>
     </div>
     <div class="search-box">
       <input type="text" class="search-input" id="search-input" placeholder="Buscar nome ou número…">
@@ -438,8 +442,10 @@ function renderThread(){
       <div class="ph">${esc(numero)}</div>
     </div>
     <div class="thread-actions">
-      <button class="thread-act" onclick="refreshThread()">Atualizar</button>
-      <button class="thread-act" onclick="alert('Em breve: arquivar e atribuir')">Arquivar</button>
+      <button class="thread-act" id="estado-btn" onclick="toggleEstado()">${esc(c?.conversa_estado||'aberta')}</button>
+      <button class="thread-act" id="assign-btn" onclick="abrirAssign()">${cv_assign(c)}</button>
+      <button class="thread-act" onclick="refreshThread()">↻</button>
+      <button class="thread-act" onclick="arquivarConversa()">Arquivar</button>
     </div>
   </div>
   <div class="thread" id="thread-list">`;
@@ -665,12 +671,10 @@ function renderPerfil(){
     ${ct.last_message_at?`<div class="profile-field"><span class="k">Última atividade</span><span class="v">${new Date(ct.last_message_at).toLocaleDateString('pt-BR')}</span></div>`:''}
   </div>`;
 
-  if(tags.length){
-    html+=`<div class="profile-sec">
-      <div class="profile-sec-h">Tags</div>
-      <div class="profile-tags">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
-    </div>`;
-  }
+  html+=`<div class="profile-sec">
+    <div class="profile-sec-h" style="display:flex;justify-content:space-between;align-items:center">Tags <button onclick="editarTags()" style="background:none;border:none;color:var(--gold-deep);font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-family:var(--mono)">${tags.length?'Editar':'+ Adicionar'}</button></div>
+    <div class="profile-tags">${tags.length?tags.map(t=>`<span class="tag">${esc(t)}</span>`).join(''):'<span style="color:var(--ink3);font-style:italic;font-size:12px;font-family:var(--serif)">Sem tags</span>'}</div>
+  </div>`;
 
   html+=`<div class="profile-sec">
     <div class="profile-sec-h">Vinculação</div>
@@ -688,6 +692,81 @@ function renderPerfil(){
   </div>`;
 
   document.getElementById('right').innerHTML=html;
+}
+
+// ============================================================
+// BLOCO A — ATRIBUIR / HANDOVER / TAGS / ARQUIVAR
+// ============================================================
+function cv_assign(c){
+  if(!c)return'—';
+  const a=c._assigned||c.assigned_to;
+  if(!a)return'Sem dono';
+  if(a===window.__IP_USER_EMAIL)return'Eu';
+  return a.split('@')[0].slice(0,12);
+}
+
+const ESTADO_CICLO={aberta:'em_curadoria',em_curadoria:'bot',bot:'aberta',arquivada:'aberta'};
+async function toggleEstado(){
+  if(!_state.convId)return;
+  const c=_state.conversas.find(x=>x.conversa_id===_state.convId);
+  const atual=c?.conversa_estado||c?.status||'aberta';
+  const novo=ESTADO_CICLO[atual]||'aberta';
+  try{
+    const {error}=await sb().from('wa_conversations').update({status:novo}).eq('id',_state.convId);
+    if(error)throw error;
+    if(c){c.conversa_estado=novo;c.status=novo}
+    toast('Estado → '+novo);
+    renderThread();
+    renderPerfil();
+  }catch(e){toast('Erro: '+e.message)}
+}
+
+async function abrirAssign(){
+  const c=_state.conversas.find(x=>x.conversa_id===_state.convId);if(!c)return;
+  // Dropdown inline simples
+  const opts=[
+    {v:'raphael@schifino.com.br',l:'Raphael'},
+    {v:'gleice@schifino.com.br',l:'Gleice'},
+    {v:'',l:'Sem dono (devolver à fila)'},
+  ];
+  const escolha=prompt('Atribuir conversa a:\n\n1 · Raphael\n2 · Gleice\n3 · Sem dono\n\nDigite 1, 2 ou 3:');
+  if(!escolha||!['1','2','3'].includes(escolha.trim()))return;
+  const sel=opts[+escolha.trim()-1];
+  try{
+    const {error}=await sb().from('wa_conversations').update({assigned_to:sel.v||null}).eq('id',_state.convId);
+    if(error)throw error;
+    c._assigned=sel.v;c.assigned_to=sel.v;
+    toast('Atribuída → '+sel.l);
+    renderThread();renderPerfil();
+  }catch(e){toast('Erro: '+e.message)}
+}
+
+async function arquivarConversa(){
+  if(!confirm('Arquivar esta conversa? Pode ser reaberta depois.'))return;
+  try{
+    const {error}=await sb().from('wa_conversations').update({status:'arquivada'}).eq('id',_state.convId);
+    if(error)throw error;
+    toast('Conversa arquivada');
+    _state.convId=null;
+    document.getElementById('app').classList.remove('show-thread');
+    document.getElementById('center').innerHTML=`<div class="center-empty"><div class="ico">i</div><h3>Conversa arquivada</h3><p>Reabra pelo filtro "Todas" se precisar.</p></div>`;
+    loadConversas();
+  }catch(e){toast('Erro: '+e.message)}
+}
+
+async function editarTags(){
+  const p=_state.perfil;if(!p?.contato?.id)return;
+  const atuais=Array.isArray(p.contato.tags)?p.contato.tags:(p.contato.tags?Object.values(p.contato.tags):[]);
+  const novo=prompt('Tags da conversa (separadas por vírgula):',atuais.join(', '));
+  if(novo===null)return;
+  const lista=novo.split(',').map(s=>s.trim()).filter(Boolean);
+  try{
+    const {error}=await sb().from('wa_contacts').update({tags:lista}).eq('id',p.contato.id);
+    if(error)throw error;
+    p.contato.tags=lista;
+    toast('Tags atualizadas');
+    renderPerfil();
+  }catch(e){toast('Erro: '+e.message)}
 }
 
 async function abrirAuditoria(convId){

@@ -239,9 +239,13 @@ em{font-style:italic}
     </div>
 
     <div class="card">
-      <div class="card-head"><div><div class="card-title">WhatsApp · Inbox</div><div class="card-promise">Sala completa de conversas — Aman/JHSF, com perfil 360 e auditoria forense.</div></div><span class="status st-live">Operacional</span></div>
-      <div class="card-body">Reusa tabelas <code class="dr-code">wa_contacts</code> · <code class="dr-code">wa_conversations</code> · <code class="dr-code">wa_messages</code> · <code class="dr-code">wa_templates</code> · <code class="dr-code">wa_audit_log</code> (hash chain) da InnovaSphere. Realtime ativo.</div>
-      <div class="card-actions"><a href="/sistema/whatsapp/" class="btn btn-primary">Abrir Inbox</a><button class="btn btn-ghost" onclick="openWaSend()">Envio rápido</button></div>
+      <div class="card-head"><div><div class="card-title">WhatsApp · Inbox</div><div class="card-promise">Conversas, sequências e broadcast — Aman/JHSF, perfil 360, auditoria forense.</div></div><span class="status st-live">Operacional</span></div>
+      <div class="card-body">Reusa o backbone <code class="dr-code">wa_*</code> da InnovaSphere (contatos, conversas, mensagens, templates, sequências, broadcast, audit hash chain). Realtime ativo.</div>
+      <div class="card-actions" style="flex-wrap:wrap;gap:6px">
+        <a href="/sistema/whatsapp/" class="btn btn-primary">Inbox</a>
+        <a href="/sistema/whatsapp/sequencias/" class="btn btn-ghost">Sequências</a>
+        <a href="/sistema/whatsapp/broadcast/" class="btn btn-ghost">Broadcast</a>
+      </div>
     </div>
 
     <div class="card">
