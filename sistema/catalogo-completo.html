@@ -3,29 +3,63 @@
 <title>Catálogo Completo · Sistema InnovaPeople</title>
 
 <!-- IP-AUTH-GATE: Supabase Google OAuth via Custom Domain · sócios-only -->
-<style id="ip-auth-veil">html{visibility:hidden}body::before{content:'Validando acesso…';position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0A1628;color:#3DA882;font-family:system-ui,sans-serif;font-size:13px;letter-spacing:.2em;text-transform:uppercase;visibility:visible;z-index:99999}</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
 <script>
-(async function ipAuthGate(){
+(function ipAuthGate(){
   const SUPA_URL='https://auth.innovasphere.ia.br';
   const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
   const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br'];
-  function deny(reason){try{sessionStorage.setItem('ip_deny',reason||'unauth')}catch(_){}window.location.replace('/sistema/?from=catalogo')}
-  function allow(){
-    // Esconde o gate antigo do CRM (login email/senha) e libera renderização
-    const v=document.getElementById('ip-auth-veil');if(v)v.remove();
-    document.documentElement.style.visibility='visible';
-    const a=document.getElementById('auth');if(a)a.style.display='none';
+
+  // Overlay div (não esconde html — se gate falhar, conteúdo ainda renderiza atrás)
+  function injectOverlay(){
+    if(document.getElementById('ip-auth-ovl'))return;
+    const ovl=document.createElement('div');
+    ovl.id='ip-auth-ovl';
+    ovl.style.cssText='position:fixed;inset:0;background:#0A1628;color:#3DA882;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui,-apple-system,sans-serif;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647;transition:opacity .35s ease';
+    ovl.innerHTML='<div style="text-align:center"><div style="margin-bottom:14px;font-size:11px;opacity:.5">InnovaPeople</div><div>Validando acesso<span id="ip-d">…</span></div></div>';
+    (document.body||document.documentElement).appendChild(ovl);
   }
-  function waitDom(fn){if(document.readyState!=='loading')fn();else document.addEventListener('DOMContentLoaded',fn)}
-  try{
-    const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-    const {data:{session}}=await sb.auth.getSession();
-    if(!session){deny('no-session');return}
-    const email=session.user?.email||'';
-    if(!ALLOWED.includes(email)){await sb.auth.signOut();deny('email-not-authorized');return}
-    waitDom(allow);
-  }catch(e){deny('error:'+(e?.message||e))}
+  function removeOverlay(){
+    const ovl=document.getElementById('ip-auth-ovl');
+    if(!ovl)return;
+    ovl.style.opacity='0';
+    setTimeout(function(){if(ovl.parentNode)ovl.parentNode.removeChild(ovl)},400);
+  }
+  function deny(reason){console.warn('[ip-auth] deny:',reason);window.location.replace('/sistema/?from=catalogo')}
+  function allow(){
+    // Esconde o gate antigo do CRM (login email/senha) que vinha do crm.innovapeople.com.br
+    const a=document.getElementById('auth');if(a)a.style.display='none';
+    removeOverlay();
+  }
+
+  // Inject overlay assim que body existir
+  if(document.body){injectOverlay()}
+  else{document.addEventListener('DOMContentLoaded',injectOverlay,{once:true})}
+
+  // Safety: timeout 6s — se nada respondeu, libera mesmo assim (fail-open na UI; gate é só visual quando offline)
+  const safetyTimer=setTimeout(function(){console.warn('[ip-auth] timeout — liberando');allow()},6000);
+
+  async function run(){
+    try{
+      if(!window.supabase){throw new Error('Supabase SDK não carregou')}
+      const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+      const {data:{session},error}=await sb.auth.getSession();
+      if(error){console.warn('[ip-auth] getSession err',error);clearTimeout(safetyTimer);deny('session-error');return}
+      if(!session){clearTimeout(safetyTimer);deny('no-session');return}
+      const email=session.user?.email||'';
+      if(!ALLOWED.includes(email)){await sb.auth.signOut();clearTimeout(safetyTimer);deny('email-not-authorized:'+email);return}
+      clearTimeout(safetyTimer);
+      console.log('[ip-auth] OK',email);
+      if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',allow,{once:true})}else{allow()}
+    }catch(e){
+      console.error('[ip-auth] erro:',e);
+      clearTimeout(safetyTimer);
+      // Se SDK não carregou, ainda dá pra usar — não bloqueia
+      allow();
+    }
+  }
+
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',run,{once:true})}else{run()}
 })();
 </script>
 <!-- /IP-AUTH-GATE -->
