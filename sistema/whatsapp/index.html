@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WhatsApp · InnovaPeople</title>
+<meta name="robots" content="noindex,nofollow">
+
+<!-- IP-AUTH-GATE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script>
+(function ipAuthGate(){
+  const SUPA_URL='https://auth.innovasphere.ia.br';
+  const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br'];
+  function injectOverlay(){
+    if(document.getElementById('ip-auth-ovl'))return;
+    const ovl=document.createElement('div');ovl.id='ip-auth-ovl';
+    ovl.style.cssText='position:fixed;inset:0;background:#0A1628;color:#3DA882;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647;transition:opacity .35s';
+    ovl.innerHTML='<div style="text-align:center"><div style="margin-bottom:14px;font-size:11px;opacity:.5">InnovaPeople</div><div>Validando acesso<span>…</span></div></div>';
+    (document.body||document.documentElement).appendChild(ovl);
+  }
+  function removeOverlay(){const o=document.getElementById('ip-auth-ovl');if(!o)return;o.style.opacity='0';setTimeout(()=>{if(o.parentNode)o.parentNode.removeChild(o)},400)}
+  function deny(r){location.replace('/sistema/?from=whatsapp')}
+  function allow(email){
+    removeOverlay();
+    window.__IP_USER_EMAIL=email||'';
+    const el=document.getElementById('user-display');if(el&&email)el.textContent=email;
+    if(typeof window.waBoot==='function'){try{window.waBoot()}catch(e){console.warn(e)}}
+    else{setTimeout(()=>{if(typeof window.waBoot==='function'){try{window.waBoot()}catch(e){}}},300)}
+  }
+  if(document.body){injectOverlay()}else{document.addEventListener('DOMContentLoaded',injectOverlay,{once:true})}
+  const safety=setTimeout(()=>{allow('')},6000);
+  (async function run(){
+    try{
+      if(!window.supabase)throw new Error('SDK não carregou');
+      const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+      window.__IP_SB=sb;
+      const {data:{session},error}=await sb.auth.getSession();
+      if(error){clearTimeout(safety);deny('session-error');return}
+      if(!session){clearTimeout(safety);deny('no-session');return}
+      const email=session.user?.email||'';
+      if(!ALLOWED.includes(email)){await sb.auth.signOut();clearTimeout(safety);deny('email-not-authorized');return}
+      clearTimeout(safety);
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email);
+    }catch(e){clearTimeout(safety);allow('')}
+  })();
+})();
+</script>
+
+<link rel="icon" href="/sistema/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0A1628;--navy2:#0F1D32;--navy3:#152740;
+  --cream:#F5F0E8;--cream2:#EFE9DD;--cream3:#E8E2D3;--white:#FBFAF7;
+  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#A88440;--gold-soft:#E6D9B5;
+  --emerald:#2E8B6E;--emerald2:#3DA882;
+  --ink:#1A1A1A;--ink2:#3A3F47;--ink3:#6B7280;--ink4:#9CA3AF;
+  --border:rgba(10,22,40,.08);--border2:rgba(10,22,40,.04);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Outfit',-apple-system,Segoe UI,sans-serif;
+  --mono:'JetBrains Mono',Menlo,monospace;
+  --red:#9B2C2C;--amber:#A86A1F;
+  --in:#F0EBE0;--out:#0A1628;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100vh;overflow:hidden;background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+em{font-style:italic}
+input,textarea,select{font:inherit}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(10,22,40,.12);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(10,22,40,.22)}
+
+/* HEADER */
+.hdr{height:64px;background:rgba(245,240,232,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;flex-shrink:0;z-index:50}
+.hdr-inner{max-width:none;width:100%;display:flex;align-items:center;gap:28px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:17px;font-style:italic}
+.brand .name{font-size:17px;color:var(--navy);letter-spacing:.04em}
+.brand .name em{color:var(--gold-deep);font-weight:500}
+.brand .sub{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink3);margin-left:8px;font-family:var(--mono)}
+.nav{display:flex;gap:22px;flex:1;justify-content:center;font-size:13px;letter-spacing:.06em}
+.nav a{color:var(--ink2);transition:color .2s}
+.nav a:hover,.nav a.active{color:var(--navy)}
+.nav a.active{font-weight:500}
+.usr{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--ink3);font-family:var(--mono)}
+.usr a{padding:6px 14px;border:1px solid var(--border);border-radius:18px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+
+/* APP — 3 COLUNAS */
+.app{display:grid;grid-template-columns:340px 1fr 340px;height:calc(100vh - 64px);overflow:hidden}
+
+/* COLUNA ESQUERDA · CONVERSAS */
+.left{background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.left-h{padding:20px 22px 14px;border-bottom:1px solid var(--border)}
+.left-h h2{font-family:var(--serif);font-size:26px;color:var(--navy);font-weight:500;letter-spacing:-.005em;margin-bottom:6px}
+.left-h h2 em{color:var(--gold-deep);font-style:italic}
+.left-h .sub{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3)}
+.search-box{padding:14px 22px 12px;border-bottom:1px solid var(--border)}
+.search-input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--cream2);color:var(--ink);transition:border-color .2s}
+.search-input:focus{outline:none;border-color:var(--gold)}
+.filter-tabs{display:flex;gap:6px;padding:8px 22px 12px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.filter-tabs::-webkit-scrollbar{display:none}
+.filter-tab{padding:5px 12px;border-radius:14px;font-size:11px;letter-spacing:.04em;color:var(--ink3);border:1px solid var(--border);background:transparent;white-space:nowrap;transition:all .2s}
+.filter-tab.on{background:var(--navy);color:var(--cream);border-color:var(--navy)}
+.filter-tab:hover:not(.on){border-color:var(--gold);color:var(--gold-deep)}
+.conv-list{flex:1;overflow-y:auto}
+.conv-item{display:flex;gap:11px;padding:13px 22px;cursor:pointer;border-bottom:1px solid var(--border2);transition:background .15s;position:relative}
+.conv-item:hover{background:var(--cream2)}
+.conv-item.on{background:linear-gradient(90deg,rgba(196,163,90,.1),transparent);border-left:2px solid var(--gold)}
+.conv-item.on::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold)}
+.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold-soft),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:18px;color:var(--navy);font-weight:500;flex-shrink:0;letter-spacing:-.02em}
+.avatar.img{background-size:cover;background-position:center}
+.conv-body{flex:1;min-width:0}
+.conv-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:3px}
+.conv-name{font-family:var(--serif);font-size:15.5px;color:var(--navy);font-weight:500;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.conv-time{font-family:var(--mono);font-size:9.5px;color:var(--ink3);letter-spacing:.04em;white-space:nowrap}
+.conv-preview{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--ink3);line-height:1.35}
+.conv-preview .txt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.conv-preview .dir{flex-shrink:0;font-family:var(--mono);font-size:10px;color:var(--ink4)}
+.conv-unread{display:inline-block;background:var(--gold-deep);color:var(--white);font-family:var(--mono);font-size:9px;font-weight:500;padding:2px 6px;border-radius:8px;min-width:18px;text-align:center;line-height:1.2;flex-shrink:0;margin-left:6px}
+.conv-empty{padding:40px 22px;text-align:center;color:var(--ink3);font-style:italic;font-family:var(--serif);font-size:17px}
+
+/* COLUNA CENTRAL · THREAD */
+.center{background:var(--cream);display:flex;flex-direction:column;overflow:hidden;position:relative}
+.center-empty{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--ink3);padding:32px;text-align:center}
+.center-empty .ico{font-family:var(--serif);font-size:80px;color:var(--gold-soft);margin-bottom:14px;font-style:italic;line-height:1}
+.center-empty h3{font-family:var(--serif);font-size:24px;color:var(--navy);font-weight:400;margin-bottom:10px}
+.center-empty p{font-family:var(--serif);font-size:17px;font-style:italic;max-width:380px;line-height:1.55}
+.thread-h{padding:14px 22px;border-bottom:1px solid var(--border);background:rgba(251,250,247,.92);backdrop-filter:blur(8px);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.thread-h .avatar{width:36px;height:36px;font-size:15px}
+.thread-h-name{flex:1}
+.thread-h-name .nm{font-family:var(--serif);font-size:18px;color:var(--navy);font-weight:500;line-height:1.1}
+.thread-h-name .ph{font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.04em;margin-top:2px}
+.thread-actions{display:flex;gap:6px}
+.thread-act{padding:6px 11px;border:1px solid var(--border);border-radius:14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);transition:all .2s;background:transparent;cursor:pointer}
+.thread-act:hover{border-color:var(--navy);color:var(--navy)}
+.thread{flex:1;overflow-y:auto;padding:20px 28px 16px;display:flex;flex-direction:column;gap:10px}
+.day-sep{text-align:center;margin:14px 0 8px;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);position:relative}
+.day-sep::before,.day-sep::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:var(--border)}
+.day-sep::before{left:0}.day-sep::after{right:0}
+.msg{max-width:72%;display:flex;flex-direction:column;gap:3px}
+.msg.in{align-self:flex-start}
+.msg.out{align-self:flex-end;align-items:flex-end}
+.msg-bubble{padding:11px 15px;border-radius:14px;font-size:13.5px;line-height:1.55;white-space:pre-wrap;word-wrap:break-word;position:relative;font-family:var(--sans);font-weight:400}
+.msg.in .msg-bubble{background:var(--in);color:var(--ink);border-top-left-radius:4px}
+.msg.out .msg-bubble{background:var(--out);color:var(--cream);border-top-right-radius:4px}
+.msg.out .msg-bubble a{color:var(--gold2);text-decoration:underline}
+.msg-meta{font-family:var(--mono);font-size:9.5px;color:var(--ink3);letter-spacing:.04em;display:flex;gap:6px;align-items:center;padding:0 4px}
+.msg.out .msg-meta{justify-content:flex-end}
+.msg-status{font-size:10px;line-height:1}
+.msg-status.read{color:var(--emerald2)}
+.msg-status.sent{color:var(--ink4)}
+.msg-status.delivered{color:var(--ink3)}
+.msg-status.failed{color:var(--red)}
+.msg-media{max-width:280px;border-radius:8px;overflow:hidden;margin-bottom:4px}
+.msg-media img{display:block;max-width:100%;height:auto}
+.msg-media audio{display:block;width:100%}
+
+/* INPUT AREA */
+.composer{border-top:1px solid var(--border);background:var(--white);padding:14px 22px;display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.composer-tools{display:flex;gap:6px;align-items:center}
+.tool-btn{padding:7px 11px;border:1px solid var(--border);border-radius:14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);transition:all .2s;background:transparent;cursor:pointer}
+.tool-btn:hover{border-color:var(--gold);color:var(--gold-deep)}
+.composer-row{display:flex;gap:8px;align-items:flex-end}
+.composer-input{flex:1;padding:11px 14px;border:1px solid var(--border);border-radius:14px;font-size:13.5px;background:var(--cream2);color:var(--ink);resize:none;font-family:var(--sans);min-height:42px;max-height:160px;transition:border-color .2s;line-height:1.5}
+.composer-input:focus{outline:none;border-color:var(--gold);background:var(--white)}
+.send-btn{padding:11px 22px;background:var(--navy);color:var(--cream);border-radius:14px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;transition:all .2s;cursor:pointer;white-space:nowrap;font-family:var(--sans);border:none}
+.send-btn:hover{background:var(--navy2)}
+.send-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* COLUNA DIREITA · PERFIL 360 */
+.right{background:var(--white);border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.right-empty{padding:40px 24px;text-align:center;color:var(--ink3);font-family:var(--serif);font-style:italic;font-size:17px;line-height:1.5}
+.profile-h{padding:28px 24px 18px;text-align:center;border-bottom:1px solid var(--border)}
+.profile-h .avatar{width:80px;height:80px;font-size:32px;margin:0 auto 12px}
+.profile-h .nm{font-family:var(--serif);font-size:24px;color:var(--navy);font-weight:500;line-height:1.15;margin-bottom:3px}
+.profile-h .papel{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px}
+.profile-actions{display:flex;gap:6px;justify-content:center;margin-bottom:8px}
+.profile-act{padding:7px 14px;border:1px solid var(--border);border-radius:14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);background:transparent;cursor:pointer;font-family:inherit;transition:all .2s}
+.profile-act:hover{border-color:var(--navy);color:var(--navy)}
+.profile-act.primary{background:var(--navy);color:var(--cream);border-color:var(--navy)}
+.profile-act.primary:hover{background:var(--navy2)}
+.profile-sec{padding:18px 24px;border-bottom:1px solid var(--border)}
+.profile-sec-h{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+.profile-field{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;gap:10px}
+.profile-field .k{color:var(--ink3);font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono)}
+.profile-field .v{color:var(--ink);text-align:right;word-break:break-word;font-family:var(--sans)}
+.profile-tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{display:inline-block;padding:3px 9px;border-radius:11px;font-size:10px;background:rgba(196,163,90,.12);color:var(--gold-deep);letter-spacing:.04em}
+.ai-summary{font-family:var(--serif);font-size:15px;font-style:italic;color:var(--ink2);line-height:1.55;padding:12px;background:linear-gradient(180deg,rgba(196,163,90,.06),rgba(196,163,90,.02));border-radius:6px;border-left:2px solid var(--gold)}
+.ai-summary::before{content:'~';color:var(--gold-deep);margin-right:6px;font-style:normal;font-weight:500}
+
+/* TEMPLATES DROPDOWN */
+.tpl-menu{position:absolute;bottom:calc(100% + 8px);left:14px;background:var(--white);border:1px solid var(--border);border-radius:8px;box-shadow:0 12px 32px rgba(10,22,40,.14);width:340px;max-height:380px;overflow-y:auto;display:none;z-index:10}
+.tpl-menu.on{display:block}
+.tpl-search{padding:10px 14px;border-bottom:1px solid var(--border)}
+.tpl-search input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:4px;font-size:12px}
+.tpl-item{padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--border2);transition:background .15s}
+.tpl-item:hover{background:var(--cream2)}
+.tpl-item-name{font-family:var(--serif);font-size:15px;color:var(--navy);font-weight:500;margin-bottom:3px}
+.tpl-item-cat{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:6px}
+.tpl-item-preview{font-size:11px;color:var(--ink3);line-height:1.4;font-style:italic;font-family:var(--serif);font-size:13px}
+
+/* TOAST */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:11px 22px;background:var(--navy);color:var(--cream);border-radius:6px;font-size:12px;letter-spacing:.06em;box-shadow:0 8px 22px rgba(10,22,40,.22);z-index:200;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(-4px)}
+
+@media(max-width:1200px){.app{grid-template-columns:300px 1fr 280px}}
+@media(max-width:980px){.app{grid-template-columns:1fr}.right,.left{display:none}.app.show-thread .center{display:flex}.app.show-list .left{display:flex}}
+</style>
+</head>
+
+<body>
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <a href="/sistema/" class="brand">
+      <div class="mark">i</div>
+      <span class="name">Innova<em>People</em></span>
+      <span class="sub">WhatsApp</span>
+    </a>
+    <nav class="nav">
+      <a href="/sistema/">Visão geral</a>
+      <a href="/sistema/agentes.html">Agentes</a>
+      <a href="/sistema/chro/">Curadoria</a>
+      <a href="/sistema/bastidores/">Bastidores</a>
+      <a href="/sistema/whatsapp/" class="active">WhatsApp</a>
+    </nav>
+    <div class="usr">
+      <span id="user-display">—</span>
+      <a href="/sistema/">Sair</a>
+    </div>
+  </div>
+</header>
+
+<div class="app" id="app">
+
+  <!-- COLUNA ESQUERDA -->
+  <aside class="left">
+    <div class="left-h">
+      <h2>Conversas <em>vivas</em></h2>
+      <div class="sub" id="conv-count">— em curso</div>
+    </div>
+    <div class="search-box">
+      <input type="text" class="search-input" id="search-input" placeholder="Buscar nome ou número…">
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab on" data-filter="all">Todas</button>
+      <button class="filter-tab" data-filter="unread">Não lidas</button>
+      <button class="filter-tab" data-filter="mine">Atribuídas a mim</button>
+      <button class="filter-tab" data-filter="bot">Bot</button>
+    </div>
+    <div class="conv-list" id="conv-list">
+      <div class="conv-empty">Carregando conversas…</div>
+    </div>
+  </aside>
+
+  <!-- COLUNA CENTRAL -->
+  <main class="center" id="center">
+    <div class="center-empty" id="center-empty">
+      <div class="ico">i</div>
+      <h3>Escolha uma conversa</h3>
+      <p>Cada mensagem trocada vive arquivada com hash chain. Auditoria forense, sem fricção visual.</p>
+    </div>
+  </main>
+
+  <!-- COLUNA DIREITA -->
+  <aside class="right" id="right">
+    <div class="right-empty" id="right-empty">
+      O perfil do contato aparece aqui quando uma conversa for aberta.
+    </div>
+  </aside>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const sb=()=>window.__IP_SB;
+const esc=s=>{if(s==null)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML};
+const fmtTime=ts=>{if(!ts)return'';const d=new Date(ts);const now=new Date();const sameDay=d.toDateString()===now.toDateString();const yesterday=new Date(now-864e5).toDateString()===d.toDateString();if(sameDay)return d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});if(yesterday)return'ontem';if((now-d)<7*864e5)return d.toLocaleDateString('pt-BR',{weekday:'short'});return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})};
+const fmtFullTime=ts=>{if(!ts)return'';return new Date(ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})};
+const fmtDay=ts=>{if(!ts)return'';const d=new Date(ts);const now=new Date();const sameDay=d.toDateString()===now.toDateString();const yesterday=new Date(now-864e5).toDateString()===d.toDateString();if(sameDay)return'Hoje';if(yesterday)return'Ontem';if((now-d)<7*864e5)return d.toLocaleDateString('pt-BR',{weekday:'long'});return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})};
+const initials=n=>{if(!n)return'·';return n.trim().split(/\s+/).slice(0,2).map(p=>p[0]||'').join('').toUpperCase()||'·'};
+
+let _state={conversas:[],filtro:'all',busca:'',convId:null,perfil:null,mensagens:[],channel:null,templates:[]};
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2400)}
+
+// ============================================================
+// BOOT — carrega conversas, templates, abre realtime
+// ============================================================
+async function waBoot(){
+  console.log('[wa] boot');
+  if(!sb()){renderConversasErro('Supabase não carregou.');return}
+  // Search + filtros
+  document.getElementById('search-input').addEventListener('input',e=>{_state.busca=e.target.value.toLowerCase();renderConversas()});
+  document.querySelectorAll('.filter-tab').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('.filter-tab').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      _state.filtro=b.dataset.filter;
+      renderConversas();
+    });
+  });
+  // Carrega tudo em paralelo
+  await Promise.all([loadConversas(),loadTemplates()]);
+  // Realtime
+  subscribeRealtime();
+  // Auto-refresh a cada 30s (fallback se realtime falhar)
+  setInterval(loadConversas,30000);
+}
+window.waBoot=waBoot;
+
+async function loadConversas(){
+  try{
+    // Tenta v_wa_inbox primeiro (consolidada)
+    let {data,error}=await sb().from('v_wa_inbox').select('*').order('ultima_mensagem_em',{ascending:false}).limit(200);
+    if(error){
+      // Fallback: wa_conversations + wa_contacts join
+      console.warn('[wa] v_wa_inbox falhou, tentando wa_conversations',error);
+      const r=await sb().from('wa_conversations').select('*, wa_contacts!inner(name,phone,email,avatar_url,tags)').order('last_message_at',{ascending:false}).limit(200);
+      if(r.error)throw r.error;
+      data=(r.data||[]).map(c=>({
+        conversa_id:c.id,
+        contato_id:c.contact_id,
+        numero_e164:c.phone||c.wa_contacts?.phone,
+        contato_nome:c.wa_contacts?.name||c.phone,
+        contato_email:c.wa_contacts?.email,
+        nao_lidas:c.unread_count||0,
+        ultima_mensagem_em:c.last_message_at,
+        preview_ultima:c.last_message_preview,
+        conversa_estado:c.status,
+        _avatar:c.wa_contacts?.avatar_url,
+        _ai_summary:c.ai_summary,
+        _assigned:c.assigned_to,
+      }));
+    }
+    _state.conversas=data||[];
+    renderConversas();
+    document.getElementById('conv-count').textContent=(_state.conversas.length)+' em curso';
+  }catch(e){
+    console.error('[wa] loadConversas',e);
+    renderConversasErro(e.message);
+  }
+}
+
+function renderConversasErro(msg){
+  document.getElementById('conv-list').innerHTML=`<div class="conv-empty" style="color:var(--red)">Erro: ${esc(msg)}<br><br>Verifique se as tabelas <code style="font-family:var(--mono);font-size:11px">wa_*</code> e a view <code style="font-family:var(--mono);font-size:11px">v_wa_inbox</code> existem.</div>`;
+}
+
+function renderConversas(){
+  const lista=_state.conversas.filter(c=>{
+    if(_state.filtro==='unread'&&(!c.nao_lidas||c.nao_lidas===0))return false;
+    if(_state.filtro==='mine'&&c._assigned!==window.__IP_USER_EMAIL)return false;
+    if(_state.filtro==='bot'&&c.conversa_estado!=='bot')return false;
+    if(_state.busca){
+      const t=(c.contato_nome+' '+c.numero_e164+' '+(c.contato_email||'')).toLowerCase();
+      if(!t.includes(_state.busca))return false;
+    }
+    return true;
+  });
+  const el=document.getElementById('conv-list');
+  if(!lista.length){
+    el.innerHTML='<div class="conv-empty">Nenhuma conversa encontrada.</div>';
+    return;
+  }
+  el.innerHTML=lista.map(c=>{
+    const nome=c.contato_nome||c.numero_e164||'(sem nome)';
+    const dir=c.preview_direcao==='out'||c.preview_direcao==='outbound'?'→ ':c.preview_direcao==='in'||c.preview_direcao==='inbound'?'← ':'';
+    const sel=c.conversa_id===_state.convId?' on':'';
+    const av=c._avatar?`style="background-image:url('${esc(c._avatar)}');background-size:cover"`:'';
+    return `<div class="conv-item${sel}" data-id="${esc(c.conversa_id)}" onclick="abrirConversa('${esc(c.conversa_id)}','${esc(c.contato_id)}')">
+      <div class="avatar img" ${av}>${c._avatar?'':initials(nome)}</div>
+      <div class="conv-body">
+        <div class="conv-top">
+          <div class="conv-name">${esc(nome)}</div>
+          <div class="conv-time">${fmtTime(c.ultima_mensagem_em)}</div>
+        </div>
+        <div class="conv-preview">
+          <span class="dir">${dir}</span>
+          <span class="txt">${esc((c.preview_ultima||'(sem mensagens)').slice(0,80))}</span>
+          ${c.nao_lidas>0?`<span class="conv-unread">${c.nao_lidas}</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// ABRIR CONVERSA — carrega mensagens + perfil
+// ============================================================
+async function abrirConversa(convId,contatoId){
+  _state.convId=convId;
+  document.querySelectorAll('.conv-item').forEach(it=>it.classList.toggle('on',it.dataset.id===convId));
+  document.getElementById('center-empty').style.display='none';
+  document.getElementById('app').classList.add('show-thread');
+  document.getElementById('app').classList.remove('show-list');
+  renderThreadLoading();
+  await Promise.all([loadMensagens(convId),loadPerfil(contatoId,convId)]);
+  // Zera não-lidas
+  try{await sb().from('wa_conversations').update({unread_count:0}).eq('id',convId)}catch(e){}
+  // Re-render conversa pra zerar badge
+  const c=_state.conversas.find(c=>c.conversa_id===convId);
+  if(c){c.nao_lidas=0;renderConversas()}
+}
+
+function renderThreadLoading(){
+  document.getElementById('center').innerHTML=`<div class="center-empty"><div class="ico" style="animation:pulse 1s infinite">i</div><p>Carregando…</p></div>`;
+}
+
+async function loadMensagens(convId){
+  try{
+    const {data,error}=await sb().from('wa_messages').select('*').eq('conversation_id',convId).order('created_at',{ascending:true}).limit(500);
+    if(error)throw error;
+    _state.mensagens=data||[];
+    renderThread();
+  }catch(e){
+    console.error('[wa] loadMensagens',e);
+    document.getElementById('center').innerHTML=`<div class="center-empty"><h3>Erro</h3><p>${esc(e.message)}</p></div>`;
+  }
+}
+
+function renderThread(){
+  const c=_state.conversas.find(c=>c.conversa_id===_state.convId);
+  const nome=c?.contato_nome||c?.numero_e164||'(sem nome)';
+  const numero=c?.numero_e164||'';
+  const av=c?._avatar?`style="background-image:url('${esc(c._avatar)}');background-size:cover"`:'';
+  let html=`<div class="thread-h">
+    <div class="avatar img" ${av}>${c?._avatar?'':initials(nome)}</div>
+    <div class="thread-h-name">
+      <div class="nm">${esc(nome)}</div>
+      <div class="ph">${esc(numero)}</div>
+    </div>
+    <div class="thread-actions">
+      <button class="thread-act" onclick="refreshThread()">Atualizar</button>
+      <button class="thread-act" onclick="alert('Em breve: arquivar e atribuir')">Arquivar</button>
+    </div>
+  </div>
+  <div class="thread" id="thread-list">`;
+
+  // Agrupa por dia
+  let lastDay='';
+  _state.mensagens.forEach(m=>{
+    const day=fmtDay(m.created_at);
+    if(day!==lastDay){
+      html+=`<div class="day-sep">${esc(day)}</div>`;
+      lastDay=day;
+    }
+    const dir=(m.direction==='outbound'||m.direction==='out')?'out':'in';
+    let bubble='';
+    if(m.message_type==='image'&&m.media_url){
+      bubble+=`<div class="msg-media"><img src="${esc(m.media_url)}" alt="imagem"></div>`;
+    }else if(m.message_type==='audio'&&m.media_url){
+      bubble+=`<div class="msg-media"><audio controls src="${esc(m.media_url)}"></audio></div>`;
+    }
+    if(m.content)bubble+=esc(m.content);
+    const stIco={sent:'✓',delivered:'✓✓',read:'✓✓',failed:'✕'}[m.status]||'';
+    const stClass=m.status||'sent';
+    html+=`<div class="msg ${dir}">
+      <div class="msg-bubble">${bubble||'<em style="opacity:.6">(sem conteúdo)</em>'}</div>
+      <div class="msg-meta">
+        <span>${fmtFullTime(m.created_at)}</span>
+        ${dir==='out'?`<span class="msg-status ${stClass}">${stIco}</span>`:''}
+      </div>
+    </div>`;
+  });
+  if(!_state.mensagens.length){
+    html+=`<div style="text-align:center;color:var(--ink3);font-style:italic;font-family:var(--serif);font-size:17px;padding:40px">Nenhuma mensagem nesta conversa ainda.</div>`;
+  }
+  html+=`</div>
+  <div class="composer">
+    <div class="composer-tools">
+      <button class="tool-btn" onclick="toggleTemplates()" style="position:relative">Templates</button>
+      <button class="tool-btn" onclick="alert('Em breve: anexar imagem')">Anexar</button>
+      <button class="tool-btn" onclick="alert('Em breve: agendar envio')">Agendar</button>
+      <div style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.06em">Hash chain ativo · auditado</div>
+    </div>
+    <div class="tpl-menu" id="tpl-menu"></div>
+    <div class="composer-row">
+      <textarea class="composer-input" id="composer-input" placeholder="Escreva uma mensagem…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarMensagem()}"></textarea>
+      <button class="send-btn" id="send-btn" onclick="enviarMensagem()">Enviar</button>
+    </div>
+  </div>`;
+
+  document.getElementById('center').innerHTML=html;
+  // Auto-scroll para o fim
+  const tl=document.getElementById('thread-list');
+  if(tl)tl.scrollTop=tl.scrollHeight;
+  // Auto-grow textarea
+  const ta=document.getElementById('composer-input');
+  if(ta){ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=Math.min(160,ta.scrollHeight)+'px'})}
+}
+
+async function refreshThread(){
+  if(!_state.convId)return;
+  await loadMensagens(_state.convId);
+}
+
+// ============================================================
+// ENVIO DE MENSAGENS — via EF whatsapp-direto
+// ============================================================
+async function enviarMensagem(){
+  const ta=document.getElementById('composer-input');
+  const txt=(ta?.value||'').trim();
+  if(!txt)return;
+  const c=_state.conversas.find(c=>c.conversa_id===_state.convId);
+  if(!c){toast('Conversa não encontrada');return}
+  const numero=(c.numero_e164||'').replace(/\D/g,'');
+  if(!numero){toast('Número inválido');return}
+  // Optimistic UI: adiciona mensagem
+  const tempId='tmp-'+Date.now();
+  const optMsg={id:tempId,conversation_id:_state.convId,direction:'out',message_type:'text',content:txt,created_at:new Date().toISOString(),status:'sent',sent_by:window.__IP_USER_EMAIL||''};
+  _state.mensagens.push(optMsg);
+  ta.value='';ta.style.height='auto';
+  renderThread();
+  document.getElementById('send-btn').disabled=true;
+  try{
+    const {data,error}=await sb().functions.invoke('whatsapp-direto',{
+      body:{action:'send',type:'text',number:numero,text:txt}
+    });
+    if(error)throw error;
+    // Insere registro na tabela wa_messages se EF não fizer isso (fallback)
+    try{
+      await sb().from('wa_messages').insert({
+        conversation_id:_state.convId,
+        contact_id:c.contato_id,
+        direction:'outbound',
+        message_type:'text',
+        content:txt,
+        status:'sent',
+        sent_by:window.__IP_USER_EMAIL||'',
+        evo_message_id:data?.messageId||data?.id||null,
+      });
+      await sb().from('wa_conversations').update({last_message_preview:txt.slice(0,200),last_message_at:new Date().toISOString()}).eq('id',_state.convId);
+    }catch(insErr){console.warn('[wa] insert fallback',insErr)}
+    toast('Mensagem enviada');
+    await loadMensagens(_state.convId);
+    loadConversas();
+  }catch(e){
+    console.error('[wa] enviar',e);
+    toast('Erro: '+e.message);
+    // Marca mensagem como failed
+    const m=_state.mensagens.find(m=>m.id===tempId);
+    if(m){m.status='failed';renderThread()}
+  }finally{
+    document.getElementById('send-btn').disabled=false;
+  }
+}
+
+// ============================================================
+// TEMPLATES
+// ============================================================
+async function loadTemplates(){
+  try{
+    const {data,error}=await sb().from('wa_templates').select('*').eq('is_active',true).order('usage_count',{ascending:false}).limit(50);
+    if(error){console.warn('[wa] templates',error);return}
+    _state.templates=data||[];
+  }catch(e){console.warn('[wa] templates',e)}
+}
+function toggleTemplates(){
+  const m=document.getElementById('tpl-menu');
+  if(!m)return;
+  m.classList.toggle('on');
+  if(m.classList.contains('on')){
+    renderTemplates();
+    document.addEventListener('click',closeTplOnOutside,{once:true});
+  }
+}
+function closeTplOnOutside(e){
+  const m=document.getElementById('tpl-menu');
+  if(m&&!m.contains(e.target)&&!e.target.closest('.tool-btn')){m.classList.remove('on')}
+}
+function renderTemplates(){
+  const m=document.getElementById('tpl-menu');if(!m)return;
+  let html=`<div class="tpl-search"><input type="text" placeholder="Buscar template…" oninput="filterTpl(this.value)"></div>`;
+  if(!_state.templates.length){html+='<div style="padding:24px;text-align:center;color:var(--ink3);font-style:italic;font-family:var(--serif);font-size:16px">Nenhum template ativo.<br><a href="#" onclick="alert(\'Crie templates em wa_templates\');return false">Criar primeiro</a></div>'}
+  else html+=_state.templates.map(t=>`<div class="tpl-item" onclick="usarTemplate('${esc(t.id)}')">
+    <div class="tpl-item-name">${esc(t.name)}</div>
+    ${t.category?`<div class="tpl-item-cat">${esc(t.category)}</div>`:''}
+    <div class="tpl-item-preview">"${esc((t.content||'').slice(0,140))}${t.content&&t.content.length>140?'…':''}"</div>
+  </div>`).join('');
+  m.innerHTML=html;
+}
+function filterTpl(q){
+  const items=document.querySelectorAll('.tpl-item');
+  q=q.toLowerCase();
+  items.forEach(it=>{it.style.display=it.textContent.toLowerCase().includes(q)?'block':'none'});
+}
+function usarTemplate(id){
+  const t=_state.templates.find(t=>t.id===id);if(!t)return;
+  const ta=document.getElementById('composer-input');
+  if(ta){
+    ta.value=t.content||'';
+    ta.style.height='auto';ta.style.height=Math.min(160,ta.scrollHeight)+'px';
+    ta.focus();
+  }
+  document.getElementById('tpl-menu').classList.remove('on');
+}
+
+// ============================================================
+// PERFIL 360°
+// ============================================================
+async function loadPerfil(contatoId,convId){
+  if(!contatoId){renderPerfilVazio();return}
+  try{
+    const c=_state.conversas.find(c=>c.conversa_id===convId);
+    const [{data:contato},{data:contagens}]=await Promise.all([
+      sb().from('wa_contacts').select('*').eq('id',contatoId).single(),
+      sb().from('wa_messages').select('id',{count:'exact',head:true}).eq('contact_id',contatoId),
+    ]);
+    _state.perfil={contato:contato||{},conversa:c,total:contagens||0};
+    renderPerfil();
+  }catch(e){
+    console.warn('[wa] perfil',e);
+    // Fallback: monta perfil só com dados da conversa
+    _state.perfil={contato:{name:'',phone:''},conversa:_state.conversas.find(c=>c.conversa_id===convId)};
+    renderPerfil();
+  }
+}
+function renderPerfilVazio(){
+  document.getElementById('right').innerHTML=`<div class="right-empty">O perfil aparece aqui quando uma conversa for aberta.</div>`;
+}
+function renderPerfil(){
+  const p=_state.perfil;if(!p){renderPerfilVazio();return}
+  const ct=p.contato||{};
+  const cv=p.conversa||{};
+  const nome=ct.name||cv.contato_nome||'(sem nome)';
+  const papel=ct.phase||cv.candidato_estagio||'—';
+  const numero=ct.phone||cv.numero_e164||'';
+  const email=ct.email||cv.contato_email||'';
+  const tags=Array.isArray(ct.tags)?ct.tags:(ct.tags&&typeof ct.tags==='object'?Object.values(ct.tags):[]);
+  const av=ct.avatar_url?`style="background-image:url('${esc(ct.avatar_url)}');background-size:cover"`:'';
+  const aiSum=cv._ai_summary||cv.ai_summary||null;
+
+  let html=`<div class="profile-h">
+    <div class="avatar img" ${av}>${ct.avatar_url?'':initials(nome)}</div>
+    <div class="nm">${esc(nome)}</div>
+    <div class="papel">${esc(papel)}</div>
+    <div class="profile-actions">
+      <button class="profile-act primary" onclick="document.getElementById('composer-input')?.focus()">Mensagem</button>
+      ${email?`<button class="profile-act" onclick="window.open('mailto:${esc(email)}')">E-mail</button>`:''}
+      ${numero?`<button class="profile-act" onclick="window.open('tel:+${esc(numero)}')">Ligar</button>`:''}
+    </div>
+  </div>`;
+
+  if(aiSum){
+    html+=`<div class="profile-sec">
+      <div class="profile-sec-h">Síntese IA da conversa</div>
+      <div class="ai-summary">${esc(aiSum)}</div>
+    </div>`;
+  }
+
+  html+=`<div class="profile-sec">
+    <div class="profile-sec-h">Contato</div>
+    ${numero?`<div class="profile-field"><span class="k">WhatsApp</span><span class="v" style="font-family:var(--mono);font-size:12px">+${esc(numero)}</span></div>`:''}
+    ${email?`<div class="profile-field"><span class="k">E-mail</span><span class="v">${esc(email)}</span></div>`:''}
+    ${ct.source?`<div class="profile-field"><span class="k">Origem</span><span class="v">${esc(ct.source)}</span></div>`:''}
+    ${ct.first_contact_at?`<div class="profile-field"><span class="k">Primeiro contato</span><span class="v">${new Date(ct.first_contact_at).toLocaleDateString('pt-BR')}</span></div>`:''}
+    ${ct.last_message_at?`<div class="profile-field"><span class="k">Última atividade</span><span class="v">${new Date(ct.last_message_at).toLocaleDateString('pt-BR')}</span></div>`:''}
+  </div>`;
+
+  if(tags.length){
+    html+=`<div class="profile-sec">
+      <div class="profile-sec-h">Tags</div>
+      <div class="profile-tags">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+    </div>`;
+  }
+
+  html+=`<div class="profile-sec">
+    <div class="profile-sec-h">Vinculação</div>
+    ${cv.candidato_nome?`<div class="profile-field"><span class="k">Candidato</span><span class="v">${esc(cv.candidato_nome)}</span></div>`:''}
+    ${cv.candidato_estagio?`<div class="profile-field"><span class="k">Estágio</span><span class="v"><span class="tag" style="background:rgba(196,163,90,.16)">${esc(cv.candidato_estagio)}</span></span></div>`:''}
+    ${cv.candidato_score!=null?`<div class="profile-field"><span class="k">Score</span><span class="v" style="font-family:var(--mono)">${cv.candidato_score}/100</span></div>`:''}
+    ${cv._assigned?`<div class="profile-field"><span class="k">Atribuída</span><span class="v">${esc(cv._assigned)}</span></div>`:''}
+  </div>`;
+
+  html+=`<div class="profile-sec">
+    <div class="profile-sec-h">Conversa</div>
+    <div class="profile-field"><span class="k">Estado</span><span class="v"><span class="tag">${esc(cv.conversa_estado||'aberta')}</span></span></div>
+    <div class="profile-field"><span class="k">ID</span><span class="v" style="font-family:var(--mono);font-size:11px;color:var(--ink3)">${esc((cv.conversa_id||'').slice(0,8))}…</span></div>
+    <button class="profile-act" style="width:100%;margin-top:12px" onclick="abrirAuditoria('${esc(cv.conversa_id)}')">Auditoria forense</button>
+  </div>`;
+
+  document.getElementById('right').innerHTML=html;
+}
+
+async function abrirAuditoria(convId){
+  try{
+    const {data,error}=await sb().from('wa_audit_log').select('*').eq('entidade','wa_conversation').eq('entidade_id',convId).order('ocorrido_em',{ascending:false}).limit(50);
+    if(error)throw error;
+    if(!data||!data.length){alert('Nenhum evento de auditoria para esta conversa.');return}
+    const txt=data.map(a=>`${new Date(a.ocorrido_em).toLocaleString('pt-BR')} — ${a.acao} — ${a.ator_email||'(sistema)'}`).join('\n');
+    alert('Auditoria (últimos 50 eventos):\n\n'+txt);
+  }catch(e){alert('Erro: '+e.message)}
+}
+
+// ============================================================
+// REALTIME — Supabase channel para wa_messages
+// ============================================================
+function subscribeRealtime(){
+  try{
+    if(_state.channel)sb().removeChannel(_state.channel);
+    _state.channel=sb().channel('wa-realtime')
+      .on('postgres_changes',{event:'INSERT',schema:'public',table:'wa_messages'},payload=>{
+        const m=payload.new;
+        if(m.conversation_id===_state.convId){
+          _state.mensagens.push(m);
+          renderThread();
+        }
+        // Atualiza preview na lista lateral
+        const c=_state.conversas.find(c=>c.conversa_id===m.conversation_id);
+        if(c){
+          c.preview_ultima=m.content||'';
+          c.ultima_mensagem_em=m.created_at;
+          c.preview_direcao=m.direction;
+          if((m.direction==='inbound'||m.direction==='in')&&m.conversation_id!==_state.convId){
+            c.nao_lidas=(c.nao_lidas||0)+1;
+          }
+          // Reordena
+          _state.conversas.sort((a,b)=>new Date(b.ultima_mensagem_em)-new Date(a.ultima_mensagem_em));
+          renderConversas();
+        }else{
+          // Conversa nova — recarrega lista
+          loadConversas();
+        }
+      })
+      .subscribe();
+    console.log('[wa] realtime subscribed');
+  }catch(e){console.warn('[wa] realtime falhou',e)}
+}
+</script>
+
+</body>
+</html>
