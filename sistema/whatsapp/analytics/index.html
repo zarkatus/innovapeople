@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Analytics WhatsApp · InnovaPeople</title>
+<meta name="robots" content="noindex,nofollow">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script>
+(function ipAuthGate(){
+  const SUPA_URL='https://auth.innovasphere.ia.br';
+  const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br'];
+  function inj(){if(document.getElementById('ip-auth-ovl'))return;const o=document.createElement('div');o.id='ip-auth-ovl';o.style.cssText='position:fixed;inset:0;background:#0A1628;color:#3DA882;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647';o.innerHTML='<div>Validando acesso…</div>';(document.body||document.documentElement).appendChild(o)}
+  function rm(){const o=document.getElementById('ip-auth-ovl');if(o)o.remove()}
+  function allow(email){rm();window.__IP_USER_EMAIL=email;const el=document.getElementById('user-display');if(el&&email)el.textContent=email;if(typeof window.anBoot==='function')try{window.anBoot()}catch(e){}else setTimeout(()=>{if(typeof window.anBoot==='function')try{window.anBoot()}catch(e){}},300)}
+  if(document.body)inj();else document.addEventListener('DOMContentLoaded',inj,{once:true});
+  const s=setTimeout(()=>allow(''),6000);
+  (async()=>{try{if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=analytics');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
+})();
+</script>
+
+<link rel="icon" href="/sistema/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0A1628;--navy2:#0F1D32;
+  --cream:#F5F0E8;--cream2:#EFE9DD;--white:#FBFAF7;
+  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#A88440;--gold-soft:#E6D9B5;
+  --emerald:#2E8B6E;--ink:#1A1A1A;--ink2:#3A3F47;--ink3:#6B7280;--ink4:#9CA3AF;
+  --border:rgba(10,22,40,.08);--border2:rgba(10,22,40,.04);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Outfit',-apple-system,Segoe UI,sans-serif;
+  --mono:'JetBrains Mono',Menlo,monospace;
+  --red:#9B2C2C;--amber:#A86A1F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+em{font-style:italic}
+
+.hdr{height:64px;background:rgba(245,240,232,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;position:sticky;top:0;z-index:50}
+.hdr-inner{width:100%;display:flex;align-items:center;gap:28px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:17px;font-style:italic}
+.brand .name{font-size:17px;color:var(--navy);letter-spacing:.04em}
+.brand .name em{color:var(--gold-deep);font-weight:500}
+.brand .sub{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink3);margin-left:8px;font-family:var(--mono)}
+.nav{display:flex;gap:22px;flex:1;justify-content:center;font-size:13px;letter-spacing:.06em}
+.nav a{color:var(--ink2)}.nav a:hover,.nav a.active{color:var(--navy)}.nav a.active{font-weight:500}
+.usr{font-family:var(--mono);font-size:12px;color:var(--ink3);display:flex;gap:12px;align-items:center}
+
+.hero{padding:42px 32px 24px;background:linear-gradient(180deg,var(--cream),var(--cream2));border-bottom:1px solid var(--border)}
+.hero-inner{max-width:1400px;margin:0 auto}
+.hero h1{font-family:var(--serif);font-size:42px;font-weight:300;line-height:1.06;color:var(--navy);margin-bottom:8px}
+.hero h1 em{color:var(--gold-deep);font-weight:400}
+.hero .lede{font-size:14px;color:var(--ink2);max-width:680px;line-height:1.55}
+.hero .crumb{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px}
+.hero .crumb a{color:var(--gold-deep)}
+
+.main{max-width:1400px;margin:0 auto;padding:32px 32px 80px}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:32px}
+.kpi{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:18px 20px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-deep))}
+.kpi.emerald::before{background:linear-gradient(90deg,#3DA882,var(--emerald))}
+.kpi.red::before{background:linear-gradient(90deg,#C62828,var(--red))}
+.kpi.amber::before{background:linear-gradient(90deg,#D4904F,var(--amber))}
+.kpi-k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3)}
+.kpi-v{font-family:var(--serif);font-size:36px;font-weight:500;color:var(--navy);line-height:1;letter-spacing:-.02em}
+.kpi-d{font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.04em}
+.kpi-d strong{color:var(--emerald)}
+.kpi-d strong.down{color:var(--red)}
+
+/* SECTIONS */
+.section{margin-bottom:36px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:24px 26px}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.section-h h2{font-family:var(--serif);font-size:24px;font-weight:500;color:var(--navy)}
+.section-h h2 em{color:var(--gold-deep);font-style:italic}
+.section-h .meta{font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.08em}
+
+/* HEATMAP */
+.hm-wrap{display:flex;gap:8px;align-items:flex-start}
+.hm-y{display:flex;flex-direction:column;gap:2px;padding-top:24px;font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--ink3);text-align:right;width:32px}
+.hm-y span{height:22px;line-height:22px}
+.hm-main{flex:1;overflow-x:auto}
+.hm-x{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;margin-bottom:4px;font-family:var(--mono);font-size:9px;color:var(--ink3);text-align:center;letter-spacing:.04em}
+.hm-x span{padding:2px 0}
+.hm-grid{display:grid;grid-template-columns:repeat(24,1fr);gap:2px}
+.hm-cell{aspect-ratio:1;border-radius:3px;background:var(--cream2);transition:all .15s;cursor:default;position:relative}
+.hm-cell.l1{background:rgba(196,163,90,.18)}
+.hm-cell.l2{background:rgba(196,163,90,.36)}
+.hm-cell.l3{background:rgba(196,163,90,.55)}
+.hm-cell.l4{background:rgba(168,132,64,.7)}
+.hm-cell.l5{background:var(--gold-deep)}
+.hm-cell:hover{transform:scale(1.18);z-index:1;box-shadow:0 4px 10px rgba(10,22,40,.18)}
+.hm-cell[data-count]:hover::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--navy);color:var(--cream);padding:4px 10px;border-radius:4px;font-family:var(--mono);font-size:10px;white-space:nowrap;letter-spacing:.04em;z-index:2}
+
+/* TABLES */
+.dt{width:100%;border-collapse:collapse;font-size:12.5px}
+.dt th{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);font-weight:500}
+.dt td{padding:10px 12px;border-bottom:1px solid var(--border2);color:var(--ink2);vertical-align:middle}
+.dt tr:last-child td{border-bottom:none}
+.dt .num{font-family:var(--mono);text-align:right}
+.dt .name{font-family:var(--serif);font-size:16px;color:var(--navy);font-weight:500}
+
+/* FUNNEL */
+.funnel{display:flex;flex-direction:column;gap:6px}
+.funnel-step{display:flex;align-items:center;gap:14px;padding:10px 16px;border-radius:6px;background:linear-gradient(90deg,var(--gold-soft),transparent);transition:all .2s}
+.funnel-step:hover{transform:translateX(4px)}
+.funnel-label{flex:1;font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500}
+.funnel-num{font-family:var(--mono);font-size:18px;color:var(--gold-deep);font-weight:500;letter-spacing:.02em}
+.funnel-pct{font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.04em;min-width:48px;text-align:right}
+
+/* CHART */
+.chart-wrap{position:relative;height:280px}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:36px}
+
+.foot{margin-top:60px;padding:24px;border-top:1px solid var(--border);text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3)}
+
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr)}.two-col{grid-template-columns:1fr}}
+@media(max-width:720px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:30px}.main{padding:24px 18px 60px}.nav{display:none}}
+</style>
+</head>
+
+<body>
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <a href="/sistema/" class="brand">
+      <div class="mark">i</div>
+      <span class="name">Innova<em>People</em></span>
+      <span class="sub">Analytics</span>
+    </a>
+    <nav class="nav">
+      <a href="/sistema/">Visão geral</a>
+      <a href="/sistema/agentes.html">Agentes</a>
+      <a href="/sistema/chro/">Curadoria</a>
+      <a href="/sistema/bastidores/">Bastidores</a>
+      <a href="/sistema/whatsapp/" class="active">WhatsApp</a>
+    </nav>
+    <div class="usr"><span id="user-display">—</span><a href="/sistema/" style="padding:6px 14px;border:1px solid var(--border);border-radius:18px;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Sair</a></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="crumb"><a href="/sistema/whatsapp/">WhatsApp</a> · Analytics</div>
+    <h1>O que se <em>mede.</em></h1>
+    <p class="lede">Volume real, ritmo humano de leitura, templates que ressoam, broadcasts que convertem — sem vaidade, sem ruído.</p>
+  </div>
+</section>
+
+<main class="main">
+
+  <div class="kpi-grid" id="kpis"></div>
+
+  <div class="section">
+    <div class="section-h"><h2>Heatmap <em>de horários</em></h2><span class="meta">últimos 30 dias · saídas vs leituras</span></div>
+    <div class="hm-wrap">
+      <div class="hm-y">
+        <span>dom</span><span>seg</span><span>ter</span><span>qua</span><span>qui</span><span>sex</span><span>sáb</span>
+      </div>
+      <div class="hm-main">
+        <div class="hm-x" id="hm-x"></div>
+        <div class="hm-grid" id="hm-grid"></div>
+        <div style="margin-top:14px;display:flex;gap:12px;align-items:center;font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.04em">
+          <span>Intensidade:</span>
+          <span style="display:flex;gap:3px;align-items:center"><span class="hm-cell" style="width:14px"></span>0</span>
+          <span style="display:flex;gap:3px;align-items:center"><span class="hm-cell l1" style="width:14px"></span>1-2</span>
+          <span style="display:flex;gap:3px;align-items:center"><span class="hm-cell l2" style="width:14px"></span>3-5</span>
+          <span style="display:flex;gap:3px;align-items:center"><span class="hm-cell l3" style="width:14px"></span>6-10</span>
+          <span style="display:flex;gap:3px;align-items:center"><span class="hm-cell l4" style="width:14px"></span>11-20</span>
+          <span style="display:flex;gap:3px;align-items:center"><span class="hm-cell l5" style="width:14px"></span>21+</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <div class="section-h"><h2>Volume <em>diário</em></h2><span class="meta">30 dias</span></div>
+      <div class="chart-wrap"><canvas id="chart-vol"></canvas></div>
+    </div>
+    <div class="section">
+      <div class="section-h"><h2>Status <em>distribution</em></h2><span class="meta">enviadas vs lidas vs falha</span></div>
+      <div class="chart-wrap"><canvas id="chart-status"></canvas></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <div class="section-h"><h2>Top <em>templates</em></h2><span class="meta">por uso</span></div>
+      <div id="tpl-list">Carregando…</div>
+    </div>
+    <div class="section">
+      <div class="section-h"><h2>Funil <em>broadcasts</em></h2><span class="meta">agregado de todos</span></div>
+      <div id="funnel">Carregando…</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-h"><h2>Conversas <em>mais ativas</em></h2><span class="meta">top 10 · 30 dias</span></div>
+    <div id="top-conv">Carregando…</div>
+  </div>
+
+  <div class="section">
+    <div class="section-h"><h2>Hora <em>provável de leitura</em></h2><span class="meta">com base em delivered_at - read_at</span></div>
+    <div class="chart-wrap"><canvas id="chart-leitura"></canvas></div>
+  </div>
+
+</main>
+
+<div class="foot"><strong style="color:var(--navy);font-weight:500">Analytics</strong> · O que se mede, se honra</div>
+
+<script>
+const sb=()=>window.__IP_SB;
+const esc=s=>{if(s==null)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML};
+const dias30=new Date(Date.now()-30*864e5).toISOString();
+
+async function anBoot(){
+  if(!sb())return;
+  // Carrega tudo em paralelo
+  const [msgs30,conversas,templates,broadcasts]=await Promise.all([
+    sb().from('wa_messages').select('id, direction, message_type, status, created_at, read_at, delivered_at, template_id, conversation_id, broadcast_id').gte('created_at',dias30).limit(20000),
+    sb().from('wa_conversations').select('id, contact_id, message_count, last_message_at, status').order('message_count',{ascending:false,nullsLast:true}).limit(50),
+    sb().from('wa_templates').select('*').order('usage_count',{ascending:false,nullsLast:true}).limit(50),
+    sb().from('wa_broadcasts').select('*').limit(100),
+  ]);
+  const allMsgs=msgs30.data||[];
+  renderKpis(allMsgs);
+  renderHeatmap(allMsgs);
+  renderVolDiario(allMsgs);
+  renderStatusChart(allMsgs);
+  renderTemplates(templates.data||[],allMsgs);
+  renderFunnel(broadcasts.data||[]);
+  renderTopConv(conversas.data||[]);
+  renderLeituraChart(allMsgs);
+}
+window.anBoot=anBoot;
+
+function renderKpis(msgs){
+  const out=msgs.filter(m=>m.direction==='outbound'||m.direction==='out').length;
+  const inb=msgs.filter(m=>m.direction==='inbound'||m.direction==='in').length;
+  const lidas=msgs.filter(m=>m.read_at).length;
+  const falhas=msgs.filter(m=>m.status==='failed').length;
+  const responseRate=out>0?Math.round((inb/out)*100):0;
+  document.getElementById('kpis').innerHTML=[
+    {k:'Saídas (30d)',v:out.toLocaleString('pt-BR'),d:'mensagens enviadas',color:''},
+    {k:'Entradas (30d)',v:inb.toLocaleString('pt-BR'),d:'respostas recebidas',color:'emerald'},
+    {k:'Lidas',v:lidas.toLocaleString('pt-BR'),d:`${out>0?Math.round(100*lidas/out):0}% das saídas`,color:''},
+    {k:'Falhas',v:falhas.toLocaleString('pt-BR'),d:`${falhas>0?'investigar': 'sem incidentes'}`,color:falhas>0?'red':'emerald'},
+    {k:'Response rate',v:responseRate+'%',d:'in/out · 30d',color:responseRate>=30?'emerald':responseRate>=10?'amber':''},
+  ].map(k=>`<div class="kpi ${k.color}"><div class="kpi-k">${k.k}</div><div class="kpi-v">${k.v}</div><div class="kpi-d">${k.d}</div></div>`).join('');
+}
+
+function renderHeatmap(msgs){
+  const grid={};for(let d=0;d<7;d++)for(let h=0;h<24;h++)grid[d+'-'+h]=0;
+  msgs.forEach(m=>{
+    if(!m.created_at)return;
+    const dt=new Date(m.created_at);
+    const k=dt.getDay()+'-'+dt.getHours();
+    grid[k]=(grid[k]||0)+1;
+  });
+  const xLabels=Array.from({length:24},(_,i)=>i.toString().padStart(2,'0'));
+  document.getElementById('hm-x').innerHTML=xLabels.map(h=>`<span>${h}</span>`).join('');
+  let html='';
+  for(let d=0;d<7;d++){
+    for(let h=0;h<24;h++){
+      const c=grid[d+'-'+h];
+      const lvl=c===0?'':c<=2?'l1':c<=5?'l2':c<=10?'l3':c<=20?'l4':'l5';
+      const dayName=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'][d];
+      html+=`<div class="hm-cell ${lvl}"${c>0?` data-count="${c}" data-tooltip="${dayName} ${h.toString().padStart(2,'0')}h · ${c} msgs"`:''}></div>`;
+    }
+  }
+  document.getElementById('hm-grid').innerHTML=html;
+}
+
+function renderVolDiario(msgs){
+  const dias={};
+  for(let i=29;i>=0;i--){
+    const d=new Date(Date.now()-i*864e5);d.setHours(0,0,0,0);
+    dias[d.toISOString().slice(0,10)]={out:0,inb:0,label:d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})};
+  }
+  msgs.forEach(m=>{
+    if(!m.created_at)return;
+    const k=m.created_at.slice(0,10);
+    if(!dias[k])return;
+    if(m.direction==='outbound'||m.direction==='out')dias[k].out++;
+    else dias[k].inb++;
+  });
+  const ks=Object.keys(dias).sort();
+  new Chart(document.getElementById('chart-vol'),{
+    type:'bar',
+    data:{
+      labels:ks.map(k=>dias[k].label),
+      datasets:[
+        {label:'Saídas',data:ks.map(k=>dias[k].out),backgroundColor:'#C4A35A',borderRadius:3,stack:'a'},
+        {label:'Entradas',data:ks.map(k=>dias[k].inb),backgroundColor:'#3DA882',borderRadius:3,stack:'a'},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      scales:{x:{stacked:true,ticks:{font:{family:'JetBrains Mono',size:9},maxRotation:0,autoSkip:true,maxTicksLimit:10}},y:{stacked:true,beginAtZero:true,ticks:{font:{family:'JetBrains Mono',size:10}}}},
+      plugins:{legend:{position:'top',labels:{font:{family:'Outfit',size:11}}}}
+    }
+  });
+}
+
+function renderStatusChart(msgs){
+  const out=msgs.filter(m=>m.direction==='outbound'||m.direction==='out');
+  const counts={sent:0,delivered:0,read:0,failed:0,outros:0};
+  out.forEach(m=>{const s=m.status||'outros';counts[s]=(counts[s]||0)+1});
+  new Chart(document.getElementById('chart-status'),{
+    type:'doughnut',
+    data:{
+      labels:['Enviadas','Entregues','Lidas','Falha','Outros'],
+      datasets:[{data:[counts.sent||0,counts.delivered||0,counts.read||0,counts.failed||0,counts.outros||0],backgroundColor:['#D4BA7A','#C4A35A','#3DA882','#C62828','#9CA3AF'],borderWidth:2,borderColor:'#FBFAF7'}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{family:'Outfit',size:12},padding:14}}},cutout:'55%'}
+  });
+}
+
+function renderTemplates(tpls,msgs){
+  const target=document.getElementById('tpl-list');
+  if(!tpls.length){target.innerHTML='<div style="color:var(--ink3);font-style:italic;font-family:var(--serif);font-size:17px;padding:18px">Nenhum template cadastrado.</div>';return}
+  // Cruza usage_count com taxa de leitura
+  const usedTpls=tpls.filter(t=>t.usage_count>0).slice(0,10);
+  if(!usedTpls.length){target.innerHTML='<div style="color:var(--ink3);font-style:italic;font-family:var(--serif);font-size:17px;padding:18px">Nenhum template usado ainda.</div>';return}
+  target.innerHTML='<table class="dt"><thead><tr><th>Template</th><th class="num">Usos</th><th class="num">Taxa leitura</th></tr></thead><tbody>'+
+    usedTpls.map(t=>{
+      const tplMsgs=msgs.filter(m=>m.template_id===t.id&&(m.direction==='outbound'||m.direction==='out'));
+      const tplLidas=tplMsgs.filter(m=>m.read_at).length;
+      const taxa=tplMsgs.length>0?Math.round(100*tplLidas/tplMsgs.length):null;
+      return `<tr>
+        <td><span class="name">${esc(t.name)}</span>${t.category?`<div style="font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.06em;margin-top:2px">${esc(t.category)}</div>`:''}</td>
+        <td class="num">${t.usage_count||0}</td>
+        <td class="num"${taxa!=null?` style="color:${taxa>=60?'var(--emerald)':taxa>=30?'var(--gold-deep)':'var(--ink2)'}"`:''}>${taxa!=null?taxa+'%':'—'}</td>
+      </tr>`;
+    }).join('')+'</tbody></table>';
+}
+
+function renderFunnel(bcs){
+  if(!bcs.length){document.getElementById('funnel').innerHTML='<div style="color:var(--ink3);font-style:italic;font-family:var(--serif);font-size:17px;padding:18px">Nenhum broadcast no histórico.</div>';return}
+  const agg=bcs.reduce((a,b)=>{
+    a.total+=b.total_recipients||0;
+    a.sent+=b.sent_count||0;
+    a.delivered+=b.delivered_count||0;
+    a.read+=b.read_count||0;
+    a.replied+=b.reply_count||0;
+    return a;
+  },{total:0,sent:0,delivered:0,read:0,replied:0});
+  const steps=[
+    {l:'Destinatários',v:agg.total},
+    {l:'Enviadas',v:agg.sent},
+    {l:'Entregues',v:agg.delivered},
+    {l:'Lidas',v:agg.read},
+    {l:'Responderam',v:agg.replied},
+  ];
+  const max=Math.max(...steps.map(s=>s.v))||1;
+  document.getElementById('funnel').innerHTML='<div class="funnel">'+steps.map(s=>{
+    const pct=Math.round(100*s.v/max);
+    return `<div class="funnel-step" style="width:${20+(s.v/max)*80}%"><div class="funnel-label">${s.l}</div><div class="funnel-num">${s.v.toLocaleString('pt-BR')}</div><div class="funnel-pct">${pct}%</div></div>`;
+  }).join('')+'</div>';
+}
+
+async function renderTopConv(convs){
+  const target=document.getElementById('top-conv');
+  if(!convs.length){target.innerHTML='<div style="color:var(--ink3);font-style:italic;font-family:var(--serif);font-size:17px;padding:18px">Sem conversas.</div>';return}
+  // Busca nomes dos contatos
+  const contactIds=convs.slice(0,10).map(c=>c.contact_id).filter(Boolean);
+  let contacts={};
+  if(contactIds.length){
+    const {data}=await sb().from('wa_contacts').select('id, name, phone').in('id',contactIds);
+    (data||[]).forEach(c=>contacts[c.id]=c);
+  }
+  target.innerHTML='<table class="dt"><thead><tr><th>Contato</th><th class="num">Mensagens</th><th>Status</th><th class="num">Última atividade</th></tr></thead><tbody>'+
+    convs.slice(0,10).map(c=>{
+      const ct=contacts[c.contact_id]||{};
+      return `<tr>
+        <td><span class="name">${esc(ct.name||ct.phone||'(sem nome)')}</span>${ct.phone?`<div style="font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:2px">+${esc(ct.phone)}</div>`:''}</td>
+        <td class="num">${c.message_count||0}</td>
+        <td><span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:10px;background:rgba(196,163,90,.1);color:var(--gold-deep)">${esc(c.status||'?')}</span></td>
+        <td class="num" style="font-size:11px">${c.last_message_at?new Date(c.last_message_at).toLocaleDateString('pt-BR'):'—'}</td>
+      </tr>`;
+    }).join('')+'</tbody></table>';
+}
+
+function renderLeituraChart(msgs){
+  // Mede tempo médio entre delivered_at e read_at por hora de envio
+  const buckets={};
+  msgs.filter(m=>m.delivered_at&&m.read_at&&(m.direction==='outbound'||m.direction==='out')).forEach(m=>{
+    const sentH=new Date(m.created_at).getHours();
+    const delivered=new Date(m.delivered_at).getTime();
+    const read=new Date(m.read_at).getTime();
+    const delta=(read-delivered)/60000; // min
+    if(delta<0||delta>24*60)return;
+    if(!buckets[sentH])buckets[sentH]={sum:0,n:0};
+    buckets[sentH].sum+=delta;
+    buckets[sentH].n++;
+  });
+  const labels=Array.from({length:24},(_,i)=>i.toString().padStart(2,'0')+'h');
+  const avgs=Array.from({length:24},(_,i)=>buckets[i]?Math.round(buckets[i].sum/buckets[i].n):0);
+  new Chart(document.getElementById('chart-leitura'),{
+    type:'line',
+    data:{labels,datasets:[{label:'Minutos médios até leitura',data:avgs,borderColor:'#A88440',backgroundColor:'rgba(196,163,90,.18)',tension:.35,fill:true,borderWidth:2,pointBackgroundColor:'#A88440'}]},
+    options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{family:'JetBrains Mono',size:9},maxRotation:0,autoSkip:true,maxTicksLimit:12}},y:{beginAtZero:true,ticks:{font:{family:'JetBrains Mono',size:10}}}},plugins:{legend:{position:'top',labels:{font:{family:'Outfit',size:11}}}}}
+  });
+}
+</script>
+
+</body>
+</html>
