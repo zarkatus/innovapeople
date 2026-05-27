@@ -803,11 +803,10 @@ em{font-style:italic}
         <span class="status st-live">Operacional</span>
       </div>
       <div class="card-body" id="olap-body">
-        RPC <code style="font-family:var(--mono);font-size:11px">fn_ip_bi_tendencias</code> (fork do Rapheice v24). K-anônimo ≥ 3. Sem médias enganosas.
+        RPC <code style="font-family:var(--mono);font-size:11px">fn_ip_bi_tendencias</code> (fork do Rapheice v24). K-anônimo ≥ 3. Gráfico Chart.js com janela ajustável (7/14/30/90 dias).
       </div>
       <div class="card-actions">
-        <button class="btn btn-primary" onclick="openOlap()">Tendências 90d</button>
-        <button class="btn btn-ghost" onclick="exportOlap()">Exportar CSV</button>
+        <button class="btn btn-primary" onclick="openOlap()">Abrir tendências</button>
       </div>
     </div>
 
@@ -1714,25 +1713,29 @@ async function openDecisoes(){
   openDrawer('Decisões registradas','<div id="dc-body"><div class="dr-info">Carregando...</div></div>',async body=>{
     const sb=window.__IP_SB;const t=body.querySelector('#dc-body');if(!sb)return;
     try{
-      const {data,error}=await sb.from('ip_decisoes').select('*').order('criado_em',{ascending:false}).limit(50);
+      const {data,error}=await sb.from('ip_decisoes').select('*').order('created_at',{ascending:false}).limit(50);
       if(error)throw error;
       if(!data||!data.length){t.innerHTML='<div class="dr-empty">Nenhuma decisão registrada ainda.</div>';return}
       t.innerHTML=data.map(d=>`<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
-        <div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500;margin-bottom:4px">${esc(d.titulo||d.descricao||'(sem título)')}</div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.08em">${esc(d.nivel||'—')} · ${esc(d.status||'vigente')} · ${d.criado_em?new Date(d.criado_em).toLocaleDateString('pt-BR'):''}</div>
-        ${d.motivo?'<div style="font-size:12px;color:var(--ink2);line-height:1.5;margin-top:8px"><em>Motivo:</em> '+esc(d.motivo)+'</div>':''}
+        <div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500;margin-bottom:4px">${esc(d.titulo||'(sem título)')}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.08em">${esc(d.nivel||'—')} · ${esc(d.status||'vigente')} · ${d.created_at?new Date(d.created_at).toLocaleDateString('pt-BR'):''}</div>
+        ${d.decisao?'<div style="font-size:12px;color:var(--ink2);line-height:1.5;margin-top:8px"><em>Decisão:</em> '+esc(d.decisao)+'</div>':''}
+        ${d.motivo?'<div style="font-size:12px;color:var(--ink2);line-height:1.5;margin-top:6px"><em>Motivo:</em> '+esc(d.motivo)+'</div>':''}
+        ${d.contexto?'<div style="font-size:11px;color:var(--ink3);line-height:1.5;margin-top:6px;font-style:italic">'+esc((d.contexto||'').slice(0,180))+'</div>':''}
       </div>`).join('');
     }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
   });
 }
 function newDecisao(){openDrawer('Nova decisão',`
-  <p class="dr-sub">Registre o motivo, as alternativas consideradas e as consequências esperadas. A revisão é vigiada pelo Clock Drift Detector.</p>
+  <p class="dr-sub">Registre a decisão tomada, o contexto, o motivo, as alternativas consideradas e as consequências esperadas. A revisão é vigiada pelo Clock Drift Detector.</p>
   <form id="nd-form" class="dr-form">
     <label><span class="dr-lab">Título</span><input type="text" name="titulo" required></label>
     <label><span class="dr-lab">Nível</span><select name="nivel"><option value="operacional">operacional (revisão 7d)</option><option value="tatica">tática (revisão 14d)</option><option value="estrategica">estratégica (revisão 30d)</option></select></label>
-    <label><span class="dr-lab">Motivo</span><textarea name="motivo" rows="3" required></textarea></label>
-    <label><span class="dr-lab">Alternativas consideradas</span><textarea name="alternativas" rows="3"></textarea></label>
-    <label><span class="dr-lab">Consequências esperadas</span><textarea name="consequencias" rows="3"></textarea></label>
+    <label><span class="dr-lab">Decisão (o que ficou definido)</span><textarea name="decisao" rows="3" required></textarea></label>
+    <label><span class="dr-lab">Contexto (situação que precede a decisão)</span><textarea name="contexto" rows="3"></textarea></label>
+    <label><span class="dr-lab">Motivo</span><textarea name="motivo" rows="2"></textarea></label>
+    <label><span class="dr-lab">Alternativas consideradas</span><textarea name="alternativas" rows="2"></textarea></label>
+    <label><span class="dr-lab">Consequências esperadas</span><textarea name="consequencias" rows="2"></textarea></label>
     <div id="nd-result"></div>
     <button type="submit" class="btn btn-primary" style="padding:11px 20px;font-size:13px">Registrar</button>
   </form>
@@ -1741,33 +1744,440 @@ function newDecisao(){openDrawer('Nova decisão',`
     ev.preventDefault();const f=ev.target;const r=body.querySelector('#nd-result');r.innerHTML='<div class="dr-info">Registrando...</div>';
     try{
       const sb=window.__IP_SB;
-      const {error}=await sb.from('ip_decisoes').insert({titulo:f.titulo.value,nivel:f.nivel.value,motivo:f.motivo.value,alternativas:f.alternativas.value||null,consequencias:f.consequencias.value||null,status:'vigente'});
+      const autor=window.__IP_USER_EMAIL||'raphael@schifino.com.br';
+      const {error}=await sb.from('ip_decisoes').insert({titulo:f.titulo.value,nivel:f.nivel.value,decisao:f.decisao.value,contexto:f.contexto.value||null,motivo:f.motivo.value||null,alternativas:f.alternativas.value||null,consequencias:f.consequencias.value||null,autor,status:'vigente'});
       if(error)throw error;
       r.innerHTML='<div class="dr-ok">✓ Decisão registrada.</div>';
+      setTimeout(()=>openDecisoes(),900);
     }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
   });
 })}
 
-function openProtocolos(){notImpl('Protocolos vivos · UI v2')}
-function newProtocolo(){notImpl('Novo protocolo · form')}
-function openRelac(){notImpl('Matriz de relacionamentos · próxima rodada')}
-function newRelac(){notImpl('Adicionar relacionamento crítico')}
-function openRituais(){notImpl('Calendário de rituais · próxima rodada')}
-function newRitual(){notImpl('Novo ritual')}
+// ============================================================
+// PROTOCOLOS VIVOS — ip_protocolos
+// ============================================================
+async function openProtocolos(){
+  openDrawer('Protocolos vivos','<div id="pt-body"><div class="dr-info">Carregando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#pt-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_protocolos').select('*').eq('ativo',true).order('updated_at',{ascending:false}).limit(60);
+      if(error)throw error;
+      const now=Date.now();
+      t.innerHTML=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newProtocolo()">+ Novo protocolo</button>`+
+        (!data||!data.length?'<div class="dr-empty">Nenhum protocolo registrado ainda.</div>':
+        data.map(p=>{
+          const prox=p.revisao_planejada?new Date(p.revisao_planejada):null;
+          const vencido=prox&&prox.getTime()<now;
+          return `<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
+              <div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500">${esc(p.titulo)}</div>
+              <span style="font-family:var(--mono);font-size:10px;background:rgba(196,163,90,.1);color:var(--gold-deep);padding:2px 8px;border-radius:10px">v${p.versao||1}</span>
+            </div>
+            ${p.area?`<div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase;margin-bottom:8px">${esc(p.area)}</div>`:''}
+            ${p.conteudo?`<div style="font-size:12px;color:var(--ink2);line-height:1.5;margin-bottom:8px;max-height:120px;overflow-y:auto;border-left:2px solid var(--border);padding-left:10px">${esc((p.conteudo||'').slice(0,400))}${p.conteudo.length>400?'...':''}</div>`:''}
+            <div style="display:flex;gap:14px;font-size:11px;color:var(--ink3);flex-wrap:wrap;margin-bottom:8px">
+              ${p.responsavel?`<span>resp: ${esc(p.responsavel)}</span>`:''}
+              ${p.ultima_revisao?`<span>última: ${new Date(p.ultima_revisao).toLocaleDateString('pt-BR')}</span>`:''}
+              ${p.revisao_planejada?`<span style="color:${vencido?'var(--red)':'var(--ink3)'}">${vencido?'⚠ revisão vencida':'próxima: '+new Date(p.revisao_planejada).toLocaleDateString('pt-BR')}</span>`:''}
+            </div>
+            <div style="display:flex;gap:6px">
+              <button onclick="protocoloVersionar('${esc(p.id)}',${p.versao||1})" style="padding:5px 12px;border-radius:3px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--navy);color:var(--cream);border:none;cursor:pointer;font-family:inherit">Nova versão</button>
+              <button onclick="protocoloArquivar('${esc(p.id)}')" style="padding:5px 12px;border-radius:3px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--ink2);border:1px solid var(--border);cursor:pointer;font-family:inherit">Arquivar</button>
+            </div>
+          </div>`;
+        }).join(''));
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+function newProtocolo(){
+  openDrawer('Novo protocolo',`
+    <p class="dr-sub">Registre a maneira de fazer, antes que a pessoa que faz desapareça. Versionado, vigiado, revisável.</p>
+    <form id="np-form" class="dr-form">
+      <label><span class="dr-lab">Título</span><input type="text" name="titulo" required></label>
+      <label><span class="dr-lab">Área</span><input type="text" name="area" placeholder="ex: liderança · operações · curadoria"></label>
+      <label><span class="dr-lab">Conteúdo (o passo-a-passo)</span><textarea name="conteudo" rows="8" required></textarea></label>
+      <label><span class="dr-lab">Responsável</span><input type="text" name="responsavel" value="raphael@schifino.com.br"></label>
+      <label><span class="dr-lab">Próxima revisão</span><input type="date" name="proxima"></label>
+      <div id="np-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:11px 20px;font-size:13px">Registrar</button>
+    </form>
+  `,body=>{
+    body.querySelector('#np-form').addEventListener('submit',async ev=>{
+      ev.preventDefault();const f=ev.target;const r=body.querySelector('#np-result');r.innerHTML='<div class="dr-info">Salvando...</div>';
+      try{
+        const sb=window.__IP_SB;
+        const {error}=await sb.from('ip_protocolos').insert({titulo:f.titulo.value,area:f.area.value||null,conteudo:f.conteudo.value,responsavel:f.responsavel.value||null,revisao_planejada:f.proxima.value||null,versao:1,ativo:true});
+        if(error)throw error;
+        r.innerHTML='<div class="dr-ok">✓ Protocolo registrado.</div>';
+        setTimeout(()=>openProtocolos(),900);
+      }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+    });
+  });
+}
+async function protocoloVersionar(id,v){
+  if(!confirm('Criar versão '+(v+1)+'? A versão atual será arquivada.'))return;
+  const sb=window.__IP_SB;
+  try{
+    const {data:cur}=await sb.from('ip_protocolos').select('*').eq('id',id).single();
+    if(!cur)throw new Error('Protocolo não encontrado');
+    await sb.from('ip_protocolos').update({ativo:false}).eq('id',id);
+    const {id:_id,created_at:_ca,updated_at:_ua,...rest}=cur;
+    const {error}=await sb.from('ip_protocolos').insert({...rest,versao:(v||1)+1,ativo:true,ultima_revisao:new Date().toISOString().slice(0,10)});
+    if(error)throw error;
+    openProtocolos();
+  }catch(e){alert('Erro: '+e.message)}
+}
+async function protocoloArquivar(id){
+  if(!confirm('Arquivar este protocolo?'))return;
+  const sb=window.__IP_SB;
+  try{const {error}=await sb.from('ip_protocolos').update({ativo:false}).eq('id',id);if(error)throw error;openProtocolos()}
+  catch(e){alert('Erro: '+e.message)}
+}
+
+// ============================================================
+// RELACIONAMENTOS CRÍTICOS — ip_relacionamentos
+// ============================================================
+async function openRelac(){
+  openDrawer('Matriz de relacionamentos','<div id="rl-body"><div class="dr-info">Carregando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#rl-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_relacionamentos').select('*').order('vinculo_critico',{ascending:false}).order('updated_at',{ascending:false}).limit(150);
+      if(error)throw error;
+      if(!data||!data.length){t.innerHTML='<button class="btn btn-primary" style="margin-bottom:16px" onclick="newRelac()">+ Adicionar relacionamento</button><div class="dr-empty">Nenhum relacionamento mapeado ainda.</div>';return}
+      const semTitular=data.filter(r=>r.vinculo_critico&&!r.responsavel_interno).length;
+      t.innerHTML=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newRelac()">+ Adicionar relacionamento</button>`+
+        (semTitular?`<div style="padding:12px 14px;background:rgba(155,44,44,.06);border-left:3px solid var(--red);border-radius:4px;font-size:12px;color:var(--ink2);margin-bottom:14px"><strong>${semTitular}</strong> relacionamentos críticos sem titular interno — Knowledge Retention Watchdog ativo.</div>`:'')+
+        data.map(r=>`<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
+            <div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500">${esc(r.nome)}${r.organizacao?` <span style="color:var(--ink3);font-size:13px;font-style:italic">· ${esc(r.organizacao)}</span>`:''}</div>
+            ${r.vinculo_critico?`<span style="font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:rgba(155,44,44,.1);color:var(--red);padding:3px 8px;border-radius:10px;white-space:nowrap">Crítico</span>`:''}
+          </div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--ink3);margin-bottom:8px">${esc(r.papel||'')}${r.categoria?` · ${esc(r.categoria)}`:''}</div>
+          ${r.notas?`<div style="font-size:12px;color:var(--ink2);line-height:1.5;margin-bottom:8px;font-style:italic">${esc((r.notas||'').slice(0,250))}</div>`:''}
+          <div style="display:flex;gap:14px;font-size:11px;color:var(--ink3);flex-wrap:wrap">
+            ${r.responsavel_interno?`<span>titular: ${esc(r.responsavel_interno)}</span>`:'<span style="color:var(--red)">⚠ sem titular interno</span>'}
+            ${r.ultimo_contato?`<span>último contato: ${new Date(r.ultimo_contato).toLocaleDateString('pt-BR')}</span>`:''}
+            ${r.email?`<span>${esc(r.email)}</span>`:''}
+          </div>
+        </div>`).join('');
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+function newRelac(){
+  openDrawer('Adicionar relacionamento crítico',`
+    <p class="dr-sub">Vínculo que precisa de titular formal — o que sustenta a continuidade quando alguém vai.</p>
+    <form id="nr-form" class="dr-form">
+      <label><span class="dr-lab">Nome</span><input type="text" name="nome" required></label>
+      <label><span class="dr-lab">Papel</span><input type="text" name="papel" placeholder="ex: gerente de obras, prefeito, contador"></label>
+      <label><span class="dr-lab">Organização</span><input type="text" name="organizacao"></label>
+      <label><span class="dr-lab">Categoria</span><select name="categoria"><option value="cliente">cliente</option><option value="fornecedor">fornecedor</option><option value="parceiro">parceiro</option><option value="regulador">regulador</option><option value="institucional">institucional</option><option value="outro">outro</option></select></label>
+      <label><span class="dr-lab">Titular interno (responsável pela relação)</span><input type="text" name="responsavel_interno" required></label>
+      <label><span class="dr-lab">E-mail</span><input type="email" name="email"></label>
+      <label><span class="dr-lab">WhatsApp</span><input type="text" name="whatsapp" placeholder="+55..."></label>
+      <label><span class="dr-lab">Notas</span><textarea name="notas" rows="4"></textarea></label>
+      <label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" name="critico"><span style="font-size:13px;color:var(--ink2)">Marcar como vínculo crítico (vigia do Knowledge Retention Watchdog)</span></label>
+      <div id="nr-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:11px 20px;font-size:13px">Registrar</button>
+    </form>
+  `,body=>{
+    body.querySelector('#nr-form').addEventListener('submit',async ev=>{
+      ev.preventDefault();const f=ev.target;const r=body.querySelector('#nr-result');r.innerHTML='<div class="dr-info">Salvando...</div>';
+      try{
+        const sb=window.__IP_SB;
+        const {error}=await sb.from('ip_relacionamentos').insert({nome:f.nome.value,papel:f.papel.value||null,organizacao:f.organizacao.value||null,categoria:f.categoria.value,responsavel_interno:f.responsavel_interno.value,email:f.email.value||null,whatsapp:f.whatsapp.value||null,notas:f.notas.value||null,vinculo_critico:f.critico.checked});
+        if(error)throw error;
+        r.innerHTML='<div class="dr-ok">✓ Relacionamento registrado.</div>';
+        setTimeout(()=>openRelac(),900);
+      }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+    });
+  });
+}
+
+// ============================================================
+// RITUAIS — ip_rituais
+// ============================================================
+async function openRituais(){
+  openDrawer('Rituais &amp; cadências','<div id="rt-body"><div class="dr-info">Carregando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#rt-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.from('ip_rituais').select('*').eq('ativo',true).order('proxima_em',{ascending:true,nullsLast:true}).limit(50);
+      if(error)throw error;
+      const now=Date.now();
+      t.innerHTML=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newRitual()">+ Novo ritual</button>`+
+        (!data||!data.length?'<div class="dr-empty">Nenhum ritual cadastrado.</div>':
+        data.map(r=>{
+          const prox=r.proxima_em?new Date(r.proxima_em):null;
+          const dias=prox?Math.floor((prox.getTime()-now)/864e5):null;
+          const venc=dias!==null&&dias<0;
+          return `<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
+              <div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500">${esc(r.titulo)}</div>
+              <span class="pill gold">${esc(r.cadencia||r.tipo||'—')}</span>
+            </div>
+            ${r.agenda?`<div style="font-family:var(--serif);font-size:15px;color:var(--ink2);line-height:1.5;margin-bottom:8px;font-style:italic">"${esc((r.agenda||'').slice(0,200))}"</div>`:''}
+            <div style="display:flex;gap:14px;font-size:11px;color:var(--ink3);flex-wrap:wrap;margin-bottom:8px">
+              ${r.facilitador?`<span>facilitador: ${esc(r.facilitador)}</span>`:''}
+              ${r.duracao_min?`<span>${r.duracao_min} min</span>`:''}
+              ${r.participantes?`<span>${esc((r.participantes||'').slice(0,60))}</span>`:''}
+              ${prox?`<span style="color:${venc?'var(--red)':dias<=3?'var(--amber)':'var(--emerald)'};font-weight:500">${venc?'⚠ vencido há '+Math.abs(dias)+'d':'em '+dias+'d ('+prox.toLocaleDateString('pt-BR')+')'}</span>`:''}
+            </div>
+            <div style="display:flex;gap:6px">
+              <button onclick="ritualRealizado('${esc(r.id)}')" style="padding:5px 12px;border-radius:3px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--navy);color:var(--cream);border:none;cursor:pointer;font-family:inherit">Marcar realizado</button>
+              <button onclick="ritualReagendar('${esc(r.id)}')" style="padding:5px 12px;border-radius:3px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--ink2);border:1px solid var(--border);cursor:pointer;font-family:inherit">Reagendar</button>
+            </div>
+          </div>`;
+        }).join(''));
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+function newRitual(){
+  openDrawer('Novo ritual',`
+    <p class="dr-sub">Cultura é o que se repete sem aviso. Defina cadência, facilitador, próxima ocorrência.</p>
+    <form id="nrt-form" class="dr-form">
+      <label><span class="dr-lab">Título</span><input type="text" name="titulo" required placeholder="ex: Comitê de Cultura · Pulso Semanal"></label>
+      <label><span class="dr-lab">Cadência</span><select name="cadencia"><option value="semanal">semanal</option><option value="quinzenal">quinzenal</option><option value="mensal">mensal</option><option value="trimestral">trimestral</option><option value="anual">anual</option></select></label>
+      <label><span class="dr-lab">Duração (min)</span><input type="number" name="duracao" value="60" min="15" max="480"></label>
+      <label><span class="dr-lab">Facilitador</span><input type="text" name="facilitador"></label>
+      <label><span class="dr-lab">Participantes</span><input type="text" name="participantes" placeholder="ex: sócios · liderança · time integral"></label>
+      <label><span class="dr-lab">Agenda (o que se faz)</span><textarea name="agenda" rows="3"></textarea></label>
+      <label><span class="dr-lab">Próxima ocorrência</span><input type="date" name="proxima"></label>
+      <div id="nrt-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:11px 20px;font-size:13px">Cadastrar</button>
+    </form>
+  `,body=>{
+    body.querySelector('#nrt-form').addEventListener('submit',async ev=>{
+      ev.preventDefault();const f=ev.target;const r=body.querySelector('#nrt-result');r.innerHTML='<div class="dr-info">Salvando...</div>';
+      try{
+        const sb=window.__IP_SB;
+        const {error}=await sb.from('ip_rituais').insert({titulo:f.titulo.value,cadencia:f.cadencia.value,duracao_min:Number(f.duracao.value)||60,facilitador:f.facilitador.value||null,participantes:f.participantes.value||null,agenda:f.agenda.value||null,proxima_em:f.proxima.value||null,ativo:true});
+        if(error)throw error;
+        r.innerHTML='<div class="dr-ok">✓ Ritual cadastrado.</div>';
+        setTimeout(()=>openRituais(),900);
+      }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+    });
+  });
+}
+async function ritualRealizado(id){
+  const sb=window.__IP_SB;
+  const today=new Date().toISOString().slice(0,10);
+  try{
+    const {data:r}=await sb.from('ip_rituais').select('cadencia').eq('id',id).single();
+    const map={semanal:7,quinzenal:14,mensal:30,trimestral:90,anual:365};
+    const dias=map[r?.cadencia]||30;
+    const proxima=new Date(Date.now()+dias*864e5).toISOString().slice(0,10);
+    const {error}=await sb.from('ip_rituais').update({ultima_em:today,proxima_em:proxima}).eq('id',id);
+    if(error)throw error;
+    openRituais();
+  }catch(e){alert('Erro: '+e.message)}
+}
+async function ritualReagendar(id){
+  const nova=prompt('Nova data (formato YYYY-MM-DD):');if(!nova)return;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(nova)){alert('Formato inválido. Use YYYY-MM-DD.');return}
+  const sb=window.__IP_SB;
+  try{const {error}=await sb.from('ip_rituais').update({proxima_em:nova}).eq('id',id);if(error)throw error;openRituais()}
+  catch(e){alert('Erro: '+e.message)}
+}
+
+// ============================================================
+// BANCO DE HORAS PJ — fn_banco_horas_list / _add / _del
+// ============================================================
+async function openBancoHoras(){
+  openDrawer('Banco de Horas · meu saldo','<div id="bh-body"><div class="dr-info">Carregando saldo...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#bh-body');if(!sb)return;
+    try{
+      const {data,error}=await sb.rpc('fn_banco_horas_list');
+      if(error)throw error;
+      const entries=data?.entries||data?.entradas||(Array.isArray(data)?data:[]);
+      const saldo=data?.saldo??(entries.reduce((s,e)=>s+(e.tipo==='credito'?+e.horas:-e.horas),0));
+      t.innerHTML=`<div style="background:var(--cream2);padding:24px;border-radius:8px;margin-bottom:18px;text-align:center">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">Saldo atual</div>
+        <div style="font-family:var(--serif);font-size:48px;font-weight:500;color:${saldo>=0?'var(--emerald)':'var(--red)'};line-height:1">${saldo>=0?'+':''}${(+saldo).toFixed(1)}h</div>
+      </div>
+      <button class="btn btn-primary" style="margin-bottom:16px;width:100%" onclick="bancoLanc()">+ Lançar horas</button>
+      ${!entries.length?'<div class="dr-empty">Nenhum lançamento ainda. Comece registrando o que você viveu.</div>':
+      '<div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px">Lançamentos recentes</div>'+
+      entries.slice(0,30).map(e=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 13px;background:var(--white);border:1px solid var(--border);border-radius:4px;margin-bottom:6px;font-size:12px">
+        <div style="flex:1;min-width:0">
+          <div style="color:var(--navy);font-weight:500">${esc(e.descricao||e.categoria||'(sem descrição)')}</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:2px">${e.data?new Date(e.data).toLocaleDateString('pt-BR'):''} · ${esc(e.categoria||'—')}</div>
+        </div>
+        <div style="text-align:right;margin-left:10px">
+          <div style="font-family:var(--mono);font-size:15px;color:${e.tipo==='credito'?'var(--emerald)':'var(--red)'};font-weight:500">${e.tipo==='credito'?'+':'-'}${(+e.horas).toFixed(1)}h</div>
+          <button onclick="bancoDel('${esc(e.id)}')" style="font-size:10px;color:var(--ink4);background:none;border:none;cursor:pointer;margin-top:2px;text-decoration:underline">excluir</button>
+        </div>
+      </div>`).join('')}`;
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+function bancoLanc(){
+  openDrawer('Lançar horas',`
+    <p class="dr-sub">Autogestão: você lança o que viveu. Categorias livres, sem aprovação burocrática.</p>
+    <form id="bh-form" class="dr-form">
+      <label><span class="dr-lab">Data</span><input type="date" name="data" required value="${new Date().toISOString().slice(0,10)}"></label>
+      <label><span class="dr-lab">Tipo</span><select name="tipo"><option value="credito">crédito (acumular)</option><option value="debito">débito (usar)</option></select></label>
+      <label><span class="dr-lab">Horas</span><input type="number" name="horas" step="0.5" min="0.5" max="24" required></label>
+      <label><span class="dr-lab">Categoria</span><select name="categoria"><option value="hora_extra">hora extra</option><option value="cuidado_filho">cuidado_filho</option><option value="compensacao">compensação</option><option value="folga">folga usada</option><option value="outro">outro</option></select></label>
+      <label><span class="dr-lab">Descrição (opcional)</span><textarea name="descricao" rows="2"></textarea></label>
+      <div id="bh-result"></div>
+      <button type="submit" class="btn btn-primary" style="padding:11px 20px;font-size:13px">Lançar</button>
+    </form>
+  `,body=>{
+    body.querySelector('#bh-form').addEventListener('submit',async ev=>{
+      ev.preventDefault();const f=ev.target;const r=body.querySelector('#bh-result');r.innerHTML='<div class="dr-info">Lançando...</div>';
+      try{
+        const sb=window.__IP_SB;
+        const {error}=await sb.rpc('fn_banco_horas_add',{p:{data:f.data.value,tipo:f.tipo.value,horas:Number(f.horas.value),categoria:f.categoria.value,descricao:f.descricao.value||null}});
+        if(error)throw error;
+        r.innerHTML='<div class="dr-ok">✓ Lançamento registrado.</div>';
+        setTimeout(()=>openBancoHoras(),900);
+      }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+    });
+  });
+}
+async function bancoDel(id){
+  if(!confirm('Excluir este lançamento?'))return;
+  const sb=window.__IP_SB;
+  try{const {error}=await sb.rpc('fn_banco_horas_del',{p_id:id});if(error)throw error;openBancoHoras()}
+  catch(e){alert('Erro: '+e.message)}
+}
+
+// ============================================================
+// E-MAIL OUTBOX — ip_email_outbox
+// ============================================================
+async function openOutbox(){
+  openDrawer('E-mail Outbox','<div id="ob-body"><div class="dr-info">Carregando...</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#ob-body');if(!sb)return;
+    try{
+      const [pend,env,err]=await Promise.all([
+        sb.from('ip_email_outbox').select('*').eq('status','pendente').order('created_at',{ascending:false}).limit(30),
+        sb.from('ip_email_outbox').select('*').eq('status','enviado').order('enviado_em',{ascending:false}).limit(20),
+        sb.from('ip_email_outbox').select('*').or('status.eq.erro,status.eq.falhou').order('created_at',{ascending:false}).limit(15),
+      ]);
+      const tabs=[
+        {label:'Pendentes',cor:'#A86A1F',data:pend.data||[]},
+        {label:'Enviados',cor:'#2E8B6E',data:env.data||[]},
+        {label:'Falhas',cor:'#9B2C2C',data:err.data||[]},
+      ];
+      window.__OB_TABS=tabs;
+      t.innerHTML=`<div style="display:flex;gap:8px;margin-bottom:18px">${tabs.map((tb,i)=>`<button onclick="obTab(${i})" data-obtab="${i}" style="flex:1;padding:12px 8px;border-radius:6px;border:1px solid var(--border);background:${i===0?tb.cor+'18':'var(--white)'};color:${i===0?tb.cor:'var(--ink2)'};cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase">${tb.label}<br><strong style="font-family:var(--serif);font-size:22px;font-weight:500;letter-spacing:0">${tb.data.length}</strong></button>`).join('')}</div>
+      <div style="margin-bottom:14px;display:flex;gap:8px"><button onclick="sendTestEmail()" class="btn btn-ghost" style="padding:8px 14px;font-size:11px">+ Enfileirar teste</button></div>
+      <div id="ob-list"></div>`;
+      obTab(0);
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+  });
+}
+function obTab(i){
+  const tabs=window.__OB_TABS;if(!tabs)return;
+  document.querySelectorAll('[data-obtab]').forEach((b,idx)=>{
+    b.style.background=idx===i?tabs[idx].cor+'18':'var(--white)';
+    b.style.color=idx===i?tabs[idx].cor:'var(--ink2)';
+  });
+  const list=document.getElementById('ob-list');if(!list)return;
+  const data=tabs[i].data;
+  if(!data.length){list.innerHTML='<div class="dr-empty">Vazio.</div>';return}
+  list.innerHTML=data.map(e=>{
+    const para=Array.isArray(e.para)?e.para.join(', '):(e.para||'');
+    return `<div style="padding:11px 13px;background:var(--white);border:1px solid var(--border);border-radius:4px;margin-bottom:6px">
+      <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:4px">
+        <div style="color:var(--navy);font-weight:500;font-family:var(--serif);font-size:15px;line-height:1.2">${esc(e.assunto||'(sem assunto)')}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);white-space:nowrap">${e.created_at?new Date(e.created_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):''}</div>
+      </div>
+      <div style="font-size:11px;color:var(--ink3);margin-bottom:4px;word-break:break-all">para: ${esc(para)}${e.tentativas?` · ${e.tentativas} tentativas`:''}</div>
+      ${e.erro?`<div style="font-size:11px;color:var(--red);font-family:var(--mono);background:rgba(155,44,44,.06);padding:6px 8px;border-radius:3px;margin-top:6px">${esc((e.erro||'').slice(0,250))}</div>`:''}
+      ${e.contexto?`<div style="font-size:10px;font-family:var(--mono);color:var(--gold-deep);letter-spacing:.06em;margin-top:4px">contexto: ${esc(e.contexto)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+async function sendTestEmail(){
+  const dest=prompt('Enviar e-mail de teste para qual destinatário?');if(!dest)return;
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dest)){alert('E-mail inválido.');return}
+  const sb=window.__IP_SB;
+  try{
+    const {error}=await sb.from('ip_email_outbox').insert({para:[dest],assunto:'[TESTE] InnovaPeople Outbox',html:'<p style="font-family:Cormorant Garamond,Georgia,serif;font-size:18px;color:#0A1628">Teste de envio a partir do Centro de Comando CHRO.</p>',contexto:'teste-manual',status:'pendente'});
+    if(error)throw error;
+    alert('✓ Mensagem enfileirada. O dispatcher EF vai despachar na próxima rodada.');
+    openOutbox();
+  }catch(e){alert('Erro: '+e.message)}
+}
+
+// ============================================================
+// OLAP TENDÊNCIAS — fn_ip_bi_tendencias + Chart.js
+// ============================================================
+async function openOlap(){
+  openDrawer('OLAP · Tendências SDT',`
+    <p class="dr-sub">Delta percentual de engajamento em cada dimensão SDT comparando janela atual com anterior. K-anônimo (≥3 respostas por equipe).</p>
+    <div style="margin-bottom:16px;display:flex;gap:8px;align-items:center">
+      <label style="font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.08em">Janela:</label>
+      <select id="olap-janela" onchange="reloadOlap()" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;font:inherit;font-size:12px">
+        <option value="7">7 dias</option>
+        <option value="14" selected>14 dias</option>
+        <option value="30">30 dias</option>
+        <option value="90">90 dias</option>
+      </select>
+    </div>
+    <div style="margin-bottom:18px"><canvas id="olap-chart" style="max-width:100%;height:280px"></canvas></div>
+    <div id="olap-table"></div>
+  `,async body=>{await loadOlapData(14)});
+}
+async function reloadOlap(){
+  const j=Number(document.getElementById('olap-janela')?.value)||14;
+  await loadOlapData(j);
+}
+let _olapChart=null;
+async function loadOlapData(janela){
+  const sb=window.__IP_SB;if(!sb)return;
+  const tabEl=document.getElementById('olap-table');
+  if(tabEl)tabEl.innerHTML='<div class="dr-info">Carregando...</div>';
+  try{
+    const {data,error}=await sb.rpc('fn_ip_bi_tendencias',{p_mandato_id:null,p_janela_dias:janela});
+    if(error)throw error;
+    const dims=data?.dimensoes||data?.por_dimensao||(Array.isArray(data?.dims)?data.dims:[]);
+    if(!dims.length){
+      if(tabEl)tabEl.innerHTML='<div class="dr-empty">Sem dados suficientes na janela. K-anonimato exige ≥3 respostas por equipe.</div>';
+      if(_olapChart){_olapChart.destroy();_olapChart=null}
+      return;
+    }
+    if(tabEl){
+      tabEl.innerHTML='<table class="dt"><thead><tr><th>Dimensão</th><th class="num">Média</th><th class="num">Δ %</th><th class="num">N</th></tr></thead><tbody>'+
+        dims.map(d=>{
+          const delta=+(d.delta_pct||0);
+          const cor=delta<-10?'var(--red)':delta>10?'var(--emerald)':'var(--ink2)';
+          return `<tr><td style="text-transform:capitalize">${esc(d.dimensao||d.nome||'')}</td><td class="num">${(+d.media||0).toFixed(1)}</td><td class="num" style="color:${cor}">${d.delta_pct!=null?((delta>0?'+':'')+delta.toFixed(1)+'%'):'—'}</td><td class="num">${d.n||0}</td></tr>`;
+        }).join('')+'</tbody></table>';
+    }
+    const canvas=document.getElementById('olap-chart');
+    if(canvas&&window.Chart){
+      if(_olapChart)_olapChart.destroy();
+      _olapChart=new window.Chart(canvas.getContext('2d'),{
+        type:'bar',
+        data:{
+          labels:dims.map(d=>d.dimensao||d.nome),
+          datasets:[
+            {label:'Janela atual',data:dims.map(d=>+d.media||0),backgroundColor:'#C4A35A',borderRadius:3},
+            {label:'Anterior',data:dims.map(d=>{const m=+d.media||0;const dp=+(d.delta_pct||0);return dp===0?m:m/(1+dp/100)}),backgroundColor:'#D4BA7A88',borderRadius:3},
+          ]
+        },
+        options:{
+          responsive:true,maintainAspectRatio:false,
+          scales:{y:{beginAtZero:true,max:10,ticks:{font:{family:'JetBrains Mono',size:10}}},x:{ticks:{font:{family:'Outfit',size:11}}}},
+          plugins:{legend:{position:'top',labels:{font:{family:'Outfit',size:11},color:'#3A3F47'}}}
+        }
+      });
+    }
+  }catch(e){
+    if(tabEl)tabEl.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>';
+  }
+}
+
 function syncCalNow(){notImpl('Sync Google Calendar (EF innovapeople-calendar-agendar)')}
 function previewDigest(){notImpl('Preview do digest semanal (v_ip_digest_semanal)')}
 function sendDigestNow(){notImpl('Disparar digest (EF innovapeople-digest-semanal)')}
-function openBancoHoras(){notImpl('Banco de Horas · reuso UI Horigens')}
-function bancoLanc(){notImpl('Lançar horas (RPC fn_banco_horas_add)')}
-function openOutbox(){notImpl('E-mail outbox · próxima rodada')}
-function sendTestEmail(){notImpl('Teste de envio (RPC fn_ip_send_email)')}
 function openWaSend(){notImpl('Envio WhatsApp (EF whatsapp-direto)')}
 function openWaTemplates(){notImpl('Templates WhatsApp')}
 function openLgpd(){notImpl('Painel LGPD · auditoria de retenção')}
 function defineSpec(mod){alert('Spec aberta para: '+mod+'\n\nPróximo passo: definir contrato de dados, UI mínima viável e gatilhos de automação.')}
 function seedSkill(){notImpl('Popular ip_skill_map com sample')}
-function openOlap(){notImpl('Painel OLAP fn_ip_bi_tendencias 90d · gráficos Chart.js')}
-function exportOlap(){notImpl('Exportar CSV de tendências')}
+function exportOlap(){notImpl('Exportar CSV de tendências (versão CSV)')}
 function openTriggers(){notImpl('Listar trg_* em ip_eventos')}
 function openMatteringStatus(){alert('Mattering — estado atual:\n\n· Agente Mattering Coach: operacional (vigia propósito + pertencimento < 6).\n· Frente conceitual: em construção na InnovaSphere ao lado do AIPrev.\n· Próximo passo conjunto: dimensão longitudinal (mattering trajectory) com retroalimentação visível ao colaborador.\n\nO que evoluir lá, importa para cá. O que aqui produzirmos de bom, modela lá.')}
 function notImpl(name){alert('Em construção: '+name+'\n\nO contrato de dados está mapeado — falta a UI dedicada na próxima rodada.')}
