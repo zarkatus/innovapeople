@@ -580,10 +580,12 @@ async function enviarMensagem(){
       }
       console.error('[wa-DIAG] EF erro:',{reason,message,raw:error.message});
       if(reason==='phone_not_registered'){toast('Número não está no WhatsApp · '+(message||'lixo do webhook'));throw new Error(message||'phone_not_registered')}
+      if(reason==='self_send_blocked'){toast('Self-send bloqueado · '+(message||'use outro número'));throw new Error(message||'self_send_blocked')}
       throw error;
     }
     if(data&&data.error){console.error('[wa-DIAG] EF retornou erro no body:',data);throw new Error(data.error+(data.detail?' · '+data.detail:''))}
     if(data&&data.reason==='phone_not_registered'){toast('Número não está no WhatsApp · '+(data.message||''));console.error('[wa-DIAG] phone_not_registered:',data);throw new Error(data.message||'phone_not_registered')}
+    if(data&&data.reason==='self_send_blocked'){toast('Self-send bloqueado · '+(data.message||''));console.error('[wa-DIAG] self_send_blocked:',data);throw new Error(data.message||'self_send_blocked')}
     if(data&&data.persist_error)console.warn('[wa-DIAG] persist warn:',data.persist_error);
     console.log('[wa-DIAG] envio OK, evolution_status:',data?.evolution_status,'persisted_id:',data?.persisted_id);
     toast('Mensagem enviada');

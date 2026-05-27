@@ -565,9 +565,11 @@ async function enviarMensagem(){
       let reason=null,message=null;
       try{const respText=await error.context?.response?.text();if(respText){const j=JSON.parse(respText);reason=j.reason;message=j.message}}catch{}
       if(reason==='phone_not_registered'){toast('Número não está no WhatsApp · '+(message||'lixo do webhook'));throw new Error(message||'phone_not_registered')}
+      if(reason==='self_send_blocked'){toast('Self-send bloqueado · '+(message||'use outro número'));throw new Error(message||'self_send_blocked')}
       throw error;
     }
     if(data&&data.reason==='phone_not_registered'){toast('Número não está no WhatsApp · '+(data.message||''));throw new Error(data.message||'phone_not_registered')}
+    if(data&&data.reason==='self_send_blocked'){toast('Self-send bloqueado · '+(data.message||''));throw new Error(data.message||'self_send_blocked')}
     if(data&&data.persist_error)console.warn('[wa] persist warn:',data.persist_error);
     toast('Mensagem enviada');
     await loadMensagens(_state.convId);
