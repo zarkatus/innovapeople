@@ -483,9 +483,15 @@ function renderThread(){
   <div class="composer">
     <div class="composer-tools">
       <button class="tool-btn" onclick="toggleTemplates()" style="position:relative">Templates</button>
-      <button class="tool-btn" onclick="alert('Em breve: anexar imagem')">Anexar</button>
-      <button class="tool-btn" onclick="alert('Em breve: agendar envio')">Agendar</button>
+      <button class="tool-btn" onclick="document.getElementById('att-input').click()">Anexar imagem</button>
+      <input type="file" id="att-input" accept="image/*" style="display:none" onchange="handleAttach(this)">
+      <button class="tool-btn" onclick="agendarEnvio()">Agendar</button>
       <div style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.06em">Hash chain ativo · auditado</div>
+    </div>
+    <div id="att-preview" style="display:none;padding:8px 12px;background:var(--cream2);border-radius:8px;margin-bottom:4px;align-items:center;gap:10px">
+      <img id="att-thumb" src="" style="width:48px;height:48px;object-fit:cover;border-radius:4px">
+      <div style="flex:1;font-size:12px;color:var(--ink2)"><span id="att-name"></span> <span id="att-size" style="color:var(--ink3);font-family:var(--mono);font-size:10px"></span></div>
+      <button onclick="removeAttach()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:18px;padding:0 8px">×</button>
     </div>
     <div class="tpl-menu" id="tpl-menu"></div>
     <div class="composer-row">
@@ -514,36 +520,53 @@ async function refreshThread(){
 async function enviarMensagem(){
   const ta=document.getElementById('composer-input');
   const txt=(ta?.value||'').trim();
-  if(!txt)return;
+  if(!txt&&!_attach)return;
   const c=_state.conversas.find(c=>c.conversa_id===_state.convId);
   if(!c){toast('Conversa não encontrada');return}
   const numero=(c.numero_e164||'').replace(/\D/g,'');
   if(!numero){toast('Número inválido');return}
-  // Optimistic UI: adiciona mensagem
+
+  document.getElementById('send-btn').disabled=true;
+
+  // Se tem anexo, upload primeiro
+  let mediaUrl=null,msgType='text';
+  if(_attach){
+    msgType='image';
+    const up=await uploadAttach();
+    if(!up){toast('Erro no upload');document.getElementById('send-btn').disabled=false;return}
+    mediaUrl=up.url;
+  }
+
+  // Optimistic UI
   const tempId='tmp-'+Date.now();
-  const optMsg={id:tempId,conversation_id:_state.convId,direction:'out',message_type:'text',content:txt,created_at:new Date().toISOString(),status:'sent',sent_by:window.__IP_USER_EMAIL||''};
+  const optMsg={id:tempId,conversation_id:_state.convId,direction:'out',message_type:msgType,content:txt,media_url:mediaUrl,created_at:new Date().toISOString(),status:'sent',sent_by:window.__IP_USER_EMAIL||''};
   _state.mensagens.push(optMsg);
   ta.value='';ta.style.height='auto';
+  removeAttach();
   renderThread();
-  document.getElementById('send-btn').disabled=true;
+
   try{
-    const {data,error}=await sb().functions.invoke('whatsapp-direto',{
-      body:{action:'send',type:'text',number:numero,text:txt}
-    });
+    const payload={action:'send',number:numero};
+    if(msgType==='image'){
+      payload.type='image';payload.url=mediaUrl;payload.caption=txt||'';
+    }else{
+      payload.type='text';payload.text=txt;
+    }
+    const {data,error}=await sb().functions.invoke('whatsapp-direto',{body:payload});
     if(error)throw error;
-    // Insere registro na tabela wa_messages se EF não fizer isso (fallback)
     try{
       await sb().from('wa_messages').insert({
         conversation_id:_state.convId,
         contact_id:c.contato_id,
         direction:'outbound',
-        message_type:'text',
+        message_type:msgType,
         content:txt,
+        media_url:mediaUrl,
         status:'sent',
         sent_by:window.__IP_USER_EMAIL||'',
         evo_message_id:data?.messageId||data?.id||null,
       });
-      await sb().from('wa_conversations').update({last_message_preview:txt.slice(0,200),last_message_at:new Date().toISOString()}).eq('id',_state.convId);
+      await sb().from('wa_conversations').update({last_message_preview:(txt||'[imagem]').slice(0,200),last_message_at:new Date().toISOString()}).eq('id',_state.convId);
     }catch(insErr){console.warn('[wa] insert fallback',insErr)}
     toast('Mensagem enviada');
     await loadMensagens(_state.convId);
@@ -551,7 +574,6 @@ async function enviarMensagem(){
   }catch(e){
     console.error('[wa] enviar',e);
     toast('Erro: '+e.message);
-    // Marca mensagem como failed
     const m=_state.mensagens.find(m=>m.id===tempId);
     if(m){m.status='failed';renderThread()}
   }finally{
@@ -692,6 +714,74 @@ function renderPerfil(){
   </div>`;
 
   document.getElementById('right').innerHTML=html;
+}
+
+// ============================================================
+// BLOCO E — UPLOAD MÍDIA + AGENDAR
+// ============================================================
+let _attach=null;
+async function handleAttach(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>5*1024*1024){toast('Imagem máx 5MB');input.value='';return}
+  _attach={file,reader:null};
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('att-thumb').src=e.target.result;
+    document.getElementById('att-name').textContent=file.name;
+    document.getElementById('att-size').textContent='· '+(file.size/1024).toFixed(0)+'KB';
+    document.getElementById('att-preview').style.display='flex';
+    _attach.dataUrl=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function removeAttach(){
+  _attach=null;
+  document.getElementById('att-input').value='';
+  document.getElementById('att-preview').style.display='none';
+}
+async function uploadAttach(){
+  if(!_attach)return null;
+  try{
+    // Upload pra Storage bucket wa-media (fallback: passa data URL direto)
+    const f=_attach.file;
+    const path=`wa-out/${Date.now()}-${f.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+    const {data,error}=await sb().storage.from('wa-media').upload(path,f,{cacheControl:'3600',upsert:false,contentType:f.type});
+    if(error){
+      console.warn('[wa] storage upload falhou, usando data URL',error);
+      return {url:_attach.dataUrl,fallback:'data-url'};
+    }
+    const {data:pub}=sb().storage.from('wa-media').getPublicUrl(path);
+    return {url:pub.publicUrl,path};
+  }catch(e){
+    console.warn('[wa] upload erro',e);
+    return {url:_attach.dataUrl,fallback:'data-url'};
+  }
+}
+
+function agendarEnvio(){
+  const ta=document.getElementById('composer-input');
+  const txt=(ta?.value||'').trim();
+  if(!txt){toast('Escreva a mensagem primeiro');return}
+  const when=prompt('Agendar para quando? (formato YYYY-MM-DD HH:MM, ex: 2026-06-15 14:30)');
+  if(!when)return;
+  const dt=new Date(when.replace(' ','T'));
+  if(isNaN(dt.getTime())){toast('Data inválida');return}
+  if(dt<new Date()){toast('Data no passado');return}
+  const c=_state.conversas.find(c=>c.conversa_id===_state.convId);
+  if(!c){toast('Conversa não encontrada');return}
+  sb().from('wa_queue').insert({
+    contact_id:c.contato_id,
+    phone:(c.numero_e164||'').replace(/\D/g,''),
+    message_content:txt,
+    scheduled_at:dt.toISOString(),
+    status:'pending',
+    created_by:window.__IP_USER_EMAIL||null,
+    max_attempts:3,
+  }).then(({error})=>{
+    if(error){toast('Erro: '+error.message);return}
+    toast('Agendado para '+dt.toLocaleString('pt-BR'));
+    ta.value='';ta.style.height='auto';
+  });
 }
 
 // ============================================================
