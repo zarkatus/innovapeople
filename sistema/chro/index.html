@@ -1271,55 +1271,71 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
 // ============================================================
 // FEATURE 1 — PULSO DISPARAR (EF innovapeople-pulso-disparar)
 // ============================================================
-function openPulseDisparar(){
+async function openPulseDisparar(){
   openDrawer('Disparar pulso', `
-    <p class="dr-sub">Gera tokens anônimos com validade de 14 dias e enfileira convites no outbox de e-mail.</p>
+    <p class="dr-sub">Gera tokens anônimos válidos por 14 dias e enfileira um convite personalizado para cada destinatário no outbox de e-mail.</p>
     <form id="pd-form" class="dr-form">
-      <label><span class="dr-lab">Quantos convites</span><input type="number" name="qtd" value="10" min="3" max="500" required></label>
-      <label><span class="dr-lab">Equipe (opcional)</span><input type="text" name="equipe" placeholder="ex: liderança"></label>
+      <label><span class="dr-lab">Trabalho (mandato)</span><select name="mandato_id" id="pd-mandato" required><option value="">— escolha um trabalho —</option></select></label>
+      <label><span class="dr-lab">Equipe (opcional)</span><input type="text" name="equipe" placeholder="ex: liderança sênior"></label>
       <label><span class="dr-lab">Papel (opcional)</span><input type="text" name="papel" placeholder="ex: gerente"></label>
-      <label><span class="dr-lab">Mensagem custom (opcional)</span><textarea name="msg" rows="4" placeholder="Texto adicional no convite — Cormorant Garamond, tom InnovaPeople."></textarea></label>
-      <label><span class="dr-lab">Lista de e-mails (opcional · um por linha; senão dispara só os tokens)</span><textarea name="emails" rows="5" placeholder="nome@empresa.com&#10;outro@empresa.com" style="font-family:var(--mono);font-size:12px"></textarea></label>
+      <label><span class="dr-lab">Mensagem personalizada (opcional)</span><textarea name="msg" rows="3" placeholder="Texto extra no convite — tom InnovaPeople."></textarea></label>
+      <label><span class="dr-lab">Destinatários · um por linha (formato: <em>Nome &lt;email@empresa.com&gt;</em> ou só <em>email@empresa.com</em>)</span><textarea name="dests" rows="6" required placeholder="Ana Silva &lt;ana@empresa.com&gt;&#10;joao@empresa.com&#10;Mariana &lt;mari@empresa.com&gt;" style="font-family:var(--mono);font-size:12px"></textarea></label>
       <div id="pd-result"></div>
-      <button type="submit" class="btn btn-primary" style="padding:12px 22px;font-size:13px">Gerar &amp; enfileirar</button>
+      <button type="submit" class="btn btn-primary" style="padding:12px 22px;font-size:13px">Gerar tokens &amp; enfileirar e-mails</button>
     </form>
-  `, (body)=>{
+  `, async (body)=>{
+    const sb=window.__IP_SB;
+    const sel=body.querySelector('#pd-mandato');
+    try{
+      const {data}=await sb.from('ip_mandatos').select('id,empresa,estagio').neq('estagio','encerrado').order('criado_em',{ascending:false});
+      (data||[]).forEach(m=>{
+        const o=document.createElement('option');o.value=m.id;o.textContent=`${m.empresa} · ${m.estagio||'—'}`;sel.appendChild(o);
+      });
+      if(!data||!data.length){
+        const o=document.createElement('option');o.value='';o.textContent='(nenhum trabalho ativo — crie um primeiro)';o.disabled=true;sel.appendChild(o);
+      }
+    }catch(e){console.warn('[pd] mandatos',e)}
     body.querySelector('#pd-form').addEventListener('submit', async (ev)=>{
       ev.preventDefault();
       const f=ev.target;
       const result=body.querySelector('#pd-result');
       result.innerHTML='<div class="dr-info">Gerando tokens via Edge Function...</div>';
       try{
-        const sb=window.__IP_SB;if(!sb)throw new Error('Supabase não carregou');
-        const emails=(f.emails.value||'').split(/\r?\n/).map(s=>s.trim()).filter(s=>s.includes('@'));
+        const dests=parseDestinatarios(f.dests.value);
+        if(!dests.length)throw new Error('Forneça ao menos um destinatário com e-mail válido.');
         const payload={
-          quantidade:Number(f.qtd.value)||10,
+          mandato_id:f.mandato_id.value,
           equipe:f.equipe.value||null,
           papel:f.papel.value||null,
-          mensagem_custom:f.msg.value||null,
-          emails:emails.length?emails:null,
+          destinatarios:dests,
+          mensagem_personalizada:f.msg.value||null,
         };
-        let res;
-        try{
-          const {data,error}=await sb.functions.invoke('innovapeople-pulso-disparar',{body:payload});
-          if(error)throw error;
-          res=data;
-        }catch(efErr){
-          // fallback: chama RPC fn_ip_pulso_token_gerar diretamente
-          console.warn('[pulso] EF falhou, tentando RPC fallback',efErr);
-          const {data:tokens,error:rpcErr}=await sb.rpc('fn_ip_pulso_token_gerar',{p_quantidade:payload.quantidade,p_equipe:payload.equipe,p_papel:payload.papel});
-          if(rpcErr)throw rpcErr;
-          res={tokens_gerados:Array.isArray(tokens)?tokens.length:payload.quantidade,via:'rpc-fallback'};
+        const {data,error}=await sb.functions.invoke('innovapeople-pulso-disparar',{body:payload});
+        if(error)throw error;
+        const ok=(data.enviados||[]).filter(e=>e.outbox_id).length;
+        const fail=(data.enviados||[]).filter(e=>e.erro);
+        let html=`<div class="dr-ok">✓ <strong>${ok}</strong> de <strong>${data.total||dests.length}</strong> convites enfileirados no outbox.</div>`;
+        if(fail.length){
+          html+=`<div class="dr-err" style="margin-top:10px"><strong>${fail.length}</strong> falharam:<br>${fail.slice(0,5).map(f=>'· '+esc(f.email)+' — '+esc(f.erro)).join('<br>')}</div>`;
         }
-        const n=res?.tokens_gerados||res?.gerados||res?.count||payload.quantidade;
-        const ob=res?.outbox_inseridos||res?.emails_enfileirados||(emails.length||'—');
-        result.innerHTML=`<div class="dr-ok">✓ <strong>${n}</strong> convites gerados.<br>Outbox: <strong>${ob}</strong> mensagens enfileiradas.${res?.via?' <em>('+res.via+')</em>':''}</div>`;
+        result.innerHTML=html;
         loadPulso(sb);loadHeroMetrics(sb);
       }catch(e){
         result.innerHTML='<div class="dr-err">Erro: '+esc(e.message||String(e))+'</div>';
       }
     });
   });
+}
+function parseDestinatarios(raw){
+  return (raw||'').split(/\r?\n/).map(line=>{
+    line=line.trim();if(!line)return null;
+    // formato "Nome <email>"
+    const m=line.match(/^(.+?)\s*<([^>]+)>\s*$/);
+    if(m){const email=m[2].trim();if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return{nome:m[1].trim(),email}}
+    // só email
+    if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(line))return{email:line};
+    return null;
+  }).filter(Boolean);
 }
 function openPulseDash(){openOlap()}
 
