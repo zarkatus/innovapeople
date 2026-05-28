@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>ToolBox · Inteligência · IA</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/sistema/toolbox/_shared/toolbox.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script src="/sistema/toolbox/_shared/toolbox.js"></script>
+<script>TBAuth.init('toolbox-inteligencia');</script>
+</head>
+<body>
+
+<nav class="top"><div class="row">
+  <a class="brand" href="/sistema/"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="14"/><path d="M16 6 v20 M6 16 h20"/></svg><div><span class="wm">innova · people</span><span class="sub">Tier One</span></div></a>
+  <div class="nav"><a href="/sistema/">Dashboard</a><a href="/sistema/toolbox/" class="active">ToolBox</a><a href="/sistema/chro/">CHRO</a><a href="/sistema/agentes.html">Agentes IA</a><a href="/sistema/whatsapp/">WhatsApp</a><a href="/sistema/bastidores/">Bastidores</a></div>
+  <div class="user">olá, <strong id="uname">—</strong></div>
+</div></nav>
+
+<nav class="subnav"><div class="wrap">
+  <a href="/sistema/toolbox/">Comando</a>
+  <a href="/sistema/toolbox/gente/">Gente · Mattering</a>
+  <a href="/sistema/toolbox/estrategia/">Estratégia · OKRs</a>
+  <a href="/sistema/toolbox/operacoes/">Operações · Compliance</a>
+  <a href="/sistema/toolbox/pipeline/">Pipeline · Curadoria</a>
+  <a href="/sistema/toolbox/inteligencia/" class="active">Inteligência · IA</a>
+  <span class="scope-tag">Tier One · Interno</span>
+</div></nav>
+
+<section class="hero"><div class="wrap">
+  <div class="eyebrow">Inteligência · IA · Analytics</div>
+  <h1>5 <em>Agentes</em> vigiando 24/7</h1>
+  <div class="tagline">Agentes IA determinísticos cruzam sinais de pulso, mandatos, eventos e governança. 9-Box, sucessão, benchmarks Korn Ferry/Gallup/OHI/Peakon. Pulse analytics longitudinal.</div>
+</div></section>
+
+<div class="comment-exec">
+  <div class="icon">"</div>
+  <div class="content">
+    <div class="label">Síntese · Sinais Cruzados pelos Agentes</div>
+    <div class="body" id="exec-comment">Cruzando runs e sugestões…</div>
+  </div>
+</div>
+
+<div class="kpis">
+  <div class="kpi hero"><div class="lab">Agentes ativos</div><div class="val" id="k-ag">—<span class="un">/5</span></div><div class="note">cron diário 07:30 UTC</div></div>
+  <div class="kpi"><div class="lab">Runs 7d</div><div class="val" id="k-runs">—</div><div class="note">execuções concluídas</div></div>
+  <div class="kpi" id="k-sug-card"><div class="lab">Sugestões pendentes</div><div class="val" id="k-sug">—</div><div class="note">de revisão</div></div>
+  <div class="kpi"><div class="lab">Pulse Analytics</div><div class="val" id="k-pulse">—</div><div class="note">respostas 30d</div></div>
+</div>
+
+<div class="hub">
+
+  <!-- 5 AGENTES -->
+  <div class="panel s12 hero-card">
+    <div class="p-h"><div class="t"><span class="dot"></span>5 Agentes IA · Status & Histórico</div><a class="openlink" href="/sistema/agentes.html">painel completo →</a></div>
+    <div class="p-b" id="b-agents"><div class="empty-skeleton"><div class="bar w85"></div><div class="bar w70"></div><div class="bar w50"></div></div></div>
+  </div>
+
+  <!-- 9-BOX MATRIX -->
+  <div class="panel s6">
+    <div class="p-h"><div class="t"><span class="dot idle"></span>9-Box Grid · Performance × Potencial</div></div>
+    <div class="p-b">
+      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:13px;margin-bottom:12px">Korn Ferry 9-box: cruzamento de performance (OKRs) com potencial (assessment 4D + Pulse). Calibração semestral pelo comitê CHRO.</div>
+      <div class="box9" style="margin:0 auto">
+        <div class="cell"><div class="lab">Alta Perf · Baixo Pot</div><div class="nbr">—</div></div>
+        <div class="cell hi"><div class="lab">Alta Perf · Médio Pot</div><div class="nbr">—</div></div>
+        <div class="cell hi"><div class="lab">Alta Perf · Alto Pot</div><div class="nbr" style="color:var(--gold)">★</div></div>
+        <div class="cell"><div class="lab">Média Perf · Baixo Pot</div><div class="nbr">—</div></div>
+        <div class="cell"><div class="lab">Média Perf · Médio Pot</div><div class="nbr">—</div></div>
+        <div class="cell hi"><div class="lab">Média Perf · Alto Pot</div><div class="nbr">—</div></div>
+        <div class="cell crit"><div class="lab">Baixa Perf · Baixo Pot</div><div class="nbr">—</div></div>
+        <div class="cell"><div class="lab">Baixa Perf · Médio Pot</div><div class="nbr">—</div></div>
+        <div class="cell"><div class="lab">Baixa Perf · Alto Pot</div><div class="nbr">—</div></div>
+      </div>
+      <div style="margin-top:14px;font-size:11px;color:var(--cream-dim);text-align:center;font-style:italic;font-family:var(--serif)">★ High-potentials · ⚠ at-risk · agente FC-13 atualiza diariamente</div>
+    </div>
+  </div>
+
+  <!-- SUCCESSION PLANNING -->
+  <div class="panel s6">
+    <div class="p-h"><div class="t"><span class="dot idle"></span>Succession Planning</div></div>
+    <div class="p-b">
+      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:13px;margin-bottom:12px">FC-13 identifica successors por papel crítico, cruzando OKRs (performance), assessment 4D (potencial) e Pulse (engagement). Readiness 6D por pessoa.</div>
+      <div class="stat-line"><div class="v">FC-13</div><div class="l">Agente Sucessão</div><div class="badge">cron diário</div></div>
+      <div class="stat-line"><div class="v">—</div><div class="l">Sucessores identificados</div><div class="badge">pipeline</div></div>
+      <div class="stat-line"><div class="v">—</div><div class="l">Papéis críticos cobertos</div><div class="badge">readiness</div></div>
+      <div class="stat-line"><div class="v">—</div><div class="l">Bench depth (média)</div><div class="badge">resiliência</div></div>
+      <div style="margin-top:12px;padding:11px 14px;background:var(--navy-raised);border-left:2px solid var(--gold);font-size:11.5px;color:var(--cream-muted);font-style:italic;font-family:var(--serif)">Tabela <code>ip_sucessao_plano</code> aplicada; primeira identificação dispara após cadastrar pessoas e papéis.</div>
+    </div>
+  </div>
+
+  <!-- PULSE ANALYTICS -->
+  <div class="panel s8">
+    <div class="p-h"><div class="t"><span class="dot" id="d-pulse"></span>Pulse Analytics · Tendência Engagement × Margem</div></div>
+    <div class="p-b">
+      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:13px;margin-bottom:14px">Correlação clássica Gallup: organizações com engagement +10% têm margem operacional +14% em 18m (r≈0.74). Pulse Analytics monitora ambas as séries.</div>
+      <div id="pulse-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+        <div class="said dim"><div class="l">RESPOSTAS 30D</div><div class="v" id="pa-30">—</div><div class="n">k≥3 anônimo</div></div>
+        <div class="said dim"><div class="l">EQUIPES</div><div class="v" id="pa-eq">—</div><div class="n">com pulso ativo</div></div>
+        <div class="said dim"><div class="l">SAID MÉDIO</div><div class="v" id="pa-said">—<span class="un">/4</span></div><div class="n">últimos 30d</div></div>
+        <div class="said dim"><div class="l">VARIAÇÃO Δ</div><div class="v" id="pa-delta">—</div><div class="n">vs período anterior</div></div>
+      </div>
+      <div style="margin-top:14px;font-size:11px;color:var(--cream-dim);font-style:italic;font-family:var(--serif)">Agente Pulse Anomaly emite sugestão sempre que variação semanal &gt; 0.5σ por equipe.</div>
+    </div>
+  </div>
+
+  <!-- BENCHMARK INTELLIGENCE -->
+  <div class="panel s4">
+    <div class="p-h"><div class="t"><span class="dot"></span>Benchmark</div></div>
+    <div class="p-b">
+      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:12.5px;margin-bottom:10px">Datasources globais para contextualização de scores.</div>
+      <div class="stat-line"><div class="v" style="font-size:18px">4B</div><div class="l">Korn Ferry · 70M assess.</div><div class="badge">70% F500</div></div>
+      <div class="stat-line"><div class="v" style="font-size:18px">2.7M</div><div class="l">Gallup · 96K BUs</div><div class="badge">54 ind.</div></div>
+      <div class="stat-line"><div class="v" style="font-size:18px">7M+</div><div class="l">McKinsey OHI · 2.500+ orgs</div><div class="badge">org health</div></div>
+      <div class="stat-line"><div class="v" style="font-size:18px">1B+</div><div class="l">Peakon · NLP 60+ idiomas</div><div class="badge">listening</div></div>
+    </div>
+  </div>
+
+  <!-- SUGESTÕES PENDENTES DETALHE -->
+  <div class="panel s12">
+    <div class="p-h"><div class="t"><span class="dot" id="d-sug"></span>Sugestões dos Agentes · Pendentes de Revisão</div><a class="openlink" href="/sistema/chro/">revisar →</a></div>
+    <div class="p-b" id="b-sug"><div class="empty-skeleton"><div class="bar w85"></div><div class="bar w70"></div><div class="bar w50"></div></div></div>
+  </div>
+</div>
+
+<div class="foot">ToolBox · <strong>Tier One</strong> · Inteligência · IA · Analytics longitudinal</div>
+<div id="toast"></div>
+
+<script>
+function boot(){document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';loadAll();setInterval(loadAll,90000)}
+async function loadAll(){await Promise.all([loadKpis(),loadAgents(),loadPulseAnalytics(),loadSug(),loadComment()])}
+
+async function loadKpis(){
+  const sb=window.__IP_SB;
+  const [runs7,sug,pulse30]=await Promise.all([
+    TB.safe(()=>sb.from('ip_agent_runs').select('id',{count:'exact',head:true}).gte('iniciado_em',new Date(Date.now()-7*86400e3).toISOString()),{count:0}),
+    TB.safe(()=>sb.from('ip_agent_sugestoes').select('id',{count:'exact',head:true}).eq('status','pendente'),{count:0}),
+    TB.safe(()=>sb.from('ip_pulsos').select('id',{count:'exact',head:true}).gte('respondido_em',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
+  ]);
+  document.getElementById('k-ag').innerHTML='5<span class="un">/5</span>';
+  document.getElementById('k-runs').textContent=runs7.count||0;
+  document.getElementById('k-sug').textContent=sug.count||0;
+  document.getElementById('k-sug-card').classList.toggle('alert',(sug.count||0)>0);
+  document.getElementById('k-pulse').textContent=pulse30.count||0;
+}
+
+async function loadAgents(){
+  const sb=window.__IP_SB;
+  const AG=[
+    {k:'pulse_anomaly',n:'Pulse Anomaly',d:'Variação anômala no engajamento (k≥3)',cron:'07:30 UTC diário'},
+    {k:'knowledge_retention',n:'Knowledge Retention',d:'Concentração de conhecimento crítico',cron:'07:30 UTC diário'},
+    {k:'clock_drift',n:'Clock Drift',d:'Defasagem entre decisão registrada e execução',cron:'07:30 UTC diário'},
+    {k:'mattering',n:'Mattering',d:'Pertencimento e sentido (SAID Framework)',cron:'07:30 UTC diário'},
+    {k:'critic_org',n:'Critic-Org',d:'Crítica sistêmica cross-domain',cron:'07:30 UTC diário'},
+  ];
+  const {data}=await TB.safe(()=>sb.from('ip_agent_runs').select('agente,iniciado_em,status,sugestoes_geradas').order('iniciado_em',{ascending:false}).limit(40),{data:[]});
+  const ult={};
+  for(const r of (data||[])){if(!ult[r.agente])ult[r.agente]=r}
+  document.getElementById('b-agents').innerHTML=AG.map(a=>{
+    const u=ult[a.k];
+    const tag=u?(u.status==='concluido'?'<span class="tag ok">ok</span>':`<span class="tag warn">${TB.esc(u.status)}</span>`):'<span class="tag muted">idle</span>';
+    const sg=u?.sugestoes_geradas||0;
+    return `<div class="row-item"><div class="ico">${TB.initials(a.n)}</div><div class="body"><div class="nm">${TB.esc(a.n)}</div><div class="desc">${TB.esc(a.d)} <span style="opacity:.5">· ${TB.esc(a.cron)}</span></div></div>${tag}<span class="tag info">${sg} sug</span><div class="time">${TB.esc(u?TB.fmtRel(u.iniciado_em):'nunca')}</div></div>`;
+  }).join('');
+}
+
+async function loadPulseAnalytics(){
+  const sb=window.__IP_SB;
+  const [p30,p60]=await Promise.all([
+    TB.safe(()=>sb.from('ip_pulsos').select('saido_seen,saido_acknowledged,saido_invested,saido_dependent,equipe,respondido_em').gte('respondido_em',new Date(Date.now()-30*86400e3).toISOString()),{data:[]}),
+    TB.safe(()=>sb.from('ip_pulsos').select('saido_seen,saido_acknowledged,saido_invested,saido_dependent,equipe,respondido_em').gte('respondido_em',new Date(Date.now()-60*86400e3).toISOString()).lt('respondido_em',new Date(Date.now()-30*86400e3).toISOString()),{data:[]}),
+  ]);
+  const arr30=p30.data||[], arr60=p60.data||[];
+  document.getElementById('pa-30').textContent=arr30.length;
+  document.getElementById('pa-eq').textContent=new Set(arr30.map(x=>x.equipe).filter(Boolean)).size;
+  const said=(arr)=>{const f=(k)=>arr.map(r=>r[k]).filter(v=>v!=null);const total=['saido_seen','saido_acknowledged','saido_invested','saido_dependent'].flatMap(k=>f(k));return total.length?total.reduce((a,b)=>a+b,0)/total.length:null};
+  const s30=said(arr30),s60=said(arr60);
+  document.getElementById('pa-said').innerHTML=s30?s30.toFixed(2)+'<span class="un">/4</span>':'—<span class="un">/4</span>';
+  if(s30&&s60){
+    const d=s30-s60;
+    const arrow=d>0?'↑':(d<0?'↓':'→');
+    const cls=d>0?'success':(d<0?'danger':'cream-dim');
+    document.getElementById('pa-delta').innerHTML=`<span style="color:var(--${cls})">${arrow} ${Math.abs(d).toFixed(2)}</span>`;
+  }else document.getElementById('pa-delta').textContent='—';
+  document.getElementById('d-pulse').className='dot'+(arr30.length>0?'':' idle');
+}
+
+async function loadSug(){
+  const sb=window.__IP_SB;
+  const {data}=await TB.safe(()=>sb.from('ip_agent_sugestoes').select('id,agente,severidade,titulo,sugestao,created_at,mandato_id').eq('status','pendente').order('created_at',{ascending:false}).limit(8),{data:[]});
+  const lines=(data||[]).map(s=>{
+    const sev=s.severidade==='alta'?'danger':(s.severidade==='media'?'warn':'info');
+    return `<div class="row-item"><div class="ico" style="background:var(--gold-faint);color:var(--gold)">!</div><div class="body"><div class="nm">${TB.esc(s.titulo||'sugestão')}</div><div class="desc">${TB.esc(s.agente||'')} · ${TB.esc((s.sugestao||'').slice(0,80))}${s.sugestao&&s.sugestao.length>80?'…':''}</div></div><span class="tag ${sev}">${TB.esc(s.severidade||'—')}</span><div class="time">${TB.esc(TB.fmtRel(s.created_at))}</div></div>`;
+  }).join('')||'<div class="p-empty">Nenhuma sugestão pendente. Agentes em equilíbrio.</div>';
+  document.getElementById('b-sug').innerHTML=lines;
+  document.getElementById('d-sug').className='dot'+((data||[]).length>0?' warn':'');
+}
+
+async function loadComment(){
+  const sb=window.__IP_SB;
+  const [runs7,sug]=await Promise.all([
+    TB.safe(()=>sb.from('ip_agent_runs').select('id,status',{count:'exact'}).gte('iniciado_em',new Date(Date.now()-7*86400e3).toISOString()),{data:[],count:0}),
+    TB.safe(()=>sb.from('ip_agent_sugestoes').select('id,severidade').eq('status','pendente'),{data:[]}),
+  ]);
+  const crit=(sug.data||[]).filter(s=>s.severidade==='alta').length;
+  let texto=`<strong>5 agentes</strong> rodando · ${runs7.count||0} execuções nos últimos 7d.`;
+  if(crit>0)texto+=` <strong style="color:var(--gold)">${crit} sugestão${crit>1?'es':''} crítica${crit>1?'s':''}</strong> aguardando revisão.`;
+  else if((sug.data||[]).length>0)texto+=` ${(sug.data||[]).length} sugestões pendentes (severidade média/baixa).`;
+  else texto+=' Nenhuma sugestão pendente — sistema em equilíbrio.';
+  document.getElementById('exec-comment').innerHTML=texto;
+}
+</script>
+</body>
+</html>

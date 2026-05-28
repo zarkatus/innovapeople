@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>ToolBox · Gente · Mattering</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/sistema/toolbox/_shared/toolbox.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script src="/sistema/toolbox/_shared/toolbox.js"></script>
+<script>TBAuth.init('toolbox-gente');</script>
+</head>
+<body>
+
+<nav class="top">
+  <div class="row">
+    <a class="brand" href="/sistema/">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="14"/><path d="M16 6 v20 M6 16 h20"/></svg>
+      <div><span class="wm">innova · people</span><span class="sub">Tier One</span></div>
+    </a>
+    <div class="nav">
+      <a href="/sistema/">Dashboard</a>
+      <a href="/sistema/toolbox/" class="active">ToolBox</a>
+      <a href="/sistema/chro/">CHRO</a>
+      <a href="/sistema/agentes.html">Agentes IA</a>
+      <a href="/sistema/whatsapp/">WhatsApp</a>
+      <a href="/sistema/bastidores/">Bastidores</a>
+    </div>
+    <div class="user">olá, <strong id="uname">—</strong></div>
+  </div>
+</nav>
+
+<nav class="subnav">
+  <div class="wrap">
+    <a href="/sistema/toolbox/">Comando</a>
+    <a href="/sistema/toolbox/gente/" class="active">Gente · Mattering</a>
+    <a href="/sistema/toolbox/estrategia/">Estratégia · OKRs</a>
+    <a href="/sistema/toolbox/operacoes/">Operações · Compliance</a>
+    <a href="/sistema/toolbox/pipeline/">Pipeline · Curadoria</a>
+    <a href="/sistema/toolbox/inteligencia/">Inteligência · IA</a>
+    <span class="scope-tag">Tier One · Interno</span>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Gente · Mattering · Knowledge Retention</div>
+    <h1><em>Pessoas</em> que sustentam a operação</h1>
+    <div class="tagline">Framework SAID (Seen · Acknowledged · Invested · Dependent), Skill Map 6D, Pulso anônimo, Avaliação de Liderança 8D, Career Navigation. Tudo que mantém capital humano vivo quando o talento crítico decide ir embora.</div>
+  </div>
+</section>
+
+<div class="comment-exec">
+  <div class="icon">"</div>
+  <div class="content">
+    <div class="label">Síntese · Saúde Relacional Agregada</div>
+    <div class="body" id="exec-comment">Calculando agregação multi-dimensional…</div>
+  </div>
+</div>
+
+<div class="kpis">
+  <div class="kpi hero"><div class="lab">Mattering Score</div><div class="val" id="k-said">—<span class="un">/4</span></div><div class="note" id="k-said-n">Média SAID dos últimos 30d</div><span class="farol sem-meta" id="f-said">aguardando dados</span></div>
+  <div class="kpi"><div class="lab">Pessoas mapeadas</div><div class="val" id="k-pessoas">—</div><div class="note">Skill Map ativo</div></div>
+  <div class="kpi"><div class="lab">Pulsos respondidos 14d</div><div class="val" id="k-pulsos">—</div><div class="note">k≥3 anônimo</div></div>
+  <div class="kpi"><div class="lab">Reconhecimentos 30d</div><div class="val" id="k-reconhec">—</div><div class="note">peer + manager</div></div>
+</div>
+
+<div class="hub">
+
+  <!-- MATTERING SAID 4D — destaque (hero-card) -->
+  <div class="panel s12 hero-card">
+    <div class="p-h">
+      <div class="t"><span class="dot"></span>Mattering Engine · SAID Framework</div>
+      <a class="openlink" href="/sistema/chro/">painel CHRO →</a>
+    </div>
+    <div class="p-b" id="b-said">
+      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:14px;margin-bottom:8px;max-width:680px">Quatro dimensões medem se cada pessoa <strong>importa</strong> nesta organização: é vista, reconhecida, investida e indispensável. Pulso semanal escala 1-4.</div>
+      <div class="said" id="said-grid">
+        <div class="dim"><div class="l">SEEN</div><div class="v">—</div><div class="n">"sou visto como alguém único"</div></div>
+        <div class="dim"><div class="l">ACKNOWLEDGED</div><div class="v">—</div><div class="n">"meu trabalho é reconhecido"</div></div>
+        <div class="dim"><div class="l">INVESTED</div><div class="v">—</div><div class="n">"investem em mim e meu crescimento"</div></div>
+        <div class="dim"><div class="l">DEPENDENT</div><div class="v">—</div><div class="n">"a organização depende de mim"</div></div>
+      </div>
+      <div id="said-empty" style="display:none" class="p-empty">Pulso SAID aguardando primeira rodada. Disparar via <a href="/sistema/chro/" style="color:var(--gold)">CHRO → Disparar pulso</a>.</div>
+    </div>
+  </div>
+
+  <!-- SKILL MAP 6D -->
+  <div class="panel s6">
+    <div class="p-h">
+      <div class="t"><span class="dot" id="d-skill"></span>Skill Map · 6 Dimensões</div>
+      <span class="counter" id="c-skill">0</span>
+    </div>
+    <div class="p-b" id="b-skill">
+      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:13px;margin-bottom:8px">Mapeamento Técnica · Orquestração · Julgamento · Relação · IA/Automação · Gestão. Reconversão dispara em score &lt;4 numa dimensão.</div>
+      <div id="skill-people" style="margin-top:10px"><div class="empty-skeleton"><div class="bar w85"></div><div class="bar w70"></div><div class="bar w50"></div></div></div>
+    </div>
+  </div>
+
+  <!-- LEADERSHIP 8D -->
+  <div class="panel s6">
+    <div class="p-h">
+      <div class="t"><span class="dot" id="d-lead"></span>Liderança · 8 Competências AI-Native</div>
+      <span class="counter" id="c-lead">0</span>
+    </div>
+    <div class="p-b" id="b-lead">
+      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:13px;margin-bottom:10px">Orquestrador (20%) · Reconversão Talentos (15%) · Protocolo Máquina×Humano (15%) · Saúde Social · Visão Sistêmica · Pertencimento · Decisão sob Ambiguidade · Aprendizagem Contínua.</div>
+      <div id="lead-rows"></div>
+    </div>
+  </div>
+
+  <!-- PULSE ANÔNIMO 7Q -->
+  <div class="panel s8">
+    <div class="p-h">
+      <div class="t"><span class="dot" id="d-pulse"></span>Pulso Anônimo · 7 Perguntas</div>
+      <a class="openlink" href="/sistema/chro/">disparar pulso →</a>
+    </div>
+    <div class="p-b" id="b-pulse"></div>
+  </div>
+
+  <!-- CAREER NAVIGATION 4 STAGES -->
+  <div class="panel s4">
+    <div class="p-h">
+      <div class="t"><span class="dot idle"></span>Career Navigation</div>
+    </div>
+    <div class="p-b">
+      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:12.5px;margin-bottom:10px">4 estágios de readiness:</div>
+      <div class="stat-line"><div class="v" style="font-size:18px">01</div><div class="l">Aspirante</div><div class="badge">milestones</div></div>
+      <div class="stat-line"><div class="v" style="font-size:18px">02</div><div class="l">First-time Manager</div><div class="badge">trilha</div></div>
+      <div class="stat-line"><div class="v" style="font-size:18px">03</div><div class="l">Mid-career</div><div class="badge">readiness 6D</div></div>
+      <div class="stat-line"><div class="v" style="font-size:18px">04</div><div class="l">Executive</div><div class="badge">sucessão</div></div>
+    </div>
+  </div>
+
+  <!-- 12 PROCESSOS DE GENTE -->
+  <div class="panel s6">
+    <div class="p-h">
+      <div class="t"><span class="dot idle"></span>12 Processos · Gestão de Pessoas</div>
+      <span class="counter">12</span>
+    </div>
+    <div class="p-b">
+      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:12.5px;margin-bottom:10px">Mapeamento Korn Ferry + Gallup + Culture Amp + Visier + Workday Peakon. Cada processo tem owner, executor, KPIs e agente IA atribuído.</div>
+      <div id="procs-list"></div>
+    </div>
+  </div>
+
+  <!-- RITUAIS & CADÊNCIAS -->
+  <div class="panel s6">
+    <div class="p-h">
+      <div class="t"><span class="dot idle"></span>Rituais & Cadências</div>
+      <span class="counter" id="c-rituais">7</span>
+    </div>
+    <div class="p-b">
+      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:12.5px;margin-bottom:10px">Ritmo institucional: 1:1s, pulso quinzenal, OKR review, retrospectiva, town hall, calibração 9-box, QBR.</div>
+      <div id="rituais-list"></div>
+    </div>
+  </div>
+
+  <!-- CULTURA & Q12 -->
+  <div class="panel s6">
+    <div class="p-h">
+      <div class="t"><span class="dot idle"></span>Cultura · Assessment 4D + Q12</div>
+    </div>
+    <div class="p-b">
+      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:12.5px;margin-bottom:10px">Korn Ferry 4 Dimensões + Gallup Q12 (12 perguntas validadas). FC-10 monitora alinhamento comportamental e dispara correções.</div>
+      <div class="stat-line"><div class="v">12</div><div class="l">Perguntas Q12 ativas</div><div class="badge">Gallup</div></div>
+      <div class="stat-line"><div class="v">4</div><div class="l">Dimensões Korn Ferry</div><div class="badge">4D</div></div>
+      <div class="stat-line"><div class="v">FC-10</div><div class="l">Agente Cultura ativo</div><div class="badge">vigia</div></div>
+    </div>
+  </div>
+
+  <!-- COMPENSATION INTELLIGENCE -->
+  <div class="panel s6">
+    <div class="p-h">
+      <div class="t"><span class="dot idle"></span>Compensation Intelligence</div>
+    </div>
+    <div class="p-b">
+      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:12.5px;margin-bottom:10px">Benchmarks Mercer WIN (20M+ datapoints 150+ países), Korn Ferry Pay (26M incumbentes), Radford (tech). FC-09 identifica risco de perda por gap de compensação.</div>
+      <div class="stat-line"><div class="v" style="font-size:18px">20M+</div><div class="l">Mercer WIN datapoints</div><div class="badge">150 países</div></div>
+      <div class="stat-line"><div class="v" style="font-size:18px">26M</div><div class="l">Korn Ferry Pay incumbentes</div><div class="badge">global</div></div>
+      <div class="stat-line"><div class="v" style="font-size:18px">FC-09</div><div class="l">Agente Comp ativo</div><div class="badge">vigia</div></div>
+    </div>
+  </div>
+
+  <!-- EQUIPE INNOVAPEOPLE -->
+  <div class="panel s8">
+    <div class="p-h">
+      <div class="t"><span class="dot idle"></span>Equipe InnovaPeople</div>
+      <a class="openlink" href="/sistema/chro/organograma/">organograma →</a>
+    </div>
+    <div class="p-b" id="b-equipe">
+      <div class="p-empty">Sócios + consultores em curadoria. Cadastrar pessoas no <a href="/sistema/chro/organograma/" style="color:var(--gold)">Organograma</a>.</div>
+    </div>
+  </div>
+
+  <!-- STAKEHOLDERS -->
+  <div class="panel s4">
+    <div class="p-h">
+      <div class="t"><span class="dot idle"></span>Stakeholders</div>
+    </div>
+    <div class="p-b">
+      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:12.5px;margin-bottom:10px">Mapa de stakeholders por mandato. FC-07 gera relatórios automáticos. IS-04 produz drafts QBR.</div>
+      <div class="stat-line"><div class="v">FC-07</div><div class="l">Stakeholder Reports</div></div>
+      <div class="stat-line"><div class="v">IS-04</div><div class="l">QBR Drafts</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="foot">ToolBox · <strong>Tier One</strong> · Gente · Mattering · Knowledge Retention</div>
+
+<div id="toast"></div>
+
+<script>
+function boot(){
+  document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';
+  loadAll();
+  setInterval(loadAll,90000);
+}
+
+async function loadAll(){
+  await Promise.all([loadSAID(),loadKpis(),loadSkill(),loadLead(),loadPulse(),loadProcs(),loadRituais(),loadEquipe(),loadComment()]);
+}
+
+async function loadSAID(){
+  // Tenta agregar pulsos SAID (schema ip_pulsos)
+  const sb=window.__IP_SB;
+  const {data}=await TB.safe(()=>sb.from('ip_pulsos').select('saido_seen,saido_acknowledged,saido_invested,saido_dependent,respondido_em').gte('respondido_em',new Date(Date.now()-30*86400e3).toISOString()),{data:[]});
+  const arr=data||[];
+  if(!arr.length){
+    document.getElementById('said-grid').style.display='none';
+    document.getElementById('said-empty').style.display='block';
+    document.getElementById('k-said').innerHTML='—<span class="un">/4</span>';
+    return;
+  }
+  const avg=(k)=>arr.map(r=>r[k]).filter(v=>v!=null).reduce((a,b,_,A)=>a+b/A.length,0);
+  const s=avg('saido_seen'),a=avg('saido_acknowledged'),i=avg('saido_invested'),d=avg('saido_dependent');
+  const grid=document.getElementById('said-grid');
+  grid.children[0].querySelector('.v').innerHTML=s.toFixed(1)+'<span class="un">/4</span>';
+  grid.children[1].querySelector('.v').innerHTML=a.toFixed(1)+'<span class="un">/4</span>';
+  grid.children[2].querySelector('.v').innerHTML=i.toFixed(1)+'<span class="un">/4</span>';
+  grid.children[3].querySelector('.v').innerHTML=d.toFixed(1)+'<span class="un">/4</span>';
+  const total=((s+a+i+d)/4);
+  document.getElementById('k-said').innerHTML=total.toFixed(2)+'<span class="un">/4</span>';
+  const f=document.getElementById('f-said');
+  if(total>=3.2){f.className='farol no-alvo';f.textContent='no alvo'}
+  else if(total>=2.5){f.className='farol atencao';f.textContent='atenção'}
+  else{f.className='farol fora';f.textContent='fora · risco'}
+  document.getElementById('k-said-n').textContent=arr.length+' respostas anônimas k≥3';
+}
+
+async function loadKpis(){
+  const sb=window.__IP_SB;
+  const [p,pulsos14,rec]=await Promise.all([
+    TB.safe(()=>sb.from('ip_pessoas').select('id',{count:'exact',head:true}),{count:0}),
+    TB.safe(()=>sb.from('ip_pulsos').select('id',{count:'exact',head:true}).gte('respondido_em',new Date(Date.now()-14*86400e3).toISOString()),{count:0}),
+    TB.safe(()=>sb.from('ip_reconhecimentos').select('id',{count:'exact',head:true}).gte('criado_em',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
+  ]);
+  document.getElementById('k-pessoas').textContent=p.count||0;
+  document.getElementById('k-pulsos').textContent=pulsos14.count||0;
+  document.getElementById('k-reconhec').textContent=rec.count||0;
+}
+
+async function loadSkill(){
+  const sb=window.__IP_SB;
+  const {data}=await TB.safe(()=>sb.from('ip_skill_profile').select('pessoa_id,tecnica,orquestracao,julgamento,relacao,ia_automacao,gestao,pessoa:ip_pessoas(nome)').limit(8),{data:[]});
+  const el=document.getElementById('skill-people');
+  document.getElementById('c-skill').textContent=(data||[]).length;
+  if(!data||!data.length){el.innerHTML='<div class="p-empty">Nenhum perfil mapeado. Cadastrar pessoa em <a href="/sistema/chro/organograma/" style="color:var(--gold)">Organograma</a>.</div>';return}
+  el.innerHTML=(data||[]).map(p=>{
+    const dims=[
+      {l:'TC',v:p.tecnica},{l:'OR',v:p.orquestracao},{l:'JU',v:p.julgamento},
+      {l:'RE',v:p.relacao},{l:'IA',v:p.ia_automacao},{l:'GE',v:p.gestao}
+    ];
+    return `<div style="margin-bottom:12px"><div style="font-family:var(--serif);font-style:italic;color:var(--cream);font-size:14px;margin-bottom:4px">${TB.esc(p.pessoa?.nome||'(sem nome)')}</div><div class="heat6">${dims.map(d=>`<div class="cell ${TB.heatLevel(d.v)}"><div class="lab">${d.l}</div><div class="nbr">${d.v??'—'}</div></div>`).join('')}</div></div>`;
+  }).join('');
+  document.getElementById('d-skill').className='dot';
+}
+
+async function loadLead(){
+  // Schema ip_lideranca_assessment ainda não existe — placeholder com 8D
+  const COMPS=[
+    {n:'Orquestrador',w:20},{n:'Reconversão de Talentos',w:15},{n:'Protocolo Máquina×Humano',w:15},
+    {n:'Saúde Social',w:10},{n:'Visão Sistêmica',w:10},{n:'Pertencimento',w:10},
+    {n:'Decisão sob Ambiguidade',w:10},{n:'Aprendizagem Contínua',w:10},
+  ];
+  document.getElementById('lead-rows').innerHTML=COMPS.map(c=>`<div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--rule)"><div style="flex:1;font-size:12.5px;color:var(--cream)">${TB.esc(c.n)}</div><div style="font-family:var(--mono);font-size:10px;color:var(--cream-dim);width:36px;text-align:right">${c.w}%</div><div class="pbar" style="width:100px"><span style="width:${c.w*3}%"></span></div></div>`).join('');
+  document.getElementById('c-lead').textContent=COMPS.length;
+  document.getElementById('d-lead').className='dot idle';
+}
+
+async function loadPulse(){
+  const sb=window.__IP_SB;
+  const [tokens,pulsos]=await Promise.all([
+    TB.safe(()=>sb.from('ip_pulso_tokens').select('id',{count:'exact',head:true}),{count:0}),
+    TB.safe(()=>sb.from('ip_pulsos').select('id,papel,equipe,respondido_em').order('respondido_em',{ascending:false}).limit(5),{data:[]}),
+  ]);
+  const stats=`<div class="stat-line"><div class="v">${tokens.count||0}</div><div class="l">tokens emitidos (links únicos 14d)</div><div class="badge">seguro</div></div>
+  <div class="stat-line"><div class="v">${(pulsos.data||[]).length}</div><div class="l">respostas recentes</div><div class="badge">7Q · 2min</div></div>`;
+  const rows=(pulsos.data||[]).map(p=>`<div class="row-item"><div class="body"><div class="nm" style="font-size:13px">${TB.esc(p.equipe||'(equipe)')}</div><div class="desc">${TB.esc(p.papel||'')}</div></div><span class="tag info">anônimo</span><div class="time">${TB.esc(TB.fmtRel(p.respondido_em))}</div></div>`).join('');
+  document.getElementById('b-pulse').innerHTML=stats+(rows?'<div style="margin-top:14px">'+rows+'</div>':'<div class="p-empty" style="padding:18px 0">Sem respostas recentes. Disparar via <a href="/sistema/chro/" style="color:var(--gold)">CHRO</a>.</div>');
+  document.getElementById('d-pulse').className='dot'+(((pulsos.data||[]).length)>0?'':' idle');
+}
+
+async function loadProcs(){
+  const PROCS=[
+    'Atrair · sourcing intencional',
+    'Selecionar · assessment 4D',
+    'Onboardar · primeiros 90 dias',
+    'Desenvolver · trilhas + mentoria',
+    'Avaliar · OKR + 9-box',
+    'Reconhecer · peer + manager',
+    'Remunerar · benchmark Mercer',
+    'Promover · readiness 6D',
+    'Reter · key persons watch',
+    'Sucessão · pipeline pronto',
+    'Reconverter · skill gap < 4',
+    'Desligar · saída com dignidade',
+  ];
+  document.getElementById('procs-list').innerHTML=PROCS.map((p,i)=>`<div class="row-item"><div class="ico" style="font-family:var(--mono);font-size:10px">${String(i+1).padStart(2,'0')}</div><div class="body"><div class="nm" style="font-size:12.5px">${TB.esc(p)}</div></div><span class="tag muted">FC-${String(i+1).padStart(2,'0')}</span></div>`).join('');
+}
+
+async function loadRituais(){
+  const RIT=[
+    {n:'1:1 quinzenal',f:'14d',o:'líder direto'},
+    {n:'Pulso anônimo 7Q',f:'15d',o:'sistema'},
+    {n:'OKR Review',f:'trimestre',o:'CHRO + líder'},
+    {n:'Retrospectiva',f:'mensal',o:'equipe'},
+    {n:'Town Hall',f:'mensal',o:'CEO'},
+    {n:'Calibração 9-box',f:'semestre',o:'comitê'},
+    {n:'QBR cliente',f:'trimestre',o:'sócio resp.'},
+  ];
+  document.getElementById('rituais-list').innerHTML=RIT.map(r=>`<div class="row-item"><div class="body"><div class="nm" style="font-size:12.5px">${TB.esc(r.n)}</div><div class="desc">owner: ${TB.esc(r.o)}</div></div><span class="tag gold">${TB.esc(r.f)}</span></div>`).join('');
+}
+
+async function loadEquipe(){
+  const sb=window.__IP_SB;
+  const {data}=await TB.safe(()=>sb.from('ip_pessoas').select('id,nome,cargo,papel,email').limit(8),{data:[]});
+  const el=document.getElementById('b-equipe');
+  if(!data||!data.length){return}
+  el.innerHTML=(data||[]).map(p=>`<div class="row-item"><div class="ico">${TB.initials(p.nome)}</div><div class="body"><div class="nm">${TB.esc(p.nome||'(sem nome)')}</div><div class="desc">${TB.esc(p.cargo||p.papel||'')}</div></div><div class="time">${TB.esc((p.email||'').split('@')[0])}</div></div>`).join('');
+}
+
+async function loadComment(){
+  const sb=window.__IP_SB;
+  const [pulsos30,rec30,pessoas]=await Promise.all([
+    TB.safe(()=>sb.from('ip_pulsos').select('id',{count:'exact',head:true}).gte('respondido_em',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
+    TB.safe(()=>sb.from('ip_reconhecimentos').select('id',{count:'exact',head:true}).gte('criado_em',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
+    TB.safe(()=>sb.from('ip_pessoas').select('id',{count:'exact',head:true}),{count:0}),
+  ]);
+  let texto='';
+  if(!pessoas.count){
+    texto='Nenhuma pessoa mapeada ainda. <strong>Primeira ação:</strong> cadastrar a equipe no Organograma e disparar pulso inicial.';
+  }else{
+    const partes=[`<strong>${pessoas.count} pessoa${pessoas.count>1?'s':''}</strong> mapeada${pessoas.count>1?'s':''}`];
+    if(pulsos30.count)partes.push(`${pulsos30.count} pulsos respondidos em 30d`);
+    else partes.push('pulso ainda não disparado nos últimos 30d');
+    if(rec30.count)partes.push(`${rec30.count} reconhecimentos registrados`);
+    texto=partes.join(' · ')+'.';
+    if(!pulsos30.count)texto+=' Próxima ação: <strong>disparar pulso quinzenal</strong> no painel CHRO.';
+  }
+  document.getElementById('exec-comment').innerHTML=texto;
+}
+</script>
+</body>
+</html>
