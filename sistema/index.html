@@ -413,6 +413,8 @@ const ALLOWED_EMAILS = ['raphael@schifino.com.br', 'gleice@schifino.com.br', 'ra
 const sb = window.supabase.createClient(SUPA_URL, SUPA_ANON, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
 });
+window.sb = sb; // expose para debug + consumers (RPC tests)
+window.__IP_SB = sb;
 
 // ═══════════════════════════════════════════════════════════════════
 // CHECAGEM HÍBRIDA: RPC oficial + fallback hardcoded (offline-safe)
