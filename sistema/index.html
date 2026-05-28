@@ -201,87 +201,93 @@ footer a{color:rgba(255,255,255,.65)}
 @media(max-width:720px){.fab-curadoria{width:84px;height:84px;font-size:16px;top:78px;right:16px}}
 </style>
 
-<!-- LOGIN GATE V20-like — 7 portas + paleta InnovaPeople (violet/gold/cream) + Ken Burns + glassmorphism -->
+<!-- LOGIN GATE V20-like — 7 portas · Aman/JHSF minimalismo · paleta InnovaPeople -->
 <style>
-  /* Quando auth-active, esconde chrome do dashboard e troca para o gate imersivo */
-  body.auth-active{background:#1a0d2a;color:#FAF7F1;overflow:hidden}
-  body.auth-active header.top{display:none}
-  body.auth-active footer{display:none}
-  body.auth-active .fab-curadoria{display:none}
+  /* Sobreposição imersiva quando body.auth-active */
+  body.auth-active{background:#0c0816;color:#FAF7F1;overflow:hidden}
+  body.auth-active header.top,body.auth-active footer,body.auth-active .fab-curadoria{display:none}
+  body.auth-active #ip-sidebar,body.auth-active .ip-sb-toggle{display:none !important}
+  body.auth-active.ip-has-sidebar{padding-left:0 !important}
 
-  /* Background imagem com overlay violet-deep + Ken Burns (mesmo padrão do site público) */
+  /* Background imagem (Biblioteca privada) com overlay sutil violet + Ken Burns lento */
   .login-wrap-v2{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:32px 24px;font-family:'Inter',sans-serif;color:#FAF7F1;overflow:hidden}
   .lbg{position:absolute;inset:0;z-index:0;overflow:hidden}
-  .lbg img{width:100%;height:100%;object-fit:cover;display:block;transform-origin:center;animation:kenburns 28s ease-in-out infinite alternate;filter:saturate(.92) contrast(1.06)}
-  .lbg::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(20,12,32,.82) 0%,rgba(63,39,86,.7) 38%,rgba(20,12,32,.88) 100%),radial-gradient(40% 60% at 70% 70%,rgba(196,163,90,.16) 0%,transparent 60%);z-index:1}
-  @keyframes kenburns{0%{transform:scale(1.02) translate(0,0)}100%{transform:scale(1.12) translate(-2.5%,1.5%)}}
+  .lbg img{width:100%;height:100%;object-fit:cover;display:block;transform-origin:center;animation:kenburns 40s ease-in-out infinite alternate;filter:saturate(.88) contrast(1.05) brightness(.85)}
+  .lbg::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,6,16,.78) 0%,rgba(40,22,60,.55) 35%,rgba(10,6,16,.85) 100%),radial-gradient(48% 70% at 75% 30%,rgba(196,163,90,.18) 0%,transparent 65%);z-index:1}
+  @keyframes kenburns{0%{transform:scale(1.04) translate(.5%,0)}100%{transform:scale(1.14) translate(-2.5%,1.8%)}}
 
-  /* Card flutuante glassmorphism violet/gold */
-  .lcard{position:relative;z-index:2;max-width:480px;width:100%;background:rgba(20,12,32,.42);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(245,221,165,.22);border-radius:16px;padding:42px 38px;box-shadow:0 24px 64px rgba(0,0,0,.5),0 60px 120px rgba(91,58,122,.32),inset 0 1px 0 rgba(245,221,165,.16);max-height:calc(100vh - 64px);overflow-y:auto}
-  .lcard::-webkit-scrollbar{width:6px}
-  .lcard::-webkit-scrollbar-track{background:transparent}
-  .lcard::-webkit-scrollbar-thumb{background:rgba(245,221,165,.18);border-radius:3px}
+  /* Card minimalista — mais respiro, menos elementos visíveis ao mesmo tempo */
+  .lcard{position:relative;z-index:2;max-width:440px;width:100%;background:rgba(12,8,22,.32);backdrop-filter:blur(28px) saturate(170%);-webkit-backdrop-filter:blur(28px) saturate(170%);border:1px solid rgba(245,221,165,.18);border-radius:12px;padding:56px 48px 44px;box-shadow:0 32px 80px rgba(0,0,0,.55),0 80px 160px rgba(63,39,86,.28),inset 0 1px 0 rgba(245,221,165,.12);max-height:calc(100vh - 64px);overflow-y:auto}
+  .lcard::-webkit-scrollbar{width:4px}
+  .lcard::-webkit-scrollbar-thumb{background:rgba(245,221,165,.14);border-radius:2px}
 
-  .lhead{text-align:center;margin-bottom:28px}
-  .lhead .mark svg{width:54px;height:54px;color:#F5DDA5;margin-bottom:18px;filter:drop-shadow(0 4px 12px rgba(196,163,90,.32))}
-  .lhead .eyebrow{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:#F5DDA5;font-weight:600;margin-bottom:12px;padding:6px 14px;border:1px solid rgba(245,221,165,.32);border-radius:20px;display:inline-block;background:rgba(245,221,165,.08);text-shadow:0 1px 4px rgba(0,0,0,.4)}
-  .lhead h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;color:#FAF7F1;font-size:30px;line-height:1.18;letter-spacing:-.01em;margin-bottom:8px;text-shadow:0 2px 12px rgba(0,0,0,.4)}
-  .lhead h1 em{color:#F5DDA5;font-style:italic;font-weight:500}
-  .lhead .sub{font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(250,247,241,.78);font-size:16px;line-height:1.45}
+  .lhead{text-align:center;margin-bottom:40px}
+  .lhead .mark svg{width:46px;height:46px;color:#F5DDA5;margin-bottom:22px;filter:drop-shadow(0 6px 18px rgba(196,163,90,.42));opacity:.9}
+  .lhead .eyebrow{font-family:'Inter',sans-serif;font-size:9.5px;letter-spacing:.42em;text-transform:uppercase;color:rgba(245,221,165,.86);font-weight:500;margin-bottom:18px;display:inline-block;padding-bottom:8px;border-bottom:1px solid rgba(245,221,165,.22)}
+  .lhead h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;color:#FAF7F1;font-size:34px;line-height:1.22;letter-spacing:-.005em;margin-bottom:14px}
+  .lhead h1 em{color:#F5DDA5;font-style:italic;font-weight:400}
+  .lhead .sub{font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(250,247,241,.66);font-size:15px;line-height:1.5;max-width:280px;margin:0 auto}
 
-  .lemail-wrap{margin-bottom:22px}
-  .lemail-wrap input{width:100%;padding:13px 16px;background:rgba(250,247,241,.06);border:1px solid rgba(250,247,241,.18);border-radius:8px;color:#FAF7F1;font-size:14px;font-family:inherit;letter-spacing:.02em;transition:all .22s ease;backdrop-filter:blur(8px)}
-  .lemail-wrap input:focus{outline:none;border-color:#F5DDA5;background:rgba(245,221,165,.1);box-shadow:0 0 0 3px rgba(245,221,165,.14)}
-  .lemail-wrap input::placeholder{color:rgba(250,247,241,.42)}
-  .lhint{margin-top:8px;font-family:'Inter',sans-serif;font-size:10.5px;color:#F5DDA5;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;display:none;text-shadow:0 1px 3px rgba(0,0,0,.4)}
+  .lemail-wrap{margin-bottom:28px}
+  .lemail-wrap input{width:100%;padding:14px 18px;background:transparent;border:none;border-bottom:1px solid rgba(245,221,165,.28);border-radius:0;color:#FAF7F1;font-size:14.5px;font-family:'Cormorant Garamond',serif;font-style:italic;letter-spacing:.01em;transition:all .25s ease;text-align:center}
+  .lemail-wrap input:focus{outline:none;border-bottom-color:#F5DDA5}
+  .lemail-wrap input::placeholder{color:rgba(250,247,241,.36);font-style:italic}
+  .lhint{margin-top:12px;font-family:'Inter',sans-serif;font-size:10px;color:#F5DDA5;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;display:none;text-align:center;font-weight:500}
   .lhint.show{display:block}
-  .lhint:hover{color:#FFEBC2;text-decoration:underline}
+  .lhint:hover{color:#FFEBC2}
 
-  .lblock{margin-bottom:20px}
-  .lblock-title{font-family:'Inter',sans-serif;font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:rgba(250,247,241,.5);font-weight:600;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(250,247,241,.1)}
+  /* Sem títulos de blocos — pura sequência de portas com hierarquia visual */
+  .lblock{margin-bottom:14px}
+  .lblock-title{display:none}
 
-  .lbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px 18px;border-radius:8px;font-family:inherit;font-weight:500;font-size:13.5px;letter-spacing:.04em;cursor:pointer;border:1px solid transparent;transition:all .22s cubic-bezier(.2,.65,.3,1);text-decoration:none;margin-bottom:9px;backdrop-filter:blur(4px)}
-  .lbtn svg{width:18px;height:18px;flex-shrink:0}
-  /* Primário: gold luminoso sobre violet-deep */
-  .lbtn-primary{background:linear-gradient(135deg,#F5DDA5,#C4A35A);color:#3F2756;border-color:rgba(245,221,165,.5);box-shadow:0 6px 18px rgba(196,163,90,.36),inset 0 1px 0 rgba(255,255,255,.32)}
-  .lbtn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(196,163,90,.5),inset 0 1px 0 rgba(255,255,255,.42)}
-  /* Secundário: glassmorphism violet */
-  .lbtn-secondary{background:rgba(250,247,241,.08);color:#FAF7F1;border-color:rgba(250,247,241,.22)}
-  .lbtn-secondary:hover{background:rgba(245,221,165,.14);border-color:#F5DDA5;color:#F5DDA5}
-  /* WhatsApp: brand verde mantido */
-  .lbtn-whatsapp{background:#25d366;color:#fff;border-color:#25d366;box-shadow:0 6px 18px rgba(37,211,102,.36),inset 0 1px 0 rgba(255,255,255,.18)}
-  .lbtn-whatsapp:hover{background:#1ebb59;transform:translateY(-1px);box-shadow:0 10px 28px rgba(37,211,102,.48)}
+  .lbtn{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;padding:14px 22px;border-radius:6px;font-family:'Inter',sans-serif;font-weight:500;font-size:13.5px;letter-spacing:.06em;cursor:pointer;border:1px solid transparent;transition:all .25s cubic-bezier(.2,.65,.3,1);text-decoration:none;margin-bottom:10px}
+  .lbtn svg{width:17px;height:17px;flex-shrink:0;opacity:.9}
+  /* Primário: gold luminoso */
+  .lbtn-primary{background:linear-gradient(135deg,#F5DDA5 0%,#D4B978 50%,#C4A35A 100%);color:#2A1A3B;border-color:transparent;box-shadow:0 8px 24px rgba(196,163,90,.32),inset 0 1px 0 rgba(255,255,255,.4);font-weight:600;letter-spacing:.08em}
+  .lbtn-primary:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(196,163,90,.48),inset 0 1px 0 rgba(255,255,255,.5)}
+  /* Secundário: outline gold sutil */
+  .lbtn-secondary{background:transparent;color:rgba(250,247,241,.82);border-color:rgba(250,247,241,.16)}
+  .lbtn-secondary:hover{background:rgba(245,221,165,.08);border-color:rgba(245,221,165,.42);color:#F5DDA5}
+  /* WhatsApp: discretizado */
+  .lbtn-whatsapp{background:rgba(37,211,102,.12);color:#7BE39B;border-color:rgba(37,211,102,.32)}
+  .lbtn-whatsapp:hover{background:rgba(37,211,102,.2);border-color:#25d366;color:#fff}
   /* Disabled (Apple "em breve") */
-  .lbtn-disabled{background:rgba(250,247,241,.04);color:rgba(250,247,241,.42);border-color:rgba(250,247,241,.08);cursor:not-allowed;font-style:italic}
-  .lbtn-disabled:hover{transform:none;background:rgba(250,247,241,.04)}
-  /* Google branco */
-  .lbtn-google{background:#fff;color:#1a1614;border-color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.18)}
-  .lbtn-google:hover{background:#f5f5f5;transform:translateY(-1px);box-shadow:0 8px 18px rgba(0,0,0,.24)}
-  .lbtn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:9px}
-  .lbtn-row .lbtn{margin-bottom:0;font-size:12.5px;padding:11px 14px}
+  .lbtn-disabled{background:transparent;color:rgba(250,247,241,.32);border-color:rgba(250,247,241,.06);cursor:not-allowed;font-style:italic;letter-spacing:.04em}
+  .lbtn-disabled:hover{transform:none;background:transparent}
+  /* Google: monocromático no contexto luxo */
+  .lbtn-google{background:transparent;color:rgba(250,247,241,.82);border-color:rgba(250,247,241,.16)}
+  .lbtn-google:hover{background:rgba(255,255,255,.08);border-color:rgba(250,247,241,.42);color:#fff}
+  .lbtn-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:10px}
+  .lbtn-row .lbtn{margin-bottom:0;font-size:11.5px;padding:11px 12px;letter-spacing:.06em;gap:7px}
+  .lbtn-row .lbtn svg{width:15px;height:15px}
 
-  .lotp-zone{display:none;margin-top:14px;padding:18px;background:rgba(245,221,165,.1);border:1px solid rgba(245,221,165,.28);border-radius:8px;backdrop-filter:blur(8px)}
+  /* Separador "ou" sutil entre blocos */
+  .ldivider{display:flex;align-items:center;gap:14px;margin:20px 0;font-family:'Inter',sans-serif;font-size:9.5px;letter-spacing:.42em;text-transform:uppercase;color:rgba(245,221,165,.42);font-weight:500}
+  .ldivider::before,.ldivider::after{content:'';flex:1;height:1px;background:rgba(245,221,165,.14)}
+
+  .lotp-zone{display:none;margin-top:18px;padding:22px;background:rgba(245,221,165,.06);border:1px solid rgba(245,221,165,.18);border-radius:8px}
   .lotp-zone.on{display:block}
-  .lotp-zone .lab{font-family:'Inter',sans-serif;font-size:10.5px;color:#F5DDA5;letter-spacing:.22em;text-transform:uppercase;margin-bottom:12px;text-align:center;font-weight:600}
-  .lotp-inputs{display:flex;gap:6px;justify-content:center;margin-bottom:14px}
-  .lotp-inputs input{width:38px;height:46px;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;background:rgba(250,247,241,.1);border:1px solid rgba(250,247,241,.24);border-radius:6px;color:#FAF7F1;font-weight:500}
-  .lotp-inputs input:focus{outline:none;border-color:#F5DDA5;background:rgba(245,221,165,.14)}
+  .lotp-zone .lab{font-family:'Inter',sans-serif;font-size:10px;color:#F5DDA5;letter-spacing:.28em;text-transform:uppercase;margin-bottom:14px;text-align:center;font-weight:500}
+  .lotp-inputs{display:flex;gap:7px;justify-content:center;margin-bottom:16px}
+  .lotp-inputs input{width:40px;height:50px;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:24px;background:transparent;border:none;border-bottom:1px solid rgba(245,221,165,.32);color:#FAF7F1;font-weight:500;border-radius:0}
+  .lotp-inputs input:focus{outline:none;border-bottom-color:#F5DDA5;background:rgba(245,221,165,.06)}
 
-  .lerror{display:none;background:rgba(216,117,117,.14);border:1px solid rgba(216,117,117,.36);color:#FFB4B4;padding:11px 14px;border-radius:6px;font-size:12.5px;margin-bottom:14px;letter-spacing:.02em;backdrop-filter:blur(6px)}
+  .lerror{display:none;background:rgba(216,117,117,.1);border-left:2px solid rgba(216,117,117,.42);color:#FFC2C2;padding:11px 16px;border-radius:0;font-size:12.5px;margin-bottom:18px;letter-spacing:.02em;font-family:'Cormorant Garamond',serif;font-style:italic}
   .lerror.show{display:block}
+  .lerror.success{background:rgba(107,174,130,.1);border-left-color:rgba(107,174,130,.42);color:#A8D9B7}
 
-  .lfoot{margin-top:24px;padding-top:18px;border-top:1px solid rgba(250,247,241,.1);text-align:center}
-  .lfoot p{font-family:'Inter',sans-serif;font-size:10px;color:rgba(250,247,241,.5);letter-spacing:.18em;text-transform:uppercase;line-height:1.7;margin:0;font-weight:500}
-  .lfoot a{color:#F5DDA5;text-decoration:none}
-  .lfoot a:hover{color:#FFEBC2}
+  .lfoot{margin-top:32px;text-align:center}
+  .lfoot p{font-family:'Inter',sans-serif;font-size:9px;color:rgba(250,247,241,.32);letter-spacing:.32em;text-transform:uppercase;line-height:2;margin:0;font-weight:500}
+  .lfoot a{color:rgba(245,221,165,.6);text-decoration:none}
+  .lfoot a:hover{color:#F5DDA5}
 
-  @media(max-width:540px){.lcard{padding:32px 26px;max-height:calc(100vh - 32px)}.lhead h1{font-size:25px}.lbtn-row{grid-template-columns:1fr}}
-  @media(prefers-reduced-motion:reduce){.lbg img{animation:none;transform:scale(1.04)}}
+  @media(max-width:540px){.lcard{padding:44px 32px 36px;max-height:calc(100vh - 32px);max-width:none}.lhead h1{font-size:27px}.lbtn-row{grid-template-columns:1fr}}
+  @media(prefers-reduced-motion:reduce){.lbg img{animation:none;transform:scale(1.06)}}
 </style>
 
 <section class="login-wrap-v2" id="login-gate">
   <div class="lbg" aria-hidden="true">
-    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=2400&auto=format&fit=crop&q=85" alt="" loading="eager" fetchpriority="high">
+    <img src="https://images.unsplash.com/photo-1568667256549-094345857637?w=2400&auto=format&fit=crop&q=88" alt="" loading="eager" fetchpriority="high">
   </div>
   <div class="lcard">
     <div class="lhead">
@@ -298,54 +304,48 @@ footer a{color:rgba(255,255,255,.65)}
       <div class="lhint" id="lhint" onclick="ipReusarUltima()"></div>
     </div>
 
-    <!-- Bloco 1: Entrada Express -->
-    <div class="lblock">
-      <div class="lblock-title">Entrada Express · biométrica / 1-clique</div>
-      <button class="lbtn lbtn-primary" id="lbtn-passkey" onclick="ipLoginPasskey()" style="display:none">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Entrar com Touch ID / Face ID
-      </button>
-      <div class="lbtn-row">
-        <button class="lbtn lbtn-google" onclick="ipLoginGoogle()">
-          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC04" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z"/></svg>
-          Google
-        </button>
-        <button class="lbtn lbtn-disabled" onclick="ipAppleTooltip()" title="Em breve">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
-          Apple <span style="opacity:.7">· em breve</span>
-        </button>
-      </div>
-    </div>
+    <!-- Porta principal: Passkey biométrica (se disponível) -->
+    <button class="lbtn lbtn-primary" id="lbtn-passkey" onclick="ipLoginPasskey()" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Entrar com Touch ID / Face ID
+    </button>
 
-    <!-- Bloco 2: Sem Senha -->
-    <div class="lblock">
-      <div class="lblock-title">Sem Senha · código por canal</div>
+    <!-- Google: porta direta -->
+    <button class="lbtn lbtn-google" onclick="ipLoginGoogle()">
+      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M21.35 11.1H12v2.8h5.35c-.24 1.5-1.7 4.4-5.35 4.4-3.22 0-5.84-2.66-5.84-5.94S8.78 6.42 12 6.42c1.83 0 3.06.78 3.76 1.45l2.57-2.47C16.8 3.86 14.62 3 12 3 6.97 3 2.9 7.05 2.9 12s4.07 9 9.1 9c5.26 0 8.74-3.68 8.74-8.86 0-.6-.07-1.05-.16-1.5z" opacity=".85"/></svg>
+      Continuar com Google
+    </button>
+
+    <div class="ldivider">também posso entrar com</div>
+
+    <div class="lbtn-row">
       <button class="lbtn lbtn-whatsapp" onclick="ipLoginWhatsApp()">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.03-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.371-.025-.52-.075-.149-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
-        Continuar com WhatsApp
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.15-1.76-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.06 2.88 1.21 3.07.15.2 2.09 3.2 5.07 4.49.71.3 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41z"/></svg>
+        WhatsApp
       </button>
-      <div class="lbtn-row">
-        <button class="lbtn lbtn-secondary" onclick="ipLoginEmailOtp()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 5L2 7"/></svg>
-          Código por e-mail
-        </button>
-        <button class="lbtn lbtn-secondary" onclick="ipLoginMagicLink()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          Link mágico
-        </button>
-      </div>
+      <button class="lbtn lbtn-secondary" onclick="ipLoginEmailOtp()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 5L2 7"/></svg>
+        Código
+      </button>
+      <button class="lbtn lbtn-secondary" onclick="ipLoginMagicLink()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Link
+      </button>
     </div>
 
-    <!-- Bloco 3: Clássico -->
-    <div class="lblock">
-      <div class="lblock-title">Clássico · senha</div>
-      <div id="lpass-zone" style="display:none">
-        <input type="password" id="lpass" placeholder="sua senha" autocomplete="current-password" style="width:100%;padding:13px 16px;background:rgba(247,243,236,.04);border:1px solid rgba(247,243,236,.12);border-radius:8px;color:#F7F3EC;font-size:14px;font-family:inherit;margin-bottom:9px">
-        <button class="lbtn lbtn-secondary" onclick="ipLoginPassword()">Acessar</button>
-      </div>
-      <button class="lbtn lbtn-disabled" id="lpass-toggle" onclick="document.getElementById('lpass-zone').style.display='block';this.style.display='none';setTimeout(()=>document.getElementById('lpass').focus(),50)" style="font-style:italic">
-        Acessar com senha clássica
+    <div class="lbtn-row" style="margin-top:10px">
+      <button class="lbtn lbtn-disabled" onclick="ipAppleTooltip()" title="Apple Sign-In em breve">
+        <svg viewBox="0 0 24 24" fill="currentColor" opacity=".6"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+        Apple · em breve
       </button>
+      <button class="lbtn lbtn-disabled" id="lpass-toggle" onclick="document.getElementById('lpass-zone').style.display='block';this.style.display='none';setTimeout(()=>document.getElementById('lpass').focus(),50)">
+        Senha clássica
+      </button>
+    </div>
+
+    <div id="lpass-zone" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(245,221,165,.14)">
+      <input type="password" id="lpass" placeholder="sua senha" autocomplete="current-password" style="width:100%;padding:14px 18px;background:transparent;border:none;border-bottom:1px solid rgba(245,221,165,.28);color:#FAF7F1;font-size:14.5px;font-family:'Cormorant Garamond',serif;font-style:italic;letter-spacing:.02em;text-align:center;outline:none">
+      <button class="lbtn lbtn-secondary" onclick="ipLoginPassword()" style="margin-top:12px">Acessar</button>
     </div>
 
     <!-- OTP Zone (compartilhado WhatsApp + Email) -->
