@@ -201,67 +201,88 @@ footer a{color:rgba(255,255,255,.65)}
 @media(max-width:720px){.fab-curadoria{width:84px;height:84px;font-size:16px;top:78px;right:16px}}
 </style>
 
-<!-- LOGIN GATE V20-like — 7 portas + tema dark RapheiceOS -->
+<!-- LOGIN GATE V20-like — 7 portas + paleta InnovaPeople (violet/gold/cream) + Ken Burns + glassmorphism -->
 <style>
-  /* Sobreposição dark APENAS quando login-gate está visível (body.auth-active) */
-  body.auth-active{background:#070D15;color:#F7F3EC}
+  /* Quando auth-active, esconde chrome do dashboard e troca para o gate imersivo */
+  body.auth-active{background:#1a0d2a;color:#FAF7F1;overflow:hidden}
   body.auth-active header.top{display:none}
   body.auth-active footer{display:none}
   body.auth-active .fab-curadoria{display:none}
-  .login-wrap-v2{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 28px;background:radial-gradient(70% 100% at 30% 0%,rgba(210,174,100,.08) 0%,transparent 65%),radial-gradient(60% 90% at 80% 100%,rgba(210,174,100,.04) 0%,transparent 60%),#070D15;min-height:100vh;font-family:'Inter',sans-serif;color:#F7F3EC}
-  .lcard{max-width:480px;width:100%;background:linear-gradient(180deg,#0F1C2D,#0A1320);border:1px solid rgba(210,174,100,.18);border-radius:14px;padding:42px 38px;box-shadow:0 24px 64px rgba(0,0,0,.5),0 60px 120px rgba(210,174,100,.08),inset 0 1px 0 rgba(210,174,100,.12)}
-  .lhead{text-align:center;margin-bottom:30px}
-  .lhead .mark svg{width:54px;height:54px;color:#D2AE64;margin-bottom:18px}
-  .lhead .eyebrow{font-family:'JetBrains Mono',Menlo,monospace;font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;color:#D2AE64;font-weight:600;margin-bottom:12px}
-  .lhead h1{font-family:Georgia,'Cormorant Garamond',serif;font-style:italic;font-weight:400;color:#F7F3EC;font-size:30px;line-height:1.15;letter-spacing:-.005em;margin-bottom:8px}
-  .lhead h1 em{color:#D2AE64;font-style:italic}
-  .lhead .sub{font-family:Georgia,serif;font-style:italic;color:#C9C2B4;font-size:15px;line-height:1.45}
+
+  /* Background imagem com overlay violet-deep + Ken Burns (mesmo padrão do site público) */
+  .login-wrap-v2{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:32px 24px;font-family:'Inter',sans-serif;color:#FAF7F1;overflow:hidden}
+  .lbg{position:absolute;inset:0;z-index:0;overflow:hidden}
+  .lbg img{width:100%;height:100%;object-fit:cover;display:block;transform-origin:center;animation:kenburns 28s ease-in-out infinite alternate;filter:saturate(.92) contrast(1.06)}
+  .lbg::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(20,12,32,.82) 0%,rgba(63,39,86,.7) 38%,rgba(20,12,32,.88) 100%),radial-gradient(40% 60% at 70% 70%,rgba(196,163,90,.16) 0%,transparent 60%);z-index:1}
+  @keyframes kenburns{0%{transform:scale(1.02) translate(0,0)}100%{transform:scale(1.12) translate(-2.5%,1.5%)}}
+
+  /* Card flutuante glassmorphism violet/gold */
+  .lcard{position:relative;z-index:2;max-width:480px;width:100%;background:rgba(20,12,32,.42);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(245,221,165,.22);border-radius:16px;padding:42px 38px;box-shadow:0 24px 64px rgba(0,0,0,.5),0 60px 120px rgba(91,58,122,.32),inset 0 1px 0 rgba(245,221,165,.16);max-height:calc(100vh - 64px);overflow-y:auto}
+  .lcard::-webkit-scrollbar{width:6px}
+  .lcard::-webkit-scrollbar-track{background:transparent}
+  .lcard::-webkit-scrollbar-thumb{background:rgba(245,221,165,.18);border-radius:3px}
+
+  .lhead{text-align:center;margin-bottom:28px}
+  .lhead .mark svg{width:54px;height:54px;color:#F5DDA5;margin-bottom:18px;filter:drop-shadow(0 4px 12px rgba(196,163,90,.32))}
+  .lhead .eyebrow{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:#F5DDA5;font-weight:600;margin-bottom:12px;padding:6px 14px;border:1px solid rgba(245,221,165,.32);border-radius:20px;display:inline-block;background:rgba(245,221,165,.08);text-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .lhead h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;color:#FAF7F1;font-size:30px;line-height:1.18;letter-spacing:-.01em;margin-bottom:8px;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+  .lhead h1 em{color:#F5DDA5;font-style:italic;font-weight:500}
+  .lhead .sub{font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(250,247,241,.78);font-size:16px;line-height:1.45}
 
   .lemail-wrap{margin-bottom:22px}
-  .lemail-wrap input{width:100%;padding:13px 16px;background:rgba(247,243,236,.04);border:1px solid rgba(247,243,236,.12);border-radius:8px;color:#F7F3EC;font-size:14px;font-family:inherit;letter-spacing:.02em;transition:all .2s ease}
-  .lemail-wrap input:focus{outline:none;border-color:#D2AE64;background:rgba(210,174,100,.06)}
-  .lemail-wrap input::placeholder{color:#8A8579}
-  .lhint{margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#D2AE64;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;display:none}
+  .lemail-wrap input{width:100%;padding:13px 16px;background:rgba(250,247,241,.06);border:1px solid rgba(250,247,241,.18);border-radius:8px;color:#FAF7F1;font-size:14px;font-family:inherit;letter-spacing:.02em;transition:all .22s ease;backdrop-filter:blur(8px)}
+  .lemail-wrap input:focus{outline:none;border-color:#F5DDA5;background:rgba(245,221,165,.1);box-shadow:0 0 0 3px rgba(245,221,165,.14)}
+  .lemail-wrap input::placeholder{color:rgba(250,247,241,.42)}
+  .lhint{margin-top:8px;font-family:'Inter',sans-serif;font-size:10.5px;color:#F5DDA5;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;display:none;text-shadow:0 1px 3px rgba(0,0,0,.4)}
   .lhint.show{display:block}
-  .lhint:hover{color:#E6CB8F;text-decoration:underline}
+  .lhint:hover{color:#FFEBC2;text-decoration:underline}
 
-  .lblock{margin-bottom:18px}
-  .lblock-title{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:#8A8579;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid rgba(247,243,236,.08)}
+  .lblock{margin-bottom:20px}
+  .lblock-title{font-family:'Inter',sans-serif;font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:rgba(250,247,241,.5);font-weight:600;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(250,247,241,.1)}
 
-  .lbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px 18px;border-radius:8px;font-family:inherit;font-weight:500;font-size:13.5px;letter-spacing:.04em;cursor:pointer;border:1px solid transparent;transition:all .22s cubic-bezier(.2,.65,.3,1);text-decoration:none;margin-bottom:9px}
+  .lbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px 18px;border-radius:8px;font-family:inherit;font-weight:500;font-size:13.5px;letter-spacing:.04em;cursor:pointer;border:1px solid transparent;transition:all .22s cubic-bezier(.2,.65,.3,1);text-decoration:none;margin-bottom:9px;backdrop-filter:blur(4px)}
   .lbtn svg{width:18px;height:18px;flex-shrink:0}
-  .lbtn-primary{background:#D2AE64;color:#070D15;border-color:#D2AE64;box-shadow:0 6px 18px rgba(210,174,100,.28)}
-  .lbtn-primary:hover{background:#E6CB8F;transform:translateY(-1px);box-shadow:0 10px 26px rgba(210,174,100,.38)}
-  .lbtn-secondary{background:rgba(247,243,236,.04);color:#F7F3EC;border-color:rgba(247,243,236,.16)}
-  .lbtn-secondary:hover{background:rgba(210,174,100,.08);border-color:#D2AE64;color:#D2AE64}
-  .lbtn-whatsapp{background:#25d366;color:#fff;border-color:#25d366;box-shadow:0 6px 18px rgba(37,211,102,.32)}
-  .lbtn-whatsapp:hover{background:#1ebb59;transform:translateY(-1px);box-shadow:0 10px 26px rgba(37,211,102,.42)}
-  .lbtn-disabled{background:transparent;color:#8A8579;border-color:rgba(247,243,236,.06);cursor:not-allowed;font-style:italic}
-  .lbtn-disabled:hover{transform:none;background:transparent}
-  .lbtn-google{background:#fff;color:#1a1614;border-color:#fff}
-  .lbtn-google:hover{background:#f5f5f5;transform:translateY(-1px)}
+  /* Primário: gold luminoso sobre violet-deep */
+  .lbtn-primary{background:linear-gradient(135deg,#F5DDA5,#C4A35A);color:#3F2756;border-color:rgba(245,221,165,.5);box-shadow:0 6px 18px rgba(196,163,90,.36),inset 0 1px 0 rgba(255,255,255,.32)}
+  .lbtn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(196,163,90,.5),inset 0 1px 0 rgba(255,255,255,.42)}
+  /* Secundário: glassmorphism violet */
+  .lbtn-secondary{background:rgba(250,247,241,.08);color:#FAF7F1;border-color:rgba(250,247,241,.22)}
+  .lbtn-secondary:hover{background:rgba(245,221,165,.14);border-color:#F5DDA5;color:#F5DDA5}
+  /* WhatsApp: brand verde mantido */
+  .lbtn-whatsapp{background:#25d366;color:#fff;border-color:#25d366;box-shadow:0 6px 18px rgba(37,211,102,.36),inset 0 1px 0 rgba(255,255,255,.18)}
+  .lbtn-whatsapp:hover{background:#1ebb59;transform:translateY(-1px);box-shadow:0 10px 28px rgba(37,211,102,.48)}
+  /* Disabled (Apple "em breve") */
+  .lbtn-disabled{background:rgba(250,247,241,.04);color:rgba(250,247,241,.42);border-color:rgba(250,247,241,.08);cursor:not-allowed;font-style:italic}
+  .lbtn-disabled:hover{transform:none;background:rgba(250,247,241,.04)}
+  /* Google branco */
+  .lbtn-google{background:#fff;color:#1a1614;border-color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+  .lbtn-google:hover{background:#f5f5f5;transform:translateY(-1px);box-shadow:0 8px 18px rgba(0,0,0,.24)}
   .lbtn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:9px}
   .lbtn-row .lbtn{margin-bottom:0;font-size:12.5px;padding:11px 14px}
 
-  .lotp-zone{display:none;margin-top:14px;padding:18px;background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.2);border-radius:8px}
+  .lotp-zone{display:none;margin-top:14px;padding:18px;background:rgba(245,221,165,.1);border:1px solid rgba(245,221,165,.28);border-radius:8px;backdrop-filter:blur(8px)}
   .lotp-zone.on{display:block}
-  .lotp-zone .lab{font-family:'JetBrains Mono',monospace;font-size:10px;color:#D2AE64;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;text-align:center}
-  .lotp-inputs{display:flex;gap:6px;justify-content:center;margin-bottom:12px}
-  .lotp-inputs input{width:38px;height:46px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:18px;background:rgba(247,243,236,.06);border:1px solid rgba(247,243,236,.18);border-radius:5px;color:#F7F3EC;font-weight:600}
-  .lotp-inputs input:focus{outline:none;border-color:#D2AE64;background:rgba(210,174,100,.1)}
+  .lotp-zone .lab{font-family:'Inter',sans-serif;font-size:10.5px;color:#F5DDA5;letter-spacing:.22em;text-transform:uppercase;margin-bottom:12px;text-align:center;font-weight:600}
+  .lotp-inputs{display:flex;gap:6px;justify-content:center;margin-bottom:14px}
+  .lotp-inputs input{width:38px;height:46px;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;background:rgba(250,247,241,.1);border:1px solid rgba(250,247,241,.24);border-radius:6px;color:#FAF7F1;font-weight:500}
+  .lotp-inputs input:focus{outline:none;border-color:#F5DDA5;background:rgba(245,221,165,.14)}
 
-  .lerror{display:none;background:rgba(216,117,117,.12);border:1px solid rgba(216,117,117,.3);color:#D87575;padding:10px 14px;border-radius:6px;font-size:12.5px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;letter-spacing:.04em}
+  .lerror{display:none;background:rgba(216,117,117,.14);border:1px solid rgba(216,117,117,.36);color:#FFB4B4;padding:11px 14px;border-radius:6px;font-size:12.5px;margin-bottom:14px;letter-spacing:.02em;backdrop-filter:blur(6px)}
   .lerror.show{display:block}
 
-  .lfoot{margin-top:24px;padding-top:18px;border-top:1px solid rgba(247,243,236,.08);text-align:center}
-  .lfoot p{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#8A8579;letter-spacing:.16em;text-transform:uppercase;line-height:1.7;margin:0}
-  .lfoot a{color:#D2AE64;text-decoration:none}
-  .lfoot a:hover{color:#E6CB8F}
+  .lfoot{margin-top:24px;padding-top:18px;border-top:1px solid rgba(250,247,241,.1);text-align:center}
+  .lfoot p{font-family:'Inter',sans-serif;font-size:10px;color:rgba(250,247,241,.5);letter-spacing:.18em;text-transform:uppercase;line-height:1.7;margin:0;font-weight:500}
+  .lfoot a{color:#F5DDA5;text-decoration:none}
+  .lfoot a:hover{color:#FFEBC2}
 
-  @media(max-width:540px){.lcard{padding:32px 26px}.lhead h1{font-size:25px}.lbtn-row{grid-template-columns:1fr}}
+  @media(max-width:540px){.lcard{padding:32px 26px;max-height:calc(100vh - 32px)}.lhead h1{font-size:25px}.lbtn-row{grid-template-columns:1fr}}
+  @media(prefers-reduced-motion:reduce){.lbg img{animation:none;transform:scale(1.04)}}
 </style>
 
 <section class="login-wrap-v2" id="login-gate">
+  <div class="lbg" aria-hidden="true">
+    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=2400&auto=format&fit=crop&q=85" alt="" loading="eager" fetchpriority="high">
+  </div>
   <div class="lcard">
     <div class="lhead">
       <div class="mark"><svg><use href="#ip-logo"/></svg></div>
