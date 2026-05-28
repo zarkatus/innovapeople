@@ -201,18 +201,150 @@ footer a{color:rgba(255,255,255,.65)}
 @media(max-width:720px){.fab-curadoria{width:84px;height:84px;font-size:16px;top:78px;right:16px}}
 </style>
 
-<!-- LOGIN GATE -->
-<section class="login-wrap" id="login-gate">
-  <div class="login-card">
-    <div class="mark"><svg><use href="#ip-logo"/></svg></div>
-    <h1>Há uma sala <em style="font-style:italic;color:var(--gold-deep);font-weight:500">que continua sua.</em></h1>
-    <p class="sub">Entre — está tudo onde você deixou.</p>
-    <div id="login-error" class="login-error"></div>
-    <button class="btn-google" onclick="doLogin()">
-      <svg viewBox="0 0 24 24"><path fill="#fff" d="M21.35 11.1H12v2.8h5.35c-.24 1.5-1.7 4.4-5.35 4.4-3.22 0-5.84-2.66-5.84-5.94S8.78 6.42 12 6.42c1.83 0 3.06.78 3.76 1.45l2.57-2.47C16.8 3.86 14.62 3 12 3 6.97 3 2.9 7.05 2.9 12s4.07 9 9.1 9c5.26 0 8.74-3.68 8.74-8.86 0-.6-.07-1.05-.16-1.5z"/></svg>
-      Entrar com Google
-    </button>
-    <p class="note">Acesso permitido apenas a contas previamente autorizadas.</p>
+<!-- LOGIN GATE V20-like — 7 portas + tema dark RapheiceOS -->
+<style>
+  /* Sobreposição dark APENAS quando login-gate está visível (body.auth-active) */
+  body.auth-active{background:#070D15;color:#F7F3EC}
+  body.auth-active header.top{display:none}
+  body.auth-active footer{display:none}
+  body.auth-active .fab-curadoria{display:none}
+  .login-wrap-v2{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 28px;background:radial-gradient(70% 100% at 30% 0%,rgba(210,174,100,.08) 0%,transparent 65%),radial-gradient(60% 90% at 80% 100%,rgba(210,174,100,.04) 0%,transparent 60%),#070D15;min-height:100vh;font-family:'Inter',sans-serif;color:#F7F3EC}
+  .lcard{max-width:480px;width:100%;background:linear-gradient(180deg,#0F1C2D,#0A1320);border:1px solid rgba(210,174,100,.18);border-radius:14px;padding:42px 38px;box-shadow:0 24px 64px rgba(0,0,0,.5),0 60px 120px rgba(210,174,100,.08),inset 0 1px 0 rgba(210,174,100,.12)}
+  .lhead{text-align:center;margin-bottom:30px}
+  .lhead .mark svg{width:54px;height:54px;color:#D2AE64;margin-bottom:18px}
+  .lhead .eyebrow{font-family:'JetBrains Mono',Menlo,monospace;font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;color:#D2AE64;font-weight:600;margin-bottom:12px}
+  .lhead h1{font-family:Georgia,'Cormorant Garamond',serif;font-style:italic;font-weight:400;color:#F7F3EC;font-size:30px;line-height:1.15;letter-spacing:-.005em;margin-bottom:8px}
+  .lhead h1 em{color:#D2AE64;font-style:italic}
+  .lhead .sub{font-family:Georgia,serif;font-style:italic;color:#C9C2B4;font-size:15px;line-height:1.45}
+
+  .lemail-wrap{margin-bottom:22px}
+  .lemail-wrap input{width:100%;padding:13px 16px;background:rgba(247,243,236,.04);border:1px solid rgba(247,243,236,.12);border-radius:8px;color:#F7F3EC;font-size:14px;font-family:inherit;letter-spacing:.02em;transition:all .2s ease}
+  .lemail-wrap input:focus{outline:none;border-color:#D2AE64;background:rgba(210,174,100,.06)}
+  .lemail-wrap input::placeholder{color:#8A8579}
+  .lhint{margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#D2AE64;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;display:none}
+  .lhint.show{display:block}
+  .lhint:hover{color:#E6CB8F;text-decoration:underline}
+
+  .lblock{margin-bottom:18px}
+  .lblock-title{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:#8A8579;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid rgba(247,243,236,.08)}
+
+  .lbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px 18px;border-radius:8px;font-family:inherit;font-weight:500;font-size:13.5px;letter-spacing:.04em;cursor:pointer;border:1px solid transparent;transition:all .22s cubic-bezier(.2,.65,.3,1);text-decoration:none;margin-bottom:9px}
+  .lbtn svg{width:18px;height:18px;flex-shrink:0}
+  .lbtn-primary{background:#D2AE64;color:#070D15;border-color:#D2AE64;box-shadow:0 6px 18px rgba(210,174,100,.28)}
+  .lbtn-primary:hover{background:#E6CB8F;transform:translateY(-1px);box-shadow:0 10px 26px rgba(210,174,100,.38)}
+  .lbtn-secondary{background:rgba(247,243,236,.04);color:#F7F3EC;border-color:rgba(247,243,236,.16)}
+  .lbtn-secondary:hover{background:rgba(210,174,100,.08);border-color:#D2AE64;color:#D2AE64}
+  .lbtn-whatsapp{background:#25d366;color:#fff;border-color:#25d366;box-shadow:0 6px 18px rgba(37,211,102,.32)}
+  .lbtn-whatsapp:hover{background:#1ebb59;transform:translateY(-1px);box-shadow:0 10px 26px rgba(37,211,102,.42)}
+  .lbtn-disabled{background:transparent;color:#8A8579;border-color:rgba(247,243,236,.06);cursor:not-allowed;font-style:italic}
+  .lbtn-disabled:hover{transform:none;background:transparent}
+  .lbtn-google{background:#fff;color:#1a1614;border-color:#fff}
+  .lbtn-google:hover{background:#f5f5f5;transform:translateY(-1px)}
+  .lbtn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:9px}
+  .lbtn-row .lbtn{margin-bottom:0;font-size:12.5px;padding:11px 14px}
+
+  .lotp-zone{display:none;margin-top:14px;padding:18px;background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.2);border-radius:8px}
+  .lotp-zone.on{display:block}
+  .lotp-zone .lab{font-family:'JetBrains Mono',monospace;font-size:10px;color:#D2AE64;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;text-align:center}
+  .lotp-inputs{display:flex;gap:6px;justify-content:center;margin-bottom:12px}
+  .lotp-inputs input{width:38px;height:46px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:18px;background:rgba(247,243,236,.06);border:1px solid rgba(247,243,236,.18);border-radius:5px;color:#F7F3EC;font-weight:600}
+  .lotp-inputs input:focus{outline:none;border-color:#D2AE64;background:rgba(210,174,100,.1)}
+
+  .lerror{display:none;background:rgba(216,117,117,.12);border:1px solid rgba(216,117,117,.3);color:#D87575;padding:10px 14px;border-radius:6px;font-size:12.5px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;letter-spacing:.04em}
+  .lerror.show{display:block}
+
+  .lfoot{margin-top:24px;padding-top:18px;border-top:1px solid rgba(247,243,236,.08);text-align:center}
+  .lfoot p{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#8A8579;letter-spacing:.16em;text-transform:uppercase;line-height:1.7;margin:0}
+  .lfoot a{color:#D2AE64;text-decoration:none}
+  .lfoot a:hover{color:#E6CB8F}
+
+  @media(max-width:540px){.lcard{padding:32px 26px}.lhead h1{font-size:25px}.lbtn-row{grid-template-columns:1fr}}
+</style>
+
+<section class="login-wrap-v2" id="login-gate">
+  <div class="lcard">
+    <div class="lhead">
+      <div class="mark"><svg><use href="#ip-logo"/></svg></div>
+      <div class="eyebrow">Acesso InnovaPeople</div>
+      <h1>Há uma sala <em>que continua sua.</em></h1>
+      <p class="sub">Entre — está tudo onde você deixou.</p>
+    </div>
+
+    <div id="login-error" class="lerror"></div>
+
+    <div class="lemail-wrap">
+      <input type="email" id="lemail" placeholder="seu e-mail · ex.: nome@schifino.com.br" autocomplete="email" inputmode="email">
+      <div class="lhint" id="lhint" onclick="ipReusarUltima()"></div>
+    </div>
+
+    <!-- Bloco 1: Entrada Express -->
+    <div class="lblock">
+      <div class="lblock-title">Entrada Express · biométrica / 1-clique</div>
+      <button class="lbtn lbtn-primary" id="lbtn-passkey" onclick="ipLoginPasskey()" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Entrar com Touch ID / Face ID
+      </button>
+      <div class="lbtn-row">
+        <button class="lbtn lbtn-google" onclick="ipLoginGoogle()">
+          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC04" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z"/></svg>
+          Google
+        </button>
+        <button class="lbtn lbtn-disabled" onclick="ipAppleTooltip()" title="Em breve">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+          Apple <span style="opacity:.7">· em breve</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bloco 2: Sem Senha -->
+    <div class="lblock">
+      <div class="lblock-title">Sem Senha · código por canal</div>
+      <button class="lbtn lbtn-whatsapp" onclick="ipLoginWhatsApp()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.03-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.371-.025-.52-.075-.149-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
+        Continuar com WhatsApp
+      </button>
+      <div class="lbtn-row">
+        <button class="lbtn lbtn-secondary" onclick="ipLoginEmailOtp()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 5L2 7"/></svg>
+          Código por e-mail
+        </button>
+        <button class="lbtn lbtn-secondary" onclick="ipLoginMagicLink()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Link mágico
+        </button>
+      </div>
+    </div>
+
+    <!-- Bloco 3: Clássico -->
+    <div class="lblock">
+      <div class="lblock-title">Clássico · senha</div>
+      <div id="lpass-zone" style="display:none">
+        <input type="password" id="lpass" placeholder="sua senha" autocomplete="current-password" style="width:100%;padding:13px 16px;background:rgba(247,243,236,.04);border:1px solid rgba(247,243,236,.12);border-radius:8px;color:#F7F3EC;font-size:14px;font-family:inherit;margin-bottom:9px">
+        <button class="lbtn lbtn-secondary" onclick="ipLoginPassword()">Acessar</button>
+      </div>
+      <button class="lbtn lbtn-disabled" id="lpass-toggle" onclick="document.getElementById('lpass-zone').style.display='block';this.style.display='none';setTimeout(()=>document.getElementById('lpass').focus(),50)" style="font-style:italic">
+        Acessar com senha clássica
+      </button>
+    </div>
+
+    <!-- OTP Zone (compartilhado WhatsApp + Email) -->
+    <div class="lotp-zone" id="lotp-zone">
+      <div class="lab" id="lotp-label">digite o código de 6 dígitos</div>
+      <div class="lotp-inputs">
+        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+        <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*">
+      </div>
+      <button class="lbtn lbtn-primary" onclick="ipVerificarOtp()">Verificar</button>
+    </div>
+
+    <div class="lfoot">
+      <p>Segurança em camadas · MFA opcional após primeiro acesso<br>
+      <a href="/" style="margin-top:8px;display:inline-block">site público →</a></p>
+    </div>
   </div>
 </section>
 
@@ -275,11 +407,278 @@ footer a{color:rgba(255,255,255,.65)}
 <script>
 const SUPA_URL = 'https://auth.innovasphere.ia.br';
 const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+// Fallback hardcoded — fonte de verdade real é a tabela ip_allowed_users via RPC fn_ip_pode_acessar.
 const ALLOWED_EMAILS = ['raphael@schifino.com.br', 'gleice@schifino.com.br', 'rapheice@schifino.com.br'];
 
 const sb = window.supabase.createClient(SUPA_URL, SUPA_ANON, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
 });
+
+// ═══════════════════════════════════════════════════════════════════
+// CHECAGEM HÍBRIDA: RPC oficial + fallback hardcoded (offline-safe)
+// ═══════════════════════════════════════════════════════════════════
+async function ipPodeAcessar(email){
+  if(!email)return false;
+  const e=String(email).toLowerCase().trim();
+  try{
+    const {data,error}=await sb.rpc('fn_ip_pode_acessar',{p_email:e});
+    if(!error&&typeof data==='boolean')return data;
+  }catch(_){}
+  return ALLOWED_EMAILS.includes(e);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// V20 LOGIN HANDLERS — 7 portas
+// ═══════════════════════════════════════════════════════════════════
+
+const _LK_LAST='ip_last_login_method'; // localStorage key: última porta usada
+function _ipShowErr(msg){const el=document.getElementById('login-error');if(!el)return;el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),5000)}
+function _ipGetEmail(){const v=(document.getElementById('lemail')?.value||'').trim().toLowerCase();if(!v||!v.includes('@')){_ipShowErr('Digite um e-mail válido primeiro');return null}return v}
+function _ipMarkLast(method){try{localStorage.setItem(_LK_LAST,method)}catch(_){}}
+function _ipRenderHint(){
+  try{
+    const last=localStorage.getItem(_LK_LAST);
+    if(!last)return;
+    const map={passkey:'Touch ID',google:'Google',whatsapp:'WhatsApp',email_otp:'Código por e-mail',magic:'Link mágico',password:'Senha'};
+    const lbl=map[last]||last;
+    const el=document.getElementById('lhint');
+    if(el){el.textContent='Da última vez: '+lbl+' — usar de novo';el.classList.add('show')}
+  }catch(_){}
+}
+function ipReusarUltima(){
+  try{
+    const last=localStorage.getItem(_LK_LAST);
+    if(!last)return;
+    const map={passkey:ipLoginPasskey,google:ipLoginGoogle,whatsapp:ipLoginWhatsApp,email_otp:ipLoginEmailOtp,magic:ipLoginMagicLink,password:()=>{document.getElementById('lpass-zone').style.display='block';document.getElementById('lpass-toggle').style.display='none';document.getElementById('lpass').focus()}};
+    (map[last]||function(){})();
+  }catch(_){}
+}
+
+// 1. Google OAuth (já existia como doLogin) — reutilizado
+async function ipLoginGoogle(){
+  _ipMarkLast('google');
+  try{
+    const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/sistema/'}});
+    if(error)_ipShowErr('Erro Google: '+error.message);
+  }catch(e){_ipShowErr('Erro: '+(e.message||e))}
+}
+
+// 2. Email + Senha (clássico)
+async function ipLoginPassword(){
+  const email=_ipGetEmail();if(!email)return;
+  const pass=(document.getElementById('lpass')?.value||'').trim();
+  if(!pass){_ipShowErr('Digite sua senha');return}
+  if(!await ipPodeAcessar(email)){_ipShowErr('E-mail não autorizado');return}
+  _ipMarkLast('password');
+  try{
+    const{error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error)_ipShowErr('Senha incorreta ou conta sem senha definida');
+  }catch(e){_ipShowErr('Erro: '+(e.message||e))}
+}
+
+// 3. Passkey / WebAuthn — reutiliza EFs webauthn-options + webauthn-verify da InnovaSphere
+async function ipLoginPasskey(){
+  const email=_ipGetEmail();if(!email)return;
+  if(!await ipPodeAcessar(email)){_ipShowErr('E-mail não autorizado');return}
+  if(!window.PublicKeyCredential){_ipShowErr('Navegador sem suporte a Passkey');return}
+  _ipMarkLast('passkey');
+  try{
+    // 1. Pede options (assertion challenge)
+    const r1=await fetch(SUPA_URL+'/functions/v1/webauthn-options',{
+      method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Content-Type':'application/json'},
+      body:JSON.stringify({action:'login',email})
+    });
+    if(!r1.ok){_ipShowErr('Passkey não disponível para este e-mail');return}
+    const{publicKey}=await r1.json();
+    if(!publicKey){_ipShowErr('Sem credencial registrada');return}
+    // 2. Converte challenge base64url → ArrayBuffer
+    const b64ToBuf=(s)=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/').padEnd(s.length+(4-s.length%4)%4,'=')),c=>c.charCodeAt(0)).buffer;
+    publicKey.challenge=b64ToBuf(publicKey.challenge);
+    if(publicKey.allowCredentials)for(const c of publicKey.allowCredentials)c.id=b64ToBuf(c.id);
+    const cred=await navigator.credentials.get({publicKey});
+    // 3. Verifica
+    const bufToB64=(b)=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    const r2=await fetch(SUPA_URL+'/functions/v1/webauthn-verify',{
+      method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Content-Type':'application/json'},
+      body:JSON.stringify({action:'login',email,credential:{
+        id:cred.id,rawId:bufToB64(cred.rawId),type:cred.type,
+        response:{
+          clientDataJSON:bufToB64(cred.response.clientDataJSON),
+          authenticatorData:bufToB64(cred.response.authenticatorData),
+          signature:bufToB64(cred.response.signature),
+          userHandle:cred.response.userHandle?bufToB64(cred.response.userHandle):null,
+        }
+      }})
+    });
+    const j=await r2.json();
+    if(!r2.ok||!j.magic_link){_ipShowErr('Passkey rejeitou: '+(j.error||'tente outra porta'));return}
+    location.href=j.magic_link;
+  }catch(e){_ipShowErr('Passkey: '+(e.message||'cancelado'))}
+}
+
+// 4. WhatsApp OTP — Caminho B (EF whatsapp-otp gera magic link)
+let _ipOtpCtx=null; // {kind:'whatsapp'|'email', email, phone}
+async function ipLoginWhatsApp(){
+  const email=_ipGetEmail();if(!email)return;
+  if(!await ipPodeAcessar(email)){_ipShowErr('E-mail não autorizado');return}
+  _ipMarkLast('whatsapp');
+  // Busca telefone do email via fn_ip_meu_perfil... mas ainda não autenticado.
+  // Solução: pede telefone se não tiver mapeamento conhecido (no MVP, mapeamento hardcoded).
+  const TEL_MAP={'raphael@schifino.com.br':'5547992403447'};
+  const phone=TEL_MAP[email]||prompt('WhatsApp (com DDI, ex: 5547999999999):');
+  if(!phone){return}
+  try{
+    const r=await fetch(SUPA_URL+'/functions/v1/whatsapp-otp',{
+      method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Content-Type':'application/json'},
+      body:JSON.stringify({action:'send',phone,email})
+    });
+    if(!r.ok){const t=await r.text();_ipShowErr('WhatsApp: '+t.slice(0,100));return}
+    _ipOtpCtx={kind:'whatsapp',email,phone};
+    document.getElementById('lotp-zone').classList.add('on');
+    document.getElementById('lotp-label').textContent='código WhatsApp · 6 dígitos';
+    document.querySelectorAll('.lotp-inputs input')[0]?.focus();
+  }catch(e){_ipShowErr('WhatsApp: '+(e.message||e))}
+}
+
+// 5. Email OTP (Supabase nativo)
+async function ipLoginEmailOtp(){
+  const email=_ipGetEmail();if(!email)return;
+  if(!await ipPodeAcessar(email)){_ipShowErr('E-mail não autorizado');return}
+  _ipMarkLast('email_otp');
+  try{
+    const{error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:false}});
+    if(error){_ipShowErr('OTP: '+error.message);return}
+    _ipOtpCtx={kind:'email',email};
+    document.getElementById('lotp-zone').classList.add('on');
+    document.getElementById('lotp-label').textContent='código por e-mail · 6 dígitos';
+    document.querySelectorAll('.lotp-inputs input')[0]?.focus();
+  }catch(e){_ipShowErr('OTP: '+(e.message||e))}
+}
+
+// 6. Link Mágico (Supabase nativo, sem código — clica no email)
+async function ipLoginMagicLink(){
+  const email=_ipGetEmail();if(!email)return;
+  if(!await ipPodeAcessar(email)){_ipShowErr('E-mail não autorizado');return}
+  _ipMarkLast('magic');
+  try{
+    const{error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:false,emailRedirectTo:window.location.origin+'/sistema/'}});
+    if(error){_ipShowErr('Link: '+error.message);return}
+    _ipShowErr('Link enviado para '+email+'. Cheque sua caixa.');
+    document.getElementById('login-error').style.background='rgba(107,174,130,.12)';
+    document.getElementById('login-error').style.color='#6BAE82';
+    document.getElementById('login-error').style.borderColor='rgba(107,174,130,.3)';
+  }catch(e){_ipShowErr('Link: '+(e.message||e))}
+}
+
+// 7. Apple stub
+function ipAppleTooltip(){_ipShowErr('Apple Sign-In em breve — aguardando Apple Developer Program')}
+
+// OTP verify (compartilhado WhatsApp + Email)
+async function ipVerificarOtp(){
+  if(!_ipOtpCtx){_ipShowErr('Solicite o código primeiro');return}
+  const code=Array.from(document.querySelectorAll('.lotp-inputs input')).map(i=>i.value).join('').trim();
+  if(code.length!==6){_ipShowErr('Código deve ter 6 dígitos');return}
+  try{
+    if(_ipOtpCtx.kind==='whatsapp'){
+      const r=await fetch(SUPA_URL+'/functions/v1/whatsapp-otp',{
+        method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Content-Type':'application/json'},
+        body:JSON.stringify({action:'verify',phone:_ipOtpCtx.phone,email:_ipOtpCtx.email,code})
+      });
+      const j=await r.json();
+      if(!r.ok||!j.magic_link){_ipShowErr('Código inválido');return}
+      location.href=j.magic_link;
+    }else{
+      const{error}=await sb.auth.verifyOtp({email:_ipOtpCtx.email,token:code,type:'email'});
+      if(error){_ipShowErr('Código inválido');return}
+      // Supabase já cria sessão; onAuthStateChange dispara showDashboard
+    }
+  }catch(e){_ipShowErr('Verify: '+(e.message||e))}
+}
+
+// Auto-advance entre inputs OTP
+document.addEventListener('DOMContentLoaded',()=>{
+  const inps=document.querySelectorAll('.lotp-inputs input');
+  inps.forEach((inp,i)=>{
+    inp.addEventListener('input',e=>{
+      e.target.value=e.target.value.replace(/[^0-9]/g,'').slice(0,1);
+      if(e.target.value&&inps[i+1])inps[i+1].focus();
+    });
+    inp.addEventListener('keydown',e=>{
+      if(e.key==='Backspace'&&!e.target.value&&inps[i-1])inps[i-1].focus();
+      if(e.key==='Enter')ipVerificarOtp();
+    });
+    inp.addEventListener('paste',e=>{
+      e.preventDefault();
+      const pasted=(e.clipboardData||window.clipboardData).getData('text').replace(/[^0-9]/g,'').slice(0,6);
+      inps.forEach((x,k)=>x.value=pasted[k]||'');
+      if(pasted.length===6)ipVerificarOtp();
+    });
+  });
+  // Detecta Passkey disponível
+  if(window.PublicKeyCredential&&window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable){
+    PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(av=>{
+      if(av)document.getElementById('lbtn-passkey').style.display='flex';
+    }).catch(()=>{});
+  }
+  _ipRenderHint();
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// BANNER pós-login: oferta de Passkey vs MFA TOTP
+// ═══════════════════════════════════════════════════════════════════
+function ipMaybeOfferSecurity(email){
+  try{
+    if(localStorage.getItem('ip_has_passkey')==='1')return;
+    const dismissed=parseInt(localStorage.getItem('ip_sec_dismissed_at')||'0',10);
+    if(dismissed&&Date.now()-dismissed<7*86400e3)return;
+    setTimeout(()=>{
+      if(document.getElementById('ip-sec-banner'))return;
+      const hasPasskey=window.PublicKeyCredential&&window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable;
+      const b=document.createElement('div');
+      b.id='ip-sec-banner';
+      b.style.cssText='position:fixed;top:84px;right:24px;width:340px;background:linear-gradient(180deg,#0F1C2D,#070D15);border:1px solid rgba(210,174,100,.3);border-radius:10px;padding:20px;box-shadow:0 16px 48px rgba(0,0,0,.4),0 0 0 1px rgba(210,174,100,.2);color:#F7F3EC;font-family:Inter,sans-serif;font-size:13px;z-index:9999;animation:slideIn .4s cubic-bezier(.2,.65,.3,1)';
+      b.innerHTML=`<style>@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}</style>
+        <div style="font-family:Georgia,serif;font-style:italic;color:#D2AE64;font-size:17px;margin-bottom:8px">🔐 Entrar mais rápido</div>
+        <div style="color:#C9C2B4;line-height:1.5;margin-bottom:14px">Salve uma <strong style="color:#F7F3EC">Passkey biométrica</strong> (Touch ID/Face ID) ou ative MFA TOTP. Próximo login será sem digitar senha.</div>
+        <div style="display:flex;gap:8px"><button onclick="ipOfertaPasskey()" style="flex:1;padding:10px;background:#D2AE64;color:#070D15;border:none;border-radius:6px;font-weight:600;cursor:pointer;font-size:12px">Salvar Passkey</button><button onclick="ipDismissOferta()" style="padding:10px 14px;background:transparent;color:#8A8579;border:1px solid rgba(247,243,236,.1);border-radius:6px;cursor:pointer;font-size:12px">depois</button></div>`;
+      document.body.appendChild(b);
+    },5500);
+  }catch(_){}
+}
+function ipDismissOferta(){try{localStorage.setItem('ip_sec_dismissed_at',Date.now().toString())}catch(_){};document.getElementById('ip-sec-banner')?.remove()}
+async function ipOfertaPasskey(){
+  const email=window.__IP_USER_EMAIL;
+  if(!email){alert('Sessão sem e-mail');return}
+  try{
+    const{data:{session}}=await sb.auth.getSession();
+    const r1=await fetch(SUPA_URL+'/functions/v1/webauthn-options',{
+      method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+(session?.access_token||SUPA_ANON),'Content-Type':'application/json'},
+      body:JSON.stringify({action:'register',email})
+    });
+    if(!r1.ok){alert('Não foi possível registrar Passkey: '+(await r1.text()).slice(0,100));return}
+    const{publicKey}=await r1.json();
+    const b64ToBuf=(s)=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/').padEnd(s.length+(4-s.length%4)%4,'=')),c=>c.charCodeAt(0)).buffer;
+    publicKey.challenge=b64ToBuf(publicKey.challenge);
+    if(publicKey.user?.id)publicKey.user.id=b64ToBuf(publicKey.user.id);
+    if(publicKey.excludeCredentials)for(const c of publicKey.excludeCredentials)c.id=b64ToBuf(c.id);
+    const cred=await navigator.credentials.create({publicKey});
+    const bufToB64=(b)=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    const r2=await fetch(SUPA_URL+'/functions/v1/webauthn-verify',{
+      method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+(session?.access_token||SUPA_ANON),'Content-Type':'application/json'},
+      body:JSON.stringify({action:'register',email,credential:{
+        id:cred.id,rawId:bufToB64(cred.rawId),type:cred.type,
+        response:{
+          clientDataJSON:bufToB64(cred.response.clientDataJSON),
+          attestationObject:bufToB64(cred.response.attestationObject),
+        }
+      }})
+    });
+    if(!r2.ok){alert('Não foi possível salvar Passkey: '+(await r2.text()).slice(0,100));return}
+    try{localStorage.setItem('ip_has_passkey','1')}catch(_){}
+    document.getElementById('ip-sec-banner')?.remove();
+    alert('Passkey salva. Próximo login será biométrico.');
+  }catch(e){alert('Passkey: '+(e.message||'cancelado'))}
+}
 
 const ESTAGIO_LABEL = {
   diagnostico: 'Diagnóstico',
@@ -292,7 +691,7 @@ const ESTAGIO_LABEL = {
 
 async function init() {
   const { data: { session } } = await sb.auth.getSession();
-  if (session && ALLOWED_EMAILS.includes(session.user?.email)) {
+  if (session && await ipPodeAcessar(session.user?.email)) {
     showDashboard(session.user);
   } else if (session) {
     await sb.auth.signOut();
@@ -308,18 +707,10 @@ async function init() {
   }
 }
 
+// Legacy doLogin() mantido para backwards compat (chamadas internas), agora delega a ipLoginGoogle
 async function doLogin() {
   document.getElementById('login-error').classList.remove('show');
-  const { error } = await sb.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: window.location.origin + '/sistema/',
-      queryParams: { prompt: 'select_account' }
-    }
-  });
-  if (error) {
-    showLoginError(error.message);
-  }
+  return ipLoginGoogle();
 }
 
 async function doLogout() {
@@ -328,6 +719,7 @@ async function doLogout() {
 }
 
 function showLogin(errorMsg) {
+  document.body.classList.add('auth-active');
   document.getElementById('login-gate').style.display = 'flex';
   document.getElementById('dashboard').classList.remove('show');
   document.getElementById('topbar').style.display = 'none';
@@ -352,12 +744,18 @@ function showDashboard(user) {
       return;
     }
   } catch(_){}
+  document.body.classList.remove('auth-active');
   document.getElementById('login-gate').style.display = 'none';
   document.getElementById('dashboard').classList.add('show');
   document.getElementById('topbar').style.display = 'block';
   const nome = user.user_metadata?.full_name || user.email.split('@')[0];
   document.getElementById('user-display').textContent = nome;
+  window.__IP_USER_EMAIL = user.email;
   loadDashboard();
+  // Registra último acesso na tabela ip_allowed_users (best-effort)
+  sb.rpc('fn_ip_registrar_acesso').catch(()=>{});
+  // Banner pós-login: oferta passkey/MFA
+  ipMaybeOfferSecurity(user.email);
 }
 
 async function loadDashboard() {
@@ -660,12 +1058,14 @@ function escapeHtml(s) {
   return String(s ?? '').replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
 }
 
-sb.auth.onAuthStateChange((event, session) => {
-  if (event === 'SIGNED_IN' && session && ALLOWED_EMAILS.includes(session.user?.email)) {
-    showDashboard(session.user);
-  } else if (event === 'SIGNED_IN' && session) {
-    sb.auth.signOut();
-    showLogin('E-mail não autorizado.');
+sb.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    if (await ipPodeAcessar(session.user?.email)) {
+      showDashboard(session.user);
+    } else {
+      await sb.auth.signOut();
+      showLogin('E-mail não autorizado.');
+    }
   } else if (event === 'SIGNED_OUT') {
     showLogin();
   }
