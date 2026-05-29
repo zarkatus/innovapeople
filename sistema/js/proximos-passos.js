@@ -130,7 +130,8 @@
     let arr=data||[];
     if(sourceTables&&sourceTables.length){
       const agSet=new Set();
-      Object.entries(AGENTE_PARA_FERRAMENTA).forEach(([k,v])=>{ if(sourceTables.includes(v.nm)||sourceTables.includes(v.href)||sourceTables.some(t=>k.includes(t)))agSet.add(k); });
+      const lower=sourceTables.map(s=>String(s).toLowerCase());
+      Object.entries(AGENTE_PARA_FERRAMENTA).forEach(([k,v])=>{ if(lower.includes(String(v.nm).toLowerCase())||lower.includes(String(v.href).toLowerCase())||lower.some(t=>k.toLowerCase().includes(t)))agSet.add(k); });
       if(agSet.size)arr=arr.filter(s=>agSet.has(s.agente));
     }
     if(!arr.length){ host.innerHTML=''; return; }

@@ -15,6 +15,7 @@
   const PAPEIS=['Colaborador','Gestor','Administrador'];
   let _s={tab:'tabela',mandato:null,mandatos:[],cadeiras:[],editId:null};
   let _host=null;
+  let _gen=0;
 
   async function open(host){
     _host=host;
@@ -62,7 +63,7 @@
   function inteligenciaSucessao(){
     const c=_s.cadeiras; if(!c.length) return '<div class="og-empty">Cadastre cadeiras para que a inteligencia de sucessao apareca aqui.</div>';
     const risco=c.filter(x=>x.status==='Vacância'||x.status==='Bloqueada').sort((a,b)=>(a.nivel||'Z').localeCompare(b.nivel||'Z'));
-    const gestCount={}; c.forEach(x=>{const g=x.gestor_id||x.gestor_nome;if(g)gestCount[g]=(gestCount[g]||0)+1;});
+    const gestCount={}; c.forEach(x=>{const g=x.gestor_id||(x.gestor_nome?'@'+String(x.gestor_nome).trim().toLowerCase():null);if(g)gestCount[g]=(gestCount[g]||0)+1;});
     const gestoresMuitos=Object.entries(gestCount).filter(([_,n])=>n>=5).sort((a,b)=>b[1]-a[1]);
     const semBackup=c.filter(x=>x.papel==='Gestor'); // gestor sem indicacao de substituto formal e proxy de risco
     const porModelo={}; c.forEach(x=>{const m=x.modelo_contrato||'(nao definido)';porModelo[m]=(porModelo[m]||0)+1});
@@ -111,11 +112,7 @@
     root.innerHTML=html;
   }
 
-  function _tab(t){_s.tab=t;render();
-    if(window.IpFerramenta){
-      const ex=_host.querySelector('#og-org'); if(ex){_host.querySelector('#og-root').appendChild(ex);}
-    }
-  }
+  function _tab(t){_s.tab=t;render();_mountExtras();}
   async function _mountExtras(){
     const root=_host.querySelector('#og-root'); if(!root)return;
     const oldOrg=root.querySelector('#og-org'); if(oldOrg)oldOrg.remove();
@@ -141,7 +138,7 @@
     }
   }
 
-  function _setMandato(id){_s.mandato=id;reload().then(render).then(_mountExtras);}
+  function _setMandato(id){_s.mandato=id;const my=++_gen;reload().then(()=>{if(my===_gen){render();_mountExtras();}});}
 
   function _abrir(id){
     _s.editId=id; const r=id?_s.cadeiras.find(x=>x.id===id):{};
@@ -163,16 +160,33 @@
       '<label>Observacoes<textarea id="og-f-obs">'+v('observacoes')+'</textarea></label>'+
       '</div><div class="og-mact">'+(id?'<button class="og-btn ghost danger" onclick="IpOrganograma._excluir()">Excluir</button>':'')+'<button class="og-btn ghost" onclick="IpOrganograma._fechar()">Cancelar</button><button class="og-btn" onclick="IpOrganograma._salvar()">Salvar</button></div></div>';
     const m=document.createElement('div'); m.id='og-modal-root'; m.innerHTML=html; document.body.appendChild(m);
+    const modal=m.querySelector('.og-modal'); if(modal){modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','og-modal-h');}
+    const escH=(e)=>{if(e.key==='Escape')_fechar();};
+    document.addEventListener('keydown',escH); m._escH=escH;
+    setTimeout(()=>{const f=m.querySelector('input,select,textarea');if(f)f.focus();},60);
   }
-  function _fechar(){const m=document.getElementById('og-modal-root');if(m)m.remove();_s.editId=null;}
+  function _fechar(){const m=document.getElementById('og-modal-root');if(m){if(m._escH)document.removeEventListener('keydown',m._escH);m.remove();}_s.editId=null;}
   async function _salvar(){
     const g=id=>document.getElementById(id)?.value;
+    if(!_s.mandato){T.toast('Selecione um trabalho ativo');return;}
+    if(!g('og-f-codigo')||!g('og-f-nome')){T.toast('Codigo e Nome sao obrigatorios');return;}
+    const saveBtn=document.querySelector('.og-mact .og-btn:not(.ghost):not(.danger)');
+    if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='Salvando...';}
     const row={mandato_id:_s.mandato,codigo:g('og-f-codigo')||null,nome:g('og-f-nome')||null,cargo:g('og-f-cargo')||null,diretoria:g('og-f-diretoria')||null,subarea:g('og-f-subarea')||null,nivel:g('og-f-nivel')||null,status:g('og-f-status')||null,papel:g('og-f-papel')||null,modelo_contrato:g('og-f-modelo')||null,gestor_nome:g('og-f-gestor')||null,email:g('og-f-email')||null,observacoes:g('og-f-obs')||null};
     try{ let res; if(_s.editId)res=await sb().from('ip_organograma_cadeira').update(row).eq('id',_s.editId); else res=await sb().from('ip_organograma_cadeira').insert(row); if(res.error)throw res.error; T.toast('Cadeira salva'); _fechar(); await reload(); render(); await _mountExtras(); }
     catch(e){T.toast('Erro: '+(e.message||e))}
+    finally{const sb=document.querySelector('.og-mact .og-btn:not(.ghost):not(.danger)');if(sb){sb.disabled=false;sb.textContent='Salvar';}}
   }
   async function _excluir(){
-    if(!_s.editId)return; if(!confirm('Excluir esta cadeira?'))return;
+    if(!_s.editId)return;
+    const ok=await new Promise(res=>{
+      const m=document.createElement('div');m.className='og-modal-bg';
+      m.innerHTML='<div class="og-modal" role="dialog" aria-modal="true" style="text-align:center"><div class="og-modal-h">Confirmar exclusao</div><p style="color:var(--cream);margin:0 0 18px;font-family:var(--serif);font-style:italic">Excluir esta cadeira? Esta acao nao pode ser desfeita.</p><div class="og-mact"><button class="og-btn ghost" id="og-c-no">Cancelar</button><button class="og-btn ghost danger" id="og-c-yes">Excluir</button></div></div>';
+      document.body.appendChild(m);
+      m.querySelector('#og-c-no').onclick=()=>{m.remove();res(false);};
+      m.querySelector('#og-c-yes').onclick=()=>{m.remove();res(true);};
+    });
+    if(!ok)return;
     try{ const {error}=await sb().from('ip_organograma_cadeira').delete().eq('id',_s.editId); if(error)throw error; T.toast('Cadeira removida'); _fechar(); await reload(); render(); await _mountExtras(); }
     catch(e){T.toast('Erro: '+(e.message||e))}
   }
