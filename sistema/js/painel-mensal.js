@@ -37,11 +37,11 @@
     const since6m=new Date(Date.now()-180*864e5).toISOString();
     const [mand,pulsos,sug,dec,rel,rx,prog,eventos]=await Promise.all([
       T.safe(()=>sb().from('ip_mandatos').select('id,empresa,estagio,status,setor,porte').limit(200),{data:[]}),
-      T.safe(()=>sb().from('ip_pulsos').select('mandato_id,equipe,r_proposito,r_autonomia,r_competencia,r_pertencimento,r_clareza,r_seguranca,risco_saida,score,created_at').gte('created_at',since6m).limit(3000),{data:[]}),
+      T.safe(()=>sb().from('ip_pulsos').select('mandato_id,equipe,r_proposito,r_autonomia,r_competencia,r_pertencimento,r_clareza,r_seguranca,risco_saida,score,created_at').gte('created_at',since6m).order('created_at',{ascending:false}).limit(3000),{data:[]}),
       T.safe(()=>sb().from('ip_agent_sugestoes').select('severidade,status,agente,created_at').limit(800),{data:[]}),
       T.safe(()=>sb().from('ip_decisoes').select('id,nivel,status,created_at').gte('created_at',since6m).limit(500),{data:[]}),
       T.safe(()=>sb().from('ip_relacionamentos').select('id,backup').limit(500),{data:[]}),
-      T.safe(()=>sb().from('ip_raio_x_submissions').select('status,sintomas_score,created_at').limit(1000),{data:[]}),
+      T.safe(()=>sb().from('ip_raio_x_submissions').select('status,sintomas_score,created_at').gte('created_at',since6m).order('created_at',{ascending:false}).limit(1000),{data:[]}),
       T.safe(()=>sb().from('ip_programas').select('id,nome').limit(100),{data:[]}),
       T.safe(()=>sb().from('ip_eventos').select('source_table,operacao,ts').gte('ts',since30).limit(2000),{data:[]}),
     ]);
@@ -63,7 +63,7 @@
     const n=series[0].labels.length;
     const x=(i)=>pad+(W-pad*2)*(n<=1?0:i/(n-1));
     const y=(v)=>H-pad-(H-pad*2)*(v-mn)/((mx-mn)||1);
-    const colors=['var(--gold,#C4A35A)','var(--info,#7BA5D8)','var(--ok,#74c08f)','var(--warn,#E1A754)','var(--danger,#D87575)','var(--cream-muted,#D6CDB8)'];
+    const colors=['var(--gold,#C4A35A)','var(--info,#7BA5D8)','var(--ok,#6BAE82)','var(--warn,#E1A754)','var(--danger,#D87575)','var(--cream-muted,#D6CDB8)'];
     let lines=''; series.forEach((s,si)=>{
       const pts=s.data.map((v,i)=>v==null?null:x(i)+','+y(v)).filter(Boolean).join(' ');
       lines+='<polyline fill="none" stroke="'+colors[si%colors.length]+'" stroke-width="1.6" points="'+pts+'"/>';
@@ -102,7 +102,7 @@
     const buck=monthBucket(d.pulsos,'created_at');
     const series=DIMS.map(dim=>({nome:dim.n,labels:buck.labels,data:buck.labels.map(k=>{const a=buck.map[k]||[];return avg(a.map(p=>p[dim.k]))})}));
     const rxStages=['novo','contatado','agendado','realizado','convertido'];
-    const rxBars=rxStages.map(s=>({l:s,v:d.rx.filter(r=>r.status===s).length,color:s==='convertido'?'var(--ok,#74c08f)':'var(--gold,#C4A35A)'}));
+    const rxBars=rxStages.map(s=>({l:s,v:d.rx.filter(r=>r.status===s).length,color:s==='convertido'?'var(--ok,#6BAE82)':'var(--gold,#C4A35A)'}));
     const evtBy={}; d.eventos.forEach(e=>{const k=(e.source_table||'?').replace('ip_','');evtBy[k]=(evtBy[k]||0)+1});
     const evtBars=Object.entries(evtBy).sort((a,b)=>b[1]-a[1]).slice(0,7).map(([k,v])=>({l:k,v,color:'var(--info,#7BA5D8)'}));
     const partes=[];
@@ -145,12 +145,12 @@
   #pm-root .pm-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}
   #pm-root .pm-kpi{padding:14px 16px;border-radius:11px;background:var(--navy-raised);border:1px solid var(--rule)}
   #pm-root .pm-kpi.hero{background:linear-gradient(135deg,rgba(196,163,90,.1),transparent);border-color:var(--navy-edge,rgba(196,163,90,.3))}
-  #pm-root .pm-kpi .lab{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--cream-dim);font-weight:600}
+  #pm-root .pm-kpi .lab{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--cream-muted);font-weight:600}
   #pm-root .pm-kpi .val{font-family:var(--serif);font-style:italic;font-size:26px;color:var(--cream);margin-top:6px;line-height:1}
   #pm-root .pm-kpi .val .un{font-size:12px;color:var(--cream-dim);font-style:normal;margin-left:2px}
   #pm-root .pm-kpi .note{font-family:var(--mono);font-size:9.5px;color:var(--cream-dim);margin-top:5px}
   #pm-root .pm-kpi .farol{display:inline-block;margin-top:8px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:10px}
-  #pm-root .pm-kpi .farol.no-alvo{background:rgba(116,192,143,.16);color:var(--ok,#74c08f)}
+  #pm-root .pm-kpi .farol.no-alvo{background:rgba(116,192,143,.16);color:var(--ok,#6BAE82)}
   #pm-root .pm-kpi .farol.atencao{background:rgba(225,167,84,.16);color:var(--warn,#E1A754)}
   #pm-root .pm-kpi .farol.fora{background:rgba(216,117,117,.16);color:var(--danger,#D87575)}
   #pm-root .pm-kpi .farol.sem-meta{background:rgba(255,255,255,.04);color:var(--cream-dim)}

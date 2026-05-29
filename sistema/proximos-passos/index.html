@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Próximos Passos · Cockpit · InnovaPeople</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/sistema/toolbox/_shared/toolbox.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script src="/sistema/toolbox/_shared/toolbox.js"></script>
+<script src="/sistema/js/proximos-passos.js" defer></script>
+<script>TBAuth.init('proximos-passos');</script>
+<link rel="stylesheet" href="/sistema/_shared/sidebar.css">
+<script src="/sistema/_shared/sidebar.js" defer></script>
+</head>
+<body>
+
+<nav class="top">
+  <div class="row">
+    <a class="brand" href="/sistema/">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="14"/><path d="M16 6 v20 M6 16 h20"/></svg>
+      <div><span class="wm">innova · people</span><span class="sub">Cockpit</span></div>
+    </a>
+    <div class="nav">
+      <a href="/sistema/">Dashboard</a>
+      <a href="/sistema/proximos-passos/" class="active">Próximos Passos</a>
+      <a href="/sistema/toolbox/">ToolBox</a>
+      <a href="/sistema/chro/">CHRO</a>
+      <a href="/sistema/agentes.html">Agentes IA</a>
+    </div>
+    <div class="user">olá, <strong id="uname">—</strong></div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">5 camadas · Cockpit central</div>
+    <h1>Próximos <em>passos</em></h1>
+    <div class="tagline">Cada sinal detectado pelos 5 agentes vigia vem aqui, enriquecido por IA com causa e ação 24-72h. Você decide a ordem — ou pede o diagnóstico cruzado, que indica por onde começar.</div>
+  </div>
+</section>
+
+<div class="hub">
+  <div class="panel s12 hero-card">
+    <div class="p-h"><div class="t"><span class="dot"></span>Cockpit · Detecção → Enriquecimento → Trilha</div></div>
+    <div class="p-b"><div id="pp-host"></div></div>
+  </div>
+</div>
+
+<div class="foot">Cockpit · <strong>Próximos Passos</strong> · 5 camadas (detecção + enriquecimento cognitivo + diagnóstico cruzado + trilha + propagação)</div>
+<div id="toast"></div>
+
+<script>
+function boot(){
+  document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';
+  const h=document.getElementById('pp-host');
+  let tries=0; const mount=()=>{ if(window.IpProximosPassos&&h)return window.IpProximosPassos.open(h); if(++tries>40){h.innerHTML='<div style="text-align:center;padding:30px;color:#A99E86;font-style:italic">Não foi possível carregar. <a href="" style="color:#C4A35A">Recarregar</a></div>';return;} setTimeout(mount,150); };
+  mount();
+}
+</script>
+</body>
+</html>

@@ -33,7 +33,9 @@
 
   async function renderSintese(host){
     const cfg=host._fc; const el=host.querySelector('#fc-sintese'); if(!el)return;
-    const {data}=await T.safe(()=>sb().from('ip_agent_runs').select('payload,concluido_em').eq('agente','claude_diagnostico').eq('mandato_id',cfg.mandato).eq('status','concluido').order('concluido_em',{ascending:false}).limit(1),{data:[]});
+    let qy=sb().from('ip_agent_runs').select('payload,concluido_em').eq('agente','claude_diagnostico').eq('status','concluido');
+    if(cfg.mandato)qy=qy.eq('mandato_id',cfg.mandato);
+    const {data}=await T.safe(()=>qy.order('concluido_em',{ascending:false}).limit(1),{data:[]});
     const last=(data||[])[0]; const sint=last&&last.payload&&last.payload.sintese;
     el.innerHTML = `<div class="fc-banner">
       <div class="fc-banner-ico">&#9670;</div>
@@ -48,10 +50,10 @@
 
   async function _diagnosticarIA(btn){
     const host=btn.closest('[data-fc-host]'); if(!host)return; const cfg=host._fc;
-    if(!cfg.mandato){T.toast('Selecione um trabalho primeiro');return}
     btn.disabled=true; const old=btn.textContent; btn.innerHTML='<span class="fc-spin"></span>Analisando&hellip;';
     try{
-      const {data,error}=await sb().functions.invoke('ip-agent-claude',{body:{mandato_id:cfg.mandato,ferramenta:cfg.chave||'mattering',persistir:true}});
+      const body=cfg.mandato?{mandato_id:cfg.mandato,ferramenta:cfg.chave||'mattering',persistir:true}:{ferramenta:cfg.chave||'consolidado',persistir:false};
+      const {data,error}=await sb().functions.invoke('ip-agent-claude',{body});
       if(error)throw await _efErro(error);
       if(data&&data.erro)throw new Error(data.erro);
       renderIAResult(host,data||{});
@@ -78,7 +80,7 @@
     const {data}=await T.safe(()=>q.order('ireu_score',{ascending:false,nullsFirst:false}).limit(100),{data:[]});
     const arr=(data||[]).filter(a=>a.status==='pendente'||a.status==='em_andamento');
     const head=`<div class="fc-sec-h"><span class="fc-sec-t">Proximos passos &middot; trilha priorizada (IREU)</span>
-      <button class="fc-ghost" onclick="IpFerramenta._gerarRegras(this)">Gerar pelas regras</button></div>`;
+      ${cfg.mandato?`<button class="fc-ghost" onclick="IpFerramenta._gerarRegras(this)">Gerar pelas regras</button>`:''}</div>`;
     if(!arr.length){ el.innerHTML=head+`<div class="fc-empty">Nenhum passo no plano ainda. Rode o <strong>Diagnostico IA</strong> ou gere pelas regras para montar a trilha do que fazer a partir dos dados.</div>`; return; }
     el.innerHTML=head+arr.map(passoCard).join('');
   }

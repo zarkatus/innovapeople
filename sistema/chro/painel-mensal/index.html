@@ -70,7 +70,7 @@
 window.pmBoot=function(){
   const el=document.getElementById('uname'); if(el&&window.__IP_USER_EMAIL)el.textContent=window.__IP_USER_EMAIL;
   const h=document.getElementById('pm-host');
-  const mount=()=>{ if(window.IpPainelMensal&&h)window.IpPainelMensal.open(h); else setTimeout(mount,150); };
+  let tries=0; const mount=()=>{ if(window.IpPainelMensal&&h)return window.IpPainelMensal.open(h); if(++tries>40){h.innerHTML='<div style="text-align:center;padding:30px;color:var(--cream-dim);font-style:italic">Nao foi possivel carregar a ferramenta. <a href="" style="color:var(--gold)">Recarregar</a></div>';return;} setTimeout(mount,150); };
   mount();
 };
 </script>
