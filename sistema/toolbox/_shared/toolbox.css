@@ -1,25 +1,27 @@
-/* ToolBox · Tier One — Design System v2 (RapheiceOS dark navy + gold luminoso)
-   Diretiva CVO 27/05: novas atualizações adotam tema RapheiceOS.
-   Paleta navy-deep #070D15 + gold #D2AE64 + cream #F7F3EC. Georgia italic em hero. */
+/* ToolBox · Tier One — Design System v3 · paleta ÚNICA derivada da tela de login
+   CVO 28/05: "as cores do sistema têm que ser as da tela de login". Violet-black
+   + gold + cream. Variáveis mantêm nomes legados (--navy-*) por compat, valores
+   remapeados para a paleta violet da login. */
 :root{
-  --navy-deep:#070D15;
-  --navy-night:#0F1C2D;
-  --navy-raised:#152841;
-  --navy-edge:rgba(210,174,100,.18);
-  --gold:#D2AE64;
+  --navy-deep:#0C0816;
+  --navy-night:#140D22;
+  --navy-raised:#1C1230;
+  --navy-edge:rgba(245,221,165,.2);
+  --gold:#C4A35A;
   --gold-soft:#E6CB8F;
-  --gold-glow:rgba(210,174,100,.32);
-  --gold-faint:rgba(210,174,100,.08);
-  --cream:#F7F3EC;
-  --cream-muted:#C9C2B4;
-  --cream-dim:#8A8579;
-  --rule:rgba(247,243,236,.08);
-  --rule-strong:rgba(247,243,236,.16);
+  --gold-glow:rgba(245,221,165,.32);
+  --gold-faint:rgba(196,163,90,.08);
+  --cream:#FAF7F1;
+  --cream-muted:rgba(250,247,241,.68);
+  --cream-dim:rgba(250,247,241,.42);
+  --rule:rgba(245,221,165,.1);
+  --rule-strong:rgba(245,221,165,.18);
+  --violet:#7B5AA8; --violet-mid:#5B3A7A; --violet-deep:#3F2756;
   --success:#6BAE82;
   --warn:#E1A754;
   --danger:#D87575;
   --info:#7BA5D8;
-  --serif:Georgia,'Cormorant Garamond',serif;
+  --serif:'Cormorant Garamond',Georgia,serif;
   --sans:'Inter',-apple-system,'Segoe UI',sans-serif;
   --mono:'JetBrains Mono',Menlo,monospace;
   --shadow-raised:0 1px 2px rgba(0,0,0,.32), 0 4px 12px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.04);

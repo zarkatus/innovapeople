@@ -5,40 +5,37 @@
 (function(){
   'use strict';
 
-  // ═══ CATÁLOGO COMPLETO ═══
-  // Cada item: {id, label, path, group, icon (1-2 chars mono), desc, tags[]}
-  // Para adicionar nova ferramenta: insira no array. Busca pesquisa por: label, desc, tags, group.
+  // ═══ CATÁLOGO ═══ (estrutura espelhada da InnovaSphere: categoria > item, sem aninhamento)
+  // Cada item: {g (categoria), i (emoji), n (nome), p (path), d (desc), t (tags p/ busca)}
   const CATALOG = [
     // VISÃO GERAL
-    {g:'Visão Geral', i:'GV', n:'Dashboard',              p:'/sistema/',                          d:'Visão única · KPIs + raio-x + trabalhos + módulos', t:'home overview painel inicial casa'},
-    {g:'Visão Geral', i:'TB', n:'ToolBox · Comando',      p:'/sistema/toolbox/',                  d:'Hub central · 6 painéis vivos · auto-refresh 60s', t:'toolbox comando hub painel central tier one'},
+    {g:'Visão Geral', i:'🏠', n:'Dashboard',          p:'/sistema/',          d:'Visão única · KPIs + raio-x + trabalhos + módulos', t:'home overview painel inicial casa dashboard'},
+    {g:'Visão Geral', i:'◆',  n:'ToolBox · Comando',  p:'/sistema/toolbox/',  d:'Hub central · 6 painéis vivos · auto-refresh 60s', t:'toolbox comando hub painel central tier one'},
 
-    // TOOLBOX (5 sub-rotas)
-    {g:'ToolBox · Tier One', i:'TG', n:'Gente · Mattering',     p:'/sistema/toolbox/gente/',       d:'SAID 4D · Skill Map 6D · Liderança 8D · Pulse · Career · 12 Processos · Rituais · Cultura · Compensation · Equipe',  t:'gente pessoas mattering said skill skills lideranca pulse career carreira rituais cultura compensation equipe'},
-    {g:'ToolBox · Tier One', i:'TE', n:'Estratégia · OKRs',     p:'/sistema/toolbox/estrategia/',  d:'OKRs · Projetos delivery · Cronograma · Matriz Riscos · Stakeholders', t:'estrategia okrs projetos cronograma marcos riscos stakeholders delivery'},
-    {g:'ToolBox · Tier One', i:'TO', n:'Operações · Compliance',p:'/sistema/toolbox/operacoes/',   d:'Documental · LGPD · RFIs · QA · Financeiro · Audit Trail · Integrations', t:'operacoes compliance lgpd rfis qa financeiro audit trail integrations docs documentos'},
-    {g:'ToolBox · Tier One', i:'TP', n:'Pipeline · Curadoria',  p:'/sistema/toolbox/pipeline/',    d:'Kanban Raio-X · Golden Tickets · Portfólio · Distribuição score', t:'pipeline curadoria kanban raio-x raiox golden tickets convites portfolio leads'},
-    {g:'ToolBox · Tier One', i:'TI', n:'Inteligência · IA',     p:'/sistema/toolbox/inteligencia/', d:'5 Agentes IA · 9-Box · Succession · Pulse Analytics · Benchmark KF/Gallup/OHI', t:'inteligencia ia agentes 9box nine-box succession sucessao pulse analytics benchmark korn ferry gallup ohi peakon'},
+    // TOOLBOX TIER ONE
+    {g:'ToolBox · Tier One', i:'👥', n:'Gente · Mattering',     p:'/sistema/toolbox/gente/',        d:'SAID 4D · Skill Map 6D · Liderança 8D · Pulse · Career · 12 Processos · Rituais · Cultura · Compensation', t:'gente pessoas mattering said skill skills lideranca pulse career carreira rituais cultura compensation equipe rh'},
+    {g:'ToolBox · Tier One', i:'🎯', n:'Estratégia · OKRs',     p:'/sistema/toolbox/estrategia/',   d:'OKRs · Projetos delivery · Cronograma · Matriz Riscos · Stakeholders', t:'estrategia okrs objetivos projetos cronograma marcos riscos stakeholders delivery'},
+    {g:'ToolBox · Tier One', i:'⚖️', n:'Operações · Compliance',p:'/sistema/toolbox/operacoes/',    d:'Documental · LGPD · RFIs · QA · Financeiro · Audit Trail · Integrations', t:'operacoes compliance lgpd rfis qa financeiro audit trail integrations docs documentos'},
+    {g:'ToolBox · Tier One', i:'🔍', n:'Pipeline · Curadoria',  p:'/sistema/toolbox/pipeline/',     d:'Kanban Raio-X · Golden Tickets · Portfólio · Distribuição score', t:'pipeline curadoria kanban raio-x raiox golden tickets convites portfolio leads funil'},
+    {g:'ToolBox · Tier One', i:'🤖', n:'Inteligência · IA',     p:'/sistema/toolbox/inteligencia/', d:'5 Agentes IA · 9-Box · Succession · Pulse Analytics · Benchmark KF/Gallup/OHI', t:'inteligencia ia agentes 9box nine-box succession sucessao pulse analytics benchmark korn ferry gallup ohi peakon'},
 
-    // CHRO
-    {g:'CHRO · Centro de Comando', i:'CC', n:'Centro de Comando CHRO', p:'/sistema/chro/',                  d:'39 instrumentos · curadoria de talento · sinal vivo · rituais · governança', t:'chro centro comando curadoria talento rh'},
-    {g:'CHRO · Centro de Comando', i:'CP', n:'Painel Mensal',           p:'/sistema/chro/painel-mensal/',    d:'OLAP tendências · BI · digest semanal · TMB-style', t:'chro painel mensal olap bi tendencias digest tmb'},
-    {g:'CHRO · Centro de Comando', i:'CO', n:'Organograma',              p:'/sistema/chro/organograma/',      d:'Estrutura org dinâmica · 4 tabs · badges N0-N5 · export PPTX', t:'organograma estrutura hierarquia cadeiras export pptx'},
+    // CURADORIA · CHRO
+    {g:'Curadoria · CHRO', i:'⌘', n:'Centro de Comando', p:'/sistema/chro/',               d:'39 instrumentos · curadoria de talento · sinal vivo · rituais · governança', t:'chro centro comando curadoria talento rh gente cultura'},
+    {g:'Curadoria · CHRO', i:'📈', n:'Painel Mensal',     p:'/sistema/chro/painel-mensal/', d:'OLAP tendências · BI · digest semanal', t:'chro painel mensal olap bi tendencias digest analytics'},
+    {g:'Curadoria · CHRO', i:'🗂️', n:'Organograma',        p:'/sistema/chro/organograma/',   d:'Estrutura org dinâmica · badges N0-N5 · export PPTX', t:'organograma estrutura hierarquia cadeiras export pptx'},
 
     // TRABALHOS
-    {g:'Trabalhos · Curadoria', i:'MD', n:'Mandatos (lista)',  p:'/sistema/?from=trabalhos#sec-trabalhos', d:'Trabalhos ativos · drill-down individual por mandato', t:'mandatos trabalhos curadoria clientes empresas'},
-
-    // INTELIGÊNCIA
-    {g:'Inteligência · Agentes', i:'AG', n:'Agentes IA · Painel completo', p:'/sistema/agentes.html', d:'5 agentes determinísticos · histórico runs · cron 07:30 UTC', t:'agentes ia inteligencia cron pulse anomaly knowledge retention clock drift mattering critic'},
-    {g:'Inteligência · Agentes', i:'CL', n:'Calendar · Agendamentos',     p:'/sistema/calendar.html', d:'Google Calendar integrado · Raio-X agendamentos', t:'calendar calendario google agendamentos eventos'},
+    {g:'Trabalhos', i:'💼', n:'Mandatos',  p:'/sistema/#sec-trabalhos', d:'Trabalhos ativos em curadoria · drill-down por mandato', t:'mandatos trabalhos curadoria clientes empresas contratos'},
 
     // COMUNICAÇÃO
-    {g:'Comunicação', i:'WA', n:'WhatsApp · Inbox',         p:'/sistema/whatsapp/',                       d:'Inbox unificada · envio · reply · encaminhar · busca · PTT', t:'whatsapp wa inbox mensagens conversas zap chat'},
-    {g:'Comunicação', i:'WI', n:'WhatsApp Innovasphere',   p:'/sistema/whatsapp-innovasphere/',           d:'Variante dark da inbox (clone Innovasphere)', t:'whatsapp innovasphere dark variante'},
+    {g:'Comunicação', i:'💬', n:'WhatsApp · Inbox', p:'/sistema/whatsapp/',  d:'Inbox unificada · envio · reply · encaminhar · busca · PTT', t:'whatsapp wa inbox mensagens conversas zap chat'},
+    {g:'Comunicação', i:'📅', n:'Calendário',       p:'/sistema/calendar.html', d:'Google Calendar integrado · agendamentos Raio-X', t:'calendar calendario google agendamentos eventos reuniao'},
 
-    // BASTIDORES
-    {g:'Bastidores · Governança', i:'BS', n:'Bastidores · EventBus', p:'/sistema/bastidores/',           d:'Trilha imutável append-only · 6 tabelas · Clock Drift detection', t:'bastidores eventbus event bus audit auditoria trilha governanca clock drift'},
+    // INTELIGÊNCIA · GOVERNANÇA
+    {g:'Inteligência · Governança', i:'✦',  n:'Agentes IA', p:'/sistema/agentes.html', d:'5 agentes determinísticos · histórico runs · cron 07:30 UTC', t:'agentes ia inteligencia cron pulse anomaly knowledge retention clock drift mattering critic'},
+    {g:'Inteligência · Governança', i:'📡', n:'Bastidores · EventBus', p:'/sistema/bastidores/', d:'Trilha imutável append-only · Clock Drift detection · auditoria', t:'bastidores eventbus event bus audit auditoria trilha governanca clock drift'},
   ];
+  const CAT_ORDER=['Visão Geral','ToolBox · Tier One','Curadoria · CHRO','Trabalhos','Comunicação','Inteligência · Governança'];
 
   // ═══ AUTH CONTEXT ═══
   // Pega email do localStorage Supabase ou da sessão se sb global existir
@@ -120,14 +117,13 @@
     // Agrupa por g
     const groups={};
     for(const it of CATALOG){if(!groups[it.g])groups[it.g]=[];groups[it.g].push(it)}
-    const order=['Visão Geral','ToolBox · Tier One','CHRO · Centro de Comando','Trabalhos · Curadoria','Inteligência · Agentes','Comunicação','Bastidores · Governança'];
 
-    const navHtml=order.map(g=>!groups[g]?'':`
-      <div class="sb-group">
-        <div class="sb-group-h">${escapeHtml(g)}</div>
+    const navHtml=CAT_ORDER.map(g=>!groups[g]?'':`
+      <div class="sb-cat">
+        <div class="sb-cat-h">${escapeHtml(g)}</div>
         ${groups[g].map(it=>`
           <a class="sb-link${isActive(it.p)?' active':''}" href="${escapeHtml(it.p)}" data-id="${escapeHtml(it.n)}">
-            <span class="sb-ic">${escapeHtml(it.i)}</span>
+            <span class="sb-ic">${it.i}</span>
             <span class="sb-txt">${escapeHtml(it.n)}</span>
           </a>
         `).join('')}
@@ -147,15 +143,15 @@
     aside.innerHTML=`
       <div class="sb-head">
         <svg class="logo" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="14"/><path d="M16 6 v20 M6 16 h20"/></svg>
-        <div>
-          <div class="brand">innova<em>·</em>people</div>
-          <div class="sub">Tier One · interno</div>
+        <div class="txt">
+          <div class="wm">innova<em>·</em>people</div>
+          <div class="sub">Tier One</div>
         </div>
       </div>
       <button class="sb-collapse" id="sb-collapse" title="Recolher (Ctrl+B)">${isCollapsed?'›':'‹'}</button>
       <div class="sb-search">
         <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" id="sb-search-input" placeholder="Buscar ferramentas… (Ctrl+K)" autocomplete="off">
+        <input type="text" id="sb-search-input" placeholder="Buscar… (Ctrl+K)" autocomplete="off">
         <span class="sb-kbd">⌘K</span>
       </div>
       <nav class="sb-nav">${navHtml}</nav>
@@ -298,6 +294,17 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);
   else boot();
 
+  // Atualiza user no footer (chamado pós-login pelo dashboard)
+  function refreshUser(email){
+    const av=document.querySelector('#ip-sidebar .sb-foot .av');
+    const nm=document.querySelector('#ip-sidebar .sb-foot .nm strong');
+    const rl=document.querySelector('#ip-sidebar .sb-foot .nm small');
+    const e=email||getCurrentEmail();
+    if(av)av.textContent=getInitials(e);
+    if(nm)nm.textContent=e?e.split('@')[0]:'—';
+    if(rl)rl.textContent=e==='raphael@schifino.com.br'?'CVO':(e?'Sócia':'—');
+  }
+
   // Expose
-  window.IpSidebar={open:openCmdk,close:closeCmdk,cmdkGo,logout:doLogout,catalog:CATALOG};
+  window.IpSidebar={open:openCmdk,close:closeCmdk,cmdkGo,logout:doLogout,catalog:CATALOG,refresh:refreshUser};
 })();
