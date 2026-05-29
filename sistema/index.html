@@ -1125,15 +1125,17 @@ function escapeHtml(s) {
   return String(s ?? '').replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
 }
 
+// V2 28/05: trata INITIAL_SESSION (disparado em reload/navegação) além de SIGNED_IN.
+// Antes só SIGNED_IN era tratado → reload com sessão válida caía no login (bug crítico).
 sb.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'SIGNED_IN' && session) {
+  if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') && session) {
     if (await ipPodeAcessar(session.user?.email)) {
       showDashboard(session.user);
     } else {
       await sb.auth.signOut();
       showLogin('E-mail não autorizado.');
     }
-  } else if (event === 'SIGNED_OUT') {
+  } else if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !session)) {
     showLogin();
   }
 });

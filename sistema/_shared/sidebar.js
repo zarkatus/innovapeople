@@ -5,6 +5,19 @@
 (function(){
   'use strict';
 
+  // ═══ TEMA (dark default / light) — aplica cedo p/ evitar flash ═══
+  try{
+    const saved=localStorage.getItem('ip_theme')||'dark';
+    document.documentElement.setAttribute('data-theme',saved);
+  }catch(_){}
+  function setTheme(t){
+    document.documentElement.setAttribute('data-theme',t);
+    try{localStorage.setItem('ip_theme',t)}catch(_){}
+    const dk=document.getElementById('sb-theme-dark'),lt=document.getElementById('sb-theme-light');
+    if(dk)dk.classList.toggle('on',t==='dark');
+    if(lt)lt.classList.toggle('on',t==='light');
+  }
+
   // ═══ CATÁLOGO ═══ (estrutura espelhada da InnovaSphere: categoria > item, sem aninhamento)
   // Cada item: {g (categoria), i (emoji), n (nome), p (path), d (desc), t (tags p/ busca)}
   const CATALOG = [
@@ -161,6 +174,10 @@
           <div class="nm"><strong>${escapeHtml(name)}</strong><small>${escapeHtml(role)}</small></div>
           <button class="sb-out" onclick="window.IpSidebar.logout()">SAIR</button>
         </div>
+        <div class="sb-theme">
+          <button id="sb-theme-dark" onclick="window.IpSidebar.theme('dark')" title="Modo escuro">◑ <span>Escuro</span></button>
+          <button id="sb-theme-light" onclick="window.IpSidebar.theme('light')" title="Modo claro">◐ <span>Claro</span></button>
+        </div>
       </div>
     `;
     document.body.insertBefore(aside,document.body.firstChild);
@@ -184,6 +201,25 @@
     const inp=document.getElementById('sb-search-input');
     inp.addEventListener('focus',openCmdk);
     inp.addEventListener('click',openCmdk);
+
+    // V3 28/05: preserva posição de scroll do sidebar entre navegações (multi-page).
+    // Antes, ao clicar numa aba a nova página remontava o sidebar no topo — irritante.
+    const nav=aside.querySelector('.sb-nav');
+    if(nav){
+      // restaura
+      try{const s=sessionStorage.getItem('ip_sb_scroll');if(s)nav.scrollTop=parseInt(s,10)||0;}catch(_){}
+      // salva on scroll (throttled)
+      let raf=0;
+      nav.addEventListener('scroll',()=>{
+        if(raf)return;
+        raf=requestAnimationFrame(()=>{raf=0;try{sessionStorage.setItem('ip_sb_scroll',String(nav.scrollTop))}catch(_){}});
+      });
+      // salva antes de navegar por link
+      nav.addEventListener('click',e=>{
+        const a=e.target.closest('a.sb-link');
+        if(a){try{sessionStorage.setItem('ip_sb_scroll',String(nav.scrollTop))}catch(_){}}
+      });
+    }
   }
 
   // ═══ COMMAND PALETTE (cmd+K) ═══
@@ -290,6 +326,7 @@
     if(document.getElementById('ip-sidebar'))return;
     renderSidebar();
     buildCmdk();
+    syncThemeButtons();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);
   else boot();
@@ -305,6 +342,14 @@
     if(rl)rl.textContent=e==='raphael@schifino.com.br'?'CVO':(e?'Sócia':'—');
   }
 
+  // marca o toggle ativo após montar
+  function syncThemeButtons(){
+    const t=document.documentElement.getAttribute('data-theme')||'dark';
+    const dk=document.getElementById('sb-theme-dark'),lt=document.getElementById('sb-theme-light');
+    if(dk)dk.classList.toggle('on',t==='dark');
+    if(lt)lt.classList.toggle('on',t==='light');
+  }
+
   // Expose
-  window.IpSidebar={open:openCmdk,close:closeCmdk,cmdkGo,logout:doLogout,catalog:CATALOG,refresh:refreshUser};
+  window.IpSidebar={open:openCmdk,close:closeCmdk,cmdkGo,logout:doLogout,catalog:CATALOG,refresh:refreshUser,theme:setTheme};
 })();
