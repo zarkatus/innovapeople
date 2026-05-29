@@ -1125,22 +1125,31 @@ function escapeHtml(s) {
   return String(s ?? '').replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
 }
 
-// V2 28/05: trata INITIAL_SESSION (disparado em reload/navegação) além de SIGNED_IN.
-// Antes só SIGNED_IN era tratado → reload com sessão válida caía no login (bug crítico).
+// V3 28/05: onAuthStateChange é a FONTE ÚNICA de decisão de auth.
+// Removido init()+getSession concorrente que causava race: getSession retornava
+// null prematuramente e showLogin sobrescrevia o showDashboard do INITIAL_SESSION.
+// Agora: INITIAL_SESSION (reload/navegação) + SIGNED_IN (login novo) → decide.
+let _authDecided = false;
 sb.auth.onAuthStateChange(async (event, session) => {
   if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') && session) {
+    _authDecided = true;
     if (await ipPodeAcessar(session.user?.email)) {
       showDashboard(session.user);
     } else {
       await sb.auth.signOut();
-      showLogin('E-mail não autorizado.');
+      showLogin('E-mail não autorizado a acessar este sistema.');
     }
   } else if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !session)) {
-    showLogin();
+    _authDecided = true;
+    const params = new URLSearchParams(location.search);
+    const from = params.get('from');
+    const fromMap = { catalogo:'Acesso à ToolBox exige autenticação.', toolbox:'Acesso à ToolBox exige autenticação.' };
+    showLogin(from && fromMap[from] ? fromMap[from] : '');
   }
 });
 
-init();
+// Fallback: se em 3s o onAuthStateChange não decidiu (edge case), força via getSession.
+setTimeout(() => { if (!_authDecided) init(); }, 3000);
 </script>
 
 </body>
