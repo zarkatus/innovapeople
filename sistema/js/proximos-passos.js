@@ -101,7 +101,7 @@
   async function _diag(btn){
     btn.disabled=true;const old=btn.innerHTML;btn.innerHTML='<span class="pp-spin"></span>Cruzando&hellip;';
     try{
-      const body=_data.mandato?{mandato_id:_data.mandato,ferramenta:'mattering',persistir:false}:{ferramenta:'consolidado',persistir:false};
+      const body={ferramenta:'consolidado',persistir:false};
       const {data,error}=await sb().functions.invoke('ip-agent-claude',{body});
       if(error)throw error; if(data&&data.erro)throw new Error(data.erro);
       const txt=document.getElementById('pp-diag-txt');
