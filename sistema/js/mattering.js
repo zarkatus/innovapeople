@@ -37,7 +37,7 @@
     container.querySelectorAll('.mt-tab').forEach(b=>b.onclick=()=>go(b.dataset.t));
     // carrega mandatos pro seletor
     const {data}=await T.safe(()=>sb().from('v_ip_mandatos_overview').select('id,empresa,setor,status').order('created_at',{ascending:false}).limit(50),{data:[]});
-    _state.mandatos=data||[];
+    _state.mandatos=(data||[]).filter(m=>m.status==='ativo'||!m.status);
     _state.mandato=_state.mandatos[0]?.id||null;
     go('resultados');
   }

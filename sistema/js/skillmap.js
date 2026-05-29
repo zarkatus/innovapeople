@@ -34,7 +34,7 @@
     </div>`;
     container.querySelectorAll('.sk-tab').forEach(b=>b.onclick=()=>go(b.dataset.t));
     const {data}=await T.safe(()=>sb().from('v_ip_mandatos_overview').select('id,empresa,setor,status').order('created_at',{ascending:false}).limit(50),{data:[]});
-    _s.mandatos=data||[]; _s.mandato=_s.mandatos[0]?.id||null;
+    _s.mandatos=(data||[]).filter(m=>m.status==='ativo'||!m.status); _s.mandato=_s.mandatos[0]?.id||null;
     await reload(); go('mapa');
   }
 
@@ -60,7 +60,7 @@
       ${_s.mandatos.map(m=>`<option value="${esc(m.id)}" ${m.id===_s.mandato?'selected':''}>${esc(m.empresa||'(sem nome)')} · ${esc(m.setor||'—')}</option>`).join('')}
     </select>`;
   }
-  function lvl(v){if(v==null)return'l1';if(v>=5)return'l5';if(v>=4)return'l4';if(v>=3)return'l3';if(v>=2)return'l2';return'l1'}
+  function lvl(v){if(v==null)return'l0';if(v>=5)return'l5';if(v>=4)return'l4';if(v>=3)return'l3';if(v>=2)return'l2';return'l1'}
 
   // ─── MAPA (heatmap) ───
   async function renderMapa(){
@@ -80,7 +80,7 @@
       html+=`<div style="display:grid;grid-template-columns:1.4fr repeat(6,1fr) .7fr;gap:6px;align-items:center;margin-bottom:6px">
         <div style="min-width:0"><div style="font-size:13px;color:var(--cream);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.rotulo||p.papel||'(sem rótulo)')}</div><div style="font-size:10.5px;color:var(--cream-dim)">${esc(p.equipe||'—')}</div></div>
         ${cells}
-        <div style="text-align:center;font-family:var(--serif);font-style:italic;font-size:18px;color:${tot>=24?'var(--ok)':(tot>=15?'var(--warn)':'var(--danger)')}">${tot??'—'}</div>
+        <div style="text-align:center;font-family:var(--serif);font-style:italic;font-size:18px;color:${tot==null?'var(--cream-dim)':(tot>=24?'var(--ok)':(tot>=15?'var(--warn)':'var(--danger)'))}">${tot??'—'}</div>
       </div>`;
     });
     html+=`<div style="margin-top:14px;display:flex;gap:6px;align-items:center;font-size:10px;color:var(--cream-dim);font-family:var(--mono)">
@@ -171,7 +171,7 @@
     let html=`<div style="margin-bottom:16px">${mandatoSel()}</div>
       <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:14px;margin-bottom:16px;max-width:640px">Reconversão antecipa quem precisa de desenvolvimento: alta automatizabilidade do papel + competências defasadas = janela para reconverter antes que vire risco. Quanto maior o gap, mais urgente.</div>`;
     if(!_s.perfis.length){html+=`<div class="sk-empty">Sem colaboradores mapeados.</div>`;b.innerHTML=html;return}
-    const rows=_s.perfis.map(p=>{
+    const rows=_s.perfis.filter(p=>_s.skills[p.id]).map(p=>{
       const s=_s.skills[p.id];
       const score=s?s.s_score_total:0;
       const auto=p.automatizabilidade_pct||0;
@@ -190,7 +190,7 @@
   function _setMandato(id){_s.mandato=id;reload().then(()=>go(_s.tab))}
 
   async function _mount(b,diag){
-    if(window.IpFerramenta){ await IpFerramenta.organismo(b,{chave:'skillmap',mandato:_s.mandato,rotulo:'Skill Map',diagnosticoHTML:diag,fontesEvento:['ip_plano_acoes','ip_agent_sugestoes'],consumidores:[{nome:'Mattering',porque:'reconversao e pertencimento se cruzam no mesmo time'},{nome:'Sala de Guerra',porque:'reconversoes urgentes sobem no quadro IREU macro'},{nome:'Agentes Vigia',porque:'retencao de conhecimento observa concentracao de skill critica'}]}); }
+    if(window.IpFerramenta){ await IpFerramenta.organismo(b,{chave:'skillmap',mandato:_s.mandato,rotulo:'Skill Map',diagnosticoHTML:diag,fontesEvento:['ip_plano_acoes','ip_agent_sugestoes','ip_perfil_colaborador','ip_skill_map'],consumidores:[{nome:'Mattering',porque:'reconversao e pertencimento se cruzam no mesmo time'},{nome:'Sala de Guerra',porque:'reconversoes urgentes sobem no quadro IREU macro'},{nome:'Agentes Vigia',porque:'retencao de conhecimento observa concentracao de skill critica'}]}); }
     else { b.innerHTML=diag; }
   }
 
@@ -216,6 +216,7 @@
   #sk-root .sk-empty{text-align:center;padding:30px 16px;color:var(--cream-dim);font-style:italic;font-family:var(--serif);font-size:15px}
   #sk-root .sk-warn{padding:14px 18px;background:rgba(225,167,84,.1);border-left:2px solid var(--warn);border-radius:6px;color:var(--cream-muted);font-size:13px;font-style:italic;font-family:var(--serif);margin-bottom:14px}
   #sk-root .heat-cell{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:600;border:1px solid transparent}
+  #sk-root .heat-cell.l0{background:var(--navy-raised);color:var(--cream-dim);border-color:var(--rule)}
   #sk-root .heat-cell.l1{background:rgba(216,117,117,.18);color:var(--danger);border-color:rgba(216,117,117,.3)}
   #sk-root .heat-cell.l2{background:rgba(225,167,84,.16);color:var(--warn);border-color:rgba(225,167,84,.28)}
   #sk-root .heat-cell.l3{background:rgba(123,165,216,.16);color:var(--info);border-color:rgba(123,165,216,.28)}

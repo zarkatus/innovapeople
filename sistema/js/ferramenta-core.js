@@ -20,7 +20,7 @@
 
   async function organismo(host, cfg){
     cfg = cfg || {};
-    _active = host; host._fc = cfg;
+    host.dataset.fcHost='1'; host._fc = cfg;
     host.innerHTML =
       (cfg.diagnosticoHTML||'') +
       '<div id="fc-sintese" class="fc-sec"></div>' +
@@ -47,7 +47,7 @@
   }
 
   async function _diagnosticarIA(btn){
-    const host=_active; if(!host)return; const cfg=host._fc;
+    const host=btn.closest('[data-fc-host]'); if(!host)return; const cfg=host._fc;
     if(!cfg.mandato){T.toast('Selecione um trabalho primeiro');return}
     btn.disabled=true; const old=btn.textContent; btn.innerHTML='<span class="fc-spin"></span>Analisando&hellip;';
     try{
@@ -116,7 +116,7 @@
   }
 
   async function _gerarRegras(btn){
-    const host=_active; if(!host)return; const cfg=host._fc;
+    const host=btn.closest('[data-fc-host]'); if(!host)return; const cfg=host._fc;
     if(!cfg.mandato){T.toast('Selecione um trabalho');return}
     btn.disabled=true; const old=btn.textContent; btn.textContent='Gerando...';
     try{
