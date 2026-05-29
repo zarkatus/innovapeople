@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>ToolBox · Sala de Guerra</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/sistema/toolbox/_shared/toolbox.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script src="/sistema/toolbox/_shared/toolbox.js"></script>
+<script src="/sistema/js/sala-de-guerra.js" defer></script>
+<script>TBAuth.init('toolbox-sala');</script>
+<link rel="stylesheet" href="/sistema/_shared/sidebar.css"><script src="/sistema/_shared/sidebar.js" defer></script></head>
+<body>
+
+<nav class="top">
+  <div class="row">
+    <a class="brand" href="/sistema/">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="14"/><path d="M16 6 v20 M6 16 h20"/></svg>
+      <div><span class="wm">innova · people</span><span class="sub">Tier One</span></div>
+    </a>
+    <div class="nav">
+      <a href="/sistema/">Dashboard</a>
+      <a href="/sistema/toolbox/" class="active">ToolBox</a>
+      <a href="/sistema/chro/">CHRO</a>
+      <a href="/sistema/agentes.html">Agentes IA</a>
+      <a href="/sistema/whatsapp/">WhatsApp</a>
+      <a href="/sistema/bastidores/">Bastidores</a>
+    </div>
+    <div class="user">olá, <strong id="uname">—</strong></div>
+  </div>
+</nav>
+
+<nav class="subnav">
+  <div class="wrap">
+    <a href="/sistema/toolbox/">Comando</a>
+    <a href="/sistema/toolbox/sala-de-guerra/" class="active">Sala de Guerra</a>
+    <a href="/sistema/toolbox/gente/">Gente · Mattering</a>
+    <a href="/sistema/toolbox/estrategia/">Estratégia · OKRs</a>
+    <a href="/sistema/toolbox/operacoes/">Operações · Compliance</a>
+    <a href="/sistema/toolbox/pipeline/">Pipeline · Curadoria</a>
+    <a href="/sistema/toolbox/inteligencia/">Inteligência · IA</a>
+    <span class="scope-tag">Tier One · Interno</span>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Inteligência · Comando · IREU</div>
+    <h1>Sala de <em>Guerra</em></h1>
+    <div class="tagline">O diagnóstico final de todas as ferramentas: cada próximo passo aberto, de cada trabalho, num único quadro priorizado por IREU. O que fazer agora — e por quê. A IA cruza tudo e aponta o maior efeito borboleta.</div>
+  </div>
+</section>
+
+<div class="hub">
+  <div class="panel s12 hero-card">
+    <div class="p-h"><div class="t"><span class="dot"></span>Comando consolidado · todas as ações próximas</div></div>
+    <div class="p-b"><div id="sg-host"></div></div>
+  </div>
+</div>
+
+<div class="foot">ToolBox · <strong>Tier One</strong> · Sala de Guerra · diagnóstico final consolidado</div>
+<div id="toast"></div>
+
+<script>
+function boot(){
+  document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';
+  const h=document.getElementById('sg-host');
+  if(h&&window.IpSalaGuerra)window.IpSalaGuerra.open(h);
+  else if(h)setTimeout(()=>{if(window.IpSalaGuerra)window.IpSalaGuerra.open(h)},300);
+}
+</script>
+</body>
+</html>

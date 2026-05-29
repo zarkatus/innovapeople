@@ -24,6 +24,7 @@
     // VISÃO GERAL
     {g:'Visão Geral', i:'🏠', n:'Dashboard',          p:'/sistema/',          d:'Visão única · KPIs + raio-x + trabalhos + módulos', t:'home overview painel inicial casa dashboard'},
     {g:'Visão Geral', i:'◆',  n:'ToolBox · Comando',  p:'/sistema/toolbox/',  d:'Hub central · 6 painéis vivos · auto-refresh 60s', t:'toolbox comando hub painel central tier one'},
+    {g:'Visão Geral', i:'⚔',  n:'Sala de Guerra',    p:'/sistema/toolbox/sala-de-guerra/', d:'Diagnóstico final · próximos passos de TODAS as ferramentas priorizados por IREU + síntese IA', t:'sala de guerra war room comando consolidado proximos passos ireu diagnostico final acoes prioridades macro'},
 
     // TOOLBOX TIER ONE
     {g:'ToolBox · Tier One', i:'👥', n:'Gente · Mattering',     p:'/sistema/toolbox/gente/',        d:'SAID 4D · Skill Map 6D · Liderança 8D · Pulse · Career · 12 Processos · Rituais · Cultura · Compensation', t:'gente pessoas mattering said skill skills lideranca pulse career carreira rituais cultura compensation equipe rh'},
