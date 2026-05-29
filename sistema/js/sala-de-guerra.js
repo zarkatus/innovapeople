@@ -9,6 +9,7 @@
   const T=window.TB||{esc:s=>String(s==null?'':s),safe:async(f,fb)=>{try{return await f()}catch(e){return fb}},toast:m=>alert(m)};
   const esc=T.esc;
   let _host=null,_data=null;
+  async function _efErro(error){let m=(error&&error.message)||String(error);try{const b=(error&&error.context&&error.context.json)?await error.context.json():null;if(b&&b.erro)m=b.erro;}catch(_){}return new Error(m);}
 
   async function open(host){
     _host=host;
@@ -64,7 +65,7 @@
     btn.disabled=true;const old=btn.textContent;btn.innerHTML='<span class="sg-spin"></span>Analisando&hellip;';
     try{
       const {data,error}=await sb().functions.invoke('ip-agent-claude',{body:{ferramenta:'consolidado',persistir:false}});
-      if(error)throw error; if(data&&data.erro)throw new Error(data.erro);
+      if(error)throw await _efErro(error); if(data&&data.erro)throw new Error(data.erro);
       const t=_host.querySelector('#sg-sint-txt'); if(t&&data.sintese)t.textContent=data.sintese;
       const ps=Array.isArray(data.proximos_passos)?data.proximos_passos:[];
       const out=_host.querySelector('#sg-ia-out');
@@ -100,7 +101,7 @@
   #sg-root .sg-banner{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:14px;background:linear-gradient(135deg,rgba(196,163,90,.13),rgba(123,90,168,.11));border:1px solid var(--navy-edge,rgba(196,163,90,.25))}
   #sg-root .sg-banner-ico{font-size:22px;color:var(--gold)}
   #sg-root .sg-banner-body{flex:1;min-width:0}
-  #sg-root .sg-banner-lab{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:5px}
+  #sg-root .sg-banner-lab{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep,#9a7b3a);font-weight:700;margin-bottom:5px}
   #sg-root .sg-banner-txt{font-family:var(--serif);font-style:italic;font-size:16px;line-height:1.45;color:var(--cream)}
   #sg-root .sg-ia-btn{flex-shrink:0;padding:12px 20px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold-glow,#F5DDA5),var(--gold));color:#2A1A3B;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;white-space:nowrap}
   #sg-root .sg-ia-btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(196,163,90,.35)}
@@ -110,7 +111,7 @@
   #sg-root .sg-ia-card{margin-top:12px;display:flex;flex-direction:column;gap:10px}
   #sg-root .sg-ia-b{padding:13px 16px;border-radius:10px;background:var(--navy-raised);border:1px solid var(--rule)}
   #sg-root .sg-ia-b.risco{border-left:3px solid var(--danger)}
-  #sg-root .sg-ia-h{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:6px}
+  #sg-root .sg-ia-h{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep,#9a7b3a);font-weight:700;margin-bottom:6px}
   #sg-root .sg-ia-b p{margin:0;font-size:13.5px;line-height:1.55;color:var(--cream-muted)}
   #sg-root .sg-macro{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--rule)}
   #sg-root .sg-macro:first-of-type{border-top:none}
@@ -124,7 +125,7 @@
   #sg-root .sg-kpi .val{font-family:var(--serif);font-style:italic;font-size:30px;color:var(--cream);margin-top:6px;line-height:1}
   #sg-root .sg-kpi .val .un{font-size:13px;color:var(--cream-dim);font-style:normal}
   #sg-root .sg-sec-h{margin-bottom:12px}
-  #sg-root .sg-sec-t{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:700}
+  #sg-root .sg-sec-t{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep,#9a7b3a);font-weight:700}
   #sg-root .sg-group{margin-bottom:18px}
   #sg-root .sg-group-h{display:flex;align-items:center;gap:8px;font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--cream);padding:6px 0;border-bottom:1px solid var(--rule-strong);margin-bottom:8px}
   #sg-root .sg-group-h span{font-family:var(--mono);font-size:10px;color:var(--cream-dim)}
