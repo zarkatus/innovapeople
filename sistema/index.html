@@ -264,10 +264,10 @@ body.ip-has-sidebar .btn-action{background:var(--violet-mid,#5B3A7A);color:#FAF7
   .lcard::-webkit-scrollbar{width:4px}
   .lcard::-webkit-scrollbar-thumb{background:rgba(245,221,165,.14);border-radius:2px}
 
-  .lhead{text-align:center;margin-bottom:40px}
-  .lhead .mark svg{width:46px;height:46px;color:#F5DDA5;margin-bottom:22px;filter:drop-shadow(0 6px 18px rgba(196,163,90,.42));opacity:.9}
-  .lhead .eyebrow{font-family:'Inter',sans-serif;font-size:9.5px;letter-spacing:.42em;text-transform:uppercase;color:rgba(245,221,165,.86);font-weight:500;margin-bottom:18px;display:inline-block;padding-bottom:8px;border-bottom:1px solid rgba(245,221,165,.22)}
-  .lhead h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;color:#FAF7F1;font-size:34px;line-height:1.22;letter-spacing:-.005em;margin-bottom:14px}
+  .lhead{text-align:center;margin-bottom:38px}
+  /* nome INNOVAPEOPLE sozinho no topo (CVO 28/05) — placeholder até logo nova */
+  .lhead .lwordmark{font-family:'Inter',sans-serif;font-weight:600;font-size:17px;letter-spacing:.42em;color:#F5DDA5;text-transform:uppercase;padding-bottom:26px;margin-bottom:26px;border-bottom:1px solid rgba(245,221,165,.16);text-shadow:0 2px 12px rgba(0,0,0,.4)}
+  .lhead h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;color:#FAF7F1;font-size:33px;line-height:1.22;letter-spacing:-.005em;margin-bottom:13px}
   .lhead h1 em{color:#F5DDA5;font-style:italic;font-weight:400}
   .lhead .sub{font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(250,247,241,.66);font-size:15px;line-height:1.5;max-width:280px;margin:0 auto}
 
@@ -334,8 +334,7 @@ body.ip-has-sidebar .btn-action{background:var(--violet-mid,#5B3A7A);color:#FAF7
   </div>
   <div class="lcard">
     <div class="lhead">
-      <div class="mark"><svg><use href="#ip-logo"/></svg></div>
-      <div class="eyebrow">Acesso InnovaPeople</div>
+      <div class="lwordmark">INNOVAPEOPLE</div>
       <h1>Há uma sala <em>que continua sua.</em></h1>
       <p class="sub">Entre — está tudo onde você deixou.</p>
     </div>
@@ -347,16 +346,16 @@ body.ip-has-sidebar .btn-action{background:var(--violet-mid,#5B3A7A);color:#FAF7
       <div class="lhint" id="lhint" onclick="ipReusarUltima()"></div>
     </div>
 
-    <!-- Porta principal: Passkey biométrica (se disponível) -->
-    <button class="lbtn lbtn-primary" id="lbtn-passkey" onclick="ipLoginPasskey()" style="display:none">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      Entrar com Touch ID / Face ID
+    <!-- Porta principal: Google (CVO 28/05: Google sobe) -->
+    <button class="lbtn lbtn-primary" onclick="ipLoginGoogle()">
+      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M21.35 11.1H12v2.8h5.35c-.24 1.5-1.7 4.4-5.35 4.4-3.22 0-5.84-2.66-5.84-5.94S8.78 6.42 12 6.42c1.83 0 3.06.78 3.76 1.45l2.57-2.47C16.8 3.86 14.62 3 12 3 6.97 3 2.9 7.05 2.9 12s4.07 9 9.1 9c5.26 0 8.74-3.68 8.74-8.86 0-.6-.07-1.05-.16-1.5z"/></svg>
+      Continuar com Google
     </button>
 
-    <!-- Google: porta direta -->
-    <button class="lbtn lbtn-google" onclick="ipLoginGoogle()">
-      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M21.35 11.1H12v2.8h5.35c-.24 1.5-1.7 4.4-5.35 4.4-3.22 0-5.84-2.66-5.84-5.94S8.78 6.42 12 6.42c1.83 0 3.06.78 3.76 1.45l2.57-2.47C16.8 3.86 14.62 3 12 3 6.97 3 2.9 7.05 2.9 12s4.07 9 9.1 9c5.26 0 8.74-3.68 8.74-8.86 0-.6-.07-1.05-.16-1.5z" opacity=".85"/></svg>
-      Continuar com Google
+    <!-- Passkey biométrica logo abaixo do Google (CVO 28/05) -->
+    <button class="lbtn lbtn-secondary" id="lbtn-passkey" onclick="ipLoginPasskey()" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Touch ID / Face ID
     </button>
 
     <div class="ldivider">também posso entrar com</div>
@@ -821,7 +820,7 @@ function showDashboard(user) {
   // Atualiza user no sidebar único (foi montado antes do login)
   try{ if(window.IpSidebar) window.IpSidebar.refresh(user.email); }catch(_){}
   // Registra último acesso na tabela ip_allowed_users (best-effort)
-  sb.rpc('fn_ip_registrar_acesso').catch(()=>{});
+  try{ Promise.resolve(sb.rpc('fn_ip_registrar_acesso')).then(()=>{},()=>{}); }catch(_){}
   // Banner pós-login: oferta passkey/MFA
   ipMaybeOfferSecurity(user.email);
 }
