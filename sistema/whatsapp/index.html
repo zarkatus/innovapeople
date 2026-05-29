@@ -129,6 +129,12 @@ input,textarea,select{font:inherit}
 
 /* COLUNA CENTRAL · THREAD */
 .center{background:var(--cream);display:flex;flex-direction:column;overflow:hidden;position:relative}
+/* V23: thread-zone ocupa o espaço; composer fica fixo no rodapé */
+.thread-zone{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+/* composer fixo desabilitado quando nenhuma conversa aberta */
+#composer-bar[aria-disabled="true"] .composer-row,
+#composer-bar[aria-disabled="true"] .composer-tools{opacity:.55}
+#composer-bar[aria-disabled="true"] .composer-input{cursor:default}
 .center-empty{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--ink3);padding:32px;text-align:center}
 .center-empty .ico{font-family:var(--serif);font-size:80px;color:var(--gold-soft);margin-bottom:14px;font-style:italic;line-height:1}
 .center-empty h3{font-family:var(--serif);font-size:24px;color:var(--navy);font-weight:400;margin-bottom:10px}
@@ -269,10 +275,35 @@ input,textarea,select{font:inherit}
 
   <!-- COLUNA CENTRAL -->
   <main class="center" id="center">
-    <div class="center-empty" id="center-empty">
-      <div class="ico">i</div>
-      <h3>Escolha uma conversa</h3>
-      <p>Cada mensagem trocada vive arquivada com hash chain. Auditoria forense, sem fricção visual.</p>
+    <!-- área de mensagens (muda ao abrir conversa) -->
+    <div class="thread-zone" id="thread-zone">
+      <div class="center-empty" id="center-empty">
+        <div class="ico">i</div>
+        <h3>Escolha uma conversa</h3>
+        <p>Cada mensagem trocada vive arquivada com hash chain. Auditoria forense, sem fricção visual.</p>
+      </div>
+    </div>
+    <!-- COMPOSER FIXO (sempre visível · CVO 29/05) -->
+    <div class="composer" id="composer-bar" aria-disabled="true">
+      <div class="composer-tools">
+        <button class="tool-btn" onclick="toggleTemplates()" style="position:relative">Templates</button>
+        <button class="tool-btn" onclick="document.getElementById('att-input').click()">Anexar imagem</button>
+        <input type="file" id="att-input" accept="image/*" style="display:none" onchange="handleAttach(this)">
+        <button class="tool-btn" id="ptt-btn" onclick="togglePTT()" title="Gravar áudio">🎙</button>
+        <button class="tool-btn" onclick="agendarEnvio()">Agendar</button>
+        <button class="tool-btn" onclick="novaConversa()" title="Iniciar conversa com um número">+ Nova conversa</button>
+        <div style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.06em">Hash chain ativo · auditado</div>
+      </div>
+      <div id="att-preview" style="display:none;padding:8px 12px;background:var(--cream2);border-radius:8px;margin-bottom:4px;align-items:center;gap:10px">
+        <img id="att-thumb" src="" style="width:48px;height:48px;object-fit:cover;border-radius:4px">
+        <div style="flex:1;font-size:12px;color:var(--ink2)"><span id="att-name"></span> <span id="att-size" style="color:var(--ink3);font-family:var(--mono);font-size:10px"></span></div>
+        <button onclick="removeAttach()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:18px;padding:0 8px">×</button>
+      </div>
+      <div class="tpl-menu" id="tpl-menu"></div>
+      <div class="composer-row">
+        <textarea class="composer-input" id="composer-input" placeholder="Selecione uma conversa ou clique em + Nova conversa…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarMensagem()}"></textarea>
+        <button class="send-btn" id="send-btn" onclick="enviarMensagem()">Enviar</button>
+      </div>
     </div>
   </main>
 
@@ -422,7 +453,7 @@ async function abrirConversa(convId,contatoId){
 }
 
 function renderThreadLoading(){
-  document.getElementById('center').innerHTML=`<div class="center-empty"><div class="ico" style="animation:pulse 1s infinite">i</div><p>Carregando…</p></div>`;
+  document.getElementById('thread-zone').innerHTML=`<div class="center-empty"><div class="ico" style="animation:pulse 1s infinite">i</div><p>Carregando…</p></div>`;
 }
 
 // V21 2026-05-27: migra para schema PT (wa_mensagem) — bate com wa_conversa/v_wa_inbox
@@ -447,7 +478,7 @@ async function loadMensagens(convId){
     renderThread();
   }catch(e){
     console.error('[wa] loadMensagens',e);
-    document.getElementById('center').innerHTML=`<div class="center-empty"><h3>Erro</h3><p>${esc(e.message)}</p></div>`;
+    document.getElementById('thread-zone').innerHTML=`<div class="center-empty"><h3>Erro</h3><p>${esc(e.message)}</p></div>`;
   }
 }
 
@@ -519,29 +550,12 @@ function renderThread(){
   if(!_state.mensagens.length){
     html+=`<div style="text-align:center;color:var(--ink3);font-style:italic;font-family:var(--serif);font-size:17px;padding:40px">Nenhuma mensagem nesta conversa ainda.</div>`;
   }
-  html+=`</div>
-  <div class="composer">
-    <div class="composer-tools">
-      <button class="tool-btn" onclick="toggleTemplates()" style="position:relative">Templates</button>
-      <button class="tool-btn" onclick="document.getElementById('att-input').click()">Anexar imagem</button>
-      <input type="file" id="att-input" accept="image/*" style="display:none" onchange="handleAttach(this)">
-      <button class="tool-btn" id="ptt-btn" onclick="togglePTT()" title="Gravar áudio">🎙</button>
-      <button class="tool-btn" onclick="agendarEnvio()">Agendar</button>
-      <div style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.06em">Hash chain ativo · auditado</div>
-    </div>
-    <div id="att-preview" style="display:none;padding:8px 12px;background:var(--cream2);border-radius:8px;margin-bottom:4px;align-items:center;gap:10px">
-      <img id="att-thumb" src="" style="width:48px;height:48px;object-fit:cover;border-radius:4px">
-      <div style="flex:1;font-size:12px;color:var(--ink2)"><span id="att-name"></span> <span id="att-size" style="color:var(--ink3);font-family:var(--mono);font-size:10px"></span></div>
-      <button onclick="removeAttach()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:18px;padding:0 8px">×</button>
-    </div>
-    <div class="tpl-menu" id="tpl-menu"></div>
-    <div class="composer-row">
-      <textarea class="composer-input" id="composer-input" placeholder="Escreva uma mensagem…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarMensagem()}"></textarea>
-      <button class="send-btn" id="send-btn" onclick="enviarMensagem()">Enviar</button>
-    </div>
-  </div>`;
+  html+=`</div>`;
 
-  document.getElementById('center').innerHTML=html;
+  // V23 29/05: injeta só a área de mensagens; o composer é FIXO (fora do renderThread)
+  document.getElementById('thread-zone').innerHTML=html;
+  const bar=document.getElementById('composer-bar');
+  if(bar)bar.setAttribute('aria-disabled','false');
   // Auto-scroll para o fim
   const tl=document.getElementById('thread-list');
   if(tl)tl.scrollTop=tl.scrollHeight;
@@ -558,17 +572,31 @@ async function refreshThread(){
 // ============================================================
 // ENVIO DE MENSAGENS — via EF whatsapp-direto
 // ============================================================
+// V23 29/05: Nova conversa — digita número, habilita composer fixo sem conversa selecionada
+function novaConversa(){
+  const n=prompt('Iniciar conversa. Digite o número com DDI (ex: 5547999998888):');
+  if(!n)return;
+  const limpo=n.replace(/\D/g,'');
+  if(limpo.length<10||limpo.length>13){toast('Número inválido — use DDI+DDD+número (10-13 dígitos)');return}
+  _state.convId=null;
+  _state.novoNumero=limpo;
+  _state.mensagens=[];
+  document.getElementById('thread-zone').innerHTML=`<div class="center-empty"><div class="ico">✎</div><h3>Nova conversa</h3><p>Para <strong style="color:var(--gold-deep)">+${limpo}</strong> · escreva abaixo e envie. A conversa será criada ao enviar.</p></div>`;
+  const bar=document.getElementById('composer-bar');if(bar)bar.setAttribute('aria-disabled','false');
+  const ci=document.getElementById('composer-input');if(ci){ci.placeholder='Mensagem para +'+limpo+'…';ci.focus()}
+}
+
 async function enviarMensagem(){
   console.log('[wa-DIAG] enviarMensagem() chamado');
   const ta=document.getElementById('composer-input');
   const txt=(ta?.value||'').trim();
   console.log('[wa-DIAG] texto:',txt,'attach:',!!_attach);
   if(!txt&&!_attach){console.log('[wa-DIAG] sem texto e sem anexo, abortando');return}
-  console.log('[wa-DIAG] convId atual:',_state.convId);
+  console.log('[wa-DIAG] convId atual:',_state.convId,'novoNumero:',_state.novoNumero);
   const c=_state.conversas.find(c=>c.conversa_id===_state.convId);
-  if(!c){console.error('[wa-DIAG] conversa não encontrada no _state.conversas');toast('Conversa não encontrada — abra uma conversa primeiro');return}
-  console.log('[wa-DIAG] conversa:',c);
-  const numero=(c.numero_e164||'').replace(/\D/g,'');
+  // V23: composer fixo — se não há conversa aberta mas há "nova conversa" (número digitado), usa
+  if(!c && !_state.novoNumero){toast('Selecione uma conversa ou clique em "+ Nova conversa" primeiro');return}
+  const numero=(c?c.numero_e164:_state.novoNumero||'').replace(/\D/g,'');
   console.log('[wa-DIAG] numero raw:',c.numero_e164,'numero limpo:',numero);
   if(!numero){console.error('[wa-DIAG] numero vazio');toast('Número da conversa está vazio — verifique no perfil');return}
   // V20.8 2026-05-27: aperto da validação. Webhook do Evolution salvou WIDs com 14-15 dígitos
@@ -586,20 +614,22 @@ async function enviarMensagem(){
     mediaUrl=up.url;
   }
 
-  // Optimistic UI
+  // Optimistic UI — só se há conversa aberta (nova conversa não tem thread ainda)
   const tempId='tmp-'+Date.now();
-  const optMsg={id:tempId,conversation_id:_state.convId,direction:'out',message_type:msgType,content:txt,media_url:mediaUrl,created_at:new Date().toISOString(),status:'sent',sent_by:window.__IP_USER_EMAIL||''};
-  _state.mensagens.push(optMsg);
+  if(c){
+    const optMsg={id:tempId,conversation_id:_state.convId,direction:'out',message_type:msgType,content:txt,media_url:mediaUrl,created_at:new Date().toISOString(),status:'sent',sent_by:window.__IP_USER_EMAIL||''};
+    _state.mensagens.push(optMsg);
+  }
   ta.value='';ta.style.height='auto';
   removeAttach();
-  renderThread();
+  if(c)renderThread();
 
   try{
     // EF whatsapp-direto v9 espera {phone, text, image_url?, contact_name?, contexto?, actor_email?}
     const payload={
       phone:numero,
       text:txt,
-      contact_name:c.contato_nome||null,
+      contact_name:c?.contato_nome||null,
       contexto:'inbox-innovapeople',
       actor_email:window.__IP_USER_EMAIL||null,
     };
@@ -636,8 +666,16 @@ async function enviarMensagem(){
     console.log('[wa-DIAG] envio OK, evolution_status:',data?.evolution_status,'persisted_id:',data?.persisted_id);
     toast('Mensagem enviada');
     clearReplyTo();
-    await loadMensagens(_state.convId);
-    loadConversas();
+    if(c){
+      await loadMensagens(_state.convId);
+      loadConversas();
+    }else{
+      // nova conversa: limpa estado e recarrega lista (a conversa criada aparece)
+      _state.novoNumero=null;
+      const ci=document.getElementById('composer-input');if(ci)ci.placeholder='Selecione uma conversa ou clique em + Nova conversa…';
+      await loadConversas();
+      toast('Conversa criada — abra na lista à esquerda');
+    }
   }catch(e){
     console.error('[wa-DIAG] erro capturado:',e,'stack:',e?.stack);
     toast('Erro: '+(e.message||e.toString()||'desconhecido')+' (veja console F12)');
@@ -1054,7 +1092,7 @@ async function arquivarConversa(){
     toast('Conversa arquivada');
     _state.convId=null;
     document.getElementById('app').classList.remove('show-thread');
-    document.getElementById('center').innerHTML=`<div class="center-empty"><div class="ico">i</div><h3>Conversa arquivada</h3><p>Reabra pelo filtro "Todas" se precisar.</p></div>`;
+    document.getElementById('thread-zone').innerHTML=`<div class="center-empty"><div class="ico">i</div><h3>Conversa arquivada</h3><p>Reabra pelo filtro "Todas" se precisar.</p></div>`;
     loadConversas();
   }catch(e){toast('Erro: '+e.message)}
 }

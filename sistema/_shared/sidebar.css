@@ -139,6 +139,23 @@ body.ip-sb-collapsed .sb-foot{padding:14px 0;display:flex;justify-content:center
 }
 @media(min-width:901px){.ip-sb-toggle{display:none}}
 
+/* ═══ BOTÃO WHATSAPP FLUTUANTE (CVO 29/05) — acesso rápido elegante ═══
+   Pill dourado glassmorphism, canto superior direito, sofisticado e esbelto. */
+#ip-wa-fab{position:fixed;top:20px;right:24px;z-index:75;display:flex;align-items:center;gap:9px;padding:9px 16px 9px 12px;border-radius:30px;background:linear-gradient(135deg,rgba(28,18,48,.72),rgba(12,8,22,.82));backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border:1px solid var(--edge);box-shadow:0 8px 28px rgba(0,0,0,.4),0 0 0 1px rgba(245,221,165,.06),inset 0 1px 0 rgba(245,221,165,.12);color:var(--sb-fg);text-decoration:none;font-family:var(--sans);font-size:12.5px;font-weight:500;letter-spacing:.04em;transition:all .3s var(--ease);cursor:pointer}
+#ip-wa-fab:hover{transform:translateY(-1px);border-color:rgba(245,221,165,.42);box-shadow:0 14px 38px rgba(196,163,90,.28),0 0 0 1px rgba(245,221,165,.18),inset 0 1px 0 rgba(245,221,165,.2);color:var(--gold-glow)}
+#ip-wa-fab .wa-ico{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#25d366,#1ba34e);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 10px rgba(37,211,102,.4),inset 0 1px 0 rgba(255,255,255,.25)}
+#ip-wa-fab .wa-ico svg{width:17px;height:17px;color:#fff}
+#ip-wa-fab .wa-tx{display:flex;flex-direction:column;line-height:1.15}
+#ip-wa-fab .wa-tx b{font-family:var(--serif);font-style:italic;font-weight:500;font-size:14px;color:var(--gold-glow)}
+#ip-wa-fab .wa-tx span{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--cream-dim)}
+#ip-wa-fab .wa-badge{position:absolute;top:-4px;left:24px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:linear-gradient(135deg,var(--gold-glow),var(--gold));color:#2A1A3B;font-family:var(--mono);font-size:9.5px;font-weight:700;display:none;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(196,163,90,.5)}
+#ip-wa-fab .wa-badge.on{display:flex}
+@media(max-width:640px){#ip-wa-fab .wa-tx{display:none}#ip-wa-fab{padding:8px;right:16px}}
+/* oculta o FAB na própria página do WhatsApp */
+body.ip-wa-page #ip-wa-fab{display:none}
+html[data-theme="light"] #ip-wa-fab{background:linear-gradient(135deg,#FFFFFF,#FAF7F1);box-shadow:0 8px 24px rgba(63,39,86,.12),inset 0 1px 0 #fff}
+html[data-theme="light"] #ip-wa-fab .wa-tx b{color:var(--gold-deep)}
+
 /* ═══════════════════════════════════════════════════════════════════
    MODO LIGHT (CVO 28/05) — override de TODOS os tokens (canônicos + legados
    toolbox --navy-* + dashboard --paper/--ink). Default é dark (:root acima).
