@@ -58,6 +58,19 @@
   }
 
   // ─── RESULTADOS (agregação 6D real, k≥3) ───
+  function _orgCfg(diagHTML){
+    return {
+      chave:'mattering', mandato:_state.mandato, rotulo:'Mattering',
+      diagnosticoHTML:diagHTML,
+      fontesEvento:['ip_pulsos','ip_pulse_tokens','ip_agent_sugestoes','ip_plano_acoes'],
+      consumidores:[
+        {nome:'Skill Map', porque:'queda de pertencimento aciona reconversao e revisao de papeis'},
+        {nome:'Agentes Vigia', porque:'Mattering Coach e Critic-Org leem o pulso para abrir sugestoes'},
+        {nome:'CHRO / Sala de Guerra', porque:'risco de saida sobe na priorizacao IREU consolidada'}
+      ]
+    };
+  }
+
   async function renderResultados(){
     const body=document.getElementById('mt-body');
     body.innerHTML='<div class="empty-skeleton"><div class="bar w85"></div><div class="bar w70"></div></div>';
@@ -65,45 +78,39 @@
     if(_state.mandato) qy=qy.eq('mandato_id',_state.mandato);
     const {data}=await T.safe(()=>qy.order('created_at',{ascending:false}).limit(500),{data:[]});
     const arr=data||[];
+    let diag;
     if(arr.length<K_MIN){
-      body.innerHTML=`<div style="margin-bottom:14px">${mandatoSelect()}</div><div class="mt-empty">
-        <div style="font-family:var(--serif);font-style:italic;font-size:18px;color:var(--cream);margin-bottom:8px">Anonimato protegido · k≥${K_MIN}</div>
-        <p>Há <strong>${arr.length}</strong> resposta${arr.length===1?'':'s'} — resultados só aparecem com pelo menos <strong>${K_MIN}</strong>, para garantir anonimato. Dispare o pulso na aba ao lado.</p>
+      diag=`<div style="margin-bottom:14px">${mandatoSelect()}</div><div class="mt-empty">
+        <div style="font-family:var(--serif);font-style:italic;font-size:18px;color:var(--cream);margin-bottom:8px">Anonimato protegido &middot; k&ge;${K_MIN}</div>
+        <p>Ha <strong>${arr.length}</strong> resposta${arr.length===1?'':'s'} &mdash; o agregado so aparece com pelo menos <strong>${K_MIN}</strong>, para garantir anonimato. Mesmo assim, a trilha de proximos passos e o diagnostico de IA ja operam abaixo.</p>
       </div>`;
-      return;
-    }
-    const avg=k=>arr.map(r=>r[k]).filter(v=>v!=null).reduce((a,b,_,A)=>a+b/A.length,0);
-    const dimVals=DIMS.map(d=>({...d,v:avg(d.k)}));
-    const geral=dimVals.reduce((a,d)=>a+d.v,0)/dimVals.length;
-    const risco=avg('risco_saida');
-    const last30=arr.filter(r=>new Date(r.created_at).getTime()>Date.now()-30*86400e3).length;
-    // farol
-    const farol=v=>v>=4?'no-alvo':(v>=3?'atencao':'fora');
-    body.innerHTML=`
+    } else {
+      const avg=k=>arr.map(r=>r[k]).filter(v=>v!=null).reduce((a,b,_,A)=>a+b/A.length,0);
+      const dimVals=DIMS.map(d=>({...d,v:avg(d.k)}));
+      const geral=dimVals.reduce((a,d)=>a+d.v,0)/dimVals.length;
+      const risco=avg('risco_saida');
+      const last30=arr.filter(r=>new Date(r.created_at).getTime()>Date.now()-30*86400e3).length;
+      const farol=v=>v>=4?'no-alvo':(v>=3?'atencao':'fora');
+      diag=`
       <div style="margin-bottom:16px">${mandatoSelect()}</div>
       <div class="kpis" style="padding:0;margin:0 0 18px;grid-template-columns:repeat(3,1fr)">
-        <div class="kpi hero"><div class="lab">Mattering geral</div><div class="val">${geral.toFixed(1)}<span class="un">/5</span></div><span class="farol ${farol(geral)}">${farol(geral)==='no-alvo'?'saudável':(farol(geral)==='atencao'?'atenção':'crítico')}</span></div>
-        <div class="kpi"><div class="lab">Risco de saída</div><div class="val" style="${risco>=3.5?'color:var(--danger)':''}">${risco.toFixed(1)}<span class="un">/5</span></div><div class="note">média percebida</div></div>
-        <div class="kpi"><div class="lab">Respostas</div><div class="val">${arr.length}</div><div class="note">${last30} nos últimos 30d · anônimo</div></div>
+        <div class="kpi hero"><div class="lab">Mattering geral</div><div class="val">${geral.toFixed(1)}<span class="un">/5</span></div><span class="farol ${farol(geral)}">${farol(geral)==='no-alvo'?'saudavel':(farol(geral)==='atencao'?'atencao':'critico')}</span></div>
+        <div class="kpi"><div class="lab">Risco de saida</div><div class="val" style="${risco>=3.5?'color:var(--danger)':''}">${risco.toFixed(1)}<span class="un">/5</span></div><div class="note">media percebida</div></div>
+        <div class="kpi"><div class="lab">Respostas</div><div class="val">${arr.length}</div><div class="note">${last30} nos ultimos 30d &middot; anonimo</div></div>
       </div>
-      <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:10px">6 Dimensões · média agregada</div>
+      <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:10px">6 Dimensoes &middot; media agregada</div>
       ${dimVals.map(d=>{
         const pct=Math.round(d.v/5*100);
         const col=d.v>=4?'var(--ok)':(d.v>=3?'var(--warn)':'var(--danger)');
-        return `<div style="margin-bottom:12px">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-            <span style="font-size:13px;color:var(--cream);font-weight:500">${d.n}</span>
-            <span style="font-family:var(--serif);font-style:italic;font-size:17px;color:${col}">${d.v.toFixed(1)}</span>
-          </div>
-          <div class="pbar"><span style="width:${pct}%;background:linear-gradient(90deg,${col},var(--gold))"></span></div>
-        </div>`;
+        return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px"><span style="font-size:13px;color:var(--cream);font-weight:500">${d.n}</span><span style="font-family:var(--serif);font-style:italic;font-size:17px;color:${col}">${d.v.toFixed(1)}</span></div><div class="pbar"><span style="width:${pct}%;background:linear-gradient(90deg,${col},var(--gold))"></span></div></div>`;
       }).join('')}
-      <div style="margin-top:16px;display:flex;gap:10px">
-        <button class="mt-btn-ghost" onclick="IpMattering._rodarAgente()">Rodar Mattering Coach (IA)</button>
-      </div>`;
+      <div style="margin-top:14px"><button class="mt-btn-ghost" onclick="IpMattering._rodarAgente()">Rodar Mattering Coach (detector)</button></div>`;
+    }
+    if(window.IpFerramenta){ await IpFerramenta.organismo(body,_orgCfg(diag)); }
+    else { body.innerHTML=diag; }
   }
 
-  // ─── DISPARAR (gera tokens reais) ───
+  // --- DISPARAR (gera tokens reais) ---
   async function renderDisparar(){
     const body=document.getElementById('mt-body');
     body.innerHTML=`
