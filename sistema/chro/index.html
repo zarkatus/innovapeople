@@ -1256,7 +1256,7 @@ async function openAgentesPainel(){
 async function suggestionAct(id,status){
   const sb=window.__IP_SB;if(!sb)return;
   try{
-    const {error}=await sb.from('ip_agent_sugestoes').update({status,resolvido_em:new Date().toISOString()}).eq('id',id);
+    const {error}=await sb.from('ip_agent_sugestoes').update({status,revisada_em:new Date().toISOString(),revisada_por:window.__IP_USER_EMAIL||null}).eq('id',id);
     if(error)throw error;
     document.querySelector(`.ap-card[data-id="${id}"]`)?.remove();
     loadAgentes(sb);loadHeroMetrics(sb);

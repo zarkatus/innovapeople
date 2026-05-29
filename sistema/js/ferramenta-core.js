@@ -34,7 +34,7 @@
   async function renderSintese(host){
     const cfg=host._fc; const el=host.querySelector('#fc-sintese'); if(!el)return;
     let qy=sb().from('ip_agent_runs').select('payload,concluido_em').eq('agente','claude_diagnostico').eq('status','concluido');
-    if(cfg.mandato)qy=qy.eq('mandato_id',cfg.mandato);
+    if(cfg.mandato)qy=qy.eq('mandato_id',cfg.mandato); else qy=qy.is('mandato_id',null);
     const {data}=await T.safe(()=>qy.order('concluido_em',{ascending:false}).limit(1),{data:[]});
     const last=(data||[])[0]; const sint=last&&last.payload&&last.payload.sintese;
     el.innerHTML = `<div class="fc-banner">
@@ -52,7 +52,7 @@
     const host=btn.closest('[data-fc-host]'); if(!host)return; const cfg=host._fc;
     btn.disabled=true; const old=btn.textContent; btn.innerHTML='<span class="fc-spin"></span>Analisando&hellip;';
     try{
-      const body=cfg.mandato?{mandato_id:cfg.mandato,ferramenta:cfg.chave||'mattering',persistir:true}:{ferramenta:cfg.chave||'consolidado',persistir:false};
+      const body=cfg.mandato?{mandato_id:cfg.mandato,ferramenta:cfg.chave||'mattering',persistir:true}:{ferramenta:'consolidado',persistir:false};
       const {data,error}=await sb().functions.invoke('ip-agent-claude',{body});
       if(error)throw await _efErro(error);
       if(data&&data.erro)throw new Error(data.erro);

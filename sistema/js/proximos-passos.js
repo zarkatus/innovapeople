@@ -33,7 +33,7 @@
     const [mand, sug, run]=await Promise.all([
       T.safe(()=>sb().from('ip_mandatos').select('id,empresa,status').eq('status','ativo').order('empresa').limit(100),{data:[]}),
       T.safe(()=>sb().from('ip_agent_sugestoes').select('id,created_at,mandato_id,agente,severidade,titulo,sugestao,ai_insight,evidencias').eq('status','pendente').order('created_at',{ascending:false}).limit(200),{data:[]}),
-      T.safe(()=>sb().from('ip_agent_runs').select('payload,concluido_em').eq('agente','claude_diagnostico').eq('status','concluido').order('concluido_em',{ascending:false}).limit(1),{data:[]}),
+      T.safe(()=>sb().from('ip_agent_runs').select('payload,concluido_em').eq('agente','claude_diagnostico').eq('status','concluido').is('mandato_id',null).order('concluido_em',{ascending:false}).limit(1),{data:[]}),
     ]);
     _data={mandatos:mand.data||[],sugestoes:sug.data||[],lastDiag:(run.data||[])[0]||null,mandato:null};
   }
@@ -166,7 +166,7 @@
   #pp-root .pp-sev-cr{background:rgba(216,117,117,.2);color:var(--danger,#D87575)}
   #pp-root .pp-sev-al{background:rgba(225,167,84,.2);color:var(--warn,#E1A754)}
   #pp-root .pp-sev-no{background:rgba(196,163,90,.16);color:var(--gold)}
-  #pp-root .pp-sev-ba,.pp-sev-in{background:rgba(123,165,216,.14);color:var(--info,#7BA5D8)}
+  #pp-root .pp-sev-ba,#pp-root .pp-sev-in{background:rgba(123,165,216,.14);color:var(--info,#7BA5D8)}
   #pp-root .pp-agente{font-family:var(--mono);font-size:10px;color:var(--cream-dim)}
   #pp-root .pp-time{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--cream-dim)}
   #pp-root .pp-titulo{margin-top:8px;font-size:15px;font-weight:600;color:var(--cream);line-height:1.35}
