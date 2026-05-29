@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="/sistema/toolbox/_shared/toolbox.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
 <script src="/sistema/toolbox/_shared/toolbox.js"></script>
+<script src="/sistema/js/mattering.js" defer></script>
 <script>TBAuth.init('toolbox-gente');</script>
 <link rel="stylesheet" href="/sistema/_shared/sidebar.css"><script src="/sistema/_shared/sidebar.js" defer></script></head>
 <body>
@@ -69,22 +70,13 @@
 
 <div class="hub">
 
-  <!-- MATTERING SAID 4D — destaque (hero-card) -->
+  <!-- MATTERING ENGINE — FERRAMENTA real (módulo IpMattering · 6 dimensões) -->
   <div class="panel s12 hero-card">
     <div class="p-h">
-      <div class="t"><span class="dot"></span>Mattering Engine · SAID Framework</div>
+      <div class="t"><span class="dot"></span>Mattering Engine · Pulso 6 Dimensões</div>
       <a class="openlink" href="/sistema/chro/">painel CHRO →</a>
     </div>
-    <div class="p-b" id="b-said">
-      <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:14px;margin-bottom:8px;max-width:680px">Quatro dimensões medem se cada pessoa <strong>importa</strong> nesta organização: é vista, reconhecida, investida e indispensável. Pulso semanal escala 1-4.</div>
-      <div class="said" id="said-grid">
-        <div class="dim"><div class="l">SEEN</div><div class="v">—</div><div class="n">"sou visto como alguém único"</div></div>
-        <div class="dim"><div class="l">ACKNOWLEDGED</div><div class="v">—</div><div class="n">"meu trabalho é reconhecido"</div></div>
-        <div class="dim"><div class="l">INVESTED</div><div class="v">—</div><div class="n">"investem em mim e meu crescimento"</div></div>
-        <div class="dim"><div class="l">DEPENDENT</div><div class="v">—</div><div class="n">"a organização depende de mim"</div></div>
-      </div>
-      <div id="said-empty" style="display:none" class="p-empty">Pulso SAID aguardando primeira rodada. Disparar via <a href="/sistema/chro/" style="color:var(--gold)">CHRO → Disparar pulso</a>.</div>
-    </div>
+    <div class="p-b"><div id="mattering-tool"></div></div>
   </div>
 
   <!-- SKILL MAP 6D -->
@@ -215,51 +207,39 @@
 <script>
 function boot(){
   document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';
+  // FERRAMENTA Mattering (módulo real, 6D) no container do hero-card
+  const mt=document.getElementById('mattering-tool');
+  if(mt&&window.IpMattering)window.IpMattering.open(mt);
+  else if(mt)setTimeout(()=>{if(window.IpMattering)window.IpMattering.open(mt)},300);
   loadAll();
   setInterval(loadAll,90000);
 }
 
 async function loadAll(){
-  await Promise.all([loadSAID(),loadKpis(),loadSkill(),loadLead(),loadPulse(),loadProcs(),loadRituais(),loadEquipe(),loadComment()]);
+  await Promise.all([loadKpis(),loadSkill(),loadLead(),loadPulse(),loadProcs(),loadRituais(),loadEquipe(),loadComment()]);
 }
 
-async function loadSAID(){
-  // Tenta agregar pulsos SAID (schema ip_pulsos)
-  const sb=window.__IP_SB;
-  const {data}=await TB.safe(()=>sb.from('ip_pulsos').select('saido_seen,saido_acknowledged,saido_invested,saido_dependent,respondido_em').gte('respondido_em',new Date(Date.now()-30*86400e3).toISOString()),{data:[]});
-  const arr=data||[];
-  if(!arr.length){
-    document.getElementById('said-grid').style.display='none';
-    document.getElementById('said-empty').style.display='block';
-    document.getElementById('k-said').innerHTML='—<span class="un">/4</span>';
-    return;
-  }
-  const avg=(k)=>arr.map(r=>r[k]).filter(v=>v!=null).reduce((a,b,_,A)=>a+b/A.length,0);
-  const s=avg('saido_seen'),a=avg('saido_acknowledged'),i=avg('saido_invested'),d=avg('saido_dependent');
-  const grid=document.getElementById('said-grid');
-  grid.children[0].querySelector('.v').innerHTML=s.toFixed(1)+'<span class="un">/4</span>';
-  grid.children[1].querySelector('.v').innerHTML=a.toFixed(1)+'<span class="un">/4</span>';
-  grid.children[2].querySelector('.v').innerHTML=i.toFixed(1)+'<span class="un">/4</span>';
-  grid.children[3].querySelector('.v').innerHTML=d.toFixed(1)+'<span class="un">/4</span>';
-  const total=((s+a+i+d)/4);
-  document.getElementById('k-said').innerHTML=total.toFixed(2)+'<span class="un">/4</span>';
-  const f=document.getElementById('f-said');
-  if(total>=3.2){f.className='farol no-alvo';f.textContent='no alvo'}
-  else if(total>=2.5){f.className='farol atencao';f.textContent='atenção'}
-  else{f.className='farol fora';f.textContent='fora · risco'}
-  document.getElementById('k-said-n').textContent=arr.length+' respostas anônimas k≥3';
-}
-
+// KPIs do topo via dados REAIS de ip_pulsos (6 dimensões, k≥3)
 async function loadKpis(){
   const sb=window.__IP_SB;
-  const [p,pulsos14,rec]=await Promise.all([
-    TB.safe(()=>sb.from('ip_pessoas').select('id',{count:'exact',head:true}),{count:0}),
-    TB.safe(()=>sb.from('ip_pulsos').select('id',{count:'exact',head:true}).gte('respondido_em',new Date(Date.now()-14*86400e3).toISOString()),{count:0}),
-    TB.safe(()=>sb.from('ip_reconhecimentos').select('id',{count:'exact',head:true}).gte('criado_em',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
-  ]);
-  document.getElementById('k-pessoas').textContent=p.count||0;
-  document.getElementById('k-pulsos').textContent=pulsos14.count||0;
-  document.getElementById('k-reconhec').textContent=rec.count||0;
+  const {data}=await TB.safe(()=>sb.from('ip_pulsos').select('r_proposito,r_autonomia,r_competencia,r_pertencimento,r_clareza,r_seguranca,created_at').gte('created_at',new Date(Date.now()-30*86400e3).toISOString()),{data:[]});
+  const arr=data||[];
+  const pulsos14=arr.filter(r=>new Date(r.created_at).getTime()>Date.now()-14*86400e3).length;
+  // mattering score = média das 6 dims (k≥3)
+  let scoreTxt='—', farolCls='sem-meta', farolTxt='aguardando';
+  if(arr.length>=3){
+    const all=arr.flatMap(r=>['r_proposito','r_autonomia','r_competencia','r_pertencimento','r_clareza','r_seguranca'].map(k=>r[k]).filter(v=>v!=null));
+    const m=all.reduce((a,b)=>a+b,0)/all.length;
+    scoreTxt=m.toFixed(1);
+    if(m>=4){farolCls='no-alvo';farolTxt='saudável'}else if(m>=3){farolCls='atencao';farolTxt='atenção'}else{farolCls='fora';farolTxt='crítico'}
+  }
+  const kSaid=document.getElementById('k-said');if(kSaid)kSaid.innerHTML=scoreTxt+'<span class="un">/5</span>';
+  const kSaidN=document.getElementById('k-said-n');if(kSaidN)kSaidN.textContent=arr.length+' respostas anônimas (k≥3)';
+  const f=document.getElementById('f-said');if(f){f.className='farol '+farolCls;f.textContent=farolTxt}
+  const kPulsos=document.getElementById('k-pulsos');if(kPulsos)kPulsos.textContent=pulsos14;
+  // pessoas/reconhecimentos: tabelas ainda não existem — mostra — até virarem ferramenta
+  const kP=document.getElementById('k-pessoas');if(kP)kP.textContent='—';
+  const kR=document.getElementById('k-reconhec');if(kR)kR.textContent='—';
 }
 
 async function loadSkill(){

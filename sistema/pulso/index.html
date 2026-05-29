@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Pulso · InnovaPeople</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<style>
+:root{--bg:#0C0816;--bg2:#140D22;--bg3:#1C1230;--gold:#C4A35A;--gold-glow:#F5DDA5;--cream:#F7F3EC;--cream-muted:#D6CDB8;--cream-dim:#A99E86;--violet:#7B5AA8;--violet-deep:#3F2756;--ok:#6BAE82;--rule:rgba(245,221,165,.14);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(70% 100% at 30% 0%,rgba(123,90,168,.12),transparent 60%),var(--bg);color:var(--cream);font-family:var(--sans);font-weight:300;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px}
+.card{max-width:560px;width:100%;background:linear-gradient(180deg,var(--bg2),var(--bg));border:1px solid var(--rule);border-radius:14px;padding:40px 36px;box-shadow:0 24px 64px rgba(0,0,0,.5)}
+.wm{font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold-glow);text-align:center;padding-bottom:20px;margin-bottom:24px;border-bottom:1px solid var(--rule)}
+h1{font-family:var(--serif);font-style:italic;font-weight:400;font-size:28px;color:var(--cream);line-height:1.2;margin-bottom:8px}
+.sub{font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:15px;line-height:1.5;margin-bottom:8px}
+.meta{font-family:var(--sans);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:24px}
+.anon{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ok);background:rgba(107,174,130,.1);border:1px solid rgba(107,174,130,.28);border-radius:20px;padding:4px 12px;margin-bottom:28px;font-family:var(--sans)}
+.q{margin-bottom:26px}
+.q .qt{font-family:var(--serif);font-size:18px;color:var(--cream);line-height:1.35;margin-bottom:4px}
+.q .qd{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-dim,var(--cream-dim));margin-bottom:12px;font-weight:500}
+.scale{display:flex;gap:8px}
+.scale button{flex:1;aspect-ratio:1;border:1px solid var(--rule);border-radius:8px;background:var(--bg3);color:var(--cream-dim);font-family:var(--serif);font-style:italic;font-size:20px;cursor:pointer;transition:all .18s}
+.scale button:hover{border-color:var(--gold);color:var(--cream)}
+.scale button.on{background:linear-gradient(135deg,var(--gold-glow),var(--gold));color:#2A1A3B;border-color:var(--gold);font-weight:500;transform:scale(1.05)}
+.scale-lbl{display:flex;justify-content:space-between;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream-dim);margin-top:6px;font-family:var(--sans)}
+textarea{width:100%;padding:14px;background:var(--bg3);border:1px solid var(--rule);border-radius:8px;color:var(--cream);font-family:var(--sans);font-size:14px;resize:vertical;min-height:80px;margin-top:8px}
+textarea:focus{outline:none;border-color:var(--gold)}
+.btn{width:100%;padding:15px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold-glow),var(--gold));color:#2A1A3B;font-family:var(--sans);font-weight:600;font-size:14px;letter-spacing:.06em;cursor:pointer;margin-top:14px;transition:all .2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(196,163,90,.4)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.state{text-align:center;padding:30px 0}
+.state .ico{font-family:var(--serif);font-style:italic;font-size:64px;color:var(--gold);line-height:1;margin-bottom:16px}
+.state h2{font-family:var(--serif);font-style:italic;font-weight:400;font-size:26px;color:var(--cream);margin-bottom:10px}
+.state p{color:var(--cream-muted);font-size:14px;line-height:1.55;font-family:var(--serif);font-style:italic}
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="wm">INNOVAPEOPLE</div>
+  <div id="content"><div class="state"><div class="ico">·</div><p>Carregando…</p></div></div>
+</div>
+
+<script>
+const SUPA_URL='https://auth.innovasphere.ia.br';
+const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:false}});
+const DIMS=[
+  {k:'r_proposito',n:'Propósito',q:'Meu trabalho tem sentido e contribui para algo maior'},
+  {k:'r_autonomia',n:'Autonomia',q:'Tenho liberdade para decidir como faço meu trabalho'},
+  {k:'r_competencia',n:'Competência',q:'Uso e desenvolvo minhas melhores capacidades aqui'},
+  {k:'r_pertencimento',n:'Pertencimento',q:'Sinto que pertenço e sou aceito por quem sou'},
+  {k:'r_clareza',n:'Clareza',q:'Sei o que se espera de mim e para onde vamos'},
+  {k:'r_seguranca',n:'Segurança psicológica',q:'Posso falar, discordar e errar sem medo de retaliação'},
+];
+const resp={};
+function esc(s){const d=document.createElement('div');d.textContent=String(s??'');return d.innerHTML}
+function show(html){document.getElementById('content').innerHTML=html}
+function stateMsg(ico,h,p){show(`<div class="state"><div class="ico">${ico}</div><h2>${h}</h2><p>${p}</p></div>`)}
+
+const token=new URLSearchParams(location.search).get('t');
+
+async function init(){
+  if(!token){stateMsg('?','Link inválido','Este link de pulso não tem token. Peça um novo ao seu gestor.');return}
+  // resolve token
+  const {data,error}=await sb.rpc('fn_ip_pulso_token_resolver',{p_token:token});
+  const info=Array.isArray(data)?data[0]:data;
+  if(error||!info){stateMsg('✕','Link inválido ou expirado','Peça um novo link de pulso.');return}
+  if(info.used){stateMsg('✓','Pulso já respondido','Obrigado — esta resposta já foi registrada. Cada link responde uma vez.');return}
+  renderForm(info);
+}
+
+function renderForm(info){
+  show(`
+    <h1>Como está sendo <em>trabalhar aqui?</em></h1>
+    <div class="sub">${esc(info.empresa||'')}${info.equipe?' · '+esc(info.equipe):''}</div>
+    <div class="anon">🔒 Anônimo · suas respostas nunca são identificadas</div>
+    ${DIMS.map((d,i)=>`<div class="q" data-k="${d.k}">
+      <div class="qt">${esc(d.q)}</div>
+      <div class="qd">${esc(d.n)}</div>
+      <div class="scale">${[1,2,3,4,5].map(v=>`<button onclick="pick('${d.k}',${v},this)">${v}</button>`).join('')}</div>
+      <div class="scale-lbl"><span>Discordo</span><span>Concordo</span></div>
+    </div>`).join('')}
+    <div class="q">
+      <div class="qt">Penso em sair desta organização</div>
+      <div class="qd">Risco de saída</div>
+      <div class="scale">${[1,2,3,4,5].map(v=>`<button onclick="pick('risco_saida',${v},this)">${v}</button>`).join('')}</div>
+      <div class="scale-lbl"><span>Nunca</span><span>Frequentemente</span></div>
+    </div>
+    <div class="q">
+      <div class="qt">Algo que queira dizer? <span style="font-size:12px;color:var(--cream-dim)">(opcional, anônimo)</span></div>
+      <textarea id="coment" placeholder="Livre…"></textarea>
+    </div>
+    <button class="btn" id="submit" onclick="enviar()">Enviar pulso anônimo</button>
+  `);
+}
+
+function pick(k,v,btn){
+  resp[k]=v;
+  const scale=btn.parentElement;
+  scale.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+async function enviar(){
+  const need=[...DIMS.map(d=>d.k),'risco_saida'];
+  const falta=need.filter(k=>resp[k]==null);
+  if(falta.length){alert('Responda todas as perguntas ('+falta.length+' faltando)');return}
+  const btn=document.getElementById('submit');btn.disabled=true;btn.textContent='Enviando…';
+  // hash leve client-side (anti-duplo-clique, não identifica)
+  const hash=(token+'|'+Date.now()).split('').reduce((a,c)=>((a<<5)-a+c.charCodeAt(0))|0,0).toString(36);
+  try{
+    const {data,error}=await sb.rpc('fn_ip_pulso_submit',{
+      p_token:token,
+      p_r_proposito:resp.r_proposito,p_r_autonomia:resp.r_autonomia,p_r_competencia:resp.r_competencia,
+      p_r_pertencimento:resp.r_pertencimento,p_r_clareza:resp.r_clareza,p_r_seguranca:resp.r_seguranca,
+      p_risco_saida:resp.risco_saida,
+      p_comentario:(document.getElementById('coment')?.value||'').trim()||null,
+      p_colaborador_hash:hash,p_ip:null,p_ua:navigator.userAgent.slice(0,120)
+    });
+    if(error)throw error;
+    if(data&&data.error){throw new Error(data.error)}
+    stateMsg('✓','Obrigado','Seu pulso foi registrado de forma anônima. Respostas se tornam visíveis ao gestor apenas em conjunto (k≥3), nunca individualmente.');
+  }catch(e){
+    btn.disabled=false;btn.textContent='Enviar pulso anônimo';
+    alert('Erro ao enviar: '+(e.message||e));
+  }
+}
+init();
+</script>
+</body>
+</html>
