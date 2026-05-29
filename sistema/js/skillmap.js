@@ -63,12 +63,12 @@
   function lvl(v){if(v==null)return'l1';if(v>=5)return'l5';if(v>=4)return'l4';if(v>=3)return'l3';if(v>=2)return'l2';return'l1'}
 
   // ─── MAPA (heatmap) ───
-  function renderMapa(){
+  async function renderMapa(){
     const b=document.getElementById('sk-body');
     let html=`<div style="margin-bottom:16px">${mandatoSel()}</div>`;
     if(!_s.perfis.length){
       html+=`<div class="sk-empty">Nenhum colaborador mapeado neste trabalho. Vá em <strong>Cadastrar / Avaliar</strong> para começar.</div>`;
-      b.innerHTML=html;return;
+      await _mount(b,html);return;
     }
     // cabeçalho dimensões
     html+=`<div style="display:grid;grid-template-columns:1.4fr repeat(6,1fr) .7fr;gap:6px;align-items:center;margin-bottom:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep);font-weight:700">
@@ -85,7 +85,7 @@
     });
     html+=`<div style="margin-top:14px;display:flex;gap:6px;align-items:center;font-size:10px;color:var(--cream-dim);font-family:var(--mono)">
       Níveis: <span class="heat-cell l1" style="width:18px;height:18px">1</span><span class="heat-cell l2" style="width:18px;height:18px">2</span><span class="heat-cell l3" style="width:18px;height:18px">3</span><span class="heat-cell l4" style="width:18px;height:18px">4</span><span class="heat-cell l5" style="width:18px;height:18px">5</span> · Σ = soma /30</div>`;
-    b.innerHTML=html;
+    await _mount(b,html);
   }
 
   // ─── AVALIAR (CRUD) ───
@@ -132,7 +132,7 @@
   async function _salvarSkill(perfilId){
     const wrap=document.getElementById('sk-sliders');const v=wrap._vals||{};
     const total=DIMS.reduce((a,d)=>a+(v[d.k]||0),0);
-    const row={mandato_id:_s.mandato,perfil_id:perfilId,s_score_total:total};
+    const row={mandato_id:_s.mandato,perfil_id:perfilId};
     DIMS.forEach(d=>row[d.k]=v[d.k]||null);
     try{
       const existing=_s.skills[perfilId];
@@ -188,6 +188,11 @@
   }
 
   function _setMandato(id){_s.mandato=id;reload().then(()=>go(_s.tab))}
+
+  async function _mount(b,diag){
+    if(window.IpFerramenta){ await IpFerramenta.organismo(b,{chave:'skillmap',mandato:_s.mandato,rotulo:'Skill Map',diagnosticoHTML:diag,fontesEvento:['ip_plano_acoes','ip_agent_sugestoes'],consumidores:[{nome:'Mattering',porque:'reconversao e pertencimento se cruzam no mesmo time'},{nome:'Sala de Guerra',porque:'reconversoes urgentes sobem no quadro IREU macro'},{nome:'Agentes Vigia',porque:'retencao de conhecimento observa concentracao de skill critica'}]}); }
+    else { b.innerHTML=diag; }
+  }
 
   const CSS=`
   #sk-root .sk-tabs{display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--rule)}

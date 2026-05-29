@@ -12,6 +12,7 @@
 <script src="/sistema/toolbox/_shared/toolbox.js"></script>
 <script src="/sistema/js/ferramenta-core.js" defer></script>
 <script src="/sistema/js/mattering.js" defer></script>
+<script src="/sistema/js/skillmap.js" defer></script>
 <script>TBAuth.init('toolbox-gente');</script>
 <link rel="stylesheet" href="/sistema/_shared/sidebar.css"><script src="/sistema/_shared/sidebar.js" defer></script></head>
 <body>
@@ -81,14 +82,14 @@
   </div>
 
   <!-- SKILL MAP 6D -->
-  <div class="panel s6">
+  <div class="panel s12 hero-card">
     <div class="p-h">
       <div class="t"><span class="dot" id="d-skill"></span>Skill Map · 6 Dimensões</div>
       <span class="counter" id="c-skill">0</span>
     </div>
     <div class="p-b" id="b-skill">
       <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:13px;margin-bottom:8px">Mapeamento Técnica · Orquestração · Julgamento · Relação · IA/Automação · Gestão. Reconversão dispara em score &lt;4 numa dimensão.</div>
-      <div id="skill-people" style="margin-top:10px"><div class="empty-skeleton"><div class="bar w85"></div><div class="bar w70"></div><div class="bar w50"></div></div></div>
+      <div id="skillmap-tool"></div>
     </div>
   </div>
 
@@ -212,12 +213,15 @@ function boot(){
   const mt=document.getElementById('mattering-tool');
   if(mt&&window.IpMattering)window.IpMattering.open(mt);
   else if(mt)setTimeout(()=>{if(window.IpMattering)window.IpMattering.open(mt)},300);
+  const sk=document.getElementById("skillmap-tool");
+  if(sk&&window.IpSkillMap)window.IpSkillMap.open(sk);
+  else if(sk)setTimeout(()=>{if(window.IpSkillMap)window.IpSkillMap.open(sk)},300);
   loadAll();
   setInterval(loadAll,90000);
 }
 
 async function loadAll(){
-  await Promise.all([loadKpis(),loadSkill(),loadLead(),loadPulse(),loadProcs(),loadRituais(),loadEquipe(),loadComment()]);
+  await Promise.all([loadKpis(),loadLead(),loadPulse(),loadProcs(),loadRituais(),loadEquipe(),loadComment()]);
 }
 
 // KPIs do topo via dados REAIS de ip_pulsos (6 dimensões, k≥3)
