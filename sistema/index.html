@@ -1125,31 +1125,59 @@ function escapeHtml(s) {
   return String(s ?? '').replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
 }
 
-// V3 28/05: onAuthStateChange é a FONTE ÚNICA de decisão de auth.
-// Removido init()+getSession concorrente que causava race: getSession retornava
-// null prematuramente e showLogin sobrescrevia o showDashboard do INITIAL_SESSION.
-// Agora: INITIAL_SESSION (reload/navegação) + SIGNED_IN (login novo) → decide.
-let _authDecided = false;
-sb.auth.onAuthStateChange(async (event, session) => {
-  if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') && session) {
-    _authDecided = true;
-    if (await ipPodeAcessar(session.user?.email)) {
-      showDashboard(session.user);
-    } else {
-      await sb.auth.signOut();
-      showLogin('E-mail não autorizado a acessar este sistema.');
-    }
-  } else if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !session)) {
-    _authDecided = true;
+// ═══ GATE DE AUTH V4 (29/05) — decisão SÍNCRONA via localStorage ═══
+// Bug raiz do reload: getSession() / INITIAL_SESSION podiam travar ou demorar
+// (navigator.locks + _initialize do supabase-js), deixando a tela presa no login.
+// Solução: ler o token direto do localStorage (síncrono, nunca trava) e decidir
+// na hora. onAuthStateChange refina ao vivo (login novo, logout, refresh).
+function _ipLerSessaoLocal(){
+  try{
+    const k = Object.keys(localStorage).find(k => k.startsWith('sb-') && k.includes('auth-token'));
+    if(!k) return null;
+    let raw = JSON.parse(localStorage.getItem(k) || 'null');
+    // formatos possíveis: {access_token,expires_at,user} | {currentSession:{...}} | [v,...]
+    const s = raw?.currentSession || raw?.session || raw;
+    if(!s || !s.access_token) return null;
+    // valida expiração (expires_at em segundos)
+    if(s.expires_at && (s.expires_at * 1000) < Date.now()) return null;
+    const email = s.user?.email || s.user?.user_metadata?.email;
+    if(!email) return null;
+    return { email, user: s.user };
+  }catch(_){ return null; }
+}
+
+function ipGateDecide(){
+  const local = _ipLerSessaoLocal();
+  if(local && ALLOWED_EMAILS.includes((local.email||'').toLowerCase())){
+    showDashboard(local.user);
+    // valida contra RPC em background (não bloqueia); se negar, desloga
+    ipPodeAcessar(local.email).then(ok=>{ if(!ok){ sb.auth.signOut(); showLogin('E-mail não autorizado.'); } });
+  } else if(local){
+    // tem sessão local mas não no allowlist hardcoded → confirma via RPC
+    ipPodeAcessar(local.email).then(ok=>{ if(ok) showDashboard(local.user); else { sb.auth.signOut(); showLogin('E-mail não autorizado.'); } });
+  } else {
     const params = new URLSearchParams(location.search);
     const from = params.get('from');
     const fromMap = { catalogo:'Acesso à ToolBox exige autenticação.', toolbox:'Acesso à ToolBox exige autenticação.' };
     showLogin(from && fromMap[from] ? fromMap[from] : '');
   }
+}
+
+// onAuthStateChange refina ao vivo (sem ser a fonte única — a fonte é o gate síncrono)
+sb.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    if (await ipPodeAcessar(session.user?.email)) showDashboard(session.user);
+    else { await sb.auth.signOut(); showLogin('E-mail não autorizado.'); }
+  } else if (event === 'SIGNED_OUT') {
+    showLogin();
+  }
 });
 
-// Fallback: se em 3s o onAuthStateChange não decidiu (edge case), força via getSession.
-setTimeout(() => { if (!_authDecided) init(); }, 3000);
+// Decide imediatamente no load (síncrono, robusto). Re-tenta 1x após detectSessionInUrl.
+ipGateDecide();
+// Se a 1ª decisão caiu no login mas há #access_token na URL (magic link), o
+// onAuthStateChange SIGNED_IN cobre. Re-checa após 1.2s pra pegar restauração tardia.
+setTimeout(() => { if(!document.getElementById('dashboard').classList.contains('show')) ipGateDecide(); }, 1200);
 </script>
 
 </body>
