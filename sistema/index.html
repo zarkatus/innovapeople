@@ -150,8 +150,8 @@ footer{background:#0E0916;color:rgba(255,255,255,.5);padding:22px 28px;text-alig
 footer a{color:rgba(255,255,255,.65)}
 
 /* ═══ DARK SKIN do dashboard — paleta ÚNICA da tela de login (CVO 28/05) ═══
-   Aplicado só quando logado (body.ip-has-sidebar), via override dos tokens. */
-body.ip-has-sidebar{
+   Aplicado só quando logado (html[data-theme="dark"] body.ip-has-sidebar), via override dos tokens. */
+html[data-theme="dark"] body.ip-has-sidebar{
   --paper:#0C0816; --paper-deep:#140D22; --paper-warm:#1C1230;
   --ink:#FAF7F1; --ink-soft:rgba(250,247,241,.78); --muted:rgba(250,247,241,.5);
   --rule:rgba(245,221,165,.12);
@@ -159,38 +159,38 @@ body.ip-has-sidebar{
   --gold:#F5DDA5; --gold-deep:#E6CB8F; --gold-soft:rgba(196,163,90,.16);
   background:#0C0816;color:#FAF7F1;
 }
-body.ip-has-sidebar .dash{background:transparent}
-body.ip-has-sidebar .dash-title,body.ip-has-sidebar .dash-title em,body.ip-has-sidebar .sec-head h2{color:#FAF7F1}
-body.ip-has-sidebar .dash-title em{color:var(--gold)}
-body.ip-has-sidebar .dash-sub,body.ip-has-sidebar .dash-eyebrow{color:rgba(250,247,241,.6)}
-body.ip-has-sidebar .dash-eyebrow{color:var(--gold)}
+html[data-theme="dark"] body.ip-has-sidebar .dash{background:transparent}
+html[data-theme="dark"] body.ip-has-sidebar .dash-title,html[data-theme="dark"] body.ip-has-sidebar .dash-title em,html[data-theme="dark"] body.ip-has-sidebar .sec-head h2{color:#FAF7F1}
+html[data-theme="dark"] body.ip-has-sidebar .dash-title em{color:var(--gold)}
+html[data-theme="dark"] body.ip-has-sidebar .dash-sub,html[data-theme="dark"] body.ip-has-sidebar .dash-eyebrow{color:rgba(250,247,241,.6)}
+html[data-theme="dark"] body.ip-has-sidebar .dash-eyebrow{color:var(--gold)}
 /* cards glassmorphism violet */
-body.ip-has-sidebar .stat,
-body.ip-has-sidebar .modulo-card,
-body.ip-has-sidebar .mandato-card,
-body.ip-has-sidebar .inbox-item,
-body.ip-has-sidebar .k-card,
-body.ip-has-sidebar .empty{background:linear-gradient(180deg,rgba(28,18,48,.7),rgba(20,13,34,.5));border-color:rgba(245,221,165,.14);color:#FAF7F1;box-shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.24)}
-body.ip-has-sidebar .stat::before{background:linear-gradient(90deg,var(--violet),var(--gold))}
-body.ip-has-sidebar .stat .figure,
-body.ip-has-sidebar .modulo-card .mod-name,
-body.ip-has-sidebar .mandato-card h3,
-body.ip-has-sidebar .mandato-kpi .v,
-body.ip-has-sidebar .inbox-body h4,
-body.ip-has-sidebar .k-card .k-empresa{color:#FAF7F1}
-body.ip-has-sidebar .stat .figure .unit{color:var(--gold)}
-body.ip-has-sidebar .modulo-card:hover,
-body.ip-has-sidebar .mandato-card:hover,
-body.ip-has-sidebar .inbox-item:hover{border-color:rgba(245,221,165,.32);box-shadow:0 10px 30px rgba(0,0,0,.4)}
-body.ip-has-sidebar .k-col{background:rgba(20,13,34,.5);border-color:rgba(245,221,165,.1)}
-body.ip-has-sidebar .inbox-score{background:rgba(123,90,168,.24);color:var(--gold)}
-body.ip-has-sidebar .k-card .k-actions button{background:rgba(250,247,241,.05);border-color:rgba(245,221,165,.14);color:rgba(250,247,241,.7)}
-body.ip-has-sidebar .k-card .k-actions button:hover{border-color:var(--gold);color:var(--gold)}
-body.ip-has-sidebar footer{display:none}
+html[data-theme="dark"] body.ip-has-sidebar .stat,
+html[data-theme="dark"] body.ip-has-sidebar .modulo-card,
+html[data-theme="dark"] body.ip-has-sidebar .mandato-card,
+html[data-theme="dark"] body.ip-has-sidebar .inbox-item,
+html[data-theme="dark"] body.ip-has-sidebar .k-card,
+html[data-theme="dark"] body.ip-has-sidebar .empty{background:linear-gradient(180deg,rgba(28,18,48,.7),rgba(20,13,34,.5));border-color:rgba(245,221,165,.14);color:#FAF7F1;box-shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.24)}
+html[data-theme="dark"] body.ip-has-sidebar .stat::before{background:linear-gradient(90deg,var(--violet),var(--gold))}
+html[data-theme="dark"] body.ip-has-sidebar .stat .figure,
+html[data-theme="dark"] body.ip-has-sidebar .modulo-card .mod-name,
+html[data-theme="dark"] body.ip-has-sidebar .mandato-card h3,
+html[data-theme="dark"] body.ip-has-sidebar .mandato-kpi .v,
+html[data-theme="dark"] body.ip-has-sidebar .inbox-body h4,
+html[data-theme="dark"] body.ip-has-sidebar .k-card .k-empresa{color:#FAF7F1}
+html[data-theme="dark"] body.ip-has-sidebar .stat .figure .unit{color:var(--gold)}
+html[data-theme="dark"] body.ip-has-sidebar .modulo-card:hover,
+html[data-theme="dark"] body.ip-has-sidebar .mandato-card:hover,
+html[data-theme="dark"] body.ip-has-sidebar .inbox-item:hover{border-color:rgba(245,221,165,.32);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+html[data-theme="dark"] body.ip-has-sidebar .k-col{background:rgba(20,13,34,.5);border-color:rgba(245,221,165,.1)}
+html[data-theme="dark"] body.ip-has-sidebar .inbox-score{background:rgba(123,90,168,.24);color:var(--gold)}
+html[data-theme="dark"] body.ip-has-sidebar .k-card .k-actions button{background:rgba(250,247,241,.05);border-color:rgba(245,221,165,.14);color:rgba(250,247,241,.7)}
+html[data-theme="dark"] body.ip-has-sidebar .k-card .k-actions button:hover{border-color:var(--gold);color:var(--gold)}
+html[data-theme="dark"] body.ip-has-sidebar footer{display:none}
 /* botões */
-body.ip-has-sidebar .btn-ghost{color:var(--gold);border-color:rgba(245,221,165,.3)}
-body.ip-has-sidebar .btn-ghost:hover{background:rgba(245,221,165,.1)}
-body.ip-has-sidebar .btn-action{background:var(--violet-mid,#5B3A7A);color:#FAF7F1}
+html[data-theme="dark"] body.ip-has-sidebar .btn-ghost{color:var(--gold);border-color:rgba(245,221,165,.3)}
+html[data-theme="dark"] body.ip-has-sidebar .btn-ghost:hover{background:rgba(245,221,165,.1)}
+html[data-theme="dark"] body.ip-has-sidebar .btn-action{background:var(--violet-mid,#5B3A7A);color:#FAF7F1}
 </style>
 <link rel="stylesheet" href="/sistema/_shared/sidebar.css"><script src="/sistema/_shared/sidebar.js" defer></script></head>
 <body>

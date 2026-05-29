@@ -29,6 +29,18 @@
   --shadow-hero:0 16px 48px rgba(210,174,100,.18), 0 32px 80px rgba(0,0,0,.42), inset 0 1px 0 rgba(210,174,100,.22);
   --ease-premium:cubic-bezier(.2,.65,.3,1);
 }
+/* MODO LIGHT — override de TODOS os tokens do toolbox (CVO 29/05: dark/light
+   abrange TODA a plataforma). Mantém nomes legados (--navy-*), troca p/ claro. */
+html[data-theme="light"]{
+  --navy-deep:#F4EFE7; --navy-night:#FFFFFF; --navy-raised:#FBF8F2; --navy-edge:rgba(156,126,59,.34);
+  --gold:#9C7E3B; --gold-soft:#7A6230; --gold-glow:rgba(156,126,59,.28); --gold-faint:rgba(156,126,59,.08);
+  --cream:#241B2E; --cream-muted:#574A63; --cream-dim:#8A7E94;
+  --rule:rgba(63,39,86,.14); --rule-strong:rgba(63,39,86,.2);
+  --violet:#5B3A7A; --violet-mid:#6B4E99; --violet-deep:#3F2756;
+  --shadow-raised:0 1px 2px rgba(63,39,86,.06),0 4px 12px rgba(63,39,86,.08);
+  --shadow-lift:0 8px 24px rgba(63,39,86,.1),0 16px 48px rgba(63,39,86,.08);
+  --shadow-hero:0 16px 48px rgba(156,126,59,.16),0 32px 80px rgba(63,39,86,.1);
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-font-smoothing:antialiased}
 body{background:var(--navy-deep);color:var(--cream);font-family:var(--sans);font-size:14px;line-height:1.55;min-height:100vh;font-weight:300}
