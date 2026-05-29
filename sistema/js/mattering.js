@@ -87,21 +87,21 @@
     } else {
       const avg=k=>{const vs=arr.map(r=>r[k]).filter(v=>v!=null);return vs.length?vs.reduce((a,b)=>a+b,0)/vs.length:null;};
       const dimVals=DIMS.map(d=>({...d,v:avg(d.k)}));
-      const _vd=dimVals.filter(d=>d.v!=null);const geral=_vd.length?_vd.reduce((a,d)=>a+d.v,0)/_vd.length:0;
+      const _vd=dimVals.filter(d=>d.v!=null);const geral=_vd.length?_vd.reduce((a,d)=>a+d.v,0)/_vd.length:null;
       const risco=avg('risco_saida');
       const last30=arr.filter(r=>new Date(r.created_at).getTime()>Date.now()-30*86400e3).length;
       const farol=v=>v>=4?'no-alvo':(v>=3?'atencao':'fora');
       diag=`
       <div style="margin-bottom:16px">${mandatoSelect()}</div>
       <div class="kpis" style="padding:0;margin:0 0 18px;grid-template-columns:repeat(3,1fr)">
-        <div class="kpi hero"><div class="lab">Mattering geral</div><div class="val">${geral.toFixed(1)}<span class="un">/5</span></div><span class="farol ${farol(geral)}">${farol(geral)==='no-alvo'?'saudavel':(farol(geral)==='atencao'?'atencao':'critico')}</span></div>
-        <div class="kpi"><div class="lab">Risco de saida</div><div class="val" style="${risco!=null&&risco>=3.5?'color:var(--danger)':''}">${risco==null?'—':risco.toFixed(1)}<span class="un">/5</span></div><div class="note">media percebida</div></div>
+        <div class="kpi hero"><div class="lab">Mattering geral</div><div class="val">${geral==null?'—':geral.toFixed(1)}<span class="un">/5</span></div><span class="farol ${geral==null?'sem-meta':farol(geral)}">${geral==null?'sem dados':(farol(geral)==='no-alvo'?'saudavel':(farol(geral)==='atencao'?'atencao':'critico'))}</span></div>
+        <div class="kpi"><div class="lab">Risco de saida</div><div class="val" style="${risco!=null&&risco>=3.5?'color:var(--danger,#d87575)':''}">${risco==null?'—':risco.toFixed(1)}<span class="un">/5</span></div><div class="note">media percebida</div></div>
         <div class="kpi"><div class="lab">Respostas</div><div class="val">${arr.length}</div><div class="note">${last30} nos ultimos 30d &middot; anonimo</div></div>
       </div>
-      <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:10px">6 Dimensoes &middot; media agregada</div>
+      <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep,#9a7b3a);font-weight:700;margin-bottom:10px">6 Dimensoes &middot; media agregada</div>
       ${dimVals.map(d=>{
         const pct=d.v==null?0:Math.round(d.v/5*100);
-        const col=d.v==null?'var(--cream-dim)':(d.v>=4?'var(--ok)':(d.v>=3?'var(--warn)':'var(--danger)'));
+        const col=d.v==null?'var(--cream-dim)':(d.v>=4?'var(--ok,#6bae82)':(d.v>=3?'var(--warn,#e1a754)':'var(--danger,#d87575)'));
         return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px"><span style="font-size:13px;color:var(--cream);font-weight:500">${d.n}</span><span style="font-family:var(--serif);font-style:italic;font-size:17px;color:${col}">${d.v==null?'—':d.v.toFixed(1)}</span></div><div class="pbar"><span style="width:${pct}%;background:linear-gradient(90deg,${col},var(--gold))"></span></div></div>`;
       }).join('')}
       <div style="margin-top:14px"><button class="mt-btn-ghost" onclick="IpMattering._rodarAgente()">Rodar Mattering Coach (detector)</button></div>`;
@@ -139,7 +139,7 @@
       const tokens=(data||[]).map(r=>typeof r==='string'?r:(r.fn_ip_pulso_token_gerar||r.token||r));
       const base=location.origin+'/sistema/pulso/?t=';
       document.getElementById('mt-links').innerHTML=`
-        <div style="margin-top:18px;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:8px">${tokens.length} links gerados · ${T.esc(eq)}</div>
+        <div style="margin-top:18px;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep,#9a7b3a);font-weight:700;margin-bottom:8px">${tokens.length} links gerados · ${T.esc(eq)}</div>
         <div style="display:flex;flex-direction:column;gap:6px">${tokens.map((t,i)=>`<div class="mt-link"><span>#${i+1}</span><code>${base}${T.esc(t)}</code><button onclick="navigator.clipboard.writeText('${base}${T.esc(t)}');IpMattering._toast('Link copiado')">copiar</button></div>`).join('')}</div>
         <button class="mt-btn-ghost" style="margin-top:10px" onclick="navigator.clipboard.writeText('${tokens.map(t=>base+t).join('\\n')}');IpMattering._toast('Todos os links copiados')">Copiar todos</button>`;
       T.toast(tokens.length+' links gerados');
@@ -157,7 +157,7 @@
     const arr=data||[];
     const pend=arr.filter(t=>!t.used_at);
     body.innerHTML=`<div style="margin-bottom:14px">${mandatoSelect()}</div>
-      <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:10px">${pend.length} pendentes · ${arr.length-pend.length} respondidos</div>
+      <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep,#9a7b3a);font-weight:700;margin-bottom:10px">${pend.length} pendentes · ${arr.length-pend.length} respondidos</div>
       ${arr.length?arr.map(t=>{
         const used=!!t.used_at;
         const exp=t.expires_at&&new Date(t.expires_at)<new Date();
@@ -194,7 +194,7 @@
   #mt-root .mt-btn-ghost{padding:9px 16px;border:1px solid var(--rule-strong);border-radius:7px;background:transparent;color:var(--gold);font-family:var(--sans);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
   #mt-root .mt-btn-ghost:hover{background:rgba(196,163,90,.1);border-color:var(--gold)}
   #mt-root .mt-empty{text-align:center;padding:32px 16px;color:var(--cream-dim);font-style:italic;font-family:var(--serif);font-size:15px;line-height:1.5}
-  #mt-root .mt-warn{padding:14px 18px;background:rgba(225,167,84,.1);border-left:2px solid var(--warn);border-radius:6px;color:var(--cream-muted);font-size:13px;font-style:italic;font-family:var(--serif);margin-bottom:14px}
+  #mt-root .mt-warn{padding:14px 18px;background:rgba(225,167,84,.1);border-left:2px solid var(--warn,#e1a754);border-radius:6px;color:var(--cream-muted);font-size:13px;font-style:italic;font-family:var(--serif);margin-bottom:14px}
   #mt-root .mt-link{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--navy-raised);border:1px solid var(--rule);border-radius:6px;font-size:12px}
   #mt-root .mt-link span{font-family:var(--mono);font-size:10px;color:var(--gold);flex-shrink:0}
   #mt-root .mt-link code{flex:1;font-family:var(--mono);font-size:10.5px;color:var(--cream-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
