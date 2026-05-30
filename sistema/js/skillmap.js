@@ -8,7 +8,7 @@
 (function(){
   'use strict';
   if(window.IpSkillMap) return;
-  if(!window.IpPersist){window.IpPersist={write:async function(fn,o){o=o||{};try{var r=await fn();if(r&&!r.error){if(o.toast!==false&&window.TB)TB.toast((o.label||'registro')+' salvo');return{ok:true,data:r.data,error:null,queued:false};}return{ok:false,error:r?r.error:{message:'sem resposta'},queued:false};}catch(e){return{ok:false,error:e,queued:false};}},drain:function(){},pendingCount:function(){return 0;},_enqueue:function(){return false;}};}
+  if(!window.IpPersist){window.IpPersist={write:async function(fn,o){o=o||{};try{var r=await fn();if(r&&!r.error){if(o.toast!==false&&window.TB)TB.toast((o.label||'registro')+' salvo');return{ok:true,data:r.data,error:null,queued:false};}return{ok:false,error:r?r.error:{message:'sem resposta'},queued:false};}catch(e){return{ok:false,error:e,queued:false};}},drain:function(){},pendingCount:function(){return 0;},failedCount:function(){return 0;},retryFailed:function(){},_enqueue:function(){return false;},_isShim:true};}
 
   const sb=()=>window.__IP_SB||window.sb;
   const T=window.TB||{esc:s=>String(s??''),fmtRel:s=>s,safe:async(f,fb)=>{try{return await f()}catch(e){return fb}},toast:m=>alert(m)};
