@@ -56,6 +56,10 @@
     try{
       const body=cfg.mandato?{mandato_id:cfg.mandato,ferramenta:cfg.chave||'mattering',persistir:true}:{ferramenta:'consolidado',persistir:false};
       const {data,error}=await sb().functions.invoke('ip-agent-claude',{body});
+      // Cancel UI-only: se o usuario trocou de contexto (myGen!=_diagGen) nao
+      // renderizamos o resultado obsoleto. A EF ja rodou no servidor; quando ha
+      // mandato os passos sao persistidos em ip_plano_acoes do PROPRIO mandato
+      // que disparou (dado valido, nao contaminado) e reaparecem ao reabrir.
       if(myGen!==_diagGen)return;
       if(error)throw await _efErro(error);
       if(data&&data.erro)throw new Error(data.erro);
@@ -123,6 +127,7 @@
   async function _gerarRegras(btn){
     const host=btn.closest('[data-fc-host]'); if(!host)return; const cfg=host._fc;
     if(!cfg.mandato){T.toast('Selecione um trabalho');return}
+    const myGen=++_diagGen;
     btn.disabled=true; const old=btn.textContent; btn.textContent='Gerando...';
     try{
       const {data,error}=await sb().rpc('fn_ip_plano_gerar',{p_mandato_id:cfg.mandato});

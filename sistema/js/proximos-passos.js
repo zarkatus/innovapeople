@@ -77,7 +77,7 @@
       (s.sugestao?'<div class="pp-sugestao">'+esc(s.sugestao)+'</div>':'')+
       insight+
       '<div class="pp-actions">'+
-      '<a class="pp-btn ghost" href="'+esc(al.href)+'?sinal='+esc(s.id)+(s.mandato_id?'&mandato='+esc(s.mandato_id):'')+'">Resolver em '+esc(al.nm)+' &rarr;</a>'+
+      '<a class="pp-btn ghost" href="'+esc(al.href)+'?sinal='+encodeURIComponent(String(s.id||''))+(s.mandato_id?'&mandato='+encodeURIComponent(String(s.mandato_id)):'')+'">Resolver em '+esc(al.nm)+' &rarr;</a>'+
       '<button class="pp-btn ghost ok" onclick="IpProximosPassos._jaTratei(this,\''+esc(s.id)+'\')">&#10003; Ja tratei</button>'+
       '</div></div>';
   }
