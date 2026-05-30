@@ -13,6 +13,7 @@
   const esc=T.esc;
   const fmtRel=T.fmtRel||(s=>s);
   let _active=null;
+  let _diagGen=0;
   async function _efErro(error){let m=(error&&error.message)||String(error);try{const b=(error&&error.context&&error.context.json)?await error.context.json():null;if(b&&b.erro)m=b.erro;}catch(_){}return new Error(m);}
 
   function ireuTotal(a){ return a.ireu_score || ((a.impacto||0)*(a.relevancia||0)*(a.efeito_borboleta||0)*(a.urgencia||0)); }
@@ -50,10 +51,12 @@
 
   async function _diagnosticarIA(btn){
     const host=btn.closest('[data-fc-host]'); if(!host)return; const cfg=host._fc;
+    const myGen=++_diagGen;
     btn.disabled=true; const old=btn.textContent; btn.innerHTML='<span class="fc-spin"></span>Analisando&hellip;';
     try{
       const body=cfg.mandato?{mandato_id:cfg.mandato,ferramenta:cfg.chave||'mattering',persistir:true}:{ferramenta:'consolidado',persistir:false};
       const {data,error}=await sb().functions.invoke('ip-agent-claude',{body});
+      if(myGen!==_diagGen)return;
       if(error)throw await _efErro(error);
       if(data&&data.erro)throw new Error(data.erro);
       renderIAResult(host,data||{});

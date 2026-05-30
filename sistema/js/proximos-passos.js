@@ -77,7 +77,7 @@
       (s.sugestao?'<div class="pp-sugestao">'+esc(s.sugestao)+'</div>':'')+
       insight+
       '<div class="pp-actions">'+
-      '<a class="pp-btn ghost" href="'+esc(al.href)+'">Resolver em '+esc(al.nm)+' &rarr;</a>'+
+      '<a class="pp-btn ghost" href="'+esc(al.href)+'?sinal='+esc(s.id)+(s.mandato_id?'&mandato='+esc(s.mandato_id):'')+'">Resolver em '+esc(al.nm)+' &rarr;</a>'+
       '<button class="pp-btn ghost ok" onclick="IpProximosPassos._jaTratei(this,\''+esc(s.id)+'\')">&#10003; Ja tratei</button>'+
       '</div></div>';
   }
@@ -106,6 +106,14 @@
       if(error)throw error; if(data&&data.erro)throw new Error(data.erro);
       const txt=document.getElementById('pp-diag-txt');
       if(txt)txt.innerHTML=esc(data.sintese||data.diagnostico||'(sem leitura)');
+      const _ps=Array.isArray(data.proximos_passos)?data.proximos_passos:[];
+      const _parent=txt&&txt.parentElement;
+      if(_parent){const _old=_parent.querySelector('.pp-macro-list'); if(_old)_old.remove();}
+      if(_ps.length&&_parent){
+        const _list=document.createElement('div'); _list.className='pp-macro-list';
+        _list.innerHTML='<div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep,#9a7b3a);font-weight:700;margin:10px 0 6px">Comece por:</div>'+_ps.slice(0,4).map(_p=>{const _i=Math.max(1,Math.min(5,_p.impacto||3)),_r=Math.max(1,Math.min(5,_p.relevancia||3)),_e=Math.max(1,Math.min(5,_p.efeito_borboleta||3)),_u=Math.max(1,Math.min(5,_p.urgencia||3));return '<div style="display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--rule)"><span style="font-family:var(--serif);font-style:italic;font-size:17px;color:var(--gold);min-width:34px">'+(_i*_r*_e*_u)+'</span><div><strong style="font-size:13px;color:var(--cream)">'+esc(_p.titulo||'(passo)')+'</strong>'+(_p.porque?'<div style="font-size:11.5px;color:var(--cream-dim);line-height:1.4;margin-top:2px">'+esc(_p.porque)+'</div>':'')+'</div></div>';}).join('');
+        _parent.appendChild(_list);
+      }
       T.toast('Diagnostico cruzado atualizado');
     }catch(e){T.toast('Erro IA: '+(e.message||e))}
     finally{btn.disabled=false;btn.innerHTML=old}
