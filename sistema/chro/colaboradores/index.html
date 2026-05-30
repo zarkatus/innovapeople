@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pessoas · BPO de Gente · InnovaPeople</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/sistema/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/sistema/toolbox/_shared/toolbox.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script>
+(function ipAuthGate(){
+  const SUPA_URL='https://auth.innovasphere.ia.br';
+  const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br','rapheice@schifino.com.br'];
+  function inj(){if(document.getElementById('ip-auth-ovl'))return;const o=document.createElement('div');o.id='ip-auth-ovl';o.style.cssText='position:fixed;inset:0;background:#0C0816;color:#C4A35A;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647';o.innerHTML='<div>Validando acesso&hellip;</div>';(document.body||document.documentElement).appendChild(o)}
+  function rm(){const o=document.getElementById('ip-auth-ovl');if(o)o.remove()}
+  function allow(email){rm();window.__IP_USER_EMAIL=email;const el=document.getElementById('uname');if(el&&email)el.textContent=email;if(typeof window.flBoot==='function')try{window.flBoot()}catch(e){console.warn(e)}else setTimeout(()=>{if(typeof window.flBoot==='function')try{window.flBoot()}catch(e){}},300)}
+  if(document.body)inj();else document.addEventListener('DOMContentLoaded',inj,{once:true});
+  const s=setTimeout(()=>allow(''),6000);
+  (async()=>{try{
+    try{var _k=Object.keys(localStorage).find(k=>k.startsWith('sb-')&&k.includes('auth-token'));if(_k){var _raw=JSON.parse(localStorage.getItem(_k)||'null');var _ls=_raw&&(_raw.currentSession||_raw.session||_raw);var _em=_ls&&_ls.user&&(_ls.user.email||(_ls.user.user_metadata&&_ls.user.user_metadata.email));var _exp=_ls&&_ls.expires_at?(_ls.expires_at*1000):0;if(_ls&&_ls.access_token&&_em&&(!_exp||_exp>Date.now())&&ALLOWED.includes(_em)){clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){allow(_em)},{once:true});else allow(_em);try{window.__IP_SB=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true}});}catch(_){}return;}}}catch(_){}
+    if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=colaboradores');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
+})();
+</script>
+<script src="/sistema/toolbox/_shared/toolbox.js"></script>
+<link rel="stylesheet" href="/sistema/_shared/sidebar.css">
+<script src="/sistema/_shared/sidebar.js" defer></script>
+<script src="/sistema/js/persist.js" defer></script>
+<script src="/sistema/js/pessoas.js" defer></script>
+</head>
+<body>
+<nav class="top">
+  <div class="row">
+    <a class="brand" href="/sistema/"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="14"/><path d="M16 6 v20 M6 16 h20"/></svg><div><span class="wm">innova · people</span><span class="sub">CHRO</span></div></a>
+    <div class="nav">
+      <a href="/sistema/">Dashboard</a>
+      <a href="/sistema/toolbox/">ToolBox</a>
+      <a href="/sistema/chro/" class="active">CHRO</a>
+      <a href="/sistema/agentes.html">Agentes IA</a>
+      <a href="/sistema/whatsapp/">WhatsApp</a>
+    </div>
+    <div class="user">olá, <strong id="uname">—</strong></div>
+  </div>
+</nav>
+<nav class="subnav">
+  <div class="wrap">
+    <a href="/sistema/chro/">Centro de Comando</a>
+    <a href="/sistema/chro/painel-mensal/">Painel Mensal</a>
+    <a href="/sistema/chro/organograma/">Organograma</a>
+    <a href="/sistema/chro/folha/">Clientes</a>
+    <a href="/sistema/chro/colaboradores/" class="active">Pessoas</a>
+  </div>
+</nav>
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">CHRO · BPO de Gente · Ciclo de vida do colaborador</div>
+    <h1><em>Pessoas</em> · BPO de Gente</h1>
+    <div class="tagline">Entidade canônica unificada (obra ↔ gente). A admissão nasce na obra (InnovaSphere) e propaga para cá em tempo real; aqui você admite, altera e desliga — tudo auditado, sem duplicar.</div>
+  </div>
+</section>
+<div class="hub">
+  <div class="panel s12 hero-card">
+    <div class="p-b" style="padding:0"><div id="ip-app"><div style="text-align:center;padding:40px;color:var(--ink3);font-style:italic">Carregando colaboradores&hellip;</div></div></div>
+  </div>
+</div>
+<div class="foot">CHRO · <strong>Pessoas</strong> · core_colaborador · propagação IS → IP em tempo real · intra-banco</div>
+<div id="toast"></div>
+<script>
+window.flBoot=function(){
+  const el=document.getElementById('uname'); if(el&&window.__IP_USER_EMAIL)el.textContent=window.__IP_USER_EMAIL;
+  const h=document.getElementById('ip-app');
+  let tries=0; const mount=()=>{ if(window.IpPessoas&&window.IpPessoas.mount&&h)return window.IpPessoas.mount(h); if(++tries>40){h.innerHTML='<div style="text-align:center;padding:30px;color:var(--ink3);font-style:italic">Não foi possível carregar. <a href="" style="color:var(--gold)">Recarregar</a></div>';return;} setTimeout(mount,150); };
+  mount();
+};
+</script>
+</body>
+</html>
