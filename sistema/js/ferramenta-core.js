@@ -8,6 +8,7 @@
 (function(){
   'use strict';
   if(window.IpFerramenta) return;
+  if(!window.IpPersist){window.IpPersist={write:async function(fn,o){o=o||{};try{var r=await fn();if(r&&!r.error){if(o.toast!==false&&window.TB)TB.toast((o.label||'registro')+' salvo');return{ok:true,data:r.data,error:null,queued:false};}return{ok:false,error:r?r.error:{message:'sem resposta'},queued:false};}catch(e){return{ok:false,error:e,queued:false};}},drain:function(){},pendingCount:function(){return 0;},_enqueue:function(){return false;}};}
   const sb=()=>window.__IP_SB||window.sb;
   const T=window.TB||{esc:s=>String(s==null?'':s),fmtRel:s=>s,safe:async(f,fb)=>{try{return await f()}catch(e){return fb}},toast:m=>alert(m)};
   const esc=T.esc;
@@ -116,12 +117,10 @@
 
   async function _concluir(id,btn){
     btn.disabled=true;
-    try{
-      const {error}=await sb().from('ip_plano_acoes').update({status:'concluida',concluida_em:new Date().toISOString()}).eq('id',id);
-      if(error)throw error;
-      const card=btn.closest('.fc-passo'); if(card){card.classList.add('done');setTimeout(()=>card.remove(),420);}
-      T.toast('Passo concluido');
-    }catch(e){btn.disabled=false;T.toast('Erro: '+(e.message||e))}
+    const _patch={status:'concluida',concluida_em:new Date().toISOString()};
+    const r=await IpPersist.write(()=>sb().from('ip_plano_acoes').update(_patch).eq('id',id).select(),{label:'Passo concluido',offline:{table:'ip_plano_acoes',op:'update',payload:_patch,match:[['id',id]]}});
+    if(r.ok||r.queued){ const card=btn.closest('.fc-passo'); if(card){card.classList.add('done');setTimeout(()=>card.remove(),420);} }
+    else { btn.disabled=false; }
   }
 
   async function _gerarRegras(btn){
