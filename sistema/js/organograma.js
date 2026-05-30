@@ -163,7 +163,7 @@
       '<label>Email<input id="og-f-email" type="email" value="'+v('email')+'"></label>'+
       '<label>Observacoes<textarea id="og-f-obs">'+v('observacoes')+'</textarea></label>'+
       '</div><div class="og-mact">'+(id?'<button class="og-btn ghost danger" onclick="IpOrganograma._excluir()">Excluir</button>':'')+'<button class="og-btn ghost" onclick="IpOrganograma._fechar()">Cancelar</button><button class="og-btn" onclick="IpOrganograma._salvar()">Salvar</button></div></div>';
-    document.getElementById('og-modal-root')?.remove();
+    const _old=document.getElementById('og-modal-root'); if(_old){if(_old._escH)document.removeEventListener('keydown',_old._escH); _old.remove();}
     const m=document.createElement('div'); m.id='og-modal-root'; m.innerHTML=html; document.body.appendChild(m);
     const modal=m.querySelector('.og-modal'); if(modal){modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','og-modal-h');}
     const escH=(e)=>{if(e.key==='Escape')_fechar();};
