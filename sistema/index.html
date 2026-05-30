@@ -551,10 +551,10 @@ async function ipLoginPasskey(){
     // 1. Pede options (assertion challenge)
     const r1=await fetch(SUPA_URL+'/functions/v1/webauthn-options',{
       method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Content-Type':'application/json'},
-      body:JSON.stringify({action:'login',email})
+      body:JSON.stringify({action:'login-options',email})
     });
     if(!r1.ok){_ipShowErr('Passkey não disponível para este e-mail');return}
-    const{publicKey}=await r1.json();
+    const{options:publicKey}=await r1.json();
     if(!publicKey){_ipShowErr('Sem credencial registrada');return}
     // 2. Converte challenge base64url → ArrayBuffer
     const b64ToBuf=(s)=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/').padEnd(s.length+(4-s.length%4)%4,'=')),c=>c.charCodeAt(0)).buffer;
@@ -565,7 +565,7 @@ async function ipLoginPasskey(){
     const bufToB64=(b)=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
     const r2=await fetch(SUPA_URL+'/functions/v1/webauthn-verify',{
       method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Content-Type':'application/json'},
-      body:JSON.stringify({action:'login',email,credential:{
+      body:JSON.stringify({action:'login-verify',email,credential:{
         id:cred.id,rawId:bufToB64(cred.rawId),type:cred.type,
         response:{
           clientDataJSON:bufToB64(cred.response.clientDataJSON),
@@ -650,8 +650,9 @@ async function ipVerificarOtp(){
         body:JSON.stringify({action:'verify',phone:_ipOtpCtx.phone,email:_ipOtpCtx.email,code})
       });
       const j=await r.json();
-      if(!r.ok||!j.magic_link){_ipShowErr('Código inválido');return}
-      location.href=j.magic_link;
+      const _ml=j.magic_link||j.data?.magic_link;
+      if(!r.ok||!_ml){_ipShowErr('Código inválido');return}
+      location.href=_ml;
     }else{
       const{error}=await sb.auth.verifyOtp({email:_ipOtpCtx.email,token:code,type:'email'});
       if(error){_ipShowErr('Código inválido');return}
@@ -718,10 +719,10 @@ async function ipOfertaPasskey(){
     const{data:{session}}=await sb.auth.getSession();
     const r1=await fetch(SUPA_URL+'/functions/v1/webauthn-options',{
       method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+(session?.access_token||SUPA_ANON),'Content-Type':'application/json'},
-      body:JSON.stringify({action:'register',email})
+      body:JSON.stringify({action:'register-options',email})
     });
     if(!r1.ok){alert('Não foi possível registrar Passkey: '+(await r1.text()).slice(0,100));return}
-    const{publicKey}=await r1.json();
+    const{options:publicKey}=await r1.json();
     const b64ToBuf=(s)=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/').padEnd(s.length+(4-s.length%4)%4,'=')),c=>c.charCodeAt(0)).buffer;
     publicKey.challenge=b64ToBuf(publicKey.challenge);
     if(publicKey.user?.id)publicKey.user.id=b64ToBuf(publicKey.user.id);
@@ -730,7 +731,7 @@ async function ipOfertaPasskey(){
     const bufToB64=(b)=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
     const r2=await fetch(SUPA_URL+'/functions/v1/webauthn-verify',{
       method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+(session?.access_token||SUPA_ANON),'Content-Type':'application/json'},
-      body:JSON.stringify({action:'register',email,credential:{
+      body:JSON.stringify({action:'register-verify',email,credential:{
         id:cred.id,rawId:bufToB64(cred.rawId),type:cred.type,
         response:{
           clientDataJSON:bufToB64(cred.response.clientDataJSON),
@@ -826,12 +827,16 @@ function showDashboard(user) {
 }
 
 async function loadDashboard() {
-  // Stats agregadas
-  const [{ data: mandatos, error: err1 }, { data: raioX, error: err2 }, { data: sugestoes }] = await Promise.all([
-    sb.from('v_ip_mandatos_overview').select('*').eq('status', 'ativo'),
-    sb.from('ip_raio_x_submissions').select('id,empresa,nome,setor,sintomas_score,urgencia,created_at,status').order('created_at', { ascending: false }).limit(120),
-    sb.from('ip_agent_sugestoes').select('id', { count: 'exact', head: true }).eq('status', 'pendente')
+  const safe = async (fn, fb) => { try { const r = await fn(); return r; } catch(e){ console.warn('loadDashboard query falhou', e); return fb; } };
+  // Stats agregadas — cada query isolada: uma falha nao derruba o boot inteiro
+  const [res1, res2, res3] = await Promise.all([
+    safe(() => sb.from('v_ip_mandatos_overview').select('*').eq('status', 'ativo'), { data: [], error: null }),
+    safe(() => sb.from('ip_raio_x_submissions').select('id,empresa,nome,setor,sintomas_score,urgencia,created_at,status').order('created_at', { ascending: false }).limit(120), { data: [], error: null }),
+    safe(() => sb.from('ip_agent_sugestoes').select('id', { count: 'exact', head: true }).eq('status', 'pendente'), { count: 0, error: null })
   ]);
+  const mandatos = res1.data, err1 = res1.error;
+  const raioX = res2.data, err2 = res2.error;
+  const sugCount = res3.count || 0;
 
   if (err1) { console.warn('mandatos err', err1); }
   if (err2) { console.warn('raio-x err', err2); }
@@ -842,7 +847,7 @@ async function loadDashboard() {
 
   document.getElementById('kpi-mandatos').textContent = mandatosAtivos;
   document.getElementById('kpi-raio-x').textContent = raioXPendentes;
-  document.getElementById('kpi-sugestoes').textContent = '0';
+  document.getElementById('kpi-sugestoes').textContent = sugCount;
   document.getElementById('kpi-score').innerHTML = (isNaN(scoreMedio) || scoreMedio === 0 ? '—' : Math.round(scoreMedio)) + '<span class="unit">/100</span>';
 
   renderMandatos(mandatos || []);
