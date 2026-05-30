@@ -29,7 +29,7 @@
   const AVISO=[['trabalhado','Trabalhado'],['indenizado','Indenizado'],['dispensado','Dispensado']];
 
   let _rows=[], _filtro={ q:'', status:'todos' }, _el=null, _chans=[], _tab='resumo';
-  let _sub={ afast:[], aso:[], desl:null }; // satelites do colaborador aberto
+  let _sub={ afast:[], aso:[], desl:null, okr:[], checkin:[] }; // satelites do colaborador aberto
   let _aal='aal1';
 
   // ---------- AAL / MFA best-effort (P12) ----------
@@ -58,13 +58,16 @@
     _rows = r.data||[];
   }
   async function loadSatelites(colabId){
-    const sb=SB(); _sub={ afast:[], aso:[], desl:null };
-    const [a,s,d]=await Promise.all([
+    const sb=SB(); _sub={ afast:[], aso:[], desl:null, okr:[], checkin:[] };
+    const [a,s,d,o,ck]=await Promise.all([
       sb.from('core_afastamento').select('*').eq('colaborador_id',colabId).order('data_inicio',{ascending:false}),
       sb.from('core_aso').select('*').eq('colaborador_id',colabId).order('data_exame',{ascending:false}),
-      sb.from('core_desligamento').select('*').eq('colaborador_id',colabId).order('created_at',{ascending:false}).limit(1)
+      sb.from('core_desligamento').select('*').eq('colaborador_id',colabId).order('created_at',{ascending:false}).limit(1),
+      sb.from('core_okr').select('*').eq('colaborador_id',colabId).order('ciclo',{ascending:false}),
+      sb.from('core_checkin').select('*').eq('colaborador_id',colabId).order('data',{ascending:false}).limit(8)
     ]);
     _sub.afast=(a&&a.data)||[]; _sub.aso=(s&&s.data)||[]; _sub.desl=(d&&d.data&&d.data[0])||null;
+    _sub.okr=(o&&o.data)||[]; _sub.checkin=(ck&&ck.data)||[];
   }
   function filtrados(){
     const q=(_filtro.q||'').toLowerCase().trim();
@@ -126,6 +129,7 @@
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px">
         <h1 style="font:700 italic 27px Georgia;color:#E5C77E;margin:0;flex:1">Pessoas · BPO de Gente</h1>
         ${aalBadge()}
+        ${btn('px-eng','◷ Engajamento','ghost')}
         ${btn('px-aloc','▦ Alocação','ghost')}
         ${btn('px-exp','⤓ Handoff contábil','ghost')}
         ${btn('px-sync','↻ Sincronizar obra','ghost')}
@@ -153,6 +157,7 @@
     el.querySelector('#px-novo').onclick=()=>openForm();
     el.querySelector('#px-sync').onclick=syncObra;
     el.querySelector('#px-aloc').onclick=openAlocacao;
+    el.querySelector('#px-eng').onclick=openEngajamento;
     el.querySelector('#px-exp').onclick=openExport;
     const q=el.querySelector('#px-q');
     q.oninput=()=>{ _filtro.q=q.value; const lst=el.querySelector('#px-list'); const f=filtrados(); lst.innerHTML=f.length?f.map(cardRow).join(''):`<div style="padding:48px;text-align:center;color:#6B7A90">Nenhum colaborador para o filtro atual.</div>`; bindRows(el); };
@@ -231,10 +236,11 @@
     if(_tab==='resumo') body=tabResumo(r,desligado);
     else if(_tab==='afast') body=tabAfast(r,desligado);
     else if(_tab==='sst') body=tabSst(r,desligado);
+    else if(_tab==='okr') body=tabOkr(r,desligado);
     else if(_tab==='desl') body=tabDesl(r,desligado);
     drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><h2 style="font:700 italic 22px Georgia;color:#E5C77E;margin:0;flex:1">${esc(r.nome)}</h2>${btn('px-x','✕','ghost')}</div>
       <div style="margin-bottom:14px">${badge(r.status)} <span style="color:#6B7A90;font-size:12px;margin-left:6px">${r.origem==='innovasphere'?'origem: obra (InnovaSphere)':'origem: InnovaPeople'}</span></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">${tabBtn('resumo','Resumo')}${tabBtn('afast','Afastamentos'+(_sub.afast.length?' ('+_sub.afast.length+')':''))}${tabBtn('sst','SST'+(_sub.aso.length?' ('+_sub.aso.length+')':''))}${tabBtn('desl','Desligamento')}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">${tabBtn('resumo','Resumo')}${tabBtn('afast','Afastamentos'+(_sub.afast.length?' ('+_sub.afast.length+')':''))}${tabBtn('sst','SST'+(_sub.aso.length?' ('+_sub.aso.length+')':''))}${tabBtn('okr','OKR & Check-in'+(_sub.okr.length?' ('+_sub.okr.length+')':''))}${tabBtn('desl','Desligamento')}</div>
       <div id="px-tabbody">${body}</div>`);
     const d=document.getElementById('px-drawer');
     d.querySelector('#px-x').onclick=close;
@@ -302,6 +308,36 @@
       ${field('Anexo (caminho/URL do ASO digitalizado)','as-anx','','text')}
       <div style="margin-top:6px">${btn('as-add','Registrar ASO','primary')}</div></div>`}`;
   }
+  function tabOkr(r,desligado){
+    const okrs=_sub.okr.map(o=>{
+      const krs=Array.isArray(o.key_results)?o.key_results:[];
+      return `<div style="background:#0C1626;border:1px solid rgba(210,174,100,.14);border-radius:11px;padding:13px 15px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font:600 10.5px/1 system-ui;color:#8FA0B5">${esc(o.ciclo)}</span>${o.status!=='ativo'?tag(o.status,o.status==='concluido'?'#7BD3A0':'#9FB0C5'):''}</div>
+        <div style="color:#F7F3EC;font-weight:600;font-size:14px">${esc(o.objetivo)}</div>
+        ${krs.length?`<ul style="margin:8px 0 0;padding-left:16px;color:#9FB0C5;font-size:12.5px;line-height:1.6">${krs.map(k=>`<li>${esc(k.kr||k.descricao||'')}${k.atual!=null||k.meta!=null?` <span style="color:#6B7A90">(${esc(k.atual??'—')}/${esc(k.meta??'—')}${k.unidade?' '+esc(k.unidade):''})</span>`:''}</li>`).join('')}</ul>`:''}
+        <div style="height:7px;border-radius:5px;background:#070D15;margin:9px 0 4px;overflow:hidden"><div style="width:${Math.max(0,Math.min(100,Number(o.progresso)||0))}%;height:100%;background:linear-gradient(90deg,#D2AE64,#E5C77E)"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="color:#8FA0B5;font-size:11.5px">${Number(o.progresso)||0}% concluído</span>${desligado?'':`<button data-okr-prog="${o.id}" style="font:600 11px/1 system-ui;padding:5px 10px;border-radius:8px;cursor:pointer;border:1px solid rgba(210,174,100,.35);background:transparent;color:#E5C77E">Atualizar progresso</button>`}</div>
+      </div>`;
+    }).join('')||'<div style="color:#6B7A90;font-size:13px;padding:8px 0">Sem OKR neste colaborador.</div>';
+    const checks=_sub.checkin.map(c=>`<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(210,174,100,.08)">
+        <span style="font-size:16px">${['','😟','😕','😐','🙂','😄'][c.humor||0]||'·'}</span>
+        <div style="flex:1"><div style="color:#9FB0C5;font-size:11px">${dt(c.data)}</div>${c.progresso_nota?`<div style="color:#CBD5E1;font-size:12.5px">${esc(c.progresso_nota)}</div>`:''}${c.bloqueios?`<div style="color:#E8A6A6;font-size:12px">⚠ ${esc(c.bloqueios)}</div>`:''}</div>
+      </div>`).join('')||'<div style="color:#6B7A90;font-size:12.5px;padding:6px 0">Sem check-ins.</div>';
+    return `<div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8FA0B5;margin-bottom:10px">Objetivos & Resultados-chave</div>
+      ${okrs}
+      ${desligado?'':`<div style="border-top:1px solid rgba(210,174,100,.15);margin-top:12px;padding-top:14px">
+        ${field('Ciclo','ok-ciclo','2026-T2','text','ex.: 2026-T2')}
+        ${field('Objetivo','ok-obj','','text','O que se quer alcançar')}
+        ${field('Key results (1 por linha: descrição | meta | unidade)','ok-krs','','text','Ex.: Reduzir retrabalho | 10 | %')}
+        <div style="margin-top:4px">${btn('ok-add','Criar OKR','primary')}</div></div>`}
+      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8FA0B5;margin:20px 0 10px">Check-ins recentes</div>
+      ${checks}
+      ${desligado?'':`<div style="border-top:1px solid rgba(210,174,100,.15);margin-top:12px;padding-top:14px">
+        ${selectField('Humor','ck-humor','3',[['5','😄 Ótimo'],['4','🙂 Bem'],['3','😐 Neutro'],['2','😕 Difícil'],['1','😟 Ruim']])}
+        ${field('Progresso (o que andou)','ck-prog','','text')}
+        ${field('Bloqueios','ck-bloq','','text')}
+        <div style="margin-top:4px">${btn('ck-add','Registrar check-in','ghost')}</div></div>`}`;
+  }
   function tabDesl(r,desligado){
     if(_sub.desl){ const d=_sub.desl;
       return `<div style="background:#0C1626;border:1px solid rgba(210,174,100,.16);border-radius:12px;padding:14px 16px;font-size:13.5px;line-height:1.9;color:#CBD5E1">
@@ -331,7 +367,53 @@
       _sub.afast.filter(a=>a.status==='ativo').forEach(a=>{ const b=d.querySelector('#af-end-'+a.id); if(b) b.onclick=()=>encerrarAfast(r,a); });
     }
     if(_tab==='sst' && !desligado){ const add=d.querySelector('#as-add'); if(add) add.onclick=()=>addAso(r); }
+    if(_tab==='okr' && !desligado){
+      const ao=d.querySelector('#ok-add'); if(ao) ao.onclick=()=>addOkr(r);
+      const ck=d.querySelector('#ck-add'); if(ck) ck.onclick=()=>addCheckin(r);
+      _sub.okr.forEach(o=>{ const b=d.querySelector('[data-okr-prog="'+o.id+'"]'); if(b) b.onclick=()=>atualizarProgresso(r,o); });
+    }
     if(_tab==='desl' && !desligado && !_sub.desl){ const go=d.querySelector('#dl-go'); if(go) go.onclick=()=>desligar(r); }
+  }
+  // ---------- acoes: OKR / check-in (P11) ----------
+  function parseKrs(txt){
+    return (txt||'').split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{
+      const p=l.split('|').map(x=>x.trim());
+      return { kr:p[0]||l, meta:p[1]!=null&&p[1]!==''?(isNaN(Number(p[1]))?p[1]:Number(p[1])):null, unidade:p[2]||null, atual:null };
+    });
+  }
+  async function addOkr(r){
+    const g=id=>document.getElementById(id);
+    const obj=(g('ok-obj').value||'').trim(); const ciclo=(g('ok-ciclo').value||'').trim();
+    if(!obj){ T.toast('Informe o objetivo.'); return; }
+    if(!ciclo){ T.toast('Informe o ciclo.'); return; }
+    const payload={ colaborador_id:r.id, ciclo, objetivo:obj, key_results:parseKrs(g('ok-krs').value), progresso:0, status:'ativo', criado_por:me() };
+    const b=g('ok-add'); b.disabled=true; b.textContent='Salvando…';
+    const res=await window.IpPersist.write(
+      ()=> SB().from('core_okr').insert(payload).select(),
+      { label:'OKR', offline:{ op:'insert', table:'core_okr', payload } });
+    if(!res.ok){ b.disabled=false; b.textContent='Criar OKR'; return; }
+    await loadSatelites(r.id); paintDetail(_rows.find(x=>x.id===r.id)||r);
+  }
+  async function atualizarProgresso(r,o){
+    const atual=prompt('Progresso de "'+o.objetivo+'" (0–100):', String(o.progresso||0));
+    if(atual==null) return; const n=Math.max(0,Math.min(100,Number(atual)||0));
+    const patch={ progresso:n, status: n>=100?'concluido':'ativo' };
+    const res=await window.IpPersist.write(
+      ()=> SB().from('core_okr').update(patch).eq('id',o.id).select(),
+      { label:'Progresso OKR', offline:{ op:'update', table:'core_okr', payload:patch, match:[['id',o.id]] } });
+    if(res.ok){ await loadSatelites(r.id); paintDetail(_rows.find(x=>x.id===r.id)||r); }
+  }
+  async function addCheckin(r){
+    const g=id=>document.getElementById(id);
+    const payload={ colaborador_id:r.id, humor:Number(g('ck-humor').value)||3,
+      progresso_nota:(g('ck-prog').value||'').trim()||null, bloqueios:(g('ck-bloq').value||'').trim()||null,
+      okr_id:(_sub.okr[0]&&_sub.okr[0].id)||null, criado_por:me() };
+    const b=g('ck-add'); b.disabled=true; b.textContent='Salvando…';
+    const res=await window.IpPersist.write(
+      ()=> SB().from('core_checkin').insert(payload).select(),
+      { label:'Check-in', offline:{ op:'insert', table:'core_checkin', payload } });
+    if(!res.ok){ b.disabled=false; b.textContent='Registrar check-in'; return; }
+    await loadSatelites(r.id); paintDetail(_rows.find(x=>x.id===r.id)||r);
   }
 
   // ---------- acoes: colaborador ----------
@@ -428,6 +510,32 @@
           <div style="width:${x.ativos/max*100}%;background:#2E8B57"></div><div style="width:${x.afastados/max*100}%;background:#D2AE64"></div><div style="width:${x.desligados/max*100}%;background:#8B4A4A"></div></div>
         <div style="color:#8FA0B5;font-size:11.5px">${x.ativos} ativos · ${x.afastados} afastados · ${x.desligados} desligados</div>
       </div>`).join(''):'<div style="color:#6B7A90;padding:20px 0">Sem dados de alocação.</div>'}`);
+    document.getElementById('px-drawer').querySelector('#px-x').onclick=close;
+  }
+
+  // ---------- P10 · painel de engajamento (clima anonimo por equipe + benchmark N>=5) ----------
+  async function openEngajamento(){
+    const sb=SB();
+    const [cl,bm]=await Promise.all([
+      sb.from('v_core_clima_pulso').select('*').order('respostas',{ascending:false}),
+      sb.rpc('fn_core_benchmark_engajamento')
+    ]);
+    const clima=(cl&&cl.data)||[];
+    const bench=(bm&&bm.data)||null;
+    const dimRow=(d)=>{ const pct=Math.max(0,Math.min(100,(Number(d.media)||0)/5*100));
+      return `<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:12.5px;color:#CBD5E1"><span>${esc(d.dimensao)}</span><span style="color:#E5C77E">${d.media} <span style="color:#6B7A90">(n=${d.n})</span></span></div>
+        <div style="height:6px;border-radius:4px;background:#070D15;margin-top:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:linear-gradient(90deg,#D2AE64,#E5C77E)"></div></div></div>`; };
+    const benchHtml = bench && bench.dimensoes ? (bench.dimensoes.length ? bench.dimensoes.map(dimRow).join('') : '<div style="color:#6B7A90;font-size:12.5px">Sem dimensões com amostra suficiente.</div>') : '<div style="color:#6B7A90;font-size:12.5px">Indisponível.</div>';
+    drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><h2 style="font:700 italic 22px Georgia;color:#E5C77E;margin:0;flex:1">Engajamento</h2>${btn('px-x','✕','ghost')}</div>
+      <div style="background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.18);border-radius:10px;padding:10px 12px;color:#C9B98F;font-size:12px;margin-bottom:18px">O Pulso é <strong>anônimo por desenho</strong>. Aqui você vê o clima agregado — grupos com menos de 5 respostas são suprimidos (LGPD); nunca o indivíduo.</div>
+      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8FA0B5;margin-bottom:12px">Benchmark por dimensão (6D · anônimo)</div>
+      ${benchHtml}
+      ${bench&&bench.suprimidas?`<div style="color:#6B7A90;font-size:11px;margin-top:6px">${bench.suprimidas} dimensão(ões) suprimida(s) por amostra &lt; 5.</div>`:''}
+      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8FA0B5;margin:22px 0 12px">Clima por equipe</div>
+      ${clima.length?clima.map(c=>`<div style="background:#0C1626;border:1px solid rgba(210,174,100,.14);border-radius:11px;padding:12px 14px;margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><strong style="color:#F7F3EC;font-size:13.5px">${esc(c.equipe)}</strong><span style="color:#8FA0B5;font-size:11.5px">${c.respostas} resposta(s)</span></div>
+        ${c.suprimido_privacidade?'<div style="color:#6B7A90;font-size:12px;margin-top:4px">Score oculto — menos de 5 respostas (privacidade).</div>':`<div style="color:#E5C77E;font:700 italic 17px Georgia;margin-top:4px">${c.score_medio} <span style="color:#6B7A90;font-size:12px;font-style:normal">score médio</span></div>`}
+      </div>`).join(''):'<div style="color:#6B7A90;padding:14px 0">Sem dados de Pulso ainda.</div>'}`);
     document.getElementById('px-drawer').querySelector('#px-x').onclick=close;
   }
 
