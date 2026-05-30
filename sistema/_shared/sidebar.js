@@ -37,6 +37,7 @@
     // CURADORIA · CHRO
     {g:'Curadoria · CHRO', i:'⌘', n:'Centro de Comando', p:'/sistema/chro/',               d:'39 instrumentos · curadoria de talento · sinal vivo · rituais · governança', t:'chro centro comando curadoria talento rh gente cultura'},
     {g:'Curadoria · CHRO', i:'📈', n:'Painel Mensal',     p:'/sistema/chro/painel-mensal/', d:'OLAP tendências · BI · digest semanal', t:'chro painel mensal olap bi tendencias digest analytics'},
+    {g:'Curadoria · CHRO', i:'💸', n:'Folha C&S', p:'/sistema/chro/folha/', d:'Inbox de folhas de pagamento C&S — pipeline InnovaSphere para InnovaPeople', t:'folha pagamento cs c&s engenharia holerite payroll inbox financeiro canteiro competencia'},
     {g:'Curadoria · CHRO', i:'🗂️', n:'Organograma',        p:'/sistema/chro/organograma/',   d:'Estrutura org dinâmica · badges N0-N5 · export PPTX', t:'organograma estrutura hierarquia cadeiras export pptx'},
 
     // TRABALHOS
