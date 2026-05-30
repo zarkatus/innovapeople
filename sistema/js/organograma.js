@@ -16,6 +16,7 @@
   let _s={tab:'tabela',mandato:null,mandatos:[],cadeiras:[],editId:null};
   let _host=null;
   let _gen=0;
+  let _confirmOpen=false;
 
   async function open(host){
     _host=host;
@@ -118,7 +119,6 @@
     const root=_host.querySelector('#og-root'); if(!root)return;
     const oldOrg=root.querySelector('#og-org'); if(oldOrg)oldOrg.remove();
     const oldBl=root.querySelector('#og-bloco'); if(oldBl)oldBl.remove();
-    if(my!==_gen)return;
     if(window.IpFerramenta&&_s.mandato){
       const org=document.createElement('div'); org.id='og-org'; org.setAttribute('data-fc-host','');
       root.appendChild(org);
@@ -138,6 +138,7 @@
       const bloco=document.createElement('div'); bloco.id='og-bloco';
       root.appendChild(bloco);
       await IpProximosPassos.bloco(bloco,['CHRO','Mattering','Skill Map'],{mandato:_s.mandato, limit:5});
+      if(my!==_gen)return;
     }
   }
 
@@ -162,6 +163,7 @@
       '<label>Email<input id="og-f-email" type="email" value="'+v('email')+'"></label>'+
       '<label>Observacoes<textarea id="og-f-obs">'+v('observacoes')+'</textarea></label>'+
       '</div><div class="og-mact">'+(id?'<button class="og-btn ghost danger" onclick="IpOrganograma._excluir()">Excluir</button>':'')+'<button class="og-btn ghost" onclick="IpOrganograma._fechar()">Cancelar</button><button class="og-btn" onclick="IpOrganograma._salvar()">Salvar</button></div></div>';
+    document.getElementById('og-modal-root')?.remove();
     const m=document.createElement('div'); m.id='og-modal-root'; m.innerHTML=html; document.body.appendChild(m);
     const modal=m.querySelector('.og-modal'); if(modal){modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','og-modal-h');}
     const escH=(e)=>{if(e.key==='Escape')_fechar();};
@@ -182,18 +184,21 @@
   }
   async function _excluir(){
     if(!_s.editId)return;
+    if(_confirmOpen)return;
+    _confirmOpen=true;
+    const prevFocus=document.activeElement;
     const parentRoot=document.getElementById('og-modal-root');
     const parentEsc=parentRoot&&parentRoot._escH; if(parentEsc)document.removeEventListener('keydown',parentEsc);
     const ok=await new Promise(res=>{
       const m=document.createElement('div');m.className='og-modal-bg';
       m.innerHTML='<div class="og-modal" role="dialog" aria-modal="true" aria-labelledby="og-confirm-h" style="text-align:center"><div class="og-modal-h" id="og-confirm-h">Confirmar exclusao</div><p style="color:var(--cream);margin:0 0 18px;font-family:var(--serif);font-style:italic">Excluir esta cadeira? Esta acao nao pode ser desfeita.</p><div class="og-mact"><button class="og-btn ghost" id="og-c-no">Cancelar</button><button class="og-btn ghost danger" id="og-c-yes">Excluir</button></div></div>';
       document.body.appendChild(m);
-      const cleanup=()=>{document.removeEventListener('keydown',escH);m.remove();};
-      const escH=(e)=>{if(e.key==='Escape'){cleanup();res(false);}};
+      const cleanup=(r)=>{document.removeEventListener('keydown',escH);m.remove();_confirmOpen=false;if(prevFocus&&typeof prevFocus.focus==='function')try{prevFocus.focus();}catch(_){};res(r);};
+      const escH=(e)=>{if(e.key==='Escape')cleanup(false);};
       document.addEventListener('keydown',escH);
-      m.onclick=(e)=>{if(e.target===m){cleanup();res(false);}};
-      m.querySelector('#og-c-no').onclick=()=>{cleanup();res(false);};
-      m.querySelector('#og-c-yes').onclick=()=>{cleanup();res(true);};
+      m.onclick=(e)=>{if(e.target===m)cleanup(false);};
+      m.querySelector('#og-c-no').onclick=()=>cleanup(false);
+      m.querySelector('#og-c-yes').onclick=()=>cleanup(true);
       setTimeout(()=>{const f=m.querySelector('#og-c-no');if(f)f.focus();},60);
     });
     if(parentEsc&&document.getElementById('og-modal-root'))document.addEventListener('keydown',parentEsc);
