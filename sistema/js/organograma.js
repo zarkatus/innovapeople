@@ -184,7 +184,7 @@
       ? await IpPersist.write(()=>sb().from('ip_organograma_cadeira').update(row).eq('id',_s.editId).select(),{label:'Cadeira',offline:{table:'ip_organograma_cadeira',op:'update',payload:row,match:[['id',_s.editId]]}})
       : await IpPersist.write(()=>sb().from('ip_organograma_cadeira').insert(row).select(),{label:'Cadeira',offline:{table:'ip_organograma_cadeira',op:'insert',payload:row}});
     if(r.ok||r.queued){ _fechar(); await reload(); render(); await _mountExtras(); }
-    finally{const btn=document.querySelector('#og-modal-root .og-mact .og-btn:not(.ghost):not(.danger)');if(btn){btn.disabled=false;btn.textContent='Salvar';}}
+    else { const btn=document.querySelector('#og-modal-root .og-mact .og-btn:not(.ghost):not(.danger)'); if(btn){btn.disabled=false;btn.textContent='Salvar';} }
   }
   async function _excluir(){
     if(!_s.editId)return;
