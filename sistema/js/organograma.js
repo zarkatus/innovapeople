@@ -114,9 +114,11 @@
 
   function _tab(t){_s.tab=t;render();_mountExtras();}
   async function _mountExtras(){
+    const my=++_gen;
     const root=_host.querySelector('#og-root'); if(!root)return;
     const oldOrg=root.querySelector('#og-org'); if(oldOrg)oldOrg.remove();
     const oldBl=root.querySelector('#og-bloco'); if(oldBl)oldBl.remove();
+    if(my!==_gen)return;
     if(window.IpFerramenta&&_s.mandato){
       const org=document.createElement('div'); org.id='og-org'; org.setAttribute('data-fc-host','');
       root.appendChild(org);
@@ -130,6 +132,7 @@
           {nome:'Sala de Guerra', porque:'vacancias e bloqueadas sobem no quadro IREU consolidado'}
         ]
       });
+      if(my!==_gen)return;
     }
     if(window.IpProximosPassos&&_s.mandato){
       const bloco=document.createElement('div'); bloco.id='og-bloco';
@@ -144,7 +147,7 @@
     _s.editId=id; const r=id?_s.cadeiras.find(x=>x.id===id):{};
     const v=k=>esc((r&&r[k])||'');
     const opts=(arr,sel)=>arr.map(o=>'<option '+(o===sel?'selected':'')+'>'+o+'</option>').join('');
-    const html='<div class="og-modal-bg" onclick="IpOrganograma._fechar()"></div><div class="og-modal"><div class="og-modal-h">'+(id?'Editar':'Nova')+' cadeira</div>'+
+    const html='<div class="og-modal-bg" onclick="IpOrganograma._fechar()"></div><div class="og-modal"><div class="og-modal-h" id="og-modal-h">'+(id?'Editar':'Nova')+' cadeira</div>'+
       '<div class="og-mform">'+
       '<label>Codigo<input id="og-f-codigo" value="'+v('codigo')+'"></label>'+
       '<label>Nome<input id="og-f-nome" value="'+v('nome')+'"></label>'+
@@ -170,22 +173,30 @@
     const g=id=>document.getElementById(id)?.value;
     if(!_s.mandato){T.toast('Selecione um trabalho ativo');return;}
     if(!g('og-f-codigo')||!g('og-f-nome')){T.toast('Codigo e Nome sao obrigatorios');return;}
-    const saveBtn=document.querySelector('.og-mact .og-btn:not(.ghost):not(.danger)');
+    const saveBtn=document.querySelector('#og-modal-root .og-mact .og-btn:not(.ghost):not(.danger)');
     if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='Salvando...';}
     const row={mandato_id:_s.mandato,codigo:g('og-f-codigo')||null,nome:g('og-f-nome')||null,cargo:g('og-f-cargo')||null,diretoria:g('og-f-diretoria')||null,subarea:g('og-f-subarea')||null,nivel:g('og-f-nivel')||null,status:g('og-f-status')||null,papel:g('og-f-papel')||null,modelo_contrato:g('og-f-modelo')||null,gestor_nome:g('og-f-gestor')||null,email:g('og-f-email')||null,observacoes:g('og-f-obs')||null};
     try{ let res; if(_s.editId)res=await sb().from('ip_organograma_cadeira').update(row).eq('id',_s.editId); else res=await sb().from('ip_organograma_cadeira').insert(row); if(res.error)throw res.error; T.toast('Cadeira salva'); _fechar(); await reload(); render(); await _mountExtras(); }
     catch(e){T.toast('Erro: '+(e.message||e))}
-    finally{const sb=document.querySelector('.og-mact .og-btn:not(.ghost):not(.danger)');if(sb){sb.disabled=false;sb.textContent='Salvar';}}
+    finally{const btn=document.querySelector('#og-modal-root .og-mact .og-btn:not(.ghost):not(.danger)');if(btn){btn.disabled=false;btn.textContent='Salvar';}}
   }
   async function _excluir(){
     if(!_s.editId)return;
+    const parentRoot=document.getElementById('og-modal-root');
+    const parentEsc=parentRoot&&parentRoot._escH; if(parentEsc)document.removeEventListener('keydown',parentEsc);
     const ok=await new Promise(res=>{
       const m=document.createElement('div');m.className='og-modal-bg';
-      m.innerHTML='<div class="og-modal" role="dialog" aria-modal="true" style="text-align:center"><div class="og-modal-h">Confirmar exclusao</div><p style="color:var(--cream);margin:0 0 18px;font-family:var(--serif);font-style:italic">Excluir esta cadeira? Esta acao nao pode ser desfeita.</p><div class="og-mact"><button class="og-btn ghost" id="og-c-no">Cancelar</button><button class="og-btn ghost danger" id="og-c-yes">Excluir</button></div></div>';
+      m.innerHTML='<div class="og-modal" role="dialog" aria-modal="true" aria-labelledby="og-confirm-h" style="text-align:center"><div class="og-modal-h" id="og-confirm-h">Confirmar exclusao</div><p style="color:var(--cream);margin:0 0 18px;font-family:var(--serif);font-style:italic">Excluir esta cadeira? Esta acao nao pode ser desfeita.</p><div class="og-mact"><button class="og-btn ghost" id="og-c-no">Cancelar</button><button class="og-btn ghost danger" id="og-c-yes">Excluir</button></div></div>';
       document.body.appendChild(m);
-      m.querySelector('#og-c-no').onclick=()=>{m.remove();res(false);};
-      m.querySelector('#og-c-yes').onclick=()=>{m.remove();res(true);};
+      const cleanup=()=>{document.removeEventListener('keydown',escH);m.remove();};
+      const escH=(e)=>{if(e.key==='Escape'){cleanup();res(false);}};
+      document.addEventListener('keydown',escH);
+      m.onclick=(e)=>{if(e.target===m){cleanup();res(false);}};
+      m.querySelector('#og-c-no').onclick=()=>{cleanup();res(false);};
+      m.querySelector('#og-c-yes').onclick=()=>{cleanup();res(true);};
+      setTimeout(()=>{const f=m.querySelector('#og-c-no');if(f)f.focus();},60);
     });
+    if(parentEsc&&document.getElementById('og-modal-root'))document.addEventListener('keydown',parentEsc);
     if(!ok)return;
     try{ const {error}=await sb().from('ip_organograma_cadeira').delete().eq('id',_s.editId); if(error)throw error; T.toast('Cadeira removida'); _fechar(); await reload(); render(); await _mountExtras(); }
     catch(e){T.toast('Erro: '+(e.message||e))}
