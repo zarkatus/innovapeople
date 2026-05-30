@@ -4,6 +4,7 @@
 
 (function(){
   'use strict';
+  (function(){if(!document.querySelector('script[data-ip-persist]')&&!window.IpPersist){var sc=document.createElement('script');sc.src='/sistema/js/persist.js';sc.defer=true;sc.setAttribute('data-ip-persist','1');document.head.appendChild(sc);}})();
 
   // ═══ TEMA (dark default / light) — aplica cedo p/ evitar flash ═══
   try{

@@ -6,6 +6,8 @@
 (function(){
   'use strict';
   if(window.IpOrganograma) return;
+  if(!window.IpPersist){window.IpPersist={write:async function(fn,o){o=o||{};try{var r=await fn();if(r&&!r.error){if(o.toast!==false&&window.TB)TB.toast((o.label||'registro')+' salvo');return{ok:true,data:r.data,error:null,queued:false};}return{ok:false,error:r?r.error:{message:'sem resposta'},queued:false};}catch(e){return{ok:false,error:e,queued:false};}},drain:function(){},pendingCount:function(){return 0;},_enqueue:function(){return false;}};}
+
   const sb=()=>window.__IP_SB||window.sb;
   const T=window.TB||{esc:s=>String(s==null?'':s),safe:async(f,fb)=>{try{return await f()}catch(e){return fb}},toast:m=>alert(m),fmtRel:s=>s};
   const esc=T.esc;
@@ -178,8 +180,10 @@
     const saveBtn=document.querySelector('#og-modal-root .og-mact .og-btn:not(.ghost):not(.danger)');
     if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='Salvando...';}
     const row={mandato_id:_s.mandato,codigo:g('og-f-codigo')||null,nome:g('og-f-nome')||null,cargo:g('og-f-cargo')||null,diretoria:g('og-f-diretoria')||null,subarea:g('og-f-subarea')||null,nivel:g('og-f-nivel')||null,status:g('og-f-status')||null,papel:g('og-f-papel')||null,modelo_contrato:g('og-f-modelo')||null,gestor_nome:g('og-f-gestor')||null,email:g('og-f-email')||null,observacoes:g('og-f-obs')||null};
-    try{ let res; if(_s.editId)res=await sb().from('ip_organograma_cadeira').update(row).eq('id',_s.editId); else res=await sb().from('ip_organograma_cadeira').insert(row); if(res.error)throw res.error; T.toast('Cadeira salva'); _fechar(); await reload(); render(); await _mountExtras(); }
-    catch(e){T.toast('Erro: '+(e.message||e))}
+    const r=_s.editId
+      ? await IpPersist.write(()=>sb().from('ip_organograma_cadeira').update(row).eq('id',_s.editId).select(),{label:'Cadeira',offline:{table:'ip_organograma_cadeira',op:'update',payload:row,match:[['id',_s.editId]]}})
+      : await IpPersist.write(()=>sb().from('ip_organograma_cadeira').insert(row).select(),{label:'Cadeira',offline:{table:'ip_organograma_cadeira',op:'insert',payload:row}});
+    if(r.ok||r.queued){ _fechar(); await reload(); render(); await _mountExtras(); }
     finally{const btn=document.querySelector('#og-modal-root .og-mact .og-btn:not(.ghost):not(.danger)');if(btn){btn.disabled=false;btn.textContent='Salvar';}}
   }
   async function _excluir(){
@@ -203,8 +207,9 @@
     });
     if(parentEsc&&document.getElementById('og-modal-root'))document.addEventListener('keydown',parentEsc);
     if(!ok)return;
-    try{ const {error}=await sb().from('ip_organograma_cadeira').delete().eq('id',_s.editId); if(error)throw error; T.toast('Cadeira removida'); _fechar(); await reload(); render(); await _mountExtras(); }
-    catch(e){T.toast('Erro: '+(e.message||e))}
+    const _delId=_s.editId;
+    const r=await IpPersist.write(()=>sb().from('ip_organograma_cadeira').delete().eq('id',_delId).select(),{label:'Remocao da cadeira',offline:{table:'ip_organograma_cadeira',op:'delete',match:[['id',_delId]]}});
+    if(r.ok||r.queued){ _fechar(); await reload(); render(); await _mountExtras(); }
   }
 
   const CSS_A=`

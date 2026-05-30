@@ -8,6 +8,8 @@
 (function(){
   'use strict';
   if(window.IpSkillMap) return;
+  if(!window.IpPersist){window.IpPersist={write:async function(fn,o){o=o||{};try{var r=await fn();if(r&&!r.error){if(o.toast!==false&&window.TB)TB.toast((o.label||'registro')+' salvo');return{ok:true,data:r.data,error:null,queued:false};}return{ok:false,error:r?r.error:{message:'sem resposta'},queued:false};}catch(e){return{ok:false,error:e,queued:false};}},drain:function(){},pendingCount:function(){return 0;},_enqueue:function(){return false;}};}
+
   const sb=()=>window.__IP_SB||window.sb;
   const T=window.TB||{esc:s=>String(s??''),fmtRel:s=>s,safe:async(f,fb)=>{try{return await f()}catch(e){return fb}},toast:m=>alert(m)};
   const esc=T.esc;
@@ -136,11 +138,10 @@
     DIMS.forEach(d=>row[d.k]=v[d.k]||null);
     try{
       const existing=_s.skills[perfilId];
-      let res;
-      if(existing)res=await sb().from('ip_skill_map').update(row).eq('id',existing.id);
-      else res=await sb().from('ip_skill_map').insert(row);
-      if(res.error)throw res.error;
-      T.toast('Avaliação salva (Σ '+total+'/30)');
+      const r=existing
+        ? await IpPersist.write(()=>sb().from('ip_skill_map').update(row).eq('id',existing.id).select(),{label:'Avaliação 6D',offline:{table:'ip_skill_map',op:'update',payload:row,match:[['id',existing.id]]}})
+        : await IpPersist.write(()=>sb().from('ip_skill_map').insert(row).select(),{label:'Avaliação 6D',offline:{table:'ip_skill_map',op:'insert',payload:row}});
+      if(!r.ok&&!r.queued)return;
       await reload();go('mapa');
     }catch(e){T.toast('Erro: '+(e.message||e))}
   }
@@ -151,15 +152,15 @@
     if(!rotulo){T.toast('Informe o rótulo/nome');return}
     const btn=document.getElementById('sk-criar-btn');btn.disabled=true;btn.textContent='Cadastrando…';
     try{
-      const {error}=await sb().from('ip_perfil_colaborador').insert({
+      const _novo={
         mandato_id:_s.mandato,rotulo,
         equipe:(document.getElementById('sk-equipe')?.value||'').trim()||null,
         papel:(document.getElementById('sk-papel')?.value||'').trim()||null,
         automatizabilidade_pct:parseInt(document.getElementById('sk-auto')?.value||'0',10)||0,
         tempo_casa_meses:parseInt(document.getElementById('sk-tempo')?.value||'0',10)||0,
-      });
-      if(error)throw error;
-      T.toast('Colaborador cadastrado');
+      };
+      const r=await IpPersist.write(()=>sb().from('ip_perfil_colaborador').insert(_novo).select(),{label:'Colaborador',offline:{table:'ip_perfil_colaborador',op:'insert',payload:_novo}});
+      if(!r.ok&&!r.queued){btn.disabled=false;btn.textContent='Cadastrar colaborador';return;}
       await reload();renderAvaliar();
     }catch(e){T.toast('Erro: '+(e.message||e))}
     finally{btn.disabled=false;btn.textContent='Cadastrar colaborador'}
