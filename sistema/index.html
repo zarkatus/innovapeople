@@ -862,9 +862,9 @@ async function renderModulos() {
 
   const [agentRuns, pulsoTokens, raioXTotal, emailOutbox, agendamentos, eventos, sugestoes, decisoes, relacionamentos] = await Promise.all([
     safe(() => sb.from('ip_agent_runs').select('id,iniciado_em,status', { count: 'exact' }).order('iniciado_em', { ascending: false }).limit(1), { data: [], count: 0 }),
-    safe(() => sb.from('ip_pulse_tokens').select('id', { count: 'exact', head: true }), { count: 0 }),
+    safe(() => sb.from('ip_pulse_tokens').select('token', { count: 'exact', head: true }), { count: 0 }),
     safe(() => sb.from('ip_raio_x_submissions').select('id,created_at', { count: 'exact' }).order('created_at', { ascending: false }).limit(1), { data: [], count: 0 }),
-    safe(() => sb.from('ip_email_outbox').select('id', { count: 'exact', head: true }).eq('status', 'pending'), { count: 0 }),
+    safe(() => sb.from('ip_email_outbox').select('id', { count: 'exact', head: true }).eq('status', 'pendente'), { count: 0 }),
     safe(() => sb.from('ip_agendamentos').select('id', { count: 'exact', head: true }), { count: 0 }),
     safe(() => sb.from('ip_eventos').select('id', { count: 'exact', head: true }), { count: 0 }),
     safe(() => sb.from('ip_agent_sugestoes').select('id', { count: 'exact', head: true }), { count: 0 }),
