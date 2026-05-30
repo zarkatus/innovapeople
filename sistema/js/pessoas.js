@@ -47,6 +47,36 @@
   async function audit(ato, colaborador_id, detalhe){
     try{ await SB().from('core_ato_sensivel').insert({ ato, colaborador_id:colaborador_id||null, ator_email:me(), aal:_aal, detalhe:detalhe||{} }); }catch(_){}
   }
+  // P12 real · garante AAL2 antes de ato sensivel; auto-enrollment TOTP se nao houver fator.
+  // Retorna true se a sessao atingiu aal2; false se o usuario cancelou/falhou (ato NAO prossegue).
+  async function ensureAal2(){
+    const sb=SB();
+    if(!sb||!sb.auth||!sb.auth.mfa){ return true; } // ambiente sem mfa: nao bloqueia (degrada p/ auditoria)
+    try{
+      let lvl=await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+      if(lvl&&lvl.data&&lvl.data.currentLevel==='aal2'){ _aal='aal2'; return true; }
+      // tem fator TOTP verificado? se nao, oferece enrollment
+      const { data:fl } = await sb.auth.mfa.listFactors();
+      let totp=(fl&&fl.totp&&fl.totp[0])||null;
+      if(!totp){
+        if(!confirm('Este ato exige verificação em 2 fatores (MFA). Deseja ativar o autenticador (TOTP) agora?')) return false;
+        const { data:en, error:ee } = await sb.auth.mfa.enroll({ factorType:'totp', friendlyName:'InnovaPeople '+Date.now() });
+        if(ee){ T.toast('Falha ao iniciar MFA: '+(ee.message||'')); return false; }
+        const uri=en&&en.totp&&(en.totp.uri||en.totp.qr_code)||'';
+        window.open('data:text/html,'+encodeURIComponent('<body style="font-family:system-ui;padding:24px;background:#0A1320;color:#E5C77E"><h3>Configurar autenticador</h3><p>Abra seu app (Google Authenticator, Authy) e escaneie/insira:</p><p style="word-break:break-all;background:#070D15;padding:12px;border-radius:8px">'+esc(uri)+'</p><p>Depois volte e digite o código de 6 dígitos.</p></body>'),'_blank');
+        totp={ id:en.id };
+      }
+      const code=prompt('Digite o código de 6 dígitos do seu autenticador:');
+      if(!code) return false;
+      const { data:ch, error:ce } = await sb.auth.mfa.challenge({ factorId:totp.id });
+      if(ce){ T.toast('Falha no desafio MFA: '+(ce.message||'')); return false; }
+      const { error:ve } = await sb.auth.mfa.verify({ factorId:totp.id, challengeId:ch.id, code:code.trim() });
+      if(ve){ T.toast('Código inválido: '+(ve.message||'')); return false; }
+      lvl=await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+      _aal=(lvl&&lvl.data&&lvl.data.currentLevel)||_aal;
+      return _aal==='aal2';
+    }catch(e){ T.toast('MFA indisponível: '+(e.message||e)); return false; }
+  }
 
   // ---------- dados ----------
   async function reload(){
@@ -429,6 +459,7 @@
   async function desligar(r){
     const g=id=>document.getElementById(id);
     if((g('dl-conf').value||'').trim().toUpperCase()!=='DESLIGAR'){ T.toast('Confirme digitando DESLIGAR.'); return; }
+    if(!(await ensureAal2())){ T.toast('Desligamento cancelado — verificação MFA não concluída.'); return; }
     const dataDesl=g('dl-data').value||today();
     const detalhe={ colaborador_id:r.id, tipo:g('dl-tipo').value, aviso_previo:g('dl-aviso').value,
       data_aviso:g('dl-aviso-data').value||null, data_desligamento:dataDesl, motivo:(g('dl-motivo').value||'').trim()||null, criado_por:me() };
@@ -551,7 +582,8 @@
     d.querySelector('#px-x').onclick=close;
     d.querySelector('#xp-go').onclick=fazerExport;
   }
-  function fazerExport(){
+  async function fazerExport(){
+    if(!(await ensureAal2())){ T.toast('Exportação cancelada — verificação MFA não concluída.'); return; }
     const scope=document.getElementById('xp-scope').value, fmt=document.getElementById('xp-fmt').value;
     const src=_rows.filter(r=> scope==='todos' ? true : r.status==='ativo');
     const cols=['cpf','matricula','nome','project_id','centro_custo','cargo','modelo_contrato','data_admissao','data_desligamento','status','remuneracao','email_institucional'];

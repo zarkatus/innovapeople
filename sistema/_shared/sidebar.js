@@ -40,6 +40,7 @@
     {g:'Curadoria · CHRO', i:'📈', n:'Painel Mensal',     p:'/sistema/chro/painel-mensal/', d:'OLAP tendências · BI · digest semanal', t:'chro painel mensal olap bi tendencias digest analytics'},
     {g:'Curadoria · CHRO', i:'💸', n:'Clientes', p:'/sistema/chro/folha/', d:'Inbox de folhas de pagamento C&S — pipeline InnovaSphere para InnovaPeople', t:'folha pagamento cs c&s engenharia holerite payroll inbox financeiro canteiro competencia'},
     {g:'Curadoria · CHRO', i:'👤', n:'Pessoas · BPO', p:'/sistema/chro/colaboradores/', d:'Ciclo de gente unificado — admissão, alteração, desligamento · core_colaborador (obra ↔ gente) em tempo real', t:'pessoas colaborador colaboradores bpo gente admissao admitir desligar desligamento rh dp folha ponto sst core_colaborador headcount funcionarios'},
+    {g:'Curadoria · CHRO', i:'⚖', n:'Resultado por Obra', p:'/sistema/chro/resultado/', d:'Apuração da participação · receita informada − custos reais − cascata waterfall · resultado líquido distribuível', t:'resultado obra participacao apuracao waterfall socios quotas receita vgv custos margem distribuicao lucro liquido financeiro c&s'},
     {g:'Curadoria · CHRO', i:'🗂️', n:'Organograma',        p:'/sistema/chro/organograma/',   d:'Estrutura org dinâmica · badges N0-N5 · export PPTX', t:'organograma estrutura hierarquia cadeiras export pptx'},
 
     // TRABALHOS
