@@ -1,9 +1,8 @@
-// IpFolha — Tela InnovaPeople do inbox de Folha de Pagamento C&S Engenharia.
-// Consome ip_folha_pagamento_inbox (pipeline intra-banco: plat_folha_pagamento
-// --fn_folha_encaminhar_ip--> ip_folha_pagamento_inbox). RLS socios_all.
-// Organismo RapheiceOS: KPIs + lista por competencia + detalhe colaboradores +
-// marcar processado + preparar envio ao grupo C&S (WhatsApp, exige ordem CVO).
-// API: window.IpFolha.open(container) | IpFolha.boot()
+// IpFolha — Clientes Ativos + inbox de Folha de Pagamento por cliente (InnovaPeople).
+// Camada 1: lista de clientes (ip_clientes) — seleciona o cliente.
+// Camada 2: inbox de folha daquele cliente (ip_folha_pagamento_inbox), pipeline
+// intra-banco plat_folha_pagamento --fn_folha_encaminhar_ip--> inbox.
+// Organismo RapheiceOS. API: window.IpFolha.open(container) | IpFolha.boot()
 (function(){
   'use strict';
   if(window.IpFolha) return;
@@ -12,20 +11,39 @@
   const esc=T.esc;
   const fmtBRL=v=>v==null?'—':('R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}));
   const fmtComp=c=>{if(!c)return'—';const m=String(c).match(/(\d{4})-?(\d{2})/);if(!m)return esc(c);const mes=['','jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][parseInt(m[2],10)]||m[2];return mes+'/'+m[1];};
-  let _s={root:null,rows:[],aberta:null};
+  let _s={root:null,view:'clientes',clientes:[],folhaCount:{},clienteSel:null,rows:[],aberta:null,_esc:null};
 
   async function open(container){
     _s.root=container;
-    container.innerHTML='<div id="fl-root"><div class="fl-empty">Carregando folhas recebidas&hellip;</div></div>';
-    await reload();
-    render();
+    container.innerHTML='<div id="fl-root"><div class="fl-empty">Carregando clientes ativos&hellip;</div></div>';
+    await reloadClientes();
+    renderClientes();
   }
   function boot(){ const h=document.getElementById('folha-host'); if(h) open(h); }
 
+  async function reloadClientes(){
+    const [cli,fol]=await Promise.all([
+      T.safe(()=>sb().from('ip_clientes').select('*').eq('ativo',true).order('ordem',{ascending:true}),{data:[]}),
+      T.safe(()=>sb().from('ip_folha_pagamento_inbox').select('cliente'),{data:[]}),
+    ]);
+    _s.clientes=cli.data||[];
+    _s.folhaCount={};
+    (fol.data||[]).forEach(r=>{_s.folhaCount[r.cliente]=(_s.folhaCount[r.cliente]||0)+1;});
+  }
+
   async function reload(){
-    const {data}=await T.safe(()=>sb().from('ip_folha_pagamento_inbox').select('*').order('competencia',{ascending:false}).order('recebido_em',{ascending:false}).limit(200),{data:[]});
+    let q=sb().from('ip_folha_pagamento_inbox').select('*').order('competencia',{ascending:false}).order('recebido_em',{ascending:false}).limit(200);
+    if(_s.clienteSel) q=q.eq('cliente',_s.clienteSel.nome);
+    const {data}=await T.safe(()=>q,{data:[]});
     _s.rows=data||[];
   }
+
+  function _selCliente(id){
+    _s.clienteSel=_s.clientes.find(c=>c.id===id)||null;
+    _s.view='folha';
+    reload().then(render);
+  }
+  function _voltarClientes(){ _s.view='clientes'; _s.clienteSel=null; reloadClientes().then(renderClientes); }
 
   function estadoTag(e){
     const map={recebida:'info',pendente:'warn',processada:'ok',enviada_cs:'ok',erro:'danger'};
@@ -33,26 +51,60 @@
     return '<span class="fl-tag '+cls+'">'+esc(e||'recebida')+'</span>';
   }
 
+  // ===== CAMADA 1: Clientes Ativos =====
+  function renderClientes(){
+    const root=_s.root.querySelector('#fl-root'); if(!root)return;
+    const cs=_s.clientes;
+    const nCli=cs.filter(c=>c.tipo==='cliente').length;
+    const nGrupo=cs.filter(c=>c.tipo==='grupo').length;
+    const comFolha=cs.filter(c=>(_s.folhaCount[c.nome]||0)>0).length;
+    const prop=cs.filter(c=>c.proprietaria_ip).map(c=>esc(c.nome)).join(', ')||'—';
+    let html='<div class="fl-kpis">'
+      +'<div class="fl-kpi hero"><div class="lab">Clientes ativos</div><div class="val">'+cs.length+'</div><div class="note">'+nCli+' cliente(s) &middot; '+nGrupo+' do grupo</div></div>'
+      +'<div class="fl-kpi"><div class="lab">Com folha recebida</div><div class="val">'+comFolha+'</div><div class="note">empresas com inbox ativo</div></div>'
+      +'<div class="fl-kpi"><div class="lab">Propriet&aacute;ria InnovaPeople</div><div class="val" style="font-size:20px">'+prop+'</div><div class="note">controle societ&aacute;rio</div></div>'
+      +'</div>';
+    html+='<div class="fl-banner"><div class="fl-banner-ico">&#9670;</div><div><div class="fl-banner-lab">Clientes Ativos &middot; Folha de Pagamento</div><div class="fl-banner-txt">Selecione o cliente para ver o inbox de folhas dele. C&amp;S Engenharia &eacute; o primeiro cliente ativo; as demais s&atilde;o empresas do grupo (InnCorporate &eacute; a propriet&aacute;ria da InnovaPeople).</div></div></div>';
+    const grpCliente=cs.filter(c=>c.tipo==='cliente');
+    const grpGrupo=cs.filter(c=>c.tipo==='grupo');
+    if(grpCliente.length){ html+='<div class="fl-sec-h">Clientes</div><div class="fl-cli-grid">'+grpCliente.map(cardCliente).join('')+'</div>'; }
+    if(grpGrupo.length){ html+='<div class="fl-sec-h" style="margin-top:20px">Empresas do grupo</div><div class="fl-cli-grid">'+grpGrupo.map(cardCliente).join('')+'</div>'; }
+    if(!cs.length) html+='<div class="fl-empty">Nenhum cliente cadastrado.</div>';
+    root.innerHTML=html;
+  }
+
+  function cardCliente(c){
+    const n=_s.folhaCount[c.nome]||0;
+    const ini=(c.nome||'?').replace(/[^A-Za-z&]/g,'').slice(0,2).toUpperCase();
+    return '<div class="fl-cli" onclick="IpFolha._selCliente(\''+esc(c.id)+'\')">'
+      +'<div class="fl-cli-ini">'+esc(ini)+'</div>'
+      +'<div class="fl-cli-body">'
+        +'<div class="fl-cli-nome">'+esc(c.nome)+(c.proprietaria_ip?'<span class="fl-badge prop" title="Proprietária da InnovaPeople">proprietária IP</span>':'')+'</div>'
+        +'<div class="fl-cli-meta">'+(c.tipo==='cliente'?'Cliente':'Grupo')+(c.setor?' &middot; '+esc(c.setor):'')+(c.consome_folha?' &middot; folha ativa':'')+'</div>'
+      +'</div>'
+      +'<div class="fl-cli-side">'+(n>0?'<span class="fl-tag ok">'+n+' folha(s)</span>':'<span class="fl-tag muted">sem folha</span>')+'<span class="fl-cli-arrow">&#8250;</span></div>'
+    +'</div>';
+  }
+
+  // ===== CAMADA 2: Inbox de folha do cliente =====
   function render(){
     const root=_s.root.querySelector('#fl-root'); if(!root)return;
-    const rows=_s.rows;
-    // KPIs
+    const rows=_s.rows; const cli=_s.clienteSel;
     const comps=[...new Set(rows.map(r=>r.competencia))].length;
     const ult=rows[0];
     const totBruto=rows.reduce((a,r)=>a+(Number(r.total_bruto)||0),0);
     const pend=rows.filter(r=>!r.processado_em).length;
-    let html='<div class="fl-kpis">'
+    let html='<div class="fl-crumb"><button class="fl-back" onclick="IpFolha._voltarClientes()">&#8249; Clientes Ativos</button><span class="fl-crumb-sep">/</span><span class="fl-crumb-cur">'+esc(cli?cli.nome:'—')+'</span></div>';
+    html+='<div class="fl-kpis">'
       +'<div class="fl-kpi hero"><div class="lab">Folhas recebidas</div><div class="val">'+rows.length+'</div><div class="note">'+comps+' compet&ecirc;ncia(s)</div></div>'
       +'<div class="fl-kpi"><div class="lab">A processar</div><div class="val" style="'+(pend?'color:var(--warn,#E1A754)':'')+'">'+pend+'</div><div class="note">pendentes de tratamento</div></div>'
       +'<div class="fl-kpi"><div class="lab">Total bruto acumulado</div><div class="val" style="font-size:22px">'+fmtBRL(totBruto)+'</div><div class="note">todas as compet&ecirc;ncias</div></div>'
       +'<div class="fl-kpi"><div class="lab">&Uacute;ltima compet&ecirc;ncia</div><div class="val" style="font-size:22px">'+(ult?fmtComp(ult.competencia):'—')+'</div><div class="note">'+(ult?(ult.n_colaboradores||0)+' colaboradores':'sem dados')+'</div></div>'
       +'</div>';
-    // sintese
-    html+='<div class="fl-banner"><div class="fl-banner-ico">&#9670;</div><div><div class="fl-banner-lab">Pipeline C&amp;S Engenharia &middot; intra-banco</div><div class="fl-banner-txt">As folhas chegam do canteiro via InnovaSphere (extra&ccedil;&atilde;o IA), s&atilde;o tratadas e encaminhadas automaticamente para este inbox. Aqui voc&ecirc; revisa, processa e libera para o grupo Financeiro C&amp;S.</div></div></div>';
-    // lista
+    html+='<div class="fl-banner"><div class="fl-banner-ico">&#9670;</div><div><div class="fl-banner-lab">'+esc(cli?cli.nome:'')+' &middot; pipeline intra-banco</div><div class="fl-banner-txt">As folhas chegam do canteiro via InnovaSphere (extra&ccedil;&atilde;o IA), s&atilde;o tratadas e encaminhadas automaticamente para este inbox. Aqui voc&ecirc; revisa, processa e libera para o grupo Financeiro.</div></div></div>';
     html+='<div class="fl-sec-h">Folhas no inbox</div>';
     if(!rows.length){
-      html+='<div class="fl-empty">Nenhuma folha recebida ainda. Quando uma folha for tratada e encaminhada na InnovaSphere (canteiro), ela aparece aqui automaticamente.</div>';
+      html+='<div class="fl-empty">Nenhuma folha recebida para '+esc(cli?cli.nome:'este cliente')+' ainda. Quando uma folha for tratada e encaminhada na InnovaSphere (canteiro), aparece aqui automaticamente.</div>';
     }else{
       html+='<div class="fl-list">'+rows.map(cardFolha).join('')+'</div>';
     }
@@ -64,7 +116,7 @@
     return '<div class="fl-card'+(proc?' proc':'')+'" onclick="IpFolha._abrir(\''+esc(r.id)+'\')">'
       +'<div class="fl-card-main">'
         +'<div class="fl-card-comp">'+fmtComp(r.competencia)+'</div>'
-        +'<div class="fl-card-meta"><strong>'+esc(r.cliente||'C&S Engenharia')+'</strong>'+(r.origem_canteiro?' &middot; '+esc(r.origem_canteiro):'')+'</div>'
+        +'<div class="fl-card-meta"><strong>'+esc(r.cliente||'')+'</strong>'+(r.origem_canteiro?' &middot; '+esc(r.origem_canteiro):'')+'</div>'
       +'</div>'
       +'<div class="fl-card-nums">'
         +'<div class="fl-num"><span class="k">Bruto</span><span class="v">'+fmtBRL(r.total_bruto)+'</span></div>'
@@ -75,7 +127,7 @@
     +'</div>';
   }
 
-  // detalhe (drawer) — colaboradores do jsonb 'dados'
+  // ===== Drawer detalhe =====
   function _abrir(id){
     const r=_s.rows.find(x=>x.id===id); if(!r)return;
     _s.aberta=r;
@@ -87,18 +139,18 @@
         +colabs.map(c=>{
           const nome=c.nome||c.name||c.colaborador||'—';
           const cargo=c.cargo||c.funcao||c.role||'—';
-          const bruto=c.bruto??c.total_bruto??c.salario_bruto??c.valor_bruto;
-          const liq=c.liquido??c.total_liquido??c.salario_liquido??c.valor_liquido;
+          const bruto=c.bruto!=null?c.bruto:(c.total_bruto!=null?c.total_bruto:(c.salario_bruto!=null?c.salario_bruto:c.valor_bruto));
+          const liq=c.liquido!=null?c.liquido:(c.total_liquido!=null?c.total_liquido:(c.salario_liquido!=null?c.salario_liquido:c.valor_liquido));
           return '<tr><td>'+esc(nome)+'</td><td>'+esc(cargo)+'</td><td style="text-align:right;font-family:var(--mono)">'+fmtBRL(bruto)+'</td><td style="text-align:right;font-family:var(--mono)">'+fmtBRL(liq)+'</td></tr>';
         }).join('')
         +'</tbody></table>';
     }else{
-      body='<div class="fl-empty" style="padding:18px">Dados detalhados n&atilde;o estruturados como lista de colaboradores. Conte&uacute;do bruto extra&iacute;do:<pre style="text-align:left;white-space:pre-wrap;font-family:var(--mono);font-size:11px;color:var(--cream-muted,#D6CDB8);margin-top:10px;max-height:260px;overflow:auto">'+esc(JSON.stringify(dados,null,2).slice(0,4000))+'</pre></div>';
+      body='<div class="fl-empty" style="padding:18px">Dados detalhados n&atilde;o estruturados como lista. Conte&uacute;do extra&iacute;do:<pre style="text-align:left;white-space:pre-wrap;font-family:var(--mono);font-size:11px;color:var(--ink2,#D6CDB8);margin-top:10px;max-height:260px;overflow:auto">'+esc(JSON.stringify(dados,null,2).slice(0,4000))+'</pre></div>';
     }
     const proc=!!r.processado_em;
     const ov=document.createElement('div'); ov.className='fl-drawer-bg'; ov.id='fl-drawer';
-    ov.innerHTML='<div class="fl-drawer" role="dialog" aria-modal="true">'
-      +'<div class="fl-drawer-h"><div><div class="fl-drawer-comp">'+fmtComp(r.competencia)+'</div><div class="fl-drawer-sub">'+esc(r.cliente||'C&S Engenharia')+(r.origem_canteiro?' &middot; '+esc(r.origem_canteiro):'')+' &middot; '+estadoTag(r.estado)+'</div></div><button class="fl-x" onclick="IpFolha._fechar()">&times;</button></div>'
+    ov.innerHTML='<div class="fl-drawer" role="dialog" aria-modal="true" aria-labelledby="fl-dh">'
+      +'<div class="fl-drawer-h"><div><div class="fl-drawer-comp" id="fl-dh">'+fmtComp(r.competencia)+'</div><div class="fl-drawer-sub">'+esc(r.cliente||'')+(r.origem_canteiro?' &middot; '+esc(r.origem_canteiro):'')+' &middot; '+estadoTag(r.estado)+'</div></div><button class="fl-x" onclick="IpFolha._fechar()">&times;</button></div>'
       +'<div class="fl-drawer-nums">'
         +'<div class="fl-num"><span class="k">Bruto</span><span class="v">'+fmtBRL(r.total_bruto)+'</span></div>'
         +'<div class="fl-num"><span class="k">L&iacute;quido</span><span class="v">'+fmtBRL(r.total_liquido)+'</span></div>'
@@ -108,7 +160,7 @@
       +'<div class="fl-drawer-body">'+body+'</div>'
       +'<div class="fl-drawer-foot">'
         +(proc?'<span class="fl-mini" style="color:var(--ok,#6BAE82)">&#10003; Processada em '+esc((r.processado_em||'').slice(0,10))+'</span>':'<button class="fl-btn" onclick="IpFolha._processar(\''+esc(r.id)+'\')">Marcar como processada</button>')
-        +'<button class="fl-btn ghost" onclick="IpFolha._prepararEnvioCS(\''+esc(r.id)+'\')">Preparar envio ao grupo C&amp;S</button>'
+        +'<button class="fl-btn ghost" onclick="IpFolha._prepararEnvioCS(\''+esc(r.id)+'\')">Preparar envio ao grupo Financeiro</button>'
       +'</div>'
     +'</div>';
     ov.onclick=e=>{if(e.target===ov)_fechar();};
@@ -129,65 +181,20 @@
 
   function _prepararEnvioCS(id){
     const r=_s.rows.find(x=>x.id===id); if(!r)return;
-    const resumo='Folha '+fmtComp(r.competencia)+' · '+(r.cliente||'C&S Engenharia')+(r.origem_canteiro?' · '+r.origem_canteiro:'')
+    const resumo='Folha '+fmtComp(r.competencia)+' · '+(r.cliente||'')+(r.origem_canteiro?' · '+r.origem_canteiro:'')
       +'\nBruto '+fmtBRL(r.total_bruto)+' · Líquido '+fmtBRL(r.total_liquido)+' · '+(r.n_colaboradores||0)+' colaboradores';
-    T.toast('Resumo pronto. O disparo ao grupo C&S exige sua ordem explicita (governanca WhatsApp).');
+    T.toast('Resumo pronto (copiado). O disparo ao grupo exige sua ordem explicita (governanca WhatsApp).');
     try{ navigator.clipboard.writeText(resumo); }catch(_){}
-    console.log('[folha] resumo p/ grupo C&S (copiado):\n'+resumo);
+    console.log('[folha] resumo p/ grupo Financeiro (copiado):\n'+resumo);
   }
 
-  const CSS=`
-  #fl-root .fl-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
-  #fl-root .fl-kpi{padding:16px 18px;border-radius:12px;background:var(--navy-raised,var(--cream2,#140D22));border:1px solid var(--rule,var(--border,rgba(245,221,165,.12)))}
-  #fl-root .fl-kpi.hero{background:linear-gradient(135deg,rgba(196,163,90,.12),transparent);border-color:rgba(196,163,90,.3)}
-  #fl-root .fl-kpi .lab{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3,#A99E86);font-weight:600}
-  #fl-root .fl-kpi .val{font-family:var(--serif);font-style:italic;font-size:30px;color:var(--ink,#F7F3EC);margin:6px 0 2px;line-height:1}
-  #fl-root .fl-kpi .note{font-size:11px;color:var(--ink3,#A99E86)}
-  #fl-root .fl-banner{display:flex;gap:14px;align-items:center;padding:16px 20px;border-radius:14px;background:linear-gradient(135deg,rgba(196,163,90,.1),rgba(123,90,168,.08));border:1px solid rgba(196,163,90,.25);margin-bottom:22px}
-  #fl-root .fl-banner-ico{font-size:20px;color:var(--gold,#C4A35A)}
-  #fl-root .fl-banner-lab{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep,#9C7E3B);font-weight:700;margin-bottom:4px}
-  #fl-root .fl-banner-txt{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--ink2,#D6CDB8);line-height:1.45}
-  #fl-root .fl-sec-h{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep,#9C7E3B);font-weight:700;margin-bottom:12px}
-  #fl-root .fl-empty{text-align:center;padding:30px 16px;color:var(--ink3,#A99E86);font-style:italic;font-family:var(--serif);font-size:15px}
-  #fl-root .fl-list{display:flex;flex-direction:column;gap:8px}
-  #fl-root .fl-card{display:flex;align-items:center;gap:18px;padding:14px 18px;border-radius:11px;background:var(--navy-raised,var(--cream2,#140D22));border:1px solid var(--rule,var(--border,rgba(245,221,165,.12)));border-left:3px solid var(--warn,#E1A754);cursor:pointer;transition:all .18s}
-  #fl-root .fl-card:hover{border-color:var(--gold,#C4A35A);transform:translateX(2px)}
-  #fl-root .fl-card.proc{border-left-color:var(--ok,#6BAE82);opacity:.82}
-  #fl-root .fl-card-main{min-width:150px}
-  #fl-root .fl-card-comp{font-family:var(--serif);font-style:italic;font-size:21px;color:var(--gold,#C4A35A);text-transform:capitalize}
-  #fl-root .fl-card-meta{font-size:12px;color:var(--ink2,#D6CDB8);margin-top:2px}
-  #fl-root .fl-card-nums{display:flex;gap:20px;flex:1}
-  #fl-root .fl-num{display:flex;flex-direction:column}
-  #fl-root .fl-num .k{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3,#A99E86)}
-  #fl-root .fl-num .v{font-size:14px;color:var(--ink,#F7F3EC);font-weight:500;margin-top:2px}
-  #fl-root .fl-card-side{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
-  #fl-root .fl-mini{font-family:var(--mono);font-size:9.5px;color:var(--ink3,#A99E86)}
-  #fl-root .fl-tag{font-size:10px;padding:3px 9px;border-radius:11px;letter-spacing:.04em;font-family:var(--sans)}
-  #fl-root .fl-tag.info{background:rgba(123,165,216,.16);color:var(--blue,#7BA5D8)}
-  #fl-root .fl-tag.warn{background:rgba(225,167,84,.16);color:var(--warn,#E1A754)}
-  #fl-root .fl-tag.ok{background:rgba(107,174,130,.16);color:var(--ok,#6BAE82)}
-  #fl-root .fl-tag.danger{background:rgba(216,117,117,.16);color:var(--red,#D87575)}
-  #fl-root .fl-tag.muted{background:rgba(255,255,255,.05);color:var(--ink3,#A99E86)}
-  .fl-drawer-bg{position:fixed;inset:0;background:rgba(8,5,15,.66);z-index:1000;display:flex;justify-content:flex-end;backdrop-filter:blur(3px)}
-  .fl-drawer{width:min(640px,94vw);height:100%;overflow-y:auto;background:var(--cream,#0C0816);border-left:1px solid rgba(196,163,90,.25);padding:24px 26px;animation:flslide .25s ease}
-  @keyframes flslide{from{transform:translateX(30px);opacity:.6}to{transform:none;opacity:1}}
-  .fl-drawer-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}
-  .fl-drawer-comp{font-family:var(--serif);font-style:italic;font-size:26px;color:var(--gold,#C4A35A);text-transform:capitalize}
-  .fl-drawer-sub{font-size:12.5px;color:var(--ink2,#D6CDB8);margin-top:4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .fl-x{background:none;border:none;color:var(--ink3,#A99E86);font-size:26px;cursor:pointer;line-height:1}
-  .fl-drawer-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px;background:var(--cream2,#140D22);border-radius:10px;margin-bottom:18px}
-  .fl-drawer-body{margin-bottom:18px}
-  .fl-tbl{width:100%;border-collapse:collapse;font-size:13px}
-  .fl-tbl th{text-align:left;padding:9px 10px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep,#9C7E3B);border-bottom:1px solid rgba(245,221,165,.16)}
-  .fl-tbl td{padding:9px 10px;border-bottom:1px solid rgba(245,221,165,.07);color:var(--ink2,#D6CDB8)}
-  .fl-drawer-foot{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding-top:14px;border-top:1px solid rgba(245,221,165,.1)}
-  .fl-btn{padding:11px 20px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold-glow,#F5DDA5),var(--gold,#C4A35A));color:#2A1A3B;font-family:var(--sans);font-weight:600;font-size:13px;cursor:pointer;transition:all .2s}
-  .fl-btn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(196,163,90,.3)}
-  .fl-btn.ghost{background:transparent;border:1px solid rgba(245,221,165,.25);color:var(--gold,#C4A35A)}
-  .fl-btn.ghost:hover{background:rgba(196,163,90,.1)}
-  @media(max-width:820px){#fl-root .fl-kpis{grid-template-columns:repeat(2,1fr)}#fl-root .fl-card{flex-wrap:wrap}}`;
-  function injCSS(){if(document.getElementById('fl-css'))return;const s=document.createElement('style');s.id='fl-css';s.textContent=CSS;document.head.appendChild(s);}
+  function injCSS(){
+    if(document.getElementById('fl-csslink'))return;
+    var l=document.createElement('link');
+    l.id='fl-csslink'; l.rel='stylesheet'; l.href='/sistema/js/folha-inbox.css';
+    document.head.appendChild(l);
+  }
   injCSS();
 
-  window.IpFolha={open,boot,_abrir,_fechar,_processar,_prepararEnvioCS};
+  window.IpFolha={open,boot,_selCliente,_voltarClientes,_abrir,_fechar,_processar,_prepararEnvioCS};
 })();
