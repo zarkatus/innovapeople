@@ -124,7 +124,7 @@
     try{
       const {error}=await sb().from('ip_agent_sugestoes').update({status:'revisada',revisada_em:new Date().toISOString(),revisada_por:window.__IP_USER_EMAIL||null}).eq('id',id);
       if(error)throw error;
-      const card=btn.closest('.pp-item'); if(card){card.style.opacity='.3';card.style.textDecoration='line-through';setTimeout(()=>{card.remove(); _data.sugestoes=_data.sugestoes.filter(x=>x.id!==id);},420);}
+      const card=btn.closest('.pp-item'); if(card){card.style.opacity='.3';card.style.textDecoration='line-through';setTimeout(()=>{card.remove(); if(_data&&_data.sugestoes)_data.sugestoes=_data.sugestoes.filter(x=>x.id!==id);},420);}
       T.toast('Tratado');
     }catch(e){btn.disabled=false;T.toast('Erro: '+(e.message||e))}
   }
