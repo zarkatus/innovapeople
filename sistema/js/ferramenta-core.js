@@ -131,6 +131,7 @@
     btn.disabled=true; const old=btn.textContent; btn.textContent='Gerando...';
     try{
       const {data,error}=await sb().rpc('fn_ip_plano_gerar',{p_mandato_id:cfg.mandato});
+      if(myGen!==_diagGen)return;
       if(error)throw error;
       await renderPassos(host);
       T.toast('Plano gerado pelas regras'+(Array.isArray(data)?' - '+data.length+' acoes':''));
