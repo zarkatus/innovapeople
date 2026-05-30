@@ -107,7 +107,9 @@ input,textarea,select{font:inherit}
 .usr a{padding:6px 14px;border:1px solid var(--border);border-radius:18px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
 
 /* APP — 3 COLUNAS */
-.app{display:grid;grid-template-columns:340px 1fr 340px;height:calc(100vh - 64px);overflow:hidden}
+.app{display:grid;grid-template-columns:360px 1fr 400px;height:calc(100vh - 64px);overflow:hidden;transition:grid-template-columns .28s cubic-bezier(.4,0,.2,1)}
+.app.rp-collapsed{grid-template-columns:360px 1fr 0}
+.app.rp-collapsed .right{opacity:0;pointer-events:none}
 
 /* COLUNA ESQUERDA · CONVERSAS */
 .left{background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
@@ -153,7 +155,7 @@ input,textarea,select{font:inherit}
 .center-empty h3{font-family:var(--serif);font-size:24px;color:var(--navy);font-weight:400;margin-bottom:10px}
 .center-empty p{font-family:var(--serif);font-size:17px;font-style:italic;max-width:380px;line-height:1.55}
 .thread-h{padding:14px 22px;border-bottom:1px solid var(--border);background:rgba(251,250,247,.92);backdrop-filter:blur(8px);display:flex;align-items:center;gap:12px;flex-shrink:0}
-.thread-h .avatar{width:36px;height:36px;font-size:15px}
+.thread-h .avatar{width:38px;height:38px;font-size:15px;box-shadow:0 0 0 2px rgba(196,163,90,.25)}
 .thread-h-name{flex:1}
 .thread-h-name .nm{font-family:var(--serif);font-size:18px;color:var(--navy);font-weight:500;line-height:1.1}
 .thread-h-name .ph{font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.04em;margin-top:2px}
@@ -231,7 +233,20 @@ input,textarea,select{font:inherit}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:11px 22px;background:var(--navy);color:var(--cream);border-radius:6px;font-size:12px;letter-spacing:.06em;box-shadow:0 8px 22px rgba(10,22,40,.22);z-index:200;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(-4px)}
 
-@media(max-width:1200px){.app{grid-template-columns:300px 1fr 280px}}
+/* === Reformulacao 30/05: header limpo + busca no topo + painel recolhivel + acoes na direita (RapheiceOS) === */
+.thread-act.ic{padding:6px 10px;font-size:14px;line-height:1;border-radius:10px;min-width:34px;text-align:center}
+.thread-search-bar{flex-shrink:0;max-height:0;overflow:hidden;padding:0 22px;background:rgba(251,250,247,.92);border-bottom:1px solid transparent;transition:max-height .25s ease,padding .25s ease}
+.thread-search-bar.on{max-height:60px;padding:10px 22px;border-bottom:1px solid var(--border)}
+.thread-search-bar input{width:100%;padding:9px 14px;border:1px solid var(--border);border-radius:12px;font-size:13px;background:var(--cream2);color:var(--ink);font-family:var(--sans)}
+.thread-search-bar input:focus{outline:none;border-color:var(--gold);background:var(--white)}
+.right{transition:opacity .2s ease}
+.profile-acoes .acoes-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.profile-acoes .profile-act{width:100%;justify-content:center;text-align:center}
+.num-warn{display:inline-block;padding:1px 7px;border-radius:10px;background:rgba(178,59,59,.14);color:var(--red);font-size:9px;letter-spacing:.08em;text-transform:uppercase;font-family:var(--mono);margin-right:5px;vertical-align:middle}
+.warn-btn{border-color:var(--red)!important;color:var(--red)!important}
+.warn-btn:hover{background:rgba(178,59,59,.08)!important}
+.conv-numwarn{color:var(--red);font-size:11px;margin-left:4px}
+@media(max-width:1200px){.app{grid-template-columns:320px 1fr 360px}.app.rp-collapsed{grid-template-columns:320px 1fr 0}}
 @media(max-width:980px){.app{grid-template-columns:1fr}.right,.left{display:none}.app.show-thread .center{display:flex}.app.show-list .left{display:flex}}
 </style>
 <link rel="stylesheet" href="/sistema/_shared/sidebar.css"><script src="/sistema/_shared/sidebar.js" defer></script></head>
@@ -337,6 +352,10 @@ const esc=s=>{if(s==null)return'';const d=document.createElement('div');d.textCo
 const fmtTime=ts=>{if(!ts)return'';const d=new Date(ts);const now=new Date();const sameDay=d.toDateString()===now.toDateString();const yesterday=new Date(now-864e5).toDateString()===d.toDateString();if(sameDay)return d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});if(yesterday)return'ontem';if((now-d)<7*864e5)return d.toLocaleDateString('pt-BR',{weekday:'short'});return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})};
 const fmtFullTime=ts=>{if(!ts)return'';return new Date(ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})};
 const fmtDay=ts=>{if(!ts)return'';const d=new Date(ts);const now=new Date();const sameDay=d.toDateString()===now.toDateString();const yesterday=new Date(now-864e5).toDateString()===d.toDateString();if(sameDay)return'Hoje';if(yesterday)return'Ontem';if((now-d)<7*864e5)return d.toLocaleDateString('pt-BR',{weekday:'long'});return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})};
+// Reformulacao 30/05: numero corrompido (JID interno: <10 ou >13 digitos)
+function _numCorrupto(n){const d=String(n||'').replace(/\D/g,'');return d.length>0&&(d.length<10||d.length>13);}
+function toggleRightPanel(){const app=document.querySelector('.app');if(!app)return;app.classList.toggle('rp-collapsed');const t=document.getElementById('rp-toggle');if(t)t.textContent=app.classList.contains('rp-collapsed')?'⟨':'⟩';}
+function toggleThreadSearch(){const b=document.getElementById('thread-search-bar');if(!b)return;const on=b.classList.toggle('on');if(on){const i=document.getElementById('thread-search');if(i)i.focus();}}
 const initials=n=>{if(!n)return'·';return n.trim().split(/\s+/).slice(0,2).map(p=>p[0]||'').join('').toUpperCase()||'·'};
 
 let _state={conversas:[],filtro:'all',busca:'',convId:null,perfil:null,mensagens:[],channel:null,templates:[]};
@@ -500,21 +519,20 @@ function renderThread(){
   const nome=c?.contato_nome||c?.numero_e164||'(sem nome)';
   const numero=c?.numero_e164||'';
   const av=c?._avatar?`style="background-image:url('${esc(c._avatar)}');background-size:cover"`:'';
+  const _corr=_numCorrupto(numero);
   let html=`<div class="thread-h">
     <div class="avatar img" ${av}>${c?._avatar?'':initials(nome)}</div>
     <div class="thread-h-name">
       <div class="nm">${esc(nome)}</div>
-      <div class="ph" onclick="editarNumeroContato()" title="Clique para corrigir o número se estiver errado (ex: JID interno)" style="cursor:pointer;text-decoration:underline dotted rgba(10,22,40,.3);text-underline-offset:3px">${esc(numero)}</div>
+      <div class="ph" onclick="editarNumeroContato()" title="Clique para corrigir o número se estiver errado (ex: JID interno)" style="cursor:pointer;text-decoration:underline dotted rgba(10,22,40,.3);text-underline-offset:3px">${_corr?'<span class="num-warn">&#9888; corrigir</span>':''}${esc(numero)}</div>
     </div>
     <div class="thread-actions">
-      <input id="thread-search" type="text" placeholder="Buscar..." oninput="buscarThread(this.value)" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:rgba(245,240,232,.6);color:var(--ink2);width:140px;font-family:var(--sans)">
-      <button class="thread-act" id="estado-btn" onclick="toggleEstado()">${esc(c?.conversa_estado||'aberta')}</button>
-      <button class="thread-act" id="assign-btn" onclick="abrirAssign()">${cv_assign(c)}</button>
-      <button class="thread-act" onclick="refreshThread()">↻</button>
-      <button class="thread-act" onclick="marcarNaoLida()" title="Marcar não lida">●</button>
-      <button class="thread-act" onclick="arquivarConversa()">Arquivar</button>
+      <button class="thread-act ic" onclick="toggleThreadSearch()" title="Buscar nesta conversa">&#9906;</button>
+      <button class="thread-act ic" onclick="refreshThread()" title="Atualizar">↻</button>
+      <button class="thread-act ic" id="rp-toggle" onclick="toggleRightPanel()" title="Mostrar/ocultar painel da conversa">&#10217;</button>
     </div>
   </div>
+  <div class="thread-search-bar" id="thread-search-bar"><input id="thread-search" type="text" placeholder="Buscar nesta conversa…" oninput="buscarThread(this.value)"></div>
   <div class="thread" id="thread-list">`;
 
   // Agrupa por dia
@@ -784,6 +802,7 @@ function renderPerfil(){
   const av=ct.avatar_url?`style="background-image:url('${esc(ct.avatar_url)}');background-size:cover"`:'';
   const aiSum=cv._ai_summary||cv.ai_summary||null;
 
+  const _corr=_numCorrupto(numero);
   let html=`<div class="profile-h">
     <div class="avatar img" ${av}>${ct.avatar_url?'':initials(nome)}</div>
     <div class="nm">${esc(nome)}</div>
@@ -793,6 +812,17 @@ function renderPerfil(){
       ${email?`<button class="profile-act" onclick="window.open('mailto:${esc(email)}')">E-mail</button>`:''}
       ${numero?`<button class="profile-act" onclick="window.open('tel:+${esc(numero)}')">Ligar</button>`:''}
     </div>
+  </div>`;
+
+  html+=`<div class="profile-sec profile-acoes">
+    <div class="profile-sec-h">Ações da conversa</div>
+    <div class="acoes-grid">
+      <button class="profile-act" id="estado-btn" onclick="toggleEstado()">${esc(cv.conversa_estado||'aberta')}</button>
+      <button class="profile-act" id="assign-btn" onclick="abrirAssign()">${cv_assign(cv)}</button>
+      <button class="profile-act" onclick="marcarNaoLida()">● Não lida</button>
+      <button class="profile-act" onclick="arquivarConversa()">Arquivar</button>
+    </div>
+    ${_numCorrupto(numero)?`<button class="profile-act warn-btn" style="width:100%;margin-top:8px" onclick="editarNumeroContato()">&#9888; Número a corrigir — editar</button>`:''}
   </div>`;
 
   if(aiSum){
