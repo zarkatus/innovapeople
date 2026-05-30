@@ -87,11 +87,16 @@
       if(attempt<MAX_RETRY) await sleep(BACKOFF[attempt]||7000);
     }
     if(transient(lastErr) && opts.offline){
+      // idempotente (update/delete/upsert): reenfileirar e seguro. INSERT offline-real
+      // tambem (request nem saiu). INSERT com timeout ESTANDO online e ambiguo: o
+      // servidor pode ter commitado e so a resposta se perdeu -> reenfileirar criaria
+      // DUPLICATA. Politica: nao enfileira (evita cadastro duplicado), avisa claramente.
+      // Evolucao p/ exactly-once: idempotency-key no payload + ON CONFLICT no servidor.
       const idempotente = (op==='update'||op==='delete'||op==='upsert');
       if(idempotente || isOffline()){
         if(enqueue(opts.offline)){ T.toast(label+': sem conexao — salvo localmente, reenvia ao reconectar'); return {ok:false,error:lastErr,queued:true}; }
       } else {
-        T.toast('Falha ao salvar '+label+': resposta perdida. Verifique se gravou antes de repetir.');
+        T.toast('Falha ao salvar '+label+': resposta perdida. Confira se gravou antes de repetir (evitando duplicar).');
         return {ok:false,error:lastErr,queued:false};
       }
     }

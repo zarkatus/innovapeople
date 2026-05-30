@@ -177,6 +177,7 @@
       const _patch={estado:'processada',processado_em:new Date().toISOString()};
       const r=await IpPersist.write(()=>sb().from('ip_folha_pagamento_inbox').update(_patch).eq('id',id).select(),{label:'Folha',offline:{table:'ip_folha_pagamento_inbox',op:'update',payload:_patch,match:[['id',id]]}});
       if(!r.ok&&!r.queued)return;
+      if(r.queued){ const it=_s.rows.find(x=>x.id===id); if(it){it.estado='processada';it.processado_em=_patch.processado_em;} render(); _fechar(); return; }
       await reload(); render(); _fechar();
     }catch(e){T.toast('Erro: '+(e.message||e))}
   }
