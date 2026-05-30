@@ -158,6 +158,7 @@
     aside.id='ip-sidebar';
     aside.innerHTML=`
       <div class="sb-head">
+        <button class="sb-nav-back" id="sb-nav-back" title="Voltar" aria-label="Voltar" onclick="window.IpSidebar.goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
         <svg class="logo" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="14"/><path d="M16 6 v20 M6 16 h20"/></svg>
         <div class="txt">
           <div class="wm">innova<em>·</em>people</div>
@@ -379,5 +380,5 @@
   // Expose
   
   function goBack(){ if(history.length>1){history.back();} else {location.href="/sistema/";} }
-  window.IpSidebar={open:openCmdk,close:closeCmdk,cmdkGo,logout:doLogout,catalog:CATALOG,refresh:refreshUser,theme:setTheme};
+  window.IpSidebar={open:openCmdk,close:closeCmdk,cmdkGo,logout:doLogout,catalog:CATALOG,refresh:refreshUser,theme:setTheme,goBack};
 })();
