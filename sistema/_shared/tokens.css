@@ -1,0 +1,49 @@
+/* InnovaPeople · Design Tokens centralizados (IP-2 · PQV-01 03/06)
+ * Fonte única da paleta RapheiceOS. ANTES: cores hex hardcoded em template-strings JS
+ * (pessoas.js 16 cores × 154 usos, resultado-obra 11, folha 3) — não respeitavam modo light.
+ * AGORA: as telas usam var(--ip-*); o modo light é um override de tokens, não reescrita de JS.
+ * Mantém compat com sidebar.css/toolbox.css (que têm tokens próprios legados). */
+:root{
+  /* superfícies (dark default) */
+  --ip-bg-deep:    #070D15;  /* navy mais profundo (drawer/input bg) */
+  --ip-bg:         #0A1320;  /* fundo de painel/drawer */
+  --ip-bg-card:    #0C1626;  /* card */
+  /* texto */
+  --ip-cream:      #F7F3EC;  /* texto primário cream */
+  --ip-ink:        #CBD5E1;  /* corpo */
+  --ip-ink-2:      #9FB0C5;  /* secundário */
+  --ip-ink-3:      #8FA0B5;  /* label/muted */
+  --ip-ink-4:      #6B7A90;  /* placeholder/desabilitado */
+  --ip-gold-soft:  #C9B98F;  /* aviso suave/itálico */
+  /* marca */
+  --ip-gold:       #D2AE64;  /* dourado base */
+  --ip-gold-lum:   #E5C77E;  /* dourado luminoso (títulos/ação) */
+  /* semânticos */
+  --ip-ok:         #7BD3A0;  /* sucesso/ativo */
+  --ip-ok-deep:    #2E8B57;  /* sucesso forte (barras) */
+  --ip-warn:       #E5C77E;  /* atenção (= gold-lum) */
+  --ip-danger:     #E8A6A6;  /* perigo/desligado (texto) */
+  --ip-danger-2:   #C77D7D;  /* perigo borda */
+  --ip-danger-3:   #8B4A4A;  /* perigo barra escura */
+}
+/* Modo light — override coerente com sidebar.css[data-theme=light].
+ * Inverte superfícies para papel cream e escurece o texto, mantendo o ouro. */
+html[data-theme="light"]{
+  --ip-bg-deep:    #FBF8F2;
+  --ip-bg:         #FFFFFF;
+  --ip-bg-card:    #F7F3EC;
+  --ip-cream:      #241B2E;  /* texto escuro sobre papel */
+  --ip-ink:        #3A3346;
+  --ip-ink-2:      #5B5468;
+  --ip-ink-3:      #6E6678;
+  --ip-ink-4:      #8C8596;
+  --ip-gold-soft:  #7A5C1F;
+  --ip-gold:       #A8801F;  /* ouro mais escuro p/ contraste sobre papel */
+  --ip-gold-lum:   #8A6A12;
+  --ip-ok:         #2E8B57;
+  --ip-ok-deep:    #1E6B3F;
+  --ip-warn:       #A8801F;
+  --ip-danger:     #B05050;
+  --ip-danger-2:   #8B4A4A;
+  --ip-danger-3:   #6E3838;
+}

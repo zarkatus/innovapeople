@@ -18,9 +18,9 @@
   const me = ()=> (window.__IP_USER_EMAIL)||'innovapeople';
 
   const ST = {
-    ativo:    { l:'Ativo',     c:'#7BD3A0', bg:'rgba(46,139,87,.16)' },
-    afastado: { l:'Afastado',  c:'#E5C77E', bg:'rgba(210,174,100,.16)' },
-    desligado:{ l:'Desligado', c:'#E8A6A6', bg:'rgba(199,125,125,.16)' }
+    ativo:    { l:'Ativo',     c:'var(--ip-ok)', bg:'rgba(46,139,87,.16)' },
+    afastado: { l:'Afastado',  c:'var(--ip-gold-lum)', bg:'rgba(210,174,100,.16)' },
+    desligado:{ l:'Desligado', c:'var(--ip-danger)', bg:'rgba(199,125,125,.16)' }
   };
   const TIPO_AFAST=[['atestado','Atestado médico'],['inss','Afastamento INSS'],['acidente_trabalho','Acidente de trabalho'],['licenca_maternidade','Licença maternidade'],['licenca_paternidade','Licença paternidade'],['ferias','Férias'],['suspensao','Suspensão'],['outro','Outro']];
   const TIPO_ASO=[['admissional','Admissional'],['periodico','Periódico'],['demissional','Demissional'],['retorno_trabalho','Retorno ao trabalho'],['mudanca_funcao','Mudança de função']];
@@ -42,7 +42,7 @@
   }
   function aalBadge(){
     const ok=_aal==='aal2';
-    return `<span title="${ok?'Sessão com 2º fator (AAL2)':'Sessão de 1 fator (AAL1) — ato é auditado; ative MFA para AAL2'}" style="font:600 10px/1 system-ui;padding:4px 9px;border-radius:20px;color:${ok?'#7BD3A0':'#E5C77E'};background:${ok?'rgba(46,139,87,.14)':'rgba(210,174,100,.12)'};border:1px solid ${ok?'#2E8B5755':'#D2AE6455'}">${ok?'MFA · AAL2':'sessão AAL1'}</span>`;
+    return `<span title="${ok?'Sessão com 2º fator (AAL2)':'Sessão de 1 fator (AAL1) — ato é auditado; ative MFA para AAL2'}" style="font:600 10px/1 system-ui;padding:4px 9px;border-radius:20px;color:${ok?'var(--ip-ok)':'var(--ip-gold-lum)'};background:${ok?'rgba(46,139,87,.14)':'rgba(210,174,100,.12)'};border:1px solid ${ok?'var(--ip-ok-deep)55':'var(--ip-gold)55'}">${ok?'MFA · AAL2':'sessão AAL1'}</span>`;
   }
   async function audit(ato, colaborador_id, detalhe){
     try{ await SB().from('core_ato_sensivel').insert({ ato, colaborador_id:colaborador_id||null, ator_email:me(), aal:_aal, detalhe:detalhe||{} }); }catch(_){}
@@ -63,7 +63,7 @@
         const { data:en, error:ee } = await sb.auth.mfa.enroll({ factorType:'totp', friendlyName:'InnovaPeople '+Date.now() });
         if(ee){ T.toast('Falha ao iniciar MFA: '+(ee.message||'')); return false; }
         const uri=en&&en.totp&&(en.totp.uri||en.totp.qr_code)||'';
-        window.open('data:text/html,'+encodeURIComponent('<body style="font-family:system-ui;padding:24px;background:#0A1320;color:#E5C77E"><h3>Configurar autenticador</h3><p>Abra seu app (Google Authenticator, Authy) e escaneie/insira:</p><p style="word-break:break-all;background:#070D15;padding:12px;border-radius:8px">'+esc(uri)+'</p><p>Depois volte e digite o código de 6 dígitos.</p></body>'),'_blank');
+        window.open('data:text/html,'+encodeURIComponent('<body style="font-family:system-ui;padding:24px;background:var(--ip-bg);color:var(--ip-gold-lum)"><h3>Configurar autenticador</h3><p>Abra seu app (Google Authenticator, Authy) e escaneie/insira:</p><p style="word-break:break-all;background:var(--ip-bg-deep);padding:12px;border-radius:8px">'+esc(uri)+'</p><p>Depois volte e digite o código de 6 dígitos.</p></body>'),'_blank');
         totp={ id:en.id };
       }
       const code=prompt('Digite o código de 6 dígitos do seu autenticador:');
@@ -125,25 +125,25 @@
 
   // ---------- componentes ----------
   function kpi(label,val,cor){
-    return `<div style="flex:1;min-width:118px;background:#0C1626;border:1px solid rgba(210,174,100,.18);border-radius:14px;padding:14px 16px;box-shadow:0 6px 18px rgba(0,0,0,.25)">
-      <div style="font:600 11px/1 system-ui;letter-spacing:.08em;text-transform:uppercase;color:#8FA0B5">${esc(label)}</div>
-      <div style="font:700 italic 26px Georgia;color:${cor||'#E5C77E'};margin-top:6px">${val}</div></div>`;
+    return `<div style="flex:1;min-width:118px;background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.18);border-radius:14px;padding:14px 16px;box-shadow:0 6px 18px rgba(0,0,0,.25)">
+      <div style="font:600 11px/1 system-ui;letter-spacing:.08em;text-transform:uppercase;color:var(--ip-ink-3)">${esc(label)}</div>
+      <div style="font:700 italic 26px Georgia;color:${cor||'var(--ip-gold-lum)'};margin-top:6px">${val}</div></div>`;
   }
   function badge(st){ const s=ST[st]||ST.ativo; return `<span style="font:600 11px/1 system-ui;padding:5px 10px;border-radius:20px;color:${s.c};background:${s.bg};border:1px solid ${s.c}55">${s.l}</span>`; }
   function tag(txt,cor){ return `<span style="font:600 10.5px/1 system-ui;padding:4px 9px;border-radius:20px;color:${cor};background:${cor}1f;border:1px solid ${cor}44">${esc(txt)}</span>`; }
   function btn(id,txt,kind){
     const base='font:600 13px/1 system-ui;padding:11px 18px;border-radius:11px;cursor:pointer;border:1px solid;transition:.15s';
-    if(kind==='primary') return `<button id="${id}" style="${base};background:#D2AE64;color:#070D15;border-color:#E5C77E">${txt}</button>`;
-    if(kind==='danger')  return `<button id="${id}" style="${base};background:rgba(199,125,125,.14);color:#E8A6A6;border-color:#C77D7D66">${txt}</button>`;
-    return `<button id="${id}" style="${base};background:transparent;color:#E5C77E;border-color:rgba(210,174,100,.4)">${txt}</button>`;
+    if(kind==='primary') return `<button id="${id}" style="${base};background:var(--ip-gold);color:var(--ip-bg-deep);border-color:var(--ip-gold-lum)">${txt}</button>`;
+    if(kind==='danger')  return `<button id="${id}" style="${base};background:rgba(199,125,125,.14);color:var(--ip-danger);border-color:var(--ip-danger-2)66">${txt}</button>`;
+    return `<button id="${id}" style="${base};background:transparent;color:var(--ip-gold-lum);border-color:rgba(210,174,100,.4)">${txt}</button>`;
   }
   function field(label,id,val,type,ph){
-    return `<label style="display:block;margin-bottom:13px"><span style="display:block;font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8FA0B5;margin-bottom:6px">${esc(label)}</span>
-      <input id="${id}" type="${type||'text'}" value="${val==null?'':esc(val)}" placeholder="${esc(ph||'')}" style="width:100%;background:#070D15;border:1px solid rgba(210,174,100,.25);border-radius:10px;padding:10px 13px;color:#F7F3EC;font-size:14px"/></label>`;
+    return `<label style="display:block;margin-bottom:13px"><span style="display:block;font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:6px">${esc(label)}</span>
+      <input id="${id}" type="${type||'text'}" value="${val==null?'':esc(val)}" placeholder="${esc(ph||'')}" style="width:100%;background:var(--ip-bg-deep);border:1px solid rgba(210,174,100,.25);border-radius:10px;padding:10px 13px;color:var(--ip-cream);font-size:14px"/></label>`;
   }
   function selectField(label,id,val,opts){
-    return `<label style="display:block;margin-bottom:13px"><span style="display:block;font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8FA0B5;margin-bottom:6px">${esc(label)}</span>
-      <select id="${id}" style="width:100%;background:#070D15;border:1px solid rgba(210,174,100,.25);border-radius:10px;padding:10px 13px;color:#F7F3EC;font-size:14px">
+    return `<label style="display:block;margin-bottom:13px"><span style="display:block;font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:6px">${esc(label)}</span>
+      <select id="${id}" style="width:100%;background:var(--ip-bg-deep);border:1px solid rgba(210,174,100,.25);border-radius:10px;padding:10px 13px;color:var(--ip-cream);font-size:14px">
       ${opts.map(o=>`<option value="${esc(o[0])}"${String(val)===String(o[0])?' selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`;
   }
   const labelOf=(arr,v)=>{ const f=arr.find(o=>o[0]===v); return f?f[1]:(v||'—'); };
@@ -157,7 +157,7 @@
     el.innerHTML=`
     <div style="max-width:1180px;margin:0 auto;padding:28px 32px">
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px">
-        <h1 style="font:700 italic 27px Georgia;color:#E5C77E;margin:0;flex:1">Pessoas · BPO de Gente</h1>
+        <h1 style="font:700 italic 27px Georgia;color:var(--ip-gold-lum);margin:0;flex:1">Pessoas · BPO de Gente</h1>
         ${aalBadge()}
         ${btn('px-eng','◷ Engajamento','ghost')}
         ${btn('px-aloc','▦ Alocação','ghost')}
@@ -165,23 +165,23 @@
         ${btn('px-sync','↻ Sincronizar obra','ghost')}
         ${btn('px-novo','+ Admitir','primary')}
       </div>
-      <div style="color:#8FA0B5;font-size:13px;margin-bottom:22px">Ciclo de vida unificado (obra ↔ gente): admissão · ponto/afastamento · SST · desligamento. A origem do dado é preservada e propaga em tempo real.</div>
+      <div style="color:var(--ip-ink-3);font-size:13px;margin-bottom:22px">Ciclo de vida unificado (obra ↔ gente): admissão · ponto/afastamento · SST · desligamento. A origem do dado é preservada e propaga em tempo real.</div>
       <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px">
-        ${kpi('Ativos',counts.ativo,'#7BD3A0')}${kpi('Afastados',counts.afastado,'#E5C77E')}${kpi('Desligados',counts.desligado,'#E8A6A6')}${kpi('Total',_rows.length,'#F7F3EC')}
+        ${kpi('Ativos',counts.ativo,'var(--ip-ok)')}${kpi('Afastados',counts.afastado,'var(--ip-gold-lum)')}${kpi('Desligados',counts.desligado,'var(--ip-danger)')}${kpi('Total',_rows.length,'var(--ip-cream)')}
       </div>
-      ${dg.passos.length?`<div style="background:linear-gradient(180deg,#0C1626,#0A1320);border:1px solid rgba(210,174,100,.22);border-left:3px solid #D2AE64;border-radius:14px;padding:16px 18px;margin-bottom:22px">
-        <div style="font:600 12px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#D2AE64;margin-bottom:10px">Diagnóstico · próximos passos</div>
-        <ul style="margin:0;padding-left:18px;color:#CBD5E1;font-size:13px;line-height:1.7">${dg.passos.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>`:''}
+      ${dg.passos.length?`<div style="background:linear-gradient(180deg,var(--ip-bg-card),var(--ip-bg));border:1px solid rgba(210,174,100,.22);border-left:3px solid var(--ip-gold);border-radius:14px;padding:16px 18px;margin-bottom:22px">
+        <div style="font:600 12px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-gold);margin-bottom:10px">Diagnóstico · próximos passos</div>
+        <ul style="margin:0;padding-left:18px;color:var(--ip-ink);font-size:13px;line-height:1.7">${dg.passos.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>`:''}
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
-        <input id="px-q" placeholder="Buscar por nome, cargo, projeto…" value="${esc(_filtro.q)}" style="flex:1;min-width:220px;background:#0A1320;border:1px solid rgba(210,174,100,.25);border-radius:11px;padding:11px 14px;color:#F7F3EC;font-size:14px"/>
-        <select id="px-st" style="background:#0A1320;border:1px solid rgba(210,174,100,.25);border-radius:11px;padding:11px 14px;color:#F7F3EC;font-size:14px">
+        <input id="px-q" placeholder="Buscar por nome, cargo, projeto…" value="${esc(_filtro.q)}" style="flex:1;min-width:220px;background:var(--ip-bg);border:1px solid rgba(210,174,100,.25);border-radius:11px;padding:11px 14px;color:var(--ip-cream);font-size:14px"/>
+        <select id="px-st" style="background:var(--ip-bg);border:1px solid rgba(210,174,100,.25);border-radius:11px;padding:11px 14px;color:var(--ip-cream);font-size:14px">
           <option value="todos"${_filtro.status==='todos'?' selected':''}>Todos os status</option>
           <option value="ativo"${_filtro.status==='ativo'?' selected':''}>Ativos</option>
           <option value="afastado"${_filtro.status==='afastado'?' selected':''}>Afastados</option>
           <option value="desligado"${_filtro.status==='desligado'?' selected':''}>Desligados</option>
         </select>
       </div>
-      <div id="px-list">${ list.length ? list.map(cardRow).join('') : `<div style="padding:48px;text-align:center;color:#6B7A90;border:1px dashed rgba(210,174,100,.2);border-radius:14px">Nenhum colaborador para o filtro atual.</div>` }</div>
+      <div id="px-list">${ list.length ? list.map(cardRow).join('') : `<div style="padding:48px;text-align:center;color:var(--ip-ink-4);border:1px dashed rgba(210,174,100,.2);border-radius:14px">Nenhum colaborador para o filtro atual.</div>` }</div>
     </div>
     <div id="px-drawer"></div>`;
     el.querySelector('#px-novo').onclick=()=>openForm();
@@ -190,20 +190,20 @@
     el.querySelector('#px-eng').onclick=openEngajamento;
     el.querySelector('#px-exp').onclick=openExport;
     const q=el.querySelector('#px-q');
-    q.oninput=()=>{ _filtro.q=q.value; const lst=el.querySelector('#px-list'); const f=filtrados(); lst.innerHTML=f.length?f.map(cardRow).join(''):`<div style="padding:48px;text-align:center;color:#6B7A90">Nenhum colaborador para o filtro atual.</div>`; bindRows(el); };
+    q.oninput=()=>{ _filtro.q=q.value; const lst=el.querySelector('#px-list'); const f=filtrados(); lst.innerHTML=f.length?f.map(cardRow).join(''):`<div style="padding:48px;text-align:center;color:var(--ip-ink-4)">Nenhum colaborador para o filtro atual.</div>`; bindRows(el); };
     el.querySelector('#px-st').onchange=(e)=>{ _filtro.status=e.target.value; render(el); };
     bindRows(el);
   }
   function cardRow(r){
-    const flag = r.tem_afastamento_ativo ? tag('afastado ativo','#E5C77E') : '';
-    const asoFlag = (r.aso_proximo_venc && new Date(r.aso_proximo_venc) < new Date(Date.now()+30*864e5)) ? tag('ASO vencendo','#E8A6A6') : '';
-    return `<div class="px-card" data-id="${r.id}" style="display:flex;align-items:center;gap:14px;background:#0C1626;border:1px solid rgba(210,174,100,.14);border-radius:13px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:.15s">
-      <div style="width:42px;height:42px;border-radius:50%;background:rgba(210,174,100,.14);display:flex;align-items:center;justify-content:center;font:700 16px Georgia;color:#E5C77E">${esc((r.nome||'?').trim().charAt(0).toUpperCase())}</div>
+    const flag = r.tem_afastamento_ativo ? tag('afastado ativo','var(--ip-gold-lum)') : '';
+    const asoFlag = (r.aso_proximo_venc && new Date(r.aso_proximo_venc) < new Date(Date.now()+30*864e5)) ? tag('ASO vencendo','var(--ip-danger)') : '';
+    return `<div class="px-card" data-id="${r.id}" style="display:flex;align-items:center;gap:14px;background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.14);border-radius:13px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:.15s">
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(210,174,100,.14);display:flex;align-items:center;justify-content:center;font:700 16px Georgia;color:var(--ip-gold-lum)">${esc((r.nome||'?').trim().charAt(0).toUpperCase())}</div>
       <div style="flex:1;min-width:0">
-        <div style="color:#F7F3EC;font-weight:600;font-size:15px">${esc(r.nome)} ${flag} ${asoFlag}</div>
-        <div style="color:#8FA0B5;font-size:12.5px;margin-top:2px">${esc(r.cargo||'sem cargo')} · ${esc(r.project_id||r.mandato_id||'—')} · ${esc(r.modelo_contrato||'—')}</div>
+        <div style="color:var(--ip-cream);font-weight:600;font-size:15px">${esc(r.nome)} ${flag} ${asoFlag}</div>
+        <div style="color:var(--ip-ink-3);font-size:12.5px;margin-top:2px">${esc(r.cargo||'sem cargo')} · ${esc(r.project_id||r.mandato_id||'—')} · ${esc(r.modelo_contrato||'—')}</div>
       </div>
-      <div style="text-align:right">${badge(r.status)}<div style="color:#6B7A90;font-size:11px;margin-top:5px">${r.origem==='innovasphere'?'da obra':'IP'}</div></div>
+      <div style="text-align:right">${badge(r.status)}<div style="color:var(--ip-ink-4);font-size:11px;margin-top:5px">${r.origem==='innovasphere'?'da obra':'IP'}</div></div>
     </div>`;
   }
   function bindRows(el){ el.querySelectorAll('.px-card').forEach(c=>{ c.onclick=()=>{ const r=_rows.find(x=>x.id===c.dataset.id); if(r) openDetail(r); }; c.onmouseenter=()=>c.style.borderColor='rgba(210,174,100,.4)'; c.onmouseleave=()=>c.style.borderColor='rgba(210,174,100,.14)'; }); }
@@ -212,15 +212,15 @@
   function drawer(html){
     const d=document.getElementById('px-drawer');
     d.innerHTML=`<div id="px-ov" style="position:fixed;inset:0;background:rgba(3,7,12,.66);z-index:9000;display:flex;justify-content:flex-end">
-      <div style="width:min(560px,100%);height:100%;background:#0A1320;border-left:1px solid rgba(210,174,100,.25);box-shadow:-12px 0 40px rgba(0,0,0,.5);overflow-y:auto;padding:26px 28px">${html}</div></div>`;
+      <div style="width:min(560px,100%);height:100%;background:var(--ip-bg);border-left:1px solid rgba(210,174,100,.25);box-shadow:-12px 0 40px rgba(0,0,0,.5);overflow-y:auto;padding:26px 28px">${html}</div></div>`;
     d.querySelector('#px-ov').onclick=(e)=>{ if(e.target.id==='px-ov') close(); };
   }
   function close(){ const d=document.getElementById('px-drawer'); if(d) d.innerHTML=''; }
 
   // ---------- admitir ----------
   function openForm(){
-    drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px"><h2 style="font:700 italic 22px Georgia;color:#E5C77E;margin:0;flex:1">Admitir colaborador</h2>${btn('px-x','✕ Fechar','ghost')}</div>
-      <div style="background:rgba(210,174,100,.08);border:1px solid rgba(210,174,100,.2);border-radius:10px;padding:10px 12px;color:#C9B98F;font-size:12px;margin-bottom:18px">Admissão é ato sensível — registrada em auditoria (${esc(_aal)}).</div>
+    drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px"><h2 style="font:700 italic 22px Georgia;color:var(--ip-gold-lum);margin:0;flex:1">Admitir colaborador</h2>${btn('px-x','✕ Fechar','ghost')}</div>
+      <div style="background:rgba(210,174,100,.08);border:1px solid rgba(210,174,100,.2);border-radius:10px;padding:10px 12px;color:var(--ip-gold-soft);font-size:12px;margin-bottom:18px">Admissão é ato sensível — registrada em auditoria (${esc(_aal)}).</div>
       ${field('CPF *','f-cpf','','text','000.000.000-00')}
       ${field('Nome completo *','f-nome','','text','Nome do colaborador')}
       ${field('Projeto / Obra *','f-proj','','text','ex.: horigens, ph')}
@@ -259,7 +259,7 @@
     await loadSatelites(r.id);
     paintDetail(r);
   }
-  function tabBtn(id,txt){ const on=_tab===id; return `<button data-tab="${id}" style="font:600 12px/1 system-ui;padding:9px 13px;border-radius:9px;cursor:pointer;border:1px solid ${on?'#E5C77E':'rgba(210,174,100,.25)'};background:${on?'rgba(210,174,100,.16)':'transparent'};color:${on?'#F7F3EC':'#9FB0C5'}">${txt}</button>`; }
+  function tabBtn(id,txt){ const on=_tab===id; return `<button data-tab="${id}" style="font:600 12px/1 system-ui;padding:9px 13px;border-radius:9px;cursor:pointer;border:1px solid ${on?'var(--ip-gold-lum)':'rgba(210,174,100,.25)'};background:${on?'rgba(210,174,100,.16)':'transparent'};color:${on?'var(--ip-cream)':'var(--ip-ink-2)'}">${txt}</button>`; }
   function paintDetail(r){
     const desligado=r.status==='desligado';
     let body='';
@@ -268,8 +268,8 @@
     else if(_tab==='sst') body=tabSst(r,desligado);
     else if(_tab==='okr') body=tabOkr(r,desligado);
     else if(_tab==='desl') body=tabDesl(r,desligado);
-    drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><h2 style="font:700 italic 22px Georgia;color:#E5C77E;margin:0;flex:1">${esc(r.nome)}</h2>${btn('px-x','✕','ghost')}</div>
-      <div style="margin-bottom:14px">${badge(r.status)} <span style="color:#6B7A90;font-size:12px;margin-left:6px">${r.origem==='innovasphere'?'origem: obra (InnovaSphere)':'origem: InnovaPeople'}</span></div>
+    drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><h2 style="font:700 italic 22px Georgia;color:var(--ip-gold-lum);margin:0;flex:1">${esc(r.nome)}</h2>${btn('px-x','✕','ghost')}</div>
+      <div style="margin-bottom:14px">${badge(r.status)} <span style="color:var(--ip-ink-4);font-size:12px;margin-left:6px">${r.origem==='innovasphere'?'origem: obra (InnovaSphere)':'origem: InnovaPeople'}</span></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">${tabBtn('resumo','Resumo')}${tabBtn('afast','Afastamentos'+(_sub.afast.length?' ('+_sub.afast.length+')':''))}${tabBtn('sst','SST'+(_sub.aso.length?' ('+_sub.aso.length+')':''))}${tabBtn('okr','OKR & Check-in'+(_sub.okr.length?' ('+_sub.okr.length+')':''))}${tabBtn('desl','Desligamento')}</div>
       <div id="px-tabbody">${body}</div>`);
     const d=document.getElementById('px-drawer');
@@ -279,17 +279,17 @@
   }
 
   function tabResumo(r,desligado){
-    return `<div style="background:#0C1626;border:1px solid rgba(210,174,100,.16);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:13.5px;line-height:1.9;color:#CBD5E1">
-        <div><span style="color:#8FA0B5">CPF:</span> ${cpfMask(r.cpf)}</div>
-        <div><span style="color:#8FA0B5">Projeto/Obra:</span> ${esc(r.project_id||'—')}</div>
-        <div><span style="color:#8FA0B5">Cargo:</span> ${esc(r.cargo||'—')} · ${esc(r.modelo_contrato||'—')}</div>
-        <div><span style="color:#8FA0B5">Admissão:</span> ${dt(r.data_admissao)}</div>
-        <div><span style="color:#8FA0B5">E-mail:</span> ${esc(r.email_institucional||'—')}</div>
-        <div><span style="color:#8FA0B5">Remuneração:</span> ${money(r.remuneracao)} <span style="color:#6B7A90;font-size:11px">(armazenada p/ handoff; plataforma não calcula tributo)</span></div>
-        ${desligado?`<div><span style="color:#8FA0B5">Desligamento:</span> ${dt(r.data_desligamento)}</div>`:''}
+    return `<div style="background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.16);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:13.5px;line-height:1.9;color:var(--ip-ink)">
+        <div><span style="color:var(--ip-ink-3)">CPF:</span> ${cpfMask(r.cpf)}</div>
+        <div><span style="color:var(--ip-ink-3)">Projeto/Obra:</span> ${esc(r.project_id||'—')}</div>
+        <div><span style="color:var(--ip-ink-3)">Cargo:</span> ${esc(r.cargo||'—')} · ${esc(r.modelo_contrato||'—')}</div>
+        <div><span style="color:var(--ip-ink-3)">Admissão:</span> ${dt(r.data_admissao)}</div>
+        <div><span style="color:var(--ip-ink-3)">E-mail:</span> ${esc(r.email_institucional||'—')}</div>
+        <div><span style="color:var(--ip-ink-3)">Remuneração:</span> ${money(r.remuneracao)} <span style="color:var(--ip-ink-4);font-size:11px">(armazenada p/ handoff; plataforma não calcula tributo)</span></div>
+        ${desligado?`<div><span style="color:var(--ip-ink-3)">Desligamento:</span> ${dt(r.data_desligamento)}</div>`:''}
       </div>
-      ${desligado?'<div style="color:#8FA0B5;font-size:12.5px">Colaborador desligado — edição bloqueada. Veja a aba Desligamento.</div>':`
-      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8FA0B5;margin:0 0 12px">Editar</div>
+      ${desligado?'<div style="color:var(--ip-ink-3);font-size:12.5px">Colaborador desligado — edição bloqueada. Veja a aba Desligamento.</div>':`
+      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin:0 0 12px">Editar</div>
       ${field('Cargo','e-cargo',r.cargo,'text')}
       ${field('Centro de custo','e-cc',r.centro_custo,'text')}
       ${field('Remuneração (armazena p/ handoff)','e-rem',r.remuneracao,'number')}
@@ -299,36 +299,36 @@
   function tabAfast(r,desligado){
     const list=_sub.afast.map(a=>{
       const aberto=a.status==='ativo';
-      return `<div style="background:#0C1626;border:1px solid rgba(210,174,100,.14);border-radius:11px;padding:12px 14px;margin-bottom:9px">
-        <div style="display:flex;align-items:center;gap:8px"><strong style="color:#F7F3EC;font-size:13.5px">${esc(labelOf(TIPO_AFAST,a.tipo))}</strong>${aberto?tag('em aberto','#E5C77E'):tag('encerrado','#7BD3A0')}</div>
-        <div style="color:#8FA0B5;font-size:12px;margin-top:4px">${dt(a.data_inicio)} → ${a.data_fim?dt(a.data_fim):'—'}${a.cid?' · CID registrado':''}</div>
-        ${a.observacoes?`<div style="color:#9FB0C5;font-size:12px;margin-top:4px">${esc(a.observacoes)}</div>`:''}
+      return `<div style="background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.14);border-radius:11px;padding:12px 14px;margin-bottom:9px">
+        <div style="display:flex;align-items:center;gap:8px"><strong style="color:var(--ip-cream);font-size:13.5px">${esc(labelOf(TIPO_AFAST,a.tipo))}</strong>${aberto?tag('em aberto','var(--ip-gold-lum)'):tag('encerrado','var(--ip-ok)')}</div>
+        <div style="color:var(--ip-ink-3);font-size:12px;margin-top:4px">${dt(a.data_inicio)} → ${a.data_fim?dt(a.data_fim):'—'}${a.cid?' · CID registrado':''}</div>
+        ${a.observacoes?`<div style="color:var(--ip-ink-2);font-size:12px;margin-top:4px">${esc(a.observacoes)}</div>`:''}
         ${aberto&&!desligado?`<div style="margin-top:8px">${btn('af-end-'+a.id,'Encerrar afastamento','ghost')}</div>`:''}
       </div>`;
-    }).join('')||'<div style="color:#6B7A90;font-size:13px;padding:14px 0">Sem afastamentos registrados.</div>';
+    }).join('')||'<div style="color:var(--ip-ink-4);font-size:13px;padding:14px 0">Sem afastamentos registrados.</div>';
     return `${list}${desligado?'':`<div style="border-top:1px solid rgba(210,174,100,.15);margin-top:14px;padding-top:16px">
-      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8FA0B5;margin-bottom:12px">Registrar afastamento</div>
+      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:12px">Registrar afastamento</div>
       ${selectField('Tipo','af-tipo','atestado',TIPO_AFAST)}
       ${field('Início','af-ini',today(),'date')}
       ${field('Fim (deixe vazio se em aberto)','af-fim','','date')}
       ${field('CID (opcional · dado de saúde · não vai a evento)','af-cid','','text','ex.: M54.5')}
       ${field('Observações','af-obs','','text')}
       <div style="margin-top:6px">${btn('af-add','Registrar afastamento','primary')}</div>
-      <div style="color:#6B7A90;font-size:11px;margin-top:8px">Registrar afastamento move o colaborador para status "afastado". CID é minimizado (LGPD).</div></div>`}`;
+      <div style="color:var(--ip-ink-4);font-size:11px;margin-top:8px">Registrar afastamento move o colaborador para status "afastado". CID é minimizado (LGPD).</div></div>`}`;
   }
   function tabSst(r,desligado){
     const list=_sub.aso.map(s=>{
       const venc = s.data_vencimento && new Date(s.data_vencimento) < new Date();
       const prox = s.data_vencimento && !venc && new Date(s.data_vencimento) < new Date(Date.now()+30*864e5);
-      return `<div style="background:#0C1626;border:1px solid rgba(210,174,100,.14);border-radius:11px;padding:12px 14px;margin-bottom:9px">
-        <div style="display:flex;align-items:center;gap:8px"><strong style="color:#F7F3EC;font-size:13.5px">ASO ${esc(labelOf(TIPO_ASO,s.tipo))}</strong>${s.resultado?tag(labelOf(RES_ASO,s.resultado), s.resultado==='inapto'?'#E8A6A6':(s.resultado==='apto'?'#7BD3A0':'#E5C77E')):''}${venc?tag('vencido','#E8A6A6'):(prox?tag('vence em breve','#E5C77E'):'')}</div>
-        <div style="color:#8FA0B5;font-size:12px;margin-top:4px">Exame: ${dt(s.data_exame)} · Vence: ${dt(s.data_vencimento)}${s.medico_nome?' · Dr(a). '+esc(s.medico_nome):''}${s.medico_crm?' (CRM '+esc(s.medico_crm)+')':''}</div>
-        ${s.anexo_path?`<div style="color:#9FB0C5;font-size:11.5px;margin-top:4px">Anexo: ${esc(s.anexo_path)}</div>`:''}
+      return `<div style="background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.14);border-radius:11px;padding:12px 14px;margin-bottom:9px">
+        <div style="display:flex;align-items:center;gap:8px"><strong style="color:var(--ip-cream);font-size:13.5px">ASO ${esc(labelOf(TIPO_ASO,s.tipo))}</strong>${s.resultado?tag(labelOf(RES_ASO,s.resultado), s.resultado==='inapto'?'var(--ip-danger)':(s.resultado==='apto'?'var(--ip-ok)':'var(--ip-gold-lum)')):''}${venc?tag('vencido','var(--ip-danger)'):(prox?tag('vence em breve','var(--ip-gold-lum)'):'')}</div>
+        <div style="color:var(--ip-ink-3);font-size:12px;margin-top:4px">Exame: ${dt(s.data_exame)} · Vence: ${dt(s.data_vencimento)}${s.medico_nome?' · Dr(a). '+esc(s.medico_nome):''}${s.medico_crm?' (CRM '+esc(s.medico_crm)+')':''}</div>
+        ${s.anexo_path?`<div style="color:var(--ip-ink-2);font-size:11.5px;margin-top:4px">Anexo: ${esc(s.anexo_path)}</div>`:''}
       </div>`;
-    }).join('')||'<div style="color:#6B7A90;font-size:13px;padding:14px 0">Sem ASO registrado.</div>';
-    return `<div style="background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.18);border-radius:10px;padding:10px 12px;color:#C9B98F;font-size:12px;margin-bottom:14px">A plataforma <strong>registra</strong> o ASO emitido pelo médico do trabalho — não emite laudo nem substitui PCMSO/PGR.</div>
+    }).join('')||'<div style="color:var(--ip-ink-4);font-size:13px;padding:14px 0">Sem ASO registrado.</div>';
+    return `<div style="background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.18);border-radius:10px;padding:10px 12px;color:var(--ip-gold-soft);font-size:12px;margin-bottom:14px">A plataforma <strong>registra</strong> o ASO emitido pelo médico do trabalho — não emite laudo nem substitui PCMSO/PGR.</div>
       ${list}${desligado?'':`<div style="border-top:1px solid rgba(210,174,100,.15);margin-top:14px;padding-top:16px">
-      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8FA0B5;margin-bottom:12px">Registrar ASO</div>
+      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:12px">Registrar ASO</div>
       ${selectField('Tipo','as-tipo','periodico',TIPO_ASO)}
       ${selectField('Resultado','as-res','apto',RES_ASO)}
       ${field('Data do exame','as-ex',today(),'date')}
@@ -341,26 +341,26 @@
   function tabOkr(r,desligado){
     const okrs=_sub.okr.map(o=>{
       const krs=Array.isArray(o.key_results)?o.key_results:[];
-      return `<div style="background:#0C1626;border:1px solid rgba(210,174,100,.14);border-radius:11px;padding:13px 15px;margin-bottom:10px">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font:600 10.5px/1 system-ui;color:#8FA0B5">${esc(o.ciclo)}</span>${o.status!=='ativo'?tag(o.status,o.status==='concluido'?'#7BD3A0':'#9FB0C5'):''}</div>
-        <div style="color:#F7F3EC;font-weight:600;font-size:14px">${esc(o.objetivo)}</div>
-        ${krs.length?`<ul style="margin:8px 0 0;padding-left:16px;color:#9FB0C5;font-size:12.5px;line-height:1.6">${krs.map(k=>`<li>${esc(k.kr||k.descricao||'')}${k.atual!=null||k.meta!=null?` <span style="color:#6B7A90">(${esc(k.atual??'—')}/${esc(k.meta??'—')}${k.unidade?' '+esc(k.unidade):''})</span>`:''}</li>`).join('')}</ul>`:''}
-        <div style="height:7px;border-radius:5px;background:#070D15;margin:9px 0 4px;overflow:hidden"><div style="width:${Math.max(0,Math.min(100,Number(o.progresso)||0))}%;height:100%;background:linear-gradient(90deg,#D2AE64,#E5C77E)"></div></div>
-        <div style="display:flex;justify-content:space-between;align-items:center"><span style="color:#8FA0B5;font-size:11.5px">${Number(o.progresso)||0}% concluído</span>${desligado?'':`<button data-okr-prog="${o.id}" style="font:600 11px/1 system-ui;padding:5px 10px;border-radius:8px;cursor:pointer;border:1px solid rgba(210,174,100,.35);background:transparent;color:#E5C77E">Atualizar progresso</button>`}</div>
+      return `<div style="background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.14);border-radius:11px;padding:13px 15px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font:600 10.5px/1 system-ui;color:var(--ip-ink-3)">${esc(o.ciclo)}</span>${o.status!=='ativo'?tag(o.status,o.status==='concluido'?'var(--ip-ok)':'var(--ip-ink-2)'):''}</div>
+        <div style="color:var(--ip-cream);font-weight:600;font-size:14px">${esc(o.objetivo)}</div>
+        ${krs.length?`<ul style="margin:8px 0 0;padding-left:16px;color:var(--ip-ink-2);font-size:12.5px;line-height:1.6">${krs.map(k=>`<li>${esc(k.kr||k.descricao||'')}${k.atual!=null||k.meta!=null?` <span style="color:var(--ip-ink-4)">(${esc(k.atual??'—')}/${esc(k.meta??'—')}${k.unidade?' '+esc(k.unidade):''})</span>`:''}</li>`).join('')}</ul>`:''}
+        <div style="height:7px;border-radius:5px;background:var(--ip-bg-deep);margin:9px 0 4px;overflow:hidden"><div style="width:${Math.max(0,Math.min(100,Number(o.progresso)||0))}%;height:100%;background:linear-gradient(90deg,var(--ip-gold),var(--ip-gold-lum))"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="color:var(--ip-ink-3);font-size:11.5px">${Number(o.progresso)||0}% concluído</span>${desligado?'':`<button data-okr-prog="${o.id}" style="font:600 11px/1 system-ui;padding:5px 10px;border-radius:8px;cursor:pointer;border:1px solid rgba(210,174,100,.35);background:transparent;color:var(--ip-gold-lum)">Atualizar progresso</button>`}</div>
       </div>`;
-    }).join('')||'<div style="color:#6B7A90;font-size:13px;padding:8px 0">Sem OKR neste colaborador.</div>';
+    }).join('')||'<div style="color:var(--ip-ink-4);font-size:13px;padding:8px 0">Sem OKR neste colaborador.</div>';
     const checks=_sub.checkin.map(c=>`<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(210,174,100,.08)">
         <span style="font-size:16px">${['','😟','😕','😐','🙂','😄'][c.humor||0]||'·'}</span>
-        <div style="flex:1"><div style="color:#9FB0C5;font-size:11px">${dt(c.data)}</div>${c.progresso_nota?`<div style="color:#CBD5E1;font-size:12.5px">${esc(c.progresso_nota)}</div>`:''}${c.bloqueios?`<div style="color:#E8A6A6;font-size:12px">⚠ ${esc(c.bloqueios)}</div>`:''}</div>
-      </div>`).join('')||'<div style="color:#6B7A90;font-size:12.5px;padding:6px 0">Sem check-ins.</div>';
-    return `<div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8FA0B5;margin-bottom:10px">Objetivos & Resultados-chave</div>
+        <div style="flex:1"><div style="color:var(--ip-ink-2);font-size:11px">${dt(c.data)}</div>${c.progresso_nota?`<div style="color:var(--ip-ink);font-size:12.5px">${esc(c.progresso_nota)}</div>`:''}${c.bloqueios?`<div style="color:var(--ip-danger);font-size:12px">⚠ ${esc(c.bloqueios)}</div>`:''}</div>
+      </div>`).join('')||'<div style="color:var(--ip-ink-4);font-size:12.5px;padding:6px 0">Sem check-ins.</div>';
+    return `<div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:10px">Objetivos & Resultados-chave</div>
       ${okrs}
       ${desligado?'':`<div style="border-top:1px solid rgba(210,174,100,.15);margin-top:12px;padding-top:14px">
         ${field('Ciclo','ok-ciclo','2026-T2','text','ex.: 2026-T2')}
         ${field('Objetivo','ok-obj','','text','O que se quer alcançar')}
         ${field('Key results (1 por linha: descrição | meta | unidade)','ok-krs','','text','Ex.: Reduzir retrabalho | 10 | %')}
         <div style="margin-top:4px">${btn('ok-add','Criar OKR','primary')}</div></div>`}
-      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8FA0B5;margin:20px 0 10px">Check-ins recentes</div>
+      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin:20px 0 10px">Check-ins recentes</div>
       ${checks}
       ${desligado?'':`<div style="border-top:1px solid rgba(210,174,100,.15);margin-top:12px;padding-top:14px">
         ${selectField('Humor','ck-humor','3',[['5','😄 Ótimo'],['4','🙂 Bem'],['3','😐 Neutro'],['2','😕 Difícil'],['1','😟 Ruim']])}
@@ -370,17 +370,17 @@
   }
   function tabDesl(r,desligado){
     if(_sub.desl){ const d=_sub.desl;
-      return `<div style="background:#0C1626;border:1px solid rgba(210,174,100,.16);border-radius:12px;padding:14px 16px;font-size:13.5px;line-height:1.9;color:#CBD5E1">
-        <div><span style="color:#8FA0B5">Tipo:</span> ${esc(labelOf(TIPO_DESL,d.tipo))}</div>
-        <div><span style="color:#8FA0B5">Aviso prévio:</span> ${esc(labelOf(AVISO,d.aviso_previo))}</div>
-        <div><span style="color:#8FA0B5">Data do aviso:</span> ${dt(d.data_aviso)}</div>
-        <div><span style="color:#8FA0B5">Desligamento:</span> ${dt(d.data_desligamento)}</div>
-        <div><span style="color:#8FA0B5">Homologação:</span> ${esc(d.homologacao_status)}${d.homologacao_data?' · '+dt(d.homologacao_data):''}</div>
-        ${d.motivo?`<div><span style="color:#8FA0B5">Motivo:</span> ${esc(d.motivo)}</div>`:''}
-      </div><div style="color:#6B7A90;font-size:12px;margin-top:12px">Rescisão e verbas são calculadas pela contabilidade (fora da plataforma). Use o Handoff contábil para exportar.</div>`;
+      return `<div style="background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.16);border-radius:12px;padding:14px 16px;font-size:13.5px;line-height:1.9;color:var(--ip-ink)">
+        <div><span style="color:var(--ip-ink-3)">Tipo:</span> ${esc(labelOf(TIPO_DESL,d.tipo))}</div>
+        <div><span style="color:var(--ip-ink-3)">Aviso prévio:</span> ${esc(labelOf(AVISO,d.aviso_previo))}</div>
+        <div><span style="color:var(--ip-ink-3)">Data do aviso:</span> ${dt(d.data_aviso)}</div>
+        <div><span style="color:var(--ip-ink-3)">Desligamento:</span> ${dt(d.data_desligamento)}</div>
+        <div><span style="color:var(--ip-ink-3)">Homologação:</span> ${esc(d.homologacao_status)}${d.homologacao_data?' · '+dt(d.homologacao_data):''}</div>
+        ${d.motivo?`<div><span style="color:var(--ip-ink-3)">Motivo:</span> ${esc(d.motivo)}</div>`:''}
+      </div><div style="color:var(--ip-ink-4);font-size:12px;margin-top:12px">Rescisão e verbas são calculadas pela contabilidade (fora da plataforma). Use o Handoff contábil para exportar.</div>`;
     }
-    if(desligado) return '<div style="color:#8FA0B5;font-size:13px">Colaborador desligado, sem detalhe de rescisão registrado.</div>';
-    return `<div style="background:rgba(199,125,125,.08);border:1px solid rgba(199,125,125,.25);border-radius:10px;padding:10px 12px;color:#E8A6A6;font-size:12px;margin-bottom:14px">Zona sensível. O desligamento emite <code>pessoa:desligada</code>, registra o detalhe de rescisão e move o status. Ato auditado (sessão ${esc(_aal)}).</div>
+    if(desligado) return '<div style="color:var(--ip-ink-3);font-size:13px">Colaborador desligado, sem detalhe de rescisão registrado.</div>';
+    return `<div style="background:rgba(199,125,125,.08);border:1px solid rgba(199,125,125,.25);border-radius:10px;padding:10px 12px;color:var(--ip-danger);font-size:12px;margin-bottom:14px">Zona sensível. O desligamento emite <code>pessoa:desligada</code>, registra o detalhe de rescisão e move o status. Ato auditado (sessão ${esc(_aal)}).</div>
       ${selectField('Tipo de desligamento','dl-tipo','sem_justa_causa',TIPO_DESL)}
       ${selectField('Aviso prévio','dl-aviso','indenizado',AVISO)}
       ${field('Data do aviso','dl-aviso-data',today(),'date')}
@@ -533,14 +533,14 @@
     let rows=[]; const v=await sb.from('v_core_alocacao').select('*').order('project_id');
     if(!v.error) rows=v.data||[];
     const max=Math.max(1,...rows.map(x=>x.total));
-    drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px"><h2 style="font:700 italic 22px Georgia;color:#E5C77E;margin:0;flex:1">Alocação por obra</h2>${btn('px-x','✕','ghost')}</div>
-      <div style="color:#8FA0B5;font-size:12.5px;margin-bottom:16px">Headcount por projeto, em tempo real (core_colaborador).</div>
-      ${rows.length?rows.map(x=>`<div style="background:#0C1626;border:1px solid rgba(210,174,100,.14);border-radius:11px;padding:13px 15px;margin-bottom:9px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline"><strong style="color:#F7F3EC">${esc(x.project_id)}</strong><span style="color:#E5C77E;font:700 italic 18px Georgia">${x.total}</span></div>
-        <div style="height:7px;border-radius:5px;background:#070D15;margin:8px 0;overflow:hidden;display:flex">
-          <div style="width:${x.ativos/max*100}%;background:#2E8B57"></div><div style="width:${x.afastados/max*100}%;background:#D2AE64"></div><div style="width:${x.desligados/max*100}%;background:#8B4A4A"></div></div>
-        <div style="color:#8FA0B5;font-size:11.5px">${x.ativos} ativos · ${x.afastados} afastados · ${x.desligados} desligados</div>
-      </div>`).join(''):'<div style="color:#6B7A90;padding:20px 0">Sem dados de alocação.</div>'}`);
+    drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px"><h2 style="font:700 italic 22px Georgia;color:var(--ip-gold-lum);margin:0;flex:1">Alocação por obra</h2>${btn('px-x','✕','ghost')}</div>
+      <div style="color:var(--ip-ink-3);font-size:12.5px;margin-bottom:16px">Headcount por projeto, em tempo real (core_colaborador).</div>
+      ${rows.length?rows.map(x=>`<div style="background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.14);border-radius:11px;padding:13px 15px;margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><strong style="color:var(--ip-cream)">${esc(x.project_id)}</strong><span style="color:var(--ip-gold-lum);font:700 italic 18px Georgia">${x.total}</span></div>
+        <div style="height:7px;border-radius:5px;background:var(--ip-bg-deep);margin:8px 0;overflow:hidden;display:flex">
+          <div style="width:${x.ativos/max*100}%;background:var(--ip-ok-deep)"></div><div style="width:${x.afastados/max*100}%;background:var(--ip-gold)"></div><div style="width:${x.desligados/max*100}%;background:var(--ip-danger-3)"></div></div>
+        <div style="color:var(--ip-ink-3);font-size:11.5px">${x.ativos} ativos · ${x.afastados} afastados · ${x.desligados} desligados</div>
+      </div>`).join(''):'<div style="color:var(--ip-ink-4);padding:20px 0">Sem dados de alocação.</div>'}`);
     document.getElementById('px-drawer').querySelector('#px-x').onclick=close;
   }
 
@@ -554,30 +554,30 @@
     const clima=(cl&&cl.data)||[];
     const bench=(bm&&bm.data)||null;
     const dimRow=(d)=>{ const pct=Math.max(0,Math.min(100,(Number(d.media)||0)/5*100));
-      return `<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:12.5px;color:#CBD5E1"><span>${esc(d.dimensao)}</span><span style="color:#E5C77E">${d.media} <span style="color:#6B7A90">(n=${d.n})</span></span></div>
-        <div style="height:6px;border-radius:4px;background:#070D15;margin-top:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:linear-gradient(90deg,#D2AE64,#E5C77E)"></div></div></div>`; };
-    const benchHtml = bench && bench.dimensoes ? (bench.dimensoes.length ? bench.dimensoes.map(dimRow).join('') : '<div style="color:#6B7A90;font-size:12.5px">Sem dimensões com amostra suficiente.</div>') : '<div style="color:#6B7A90;font-size:12.5px">Indisponível.</div>';
-    drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><h2 style="font:700 italic 22px Georgia;color:#E5C77E;margin:0;flex:1">Engajamento</h2>${btn('px-x','✕','ghost')}</div>
-      <div style="background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.18);border-radius:10px;padding:10px 12px;color:#C9B98F;font-size:12px;margin-bottom:18px">O Pulso é <strong>anônimo por desenho</strong>. Aqui você vê o clima agregado — grupos com menos de 5 respostas são suprimidos (LGPD); nunca o indivíduo.</div>
-      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8FA0B5;margin-bottom:12px">Benchmark por dimensão (6D · anônimo)</div>
+      return `<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--ip-ink)"><span>${esc(d.dimensao)}</span><span style="color:var(--ip-gold-lum)">${d.media} <span style="color:var(--ip-ink-4)">(n=${d.n})</span></span></div>
+        <div style="height:6px;border-radius:4px;background:var(--ip-bg-deep);margin-top:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:linear-gradient(90deg,var(--ip-gold),var(--ip-gold-lum))"></div></div></div>`; };
+    const benchHtml = bench && bench.dimensoes ? (bench.dimensoes.length ? bench.dimensoes.map(dimRow).join('') : '<div style="color:var(--ip-ink-4);font-size:12.5px">Sem dimensões com amostra suficiente.</div>') : '<div style="color:var(--ip-ink-4);font-size:12.5px">Indisponível.</div>';
+    drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><h2 style="font:700 italic 22px Georgia;color:var(--ip-gold-lum);margin:0;flex:1">Engajamento</h2>${btn('px-x','✕','ghost')}</div>
+      <div style="background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.18);border-radius:10px;padding:10px 12px;color:var(--ip-gold-soft);font-size:12px;margin-bottom:18px">O Pulso é <strong>anônimo por desenho</strong>. Aqui você vê o clima agregado — grupos com menos de 5 respostas são suprimidos (LGPD); nunca o indivíduo.</div>
+      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:12px">Benchmark por dimensão (6D · anônimo)</div>
       ${benchHtml}
-      ${bench&&bench.suprimidas?`<div style="color:#6B7A90;font-size:11px;margin-top:6px">${bench.suprimidas} dimensão(ões) suprimida(s) por amostra &lt; 5.</div>`:''}
-      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8FA0B5;margin:22px 0 12px">Clima por equipe</div>
-      ${clima.length?clima.map(c=>`<div style="background:#0C1626;border:1px solid rgba(210,174,100,.14);border-radius:11px;padding:12px 14px;margin-bottom:9px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline"><strong style="color:#F7F3EC;font-size:13.5px">${esc(c.equipe)}</strong><span style="color:#8FA0B5;font-size:11.5px">${c.respostas} resposta(s)</span></div>
-        ${c.suprimido_privacidade?'<div style="color:#6B7A90;font-size:12px;margin-top:4px">Score oculto — menos de 5 respostas (privacidade).</div>':`<div style="color:#E5C77E;font:700 italic 17px Georgia;margin-top:4px">${c.score_medio} <span style="color:#6B7A90;font-size:12px;font-style:normal">score médio</span></div>`}
-      </div>`).join(''):'<div style="color:#6B7A90;padding:14px 0">Sem dados de Pulso ainda.</div>'}`);
+      ${bench&&bench.suprimidas?`<div style="color:var(--ip-ink-4);font-size:11px;margin-top:6px">${bench.suprimidas} dimensão(ões) suprimida(s) por amostra &lt; 5.</div>`:''}
+      <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin:22px 0 12px">Clima por equipe</div>
+      ${clima.length?clima.map(c=>`<div style="background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.14);border-radius:11px;padding:12px 14px;margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><strong style="color:var(--ip-cream);font-size:13.5px">${esc(c.equipe)}</strong><span style="color:var(--ip-ink-3);font-size:11.5px">${c.respostas} resposta(s)</span></div>
+        ${c.suprimido_privacidade?'<div style="color:var(--ip-ink-4);font-size:12px;margin-top:4px">Score oculto — menos de 5 respostas (privacidade).</div>':`<div style="color:var(--ip-gold-lum);font:700 italic 17px Georgia;margin-top:4px">${c.score_medio} <span style="color:var(--ip-ink-4);font-size:12px;font-style:normal">score médio</span></div>`}
+      </div>`).join(''):'<div style="color:var(--ip-ink-4);padding:14px 0">Sem dados de Pulso ainda.</div>'}`);
     document.getElementById('px-drawer').querySelector('#px-x').onclick=close;
   }
 
   // ---------- P7 · handoff contabil (export estruturado; NAO calcula tributo) ----------
   async function openExport(){
-    drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px"><h2 style="font:700 italic 22px Georgia;color:#E5C77E;margin:0;flex:1">Handoff contábil</h2>${btn('px-x','✕','ghost')}</div>
-      <div style="background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.18);border-radius:10px;padding:11px 13px;color:#C9B98F;font-size:12.5px;margin-bottom:18px">Exporta o cadastro de pessoas em formato estruturado para a contabilidade. A plataforma <strong>não calcula tributo, folha líquida nem eSocial</strong> — apenas entrega o dado-fonte para quem faz o cálculo.</div>
+    drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px"><h2 style="font:700 italic 22px Georgia;color:var(--ip-gold-lum);margin:0;flex:1">Handoff contábil</h2>${btn('px-x','✕','ghost')}</div>
+      <div style="background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.18);border-radius:10px;padding:11px 13px;color:var(--ip-gold-soft);font-size:12.5px;margin-bottom:18px">Exporta o cadastro de pessoas em formato estruturado para a contabilidade. A plataforma <strong>não calcula tributo, folha líquida nem eSocial</strong> — apenas entrega o dado-fonte para quem faz o cálculo.</div>
       ${selectField('Escopo','xp-scope','ativos',[['ativos','Somente ativos'],['todos','Todos os status']])}
       ${selectField('Formato','xp-fmt','csv',[['csv','CSV (planilha)'],['json','JSON']])}
       <div style="margin-top:8px">${btn('xp-go','Gerar e baixar','primary')}</div>
-      <div style="color:#6B7A90;font-size:11px;margin-top:10px">A exportação é registrada em auditoria (sessão ${esc(_aal)}).</div>`);
+      <div style="color:var(--ip-ink-4);font-size:11px;margin-top:10px">A exportação é registrada em auditoria (sessão ${esc(_aal)}).</div>`);
     const d=document.getElementById('px-drawer');
     d.querySelector('#px-x').onclick=close;
     d.querySelector('#xp-go').onclick=fazerExport;
