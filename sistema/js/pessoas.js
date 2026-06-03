@@ -181,7 +181,7 @@
           <option value="desligado"${_filtro.status==='desligado'?' selected':''}>Desligados</option>
         </select>
       </div>
-      <div id="px-list">${ list.length ? list.map(cardRow).join('') : `<div style="padding:48px;text-align:center;color:var(--ip-ink-4);border:1px dashed rgba(210,174,100,.2);border-radius:14px">Nenhum colaborador para o filtro atual.</div>` }</div>
+      <div id="px-list">${ list.length ? list.map(cardRow).join('') : (window.IpUI && _filtro.q==='' && _filtro.status==='todos' ? window.IpUI.emptyState({icon:'☶',eyebrow:'Sem colaboradores',title:'Nenhum colaborador ainda',description:'Admita o primeiro pelo botão acima, ou sincronize as admissões que já existem na obra.'}) : `<div style="padding:48px;text-align:center;color:var(--ip-ink-4);border:1px dashed rgba(210,174,100,.2);border-radius:14px">Nenhum colaborador para o filtro atual.</div>`) }</div>
     </div>
     <div id="px-drawer"></div>`;
     el.querySelector('#px-novo').onclick=()=>openForm();
@@ -623,6 +623,6 @@
     });
   }
 
-  function mount(el){ _el=el; refreshAal(); reload().then(()=>{ render(el); subscribe(); }); }
+  function mount(el){ _el=el; if(window.IpUI&&el) el.innerHTML='<div style="max-width:1180px;margin:0 auto;padding:28px 32px">'+window.IpUI.skeleton(6)+'</div>'; refreshAal(); reload().then(()=>{ render(el); subscribe(); }); }
   window.IpPessoas={ mount, _isShim:false };
 })();

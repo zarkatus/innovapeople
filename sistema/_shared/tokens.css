@@ -47,3 +47,7 @@ html[data-theme="light"]{
   --ip-danger-2:   #8B4A4A;
   --ip-danger-3:   #6E3838;
 }
+/* Acessibilidade · respeita preferência de movimento reduzido (IP-4) */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+}
