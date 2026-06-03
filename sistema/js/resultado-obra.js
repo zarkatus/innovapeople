@@ -24,7 +24,7 @@
     el.innerHTML=`<div style="max-width:1080px;margin:0 auto;padding:28px 32px">
       <h1 style="font:700 italic 27px Georgia;color:var(--ip-gold-lum);margin:0 0 6px">Resultado por Obra</h1>
       <div style="color:var(--ip-ink-3);font-size:13px;margin-bottom:22px">Apuração da participação: <strong>receita informada − custos reais − cascata do waterfall</strong>. A plataforma não calcula tributo (use o Handoff contábil). Selecione a obra.</div>
-      <div id="ro-list">${_obras.length?_obras.map(cardObra).join(''):'<div style="padding:40px;text-align:center;color:var(--ip-ink-4);border:1px dashed rgba(210,174,100,.2);border-radius:14px">Nenhum empreendimento cadastrado.</div>'}</div>
+      <div id="ro-list">${_obras.length?_obras.map(cardObra).join(''):(window.IpUI?window.IpUI.emptyState({icon:'⚖',eyebrow:'Sem obras',title:'Nenhum empreendimento cadastrado',description:'Quando houver obra com estrutura de participação (sócios + waterfall), ela aparece aqui para apuração.'}):'<div style="padding:40px;text-align:center;color:var(--ip-ink-4);border:1px dashed rgba(210,174,100,.2);border-radius:14px">Nenhum empreendimento cadastrado.</div>')}</div>
     </div><div id="ro-drawer"></div>`;
     el.querySelectorAll('.ro-card').forEach(c=>c.onclick=()=>openObra(c.dataset.id));
   }
@@ -97,6 +97,6 @@
     if(r.ok){ if(window.IspCelebra) try{window.IspCelebra()}catch(_){}; T.toast('Apuração salva (rascunho).'); }
   }
 
-  function mount(el){ _el=el; reload().then(()=>render(el)); }
+  function mount(el){ _el=el; if(window.IpUI&&el) el.innerHTML='<div style="max-width:1080px;margin:0 auto;padding:28px 32px">'+window.IpUI.skeleton(5)+'</div>'; reload().then(()=>render(el)); }
   window.IpResultado={ mount, _isShim:false };
 })();
