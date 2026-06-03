@@ -2626,7 +2626,10 @@ async function openProgramas(){
           <div style="margin-top:10px;display:flex;gap:6px;font-size:11px;color:var(--ink3);flex-wrap:wrap">
             ${p.inicio?`<span>início: ${new Date(p.inicio).toLocaleDateString('pt-BR')}</span>`:''}
             ${p.fim_planejado?`<span>fim planejado: ${new Date(p.fim_planejado).toLocaleDateString('pt-BR')}</span>`:''}
-            <span style="margin-left:auto"><button onclick="openProgramaMarcos('${esc(p.id)}','${esc(p.nome)}')" style="padding:4px 10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--navy);color:var(--cream);border:none;border-radius:3px;cursor:pointer;font-family:inherit">Marcos (${evm.marcos||0})</button></span>
+            <span style="margin-left:auto;display:flex;gap:6px">
+              <button onclick="diagnosticoIAPrograma('${esc(p.id)}','${esc(p.nome)}')" style="padding:4px 10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--gold-deep);border:1px solid var(--gold-deep);border-radius:3px;cursor:pointer;font-family:inherit">◆ Diagnóstico IA</button>
+              <button onclick="openProgramaMarcos('${esc(p.id)}','${esc(p.nome)}')" style="padding:4px 10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--navy);color:var(--cream);border:none;border-radius:3px;cursor:pointer;font-family:inherit">Marcos (${evm.marcos||0})</button>
+            </span>
           </div>
         </div>`;
       }).join('');
@@ -2732,14 +2735,51 @@ function apontarMarco(marcoId,programaId,nome){
       ev.preventDefault();const f=ev.target;const r=body.querySelector('#am-result');r.innerHTML='<div class="dr-info">Apontando...</div>';
       try{
         const sb=window.__IP_SB;
-        const upd={ev:+f.ev.value,ac:+f.ac.value,status:f.status.value};
-        if(f.data_real.value)upd.data_real=f.data_real.value;
-        const {error}=await sb.from('ip_programa_marcos').update(upd).eq('id',marcoId);
+        // Cognitivo: usa fn_ip_apontar_marco (recalcula EVM do programa + PROPAGA evento em
+        // ip_eventos -> Sala de Guerra / Próximos Passos / agente programa_evm). EV é informado
+        // direto; passamos pct=null e ev_delta como a diferença até o EV alvo. Como a RPC soma
+        // ev_delta ao ev atual, calculamos o delta a partir do EV atual do marco.
+        const cur=await sb.from('ip_programa_marcos').select('ev,pv').eq('id',marcoId).maybeSingle();
+        const evAlvo=+f.ev.value, evAtual=+( (cur.data&&cur.data.ev)||0 );
+        const pct = (cur.data&&cur.data.pv)? Math.min(100, Math.round(evAlvo/(+cur.data.pv)*100)) : (f.status.value==='concluido'?100:null);
+        const acAtual=+(await sb.from('ip_programa_marcos').select('ac').eq('id',marcoId).maybeSingle()).data?.ac||0;
+        const {data,error}=await sb.rpc('fn_ip_apontar_marco',{ p_marco_id:marcoId, p_pct:pct, p_ev_delta:(evAlvo-evAtual), p_ac_delta:(+f.ac.value - acAtual), p_data_ref:(f.data_real.value||new Date().toISOString().slice(0,10)), p_obs:'apontado via UI' });
         if(error)throw error;
-        r.innerHTML='<div class="dr-ok">✓ EV/AC apontados. Métricas EVM do programa recalculadas em tempo real.</div>';
-        setTimeout(()=>openProgramaMarcos(programaId,nome),900);
+        const evm=data&&data.evm||{};
+        r.innerHTML='<div class="dr-ok">✓ Apontado e propagado. CPI '+(evm.cpi!=null?(+evm.cpi).toFixed(2):'—')+' · SPI '+(evm.spi!=null?(+evm.spi).toFixed(2):'—')+'. O agente lê este sinal na Sala de Guerra.</div>';
+        setTimeout(()=>openProgramaMarcos(programaId,nome),1100);
       }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
     });
+  });
+}
+// Diagnóstico IA cognitivo de um programa: roda o agente (gera sinais EVM determinísticos)
+// + enriquece com leitura de IA (IpAI/ai-proxy). Mostra diagnóstico + próximos passos.
+async function diagnosticoIAPrograma(programaId,nome){
+  openDrawer('Diagnóstico IA · '+nome,'<div id="di-body"><div class="dr-info">Lendo o EVM e rodando o agente…</div></div>',async body=>{
+    const sb=window.__IP_SB;const t=body.querySelector('#di-body');if(!sb)return;
+    try{
+      // 1) EVM real
+      const evm=(await sb.rpc('fn_ip_evm_resumo',{p_programa_id:programaId})).data||{};
+      // 2) agente determinístico (gera sinal + ação IREU se houver desvio)
+      const ag=(await sb.rpc('fn_ip_agent_programa',{p_programa_id:programaId})).data||{};
+      const cpi=evm.cpi!=null?(+evm.cpi).toFixed(2):'—', spi=evm.spi!=null?(+evm.spi).toFixed(2):'—';
+      let html=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+        <div style="text-align:center;padding:12px;background:var(--cream2);border-radius:6px"><div style="font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.12em">CPI</div><div style="font-family:var(--mono);font-size:20px;color:${evm.cpi==null?'var(--ink3)':+evm.cpi<.9?'var(--red)':'var(--emerald)'}">${cpi}</div></div>
+        <div style="text-align:center;padding:12px;background:var(--cream2);border-radius:6px"><div style="font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.12em">SPI</div><div style="font-family:var(--mono);font-size:20px;color:${evm.spi==null?'var(--ink3)':+evm.spi<.9?'var(--red)':'var(--emerald)'}">${spi}</div></div>
+        <div style="text-align:center;padding:12px;background:var(--cream2);border-radius:6px"><div style="font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.12em">MARCOS</div><div style="font-family:var(--mono);font-size:20px;color:var(--navy)">${evm.marcos||0}</div></div>
+      </div>
+      <div style="padding:12px 14px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);margin-bottom:14px">Agente <code class="dr-code">programa_evm</code> rodou: <strong>${ag.sinais_gerados||0}</strong> sinal(is) gerado(s) na Sala de Guerra / Próximos Passos.</div>
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">Leitura cognitiva (IA)</div>
+      <div id="di-ai" style="font-family:var(--serif);font-size:14px;color:var(--ink2);line-height:1.6;font-style:italic">Consultando IA…</div>`;
+      t.innerHTML=html;
+      // 3) enriquecimento IA via ai-proxy (IpAI)
+      if(window.IpAI){
+        const prompt='Você é um analista de programas de desenvolvimento de pessoas (EVM). Dados do programa "'+nome+'": CPI='+cpi+' (valor entregue / custo real), SPI='+spi+' (avanço / planejado), '+(evm.marcos||0)+' marcos, status '+(evm.status||'?')+'. Em até 3 frases diretas e calorosas (sem markdown): (1) o que esses números significam para este programa; (2) o risco principal; (3) UMA próxima ação concreta. Tom executivo, português do Brasil.';
+        const ai=await window.IpAI.ask(prompt,{maxTokens:300});
+        const el=body.querySelector('#di-ai');
+        if(el) el.textContent = ai.ok? ai.text : 'IA indisponível no momento — o diagnóstico determinístico acima já priorizou as ações.';
+      } else { const el=body.querySelector('#di-ai'); if(el) el.textContent='Helper de IA não carregado nesta página.'; }
+    }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
   });
 }
 // Redireciona demos antigas para a versao real
