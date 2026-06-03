@@ -200,7 +200,8 @@ em{font-style:italic}
 }
 </style>
 <link rel="stylesheet" href="/sistema/_shared/sidebar.css"><script src="/sistema/_shared/sidebar.js" defer></script>
-<script src="/sistema/_shared/ip-ai.js" defer></script></head>
+<script src="/sistema/_shared/ip-ai.js" defer></script>
+<script src="/sistema/_shared/ip-concierge.js" defer></script></head>
 
 <body>
 
@@ -1391,24 +1392,34 @@ function cncResetChat(){
 async function cncSend(q){
   const chat=document.querySelector('#cnc-chat');if(!chat)return;
   chat.insertAdjacentHTML('beforeend',`<div class="cnc-msg-u">${esc(q)}</div>`);
-  chat.insertAdjacentHTML('beforeend','<div class="cnc-typing" id="cnc-typing">Consultando dados reais e formulando resposta...</div>');
+  chat.insertAdjacentHTML('beforeend','<div class="cnc-typing" id="cnc-typing">Pensando…</div>');
   chat.scrollTop=chat.scrollHeight;
+  const typing=()=>document.getElementById('cnc-typing');
+  // COGNITIVO: usa o motor tool-use real (IpConcierge) — a IA decide quais dados ler e lê de
+  // verdade sob RLS. Fallback p/ a EF antiga (snapshot) se o motor nao estiver carregado.
+  const toolLabel={listar_programas:'lendo programas',contar_colaboradores:'contando equipe',clima_pulso:'lendo clima das equipes',sinais_pendentes:'lendo sinais dos agentes',acoes_prioritarias:'priorizando por IREU',resultado_obras:'lendo resultado das obras'};
   try{
+    if(window.IpConcierge){
+      const res=await window.IpConcierge.ask(q,{ onStep:(s)=>{ const t=typing(); if(t&&s.tipo==='tool') t.textContent=(toolLabel[s.nome]||s.nome)+'…'; } });
+      typing()?.remove();
+      if(!res.ok) throw new Error(res.error||'falha');
+      window.__CNC_HISTORY.push({role:'user',content:q}); window.__CNC_HISTORY.push({role:'assistant',content:res.text});
+      const usou = res.steps&&res.steps.length? `<div style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--ink3);margin-bottom:6px;text-transform:uppercase">leu: ${res.steps.join(' · ')}</div>`:'';
+      chat.insertAdjacentHTML('beforeend',`<div class="cnc-msg-a">${usou}${renderConciergeMd(res.text)}</div>`);
+      chat.scrollTop=chat.scrollHeight; return;
+    }
+    // fallback: EF antiga
     const sb=window.__IP_SB;if(!sb)throw new Error('Supabase não carregou');
-    const {data,error}=await sb.functions.invoke('innovapeople-concierge-chat',{
-      body:{pergunta:q, history:window.__CNC_HISTORY.slice(-6)}
-    });
-    document.getElementById('cnc-typing')?.remove();
-    if(error)throw error;
-    if(data?.erro)throw new Error(data.erro);
+    const {data,error}=await sb.functions.invoke('innovapeople-concierge-chat',{ body:{pergunta:q, history:window.__CNC_HISTORY.slice(-6)} });
+    typing()?.remove();
+    if(error)throw error; if(data?.erro)throw new Error(data.erro);
     const resposta=data?.resposta||'(resposta vazia)';
-    window.__CNC_HISTORY.push({role:'user',content:q});
-    window.__CNC_HISTORY.push({role:'assistant',content:resposta});
+    window.__CNC_HISTORY.push({role:'user',content:q}); window.__CNC_HISTORY.push({role:'assistant',content:resposta});
     chat.insertAdjacentHTML('beforeend',`<div class="cnc-msg-a">${renderConciergeMd(resposta)}</div>`);
     chat.scrollTop=chat.scrollHeight;
   }catch(e){
-    document.getElementById('cnc-typing')?.remove();
-    chat.insertAdjacentHTML('beforeend',`<div class="cnc-err">Concierge falhou: ${esc(e.message||String(e))}<br><small>Se persistir, verifique se ANTHROPIC_API_KEY está configurada no Supabase.</small></div>`);
+    typing()?.remove();
+    chat.insertAdjacentHTML('beforeend',`<div class="cnc-err">Concierge falhou: ${esc(e.message||String(e))}</div>`);
     chat.scrollTop=chat.scrollHeight;
   }
 }
