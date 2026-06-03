@@ -83,5 +83,52 @@
     return { close:close, box:box };
   }
 
-  window.IpUI = { esc:esc, kpi:kpi, badge:badge, btn:btn, field:field, select:select, emptyState:emptyState, skeleton:skeleton, toast:toast, modal:modal };
+  // ---- Gráficos SVG vanilla (IP←IS-5 · portado de notas-fiscais.js, tokens --ip-*) ----
+  // doughnut(slices[{l,v,c}], altura) — rosca com legenda e total no centro. Sem libs.
+  function doughnut(slices, alturaPx){
+    alturaPx = alturaPx || 220;
+    slices = slices || [];
+    var total = slices.reduce(function(s,x){return s+(Number(x.v)||0);},0);
+    if(total<=0) return emptyState({icon:'🍩',title:'Sem composição',description:'Quando houver dados, o gráfico aparece aqui.'});
+    var cx=120, cy=120, rOut=100, rIn=62, ang0=-Math.PI/2, paths='';
+    slices.forEach(function(s){
+      var frac=(Number(s.v)||0)/total; if(frac<=0) return;
+      var ang1=ang0+frac*Math.PI*2, large=frac>0.5?1:0;
+      var x0=cx+rOut*Math.cos(ang0), y0=cy+rOut*Math.sin(ang0);
+      var x1=cx+rOut*Math.cos(ang1), y1=cy+rOut*Math.sin(ang1);
+      var xi0=cx+rIn*Math.cos(ang1), yi0=cy+rIn*Math.sin(ang1);
+      var xi1=cx+rIn*Math.cos(ang0), yi1=cy+rIn*Math.sin(ang0);
+      paths+='<path d="M'+x0+','+y0+' A'+rOut+','+rOut+' 0 '+large+' 1 '+x1+','+y1+' L'+xi0+','+yi0+' A'+rIn+','+rIn+' 0 '+large+' 0 '+xi1+','+yi1+' Z" fill="'+(s.c||'var(--ip-gold)')+'"/>';
+      ang0=ang1;
+    });
+    var legend=slices.filter(function(s){return (Number(s.v)||0)>0;}).map(function(s){
+      var pct=((Number(s.v)||0)/total*100).toFixed(0)+'%';
+      return '<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ip-ink-2);margin-bottom:5px"><span style="width:10px;height:10px;border-radius:2px;background:'+(s.c||'var(--ip-gold)')+'"></span><span style="flex:1">'+esc(s.l)+'</span><span style="color:var(--ip-cream);font-variant-numeric:tabular-nums">'+pct+'</span></div>';
+    }).join('');
+    return '<div role="img" aria-label="Gráfico de composição" style="display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center">'
+      +'<svg viewBox="0 0 240 240" width="200" height="200" aria-hidden="true">'+paths
+      +'<text x="120" y="116" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="32" fill="var(--ip-cream)">'+total+'</text>'
+      +'<text x="120" y="138" text-anchor="middle" font-size="9" letter-spacing="3" fill="var(--ip-ink-3)">TOTAL</text></svg>'
+      +'<div>'+legend+'</div></div>';
+  }
+  // barras(itens[{l,v}], formato) — ranking horizontal. formato:'moeda'|undefined.
+  function barras(itens, formato){
+    itens = itens || [];
+    if(!itens.length) return emptyState({icon:'📊',title:'Sem ranking',description:'Sem dados para exibir.'});
+    var max=Math.max.apply(null, itens.map(function(i){return Number(i.v)||0;}));
+    if(max<=0) return emptyState({icon:'📊',title:'Sem valores'});
+    var money=function(v){ return 'R$ '+Number(v||0).toLocaleString('pt-BR',{maximumFractionDigits:0}); };
+    var rows=itens.map(function(it,idx){
+      var w=((Number(it.v)||0)/max*100).toFixed(1);
+      var cor=idx===0?'var(--ip-gold-lum)':idx<3?'var(--ip-gold)':'var(--ip-ink-3)';
+      var val=formato==='moeda'?money(it.v):String(it.v);
+      return '<div style="display:grid;grid-template-columns:160px 1fr 90px;gap:12px;align-items:center;margin-bottom:8px">'
+        +'<div style="font-size:12.5px;color:var(--ip-ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+esc(it.l)+'">'+esc(it.l)+'</div>'
+        +'<div style="height:18px;background:rgba(210,174,100,.06);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+w+'%;background:'+cor+';border-radius:3px"></div></div>'
+        +'<div style="text-align:right;font-size:12.5px;color:var(--ip-cream);font-variant-numeric:tabular-nums">'+esc(val)+'</div></div>';
+    }).join('');
+    return '<div role="img" aria-label="Gráfico de ranking">'+rows+'</div>';
+  }
+
+  window.IpUI = { esc:esc, kpi:kpi, badge:badge, btn:btn, field:field, select:select, emptyState:emptyState, skeleton:skeleton, toast:toast, modal:modal, doughnut:doughnut, barras:barras };
 })();

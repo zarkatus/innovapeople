@@ -66,7 +66,16 @@
       <td style="padding:8px 6px;color:var(--ip-ink);font-size:13px">${esc(l.camada)}${l.requer_informe?' <span style="color:var(--ip-danger);font-size:11px">(informe necessário)</span>':''}<div style="color:var(--ip-ink-4);font-size:11px">${esc(l.beneficiario||'')} · ${esc(l.base||'')}</div></td>
       <td style="padding:8px 6px;text-align:right;color:var(--ip-gold-lum);font-family:monospace;font-size:13px;white-space:nowrap">${money(l.valor)}</td>
       <td style="padding:8px 6px;text-align:right;color:var(--ip-ink-3);font-family:monospace;font-size:12px;white-space:nowrap">${money(l.saldo_apos)}</td></tr>`).join('');
-    return `<div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:8px">Cascata do waterfall</div>
+    const cd=a.custos_detalhe||{};
+    const compSlices=[
+      {l:'Obra lançada',v:Number(cd.custo_obra_lancado)||0,c:'var(--ip-gold)'},
+      {l:'Folha bruto',v:Number(cd.custo_folha_bruto)||0,c:'var(--ip-gold-lum)'},
+      {l:'Encargos',v:Number(cd.custo_folha_encargos)||0,c:'var(--ip-gold-soft)'},
+      {l:'NF obra',v:Number(cd.custo_nf_obra)||0,c:'var(--ip-ink-2)'},
+      {l:'NF suprim.',v:Number(cd.custo_nf_suprimentos)||0,c:'var(--ip-ink-3)'}
+    ].filter(s=>s.v>0);
+    const compHtml = (window.IpUI && compSlices.length) ? `<div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:10px">Composição do custo real</div><div style="background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.14);border-radius:12px;padding:16px;margin-bottom:18px">${window.IpUI.doughnut(compSlices)}</div>` : '';
+    return `${compHtml}<div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:8px">Cascata do waterfall</div>
       <table style="width:100%;border-collapse:collapse"><thead><tr style="color:var(--ip-ink-4);font-size:10.5px;text-transform:uppercase"><th style="text-align:left;padding:4px 6px">Camada</th><th style="text-align:right;padding:4px 6px">Valor</th><th style="text-align:right;padding:4px 6px">Saldo após</th></tr></thead><tbody>${rows}</tbody></table>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding:14px 16px;background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.25);border-radius:12px">
         <span style="color:var(--ip-ink-3);font:600 12px/1 system-ui;text-transform:uppercase;letter-spacing:.05em">Resultado líquido distribuível</span>
