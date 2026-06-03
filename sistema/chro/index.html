@@ -1029,7 +1029,7 @@ async function loadHeroMetrics(sb){
     const [{count:mand},{count:sugg},{count:pulses}]=await Promise.all([
       sb.from('ip_mandatos').select('*',{count:'exact',head:true}).neq('estagio','encerrado'),
       sb.from('ip_agent_sugestoes').select('*',{count:'exact',head:true}).eq('status','pendente'),
-      sb.from('ip_pulsos').select('*',{count:'exact',head:true}).gte('criado_em',new Date(Date.now()-30*864e5).toISOString()),
+      sb.from('ip_pulsos').select('*',{count:'exact',head:true}).gte('created_at',new Date(Date.now()-30*864e5).toISOString()),
     ]);
     setText('m-tables','23');
     setText('m-mandatos',mand??0);
@@ -1042,7 +1042,7 @@ async function loadHeroMetrics(sb){
 async function loadPulso(sb){
   try{
     const since=new Date(Date.now()-30*864e5).toISOString();
-    const {data,count}=await sb.from('ip_pulsos').select('*',{count:'exact'}).gte('criado_em',since).limit(500);
+    const {data,count}=await sb.from('ip_pulsos').select('*',{count:'exact'}).gte('created_at',since).limit(500);
     setText('ps-30d',count??0);
     if(!data||!data.length){setText('ps-eng','—');setText('ps-risk','—');return}
     const dims=['proposito','autonomia','competencia','pertencimento','clareza','seguranca'];
@@ -1077,11 +1077,11 @@ async function loadEventos(sb){
     const [{count:c1},{count:c7},{data:srcs}]=await Promise.all([
       sb.from('ip_eventos').select('*',{count:'exact',head:true}).gte('ts',d1),
       sb.from('ip_eventos').select('*',{count:'exact',head:true}).gte('ts',d7),
-      sb.from('ip_eventos').select('source').gte('ts',d7).limit(500),
+      sb.from('ip_eventos').select('source_table').gte('ts',d7).limit(500),
     ]);
     setText('ev-24h',c1??0);
     setText('ev-7d',c7??0);
-    const uniq=new Set((srcs||[]).map(r=>r.source));
+    const uniq=new Set((srcs||[]).map(r=>r.source_table));
     setText('ev-src',uniq.size||0);
   }catch(e){console.warn('[eventos]',e)}
 }
@@ -1089,7 +1089,7 @@ async function loadEventos(sb){
 async function loadMandatos(sb){
   const body=document.getElementById('mandatos-body');if(!body)return;
   try{
-    const {data}=await sb.from('ip_mandatos').select('empresa,estagio,socio_responsavel,criado_em').order('criado_em',{ascending:false}).limit(5);
+    const {data}=await sb.from('ip_mandatos').select('empresa,estagio,socio_responsavel,created_at').order('created_at',{ascending:false}).limit(5);
     if(!data||!data.length){body.innerHTML='<div style="color:var(--ink3);font-style:italic">Nenhum trabalho registrado ainda.</div>';return}
     const rows=data.map(m=>`<tr><td><strong style="color:var(--navy)">${esc(m.empresa)}</strong></td><td><span class="pill ${pillForEstagio(m.estagio)}">${esc(m.estagio||'—')}</span></td><td style="color:var(--ink3);font-size:11px">${esc(m.socio_responsavel||'')}</td></tr>`).join('');
     body.innerHTML=`<table class="dt"><tbody>${rows}</tbody></table>`;
@@ -1122,7 +1122,7 @@ async function loadEmail(sb){
   try{
     const [{count:pend},{count:sent7d}]=await Promise.all([
       sb.from('ip_email_outbox').select('*',{count:'exact',head:true}).eq('status','pendente'),
-      sb.from('ip_email_outbox').select('*',{count:'exact',head:true}).eq('status','enviado').gte('criado_em',new Date(Date.now()-7*864e5).toISOString()),
+      sb.from('ip_email_outbox').select('*',{count:'exact',head:true}).eq('status','enviado').gte('created_at',new Date(Date.now()-7*864e5).toISOString()),
     ]);
     body.innerHTML=`<div style="font-size:13px;color:var(--ink2)">Tabela <code style="font-family:var(--mono);font-size:11px">ip_email_outbox</code> + dispatcher EF. <strong style="color:var(--navy)">${pend??0}</strong> na fila · <strong style="color:var(--navy)">${sent7d??0}</strong> enviados nos últimos 7 dias.</div>`;
   }catch(e){}
@@ -1171,7 +1171,7 @@ async function openPulseDisparar(){
     const sb=window.__IP_SB;
     const sel=body.querySelector('#pd-mandato');
     try{
-      const {data}=await sb.from('ip_mandatos').select('id,empresa,estagio').neq('estagio','encerrado').order('criado_em',{ascending:false});
+      const {data}=await sb.from('ip_mandatos').select('id,empresa,estagio').neq('estagio','encerrado').order('created_at',{ascending:false});
       (data||[]).forEach(m=>{
         const o=document.createElement('option');o.value=m.id;o.textContent=`${m.empresa} · ${m.estagio||'—'}`;sel.appendChild(o);
       });
@@ -1232,7 +1232,7 @@ async function openAgentesPainel(){
     const target=body.querySelector('#ap-body');
     if(!sb){target.innerHTML='<div class="dr-err">Supabase não carregou.</div>';return}
     try{
-      const {data,error}=await sb.from('ip_agent_sugestoes').select('*').eq('status','pendente').order('severidade',{ascending:false}).order('criado_em',{ascending:false}).limit(100);
+      const {data,error}=await sb.from('ip_agent_sugestoes').select('*').eq('status','pendente').order('severidade',{ascending:false}).order('created_at',{ascending:false}).limit(100);
       if(error)throw error;
       if(!data||!data.length){target.innerHTML='<div class="dr-empty">Nenhuma sugestão pendente. Backbone silencioso.</div>';return}
       const sevColor={critica:'#9B2C2C',alta:'#A86A1F',media:'#2C5282',baixa:'#6B7280'};
@@ -1246,7 +1246,7 @@ async function openAgentesPainel(){
           </div>
           <div style="font-size:13px;color:var(--ink2);line-height:1.55;margin-bottom:10px">${esc(s.descricao||s.diagnostico||s.detalhe||'')}</div>
           ${s.evidencias?'<details style="margin-bottom:10px"><summary style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);cursor:pointer">Evidências</summary><pre style="font-family:var(--mono);font-size:10px;color:var(--ink2);background:var(--cream2);padding:8px;border-radius:4px;margin-top:6px;overflow-x:auto">'+esc(typeof s.evidencias==='string'?s.evidencias:JSON.stringify(s.evidencias,null,2))+'</pre></details>':''}
-          <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.08em;margin-bottom:10px">${esc(s.agente||s.fonte||'agente')} · ${s.criado_em?new Date(s.criado_em).toLocaleDateString('pt-BR'):'—'}</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.08em;margin-bottom:10px">${esc(s.agente||s.fonte||'agente')} · ${s.created_at?new Date(s.created_at).toLocaleDateString('pt-BR'):'—'}</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
             <button onclick="suggestionAct('${esc(s.id)}','aplicada')" style="padding:6px 14px;border-radius:4px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--navy);color:var(--cream);border:none;cursor:pointer;font-family:inherit">Aplicar</button>
             <button onclick="suggestionAct('${esc(s.id)}','revisada')" style="padding:6px 14px;border-radius:4px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--ink2);border:1px solid var(--border);cursor:pointer;font-family:inherit">Revisada</button>
@@ -1286,7 +1286,7 @@ async function openRaioXKanban(){
     const target=body.querySelector('#kb-body');
     if(!sb){target.innerHTML='<div class="dr-err">Supabase não carregou.</div>';return}
     try{
-      const {data,error}=await sb.from('ip_raio_x_submissions').select('*').order('criado_em',{ascending:false}).limit(200);
+      const {data,error}=await sb.from('ip_raio_x_submissions').select('*').order('created_at',{ascending:false}).limit(200);
       if(error)throw error;
       const cols=['novo','contatado','agendado','realizado','convertido','descartado'];
       const grouped={};cols.forEach(c=>grouped[c]=[]);
@@ -1300,7 +1300,7 @@ async function openRaioXKanban(){
             ${grouped[c].map(r=>`
               <div style="padding:11px 13px;background:var(--white);border:1px solid var(--border);border-radius:4px;font-size:12px">
                 <div style="font-weight:500;color:var(--navy);margin-bottom:4px;font-family:var(--serif);font-size:15px">${esc(r.empresa||r.nome||r.email||'(sem identificação)')}</div>
-                <div style="color:var(--ink3);font-size:11px;font-family:var(--mono);margin-bottom:8px;letter-spacing:.04em">Sintomas: <strong style="color:${(r.sintomas_score||0)>60?'var(--red)':(r.sintomas_score||0)>30?'var(--amber)':'var(--ink2)'}">${r.sintomas_score||'—'}/100</strong> · ${r.criado_em?new Date(r.criado_em).toLocaleDateString('pt-BR'):'—'}</div>
+                <div style="color:var(--ink3);font-size:11px;font-family:var(--mono);margin-bottom:8px;letter-spacing:.04em">Sintomas: <strong style="color:${(r.sintomas_score||0)>60?'var(--red)':(r.sintomas_score||0)>30?'var(--amber)':'var(--ink2)'}">${r.sintomas_score||'—'}/100</strong> · ${r.created_at?new Date(r.created_at).toLocaleDateString('pt-BR'):'—'}</div>
                 ${r.desafio?'<div style="font-size:11px;color:var(--ink2);font-style:italic;margin-bottom:8px;line-height:1.4">"'+esc((r.desafio||'').slice(0,140))+(r.desafio.length>140?'...':'')+'"</div>':''}
                 <select onchange="raioXMove('${esc(r.id)}',this.value)" style="padding:5px 8px;font-size:11px;border:1px solid var(--border);border-radius:3px;background:var(--cream2);font:inherit;width:100%">
                   <option value="">Mover para...</option>
@@ -1532,7 +1532,7 @@ async function openMandatos(){
     const sb=window.__IP_SB;const target=body.querySelector('#md-body');
     if(!sb)return;
     try{
-      const {data,error}=await sb.from('ip_mandatos').select('*').order('criado_em',{ascending:false}).limit(50);
+      const {data,error}=await sb.from('ip_mandatos').select('*').order('created_at',{ascending:false}).limit(50);
       if(error)throw error;
       if(!data||!data.length){target.innerHTML='<div class="dr-empty">Nenhum trabalho registrado.</div>';return}
       target.innerHTML=data.map(m=>`

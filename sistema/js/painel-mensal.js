@@ -40,7 +40,7 @@
       T.safe(()=>sb().from('ip_pulsos').select('mandato_id,equipe,r_proposito,r_autonomia,r_competencia,r_pertencimento,r_clareza,r_seguranca,risco_saida,score,created_at').gte('created_at',since6m).order('created_at',{ascending:false}).limit(3000),{data:[]}),
       T.safe(()=>sb().from('ip_agent_sugestoes').select('severidade,status,agente,created_at').limit(800),{data:[]}),
       T.safe(()=>sb().from('ip_decisoes').select('id,nivel,status,created_at').gte('created_at',since6m).limit(500),{data:[]}),
-      T.safe(()=>sb().from('ip_relacionamentos').select('id,backup').limit(500),{data:[]}),
+      T.safe(()=>sb().from('ip_relacionamentos').select('id,vinculo_critico').limit(500),{data:[]}),
       T.safe(()=>sb().from('ip_raio_x_submissions').select('status,sintomas_score,created_at').gte('created_at',since6m).order('created_at',{ascending:false}).limit(1000),{data:[]}),
       T.safe(()=>sb().from('ip_programas').select('id,nome').limit(100),{data:[]}),
       T.safe(()=>sb().from('ip_eventos').select('source_table,operacao,ts').gte('ts',since30).limit(2000),{data:[]}),
@@ -98,7 +98,7 @@
     const risco30=avg(d.pulsos.filter(p=>p.created_at>=since).map(p=>p.risco_saida));
     const pulsos30=d.pulsos.filter(p=>p.created_at>=since).length;
     const rxConv=d.rx.length?(d.rx.filter(r=>r.status==='convertido').length/d.rx.length*100):null;
-    const semBackup=d.rel.filter(r=>!r.backup).length;
+    const critSemRedundancia=d.rel.filter(r=>r.vinculo_critico).length;
     const buck=monthBucket(d.pulsos,'created_at');
     const series=DIMS.map(dim=>({nome:dim.n,labels:buck.labels,data:buck.labels.map(k=>{const a=buck.map[k]||[];return avg(a.map(p=>p[dim.k]))})}));
     const rxStages=['novo','contatado','agendado','realizado','convertido'];
@@ -109,7 +109,7 @@
     partes.push(mAtivos+' trabalho'+(mAtivos===1?'':'s')+' ativo'+(mAtivos===1?'':'s'));
     if(pulsos30)partes.push(pulsos30+' pulso(s) no mes (score '+(score30==null?'-':score30.toFixed(1))+'/5)');
     if(sugCrit)partes.push(sugCrit+' sugestao(es) alta/critica pendente(s)');
-    if(semBackup)partes.push(semBackup+' rel. sem backup');
+    if(critSemRedundancia)partes.push(critSemRedundancia+' vínculo(s) crítico(s)');
     if(rxConv!=null)partes.push('raio-x conv '+rxConv.toFixed(1)+'%');
     const sintese=partes.join(' &middot; ')+'.';
     const kpiFarol=score30==null?'sem-meta':farol(score30);

@@ -98,7 +98,7 @@
       <div id="pulse-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
         <div class="said dim"><div class="l">RESPOSTAS 30D</div><div class="v" id="pa-30">—</div><div class="n">k≥3 anônimo</div></div>
         <div class="said dim"><div class="l">EQUIPES</div><div class="v" id="pa-eq">—</div><div class="n">com pulso ativo</div></div>
-        <div class="said dim"><div class="l">SAID MÉDIO</div><div class="v" id="pa-said">—<span class="un">/4</span></div><div class="n">últimos 30d</div></div>
+        <div class="said dim"><div class="l">SAID MÉDIO</div><div class="v" id="pa-said">—<span class="un">/5</span></div><div class="n">últimos 30d</div></div>
         <div class="said dim"><div class="l">VARIAÇÃO Δ</div><div class="v" id="pa-delta">—</div><div class="n">vs período anterior</div></div>
       </div>
       <div style="margin-top:14px;font-size:11px;color:var(--cream-dim);font-style:italic;font-family:var(--serif)">Agente Pulse Anomaly emite sugestão sempre que variação semanal &gt; 0.5σ por equipe.</div>
@@ -136,7 +136,7 @@ async function loadKpis(){
   const [runs7,sug,pulse30]=await Promise.all([
     TB.safe(()=>sb.from('ip_agent_runs').select('id',{count:'exact',head:true}).gte('iniciado_em',new Date(Date.now()-7*86400e3).toISOString()),{count:0}),
     TB.safe(()=>sb.from('ip_agent_sugestoes').select('id',{count:'exact',head:true}).eq('status','pendente'),{count:0}),
-    TB.safe(()=>sb.from('ip_pulsos').select('id',{count:'exact',head:true}).gte('respondido_em',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
+    TB.safe(()=>sb.from('ip_pulsos').select('id',{count:'exact',head:true}).gte('created_at',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
   ]);
   document.getElementById('k-ag').innerHTML='5<span class="un">/5</span>';
   document.getElementById('k-runs').textContent=runs7.count||0;
@@ -167,16 +167,20 @@ async function loadAgents(){
 
 async function loadPulseAnalytics(){
   const sb=window.__IP_SB;
+  // SAID 4D mapeado às dimensões REAIS do Pulso 6D (ip_pulsos r_*):
+  // Seen→pertencimento, Attended→clareza, Invited→proposito, Depended→competencia.
+  const SAID_DIMS=['r_pertencimento','r_clareza','r_proposito','r_competencia'];
+  const SEL='r_pertencimento,r_clareza,r_proposito,r_competencia,equipe,created_at';
   const [p30,p60]=await Promise.all([
-    TB.safe(()=>sb.from('ip_pulsos').select('saido_seen,saido_acknowledged,saido_invested,saido_dependent,equipe,respondido_em').gte('respondido_em',new Date(Date.now()-30*86400e3).toISOString()),{data:[]}),
-    TB.safe(()=>sb.from('ip_pulsos').select('saido_seen,saido_acknowledged,saido_invested,saido_dependent,equipe,respondido_em').gte('respondido_em',new Date(Date.now()-60*86400e3).toISOString()).lt('respondido_em',new Date(Date.now()-30*86400e3).toISOString()),{data:[]}),
+    TB.safe(()=>sb.from('ip_pulsos').select(SEL).gte('created_at',new Date(Date.now()-30*86400e3).toISOString()),{data:[]}),
+    TB.safe(()=>sb.from('ip_pulsos').select(SEL).gte('created_at',new Date(Date.now()-60*86400e3).toISOString()).lt('created_at',new Date(Date.now()-30*86400e3).toISOString()),{data:[]}),
   ]);
   const arr30=p30.data||[], arr60=p60.data||[];
   document.getElementById('pa-30').textContent=arr30.length;
   document.getElementById('pa-eq').textContent=new Set(arr30.map(x=>x.equipe).filter(Boolean)).size;
-  const said=(arr)=>{const f=(k)=>arr.map(r=>r[k]).filter(v=>v!=null);const total=['saido_seen','saido_acknowledged','saido_invested','saido_dependent'].flatMap(k=>f(k));return total.length?total.reduce((a,b)=>a+b,0)/total.length:null};
+  const said=(arr)=>{const f=(k)=>arr.map(r=>r[k]).filter(v=>v!=null);const total=SAID_DIMS.flatMap(k=>f(k));return total.length?total.reduce((a,b)=>a+b,0)/total.length:null};
   const s30=said(arr30),s60=said(arr60);
-  document.getElementById('pa-said').innerHTML=s30?s30.toFixed(2)+'<span class="un">/4</span>':'—<span class="un">/4</span>';
+  document.getElementById('pa-said').innerHTML=s30?s30.toFixed(2)+'<span class="un">/5</span>':'—<span class="un">/5</span>';
   if(s30&&s60){
     const d=s30-s60;
     const arrow=d>0?'↑':(d<0?'↓':'→');

@@ -379,13 +379,13 @@ async function bastidoresBoot(){
     const [{count:ev24},{count:obPend},{data:evStats}]=await Promise.all([
       sb.from('ip_eventos').select('*',{count:'exact',head:true}).gte('ts',d1),
       sb.from('ip_email_outbox').select('*',{count:'exact',head:true}).eq('status','pendente'),
-      sb.from('ip_eventos').select('source,ts').gte('ts',new Date(Date.now()-7*864e5).toISOString()).limit(500),
+      sb.from('ip_eventos').select('source_table,ts').gte('ts',new Date(Date.now()-7*864e5).toISOString()).limit(500),
     ]);
     setText('b-ev24',ev24??0);
     setText('b-ob',obPend??0);
     const evCard=document.getElementById('ev-stats');
     if(evCard){
-      const sources=new Set((evStats||[]).map(e=>e.source));
+      const sources=new Set((evStats||[]).map(e=>e.source_table));
       evCard.innerHTML=`<strong style="color:var(--navy);font-weight:500">${ev24??0}</strong> eventos nas últimas 24h · <strong>${(evStats||[]).length}</strong> em 7 dias · <strong>${sources.size}</strong> fontes ativas`;
     }
     const emStats=document.getElementById('email-stats');
@@ -429,7 +429,7 @@ async function openEventBus(){
       if(!data||!data.length){t.innerHTML='<div class="dr-empty">Trilha vazia.</div>';return}
       t.innerHTML=data.map(e=>`<div style="padding:10px 12px;border-bottom:1px solid var(--border2);font-size:12px;display:flex;gap:12px;align-items:flex-start">
         <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);min-width:90px">${new Date(e.ts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>
-        <div style="flex:1"><div style="color:var(--navy);font-weight:500">${esc(e.source)} <span style="color:var(--ink3);font-weight:400">· ${esc(e.event_type||'')}</span></div>${e.actor?'<div style="font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:2px">'+esc(e.actor)+'</div>':''}</div>
+        <div style="flex:1"><div style="color:var(--navy);font-weight:500">${esc(e.source_table)} <span style="color:var(--ink3);font-weight:400">· ${esc(e.event_type||'')}</span></div>${e.actor?'<div style="font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:2px">'+esc(e.actor)+'</div>':''}</div>
       </div>`).join('');
     }catch(err){t.innerHTML='<div class="dr-err">Erro: '+esc(err.message)+'</div>'}
   });
@@ -442,7 +442,7 @@ async function searchEvents(){
       const {data,error}=await sb.rpc('fn_ip_historico_por_termo',{p_termo:t});
       if(error)throw error;
       if(!data||!data.length){body.innerHTML='<div class="dr-empty">Nenhum evento contém "'+esc(t)+'".</div>';return}
-      body.innerHTML=data.slice(0,80).map(e=>`<div style="padding:10px 12px;border-bottom:1px solid var(--border2);font-size:12px"><strong>${esc(e.source||'')}</strong> <em>${esc(e.event_type||'')}</em> <span style="font-family:var(--mono);font-size:10px;color:var(--ink3);float:right">${e.ts?new Date(e.ts).toLocaleString('pt-BR'):''}</span></div>`).join('');
+      body.innerHTML=data.slice(0,80).map(e=>`<div style="padding:10px 12px;border-bottom:1px solid var(--border2);font-size:12px"><strong>${esc(e.source_table||'')}</strong> <em>${esc(e.event_type||'')}</em> <span style="font-family:var(--mono);font-size:10px;color:var(--ink3);float:right">${e.ts?new Date(e.ts).toLocaleString('pt-BR'):''}</span></div>`).join('');
     }catch(err){body.innerHTML='<div class="dr-err">Erro: '+esc(err.message)+'</div>'}
   });
 }

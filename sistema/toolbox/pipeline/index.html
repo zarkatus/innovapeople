@@ -145,13 +145,13 @@ async function loadKpis(){
 
 async function loadInv(){
   const sb=window.__IP_SB;
-  const {data,error}=await TB.safe(async()=>await sb.from('invite_codes').select('codigo,convidado,tier,created_at,usado_em').order('created_at',{ascending:false}).limit(8),{data:null,error:'no-access'});
+  const {data,error}=await TB.safe(async()=>await sb.from('invite_codes').select('code,label,tier,created_at,use_count,max_uses').order('created_at',{ascending:false}).limit(8),{data:null,error:'no-access'});
   if(!data){document.getElementById('inv-list').innerHTML='<div class="p-empty">Tabela <code>invite_codes</code> ainda não acessível ou vazia.</div>';return}
   if(!data.length){document.getElementById('inv-list').innerHTML='<div class="p-empty">Nenhum golden ticket emitido ainda.</div>';return}
   document.getElementById('inv-list').innerHTML=data.map(i=>{
     const t=i.tier==='1'?'<span class="tag gold">L1</span>':(i.tier==='2'?'<span class="tag info">L2</span>':'<span class="tag muted">—</span>');
-    const us=i.usado_em?'<span class="tag ok">usado</span>':'<span class="tag muted">pendente</span>';
-    return `<div class="row-item"><div class="ico" style="font-family:var(--mono);font-size:10px">${TB.esc((i.codigo||'').slice(0,4))}</div><div class="body"><div class="nm">${TB.esc(i.convidado||'(sem nome)')}</div><div class="desc"><code>${TB.esc(i.codigo||'')}</code></div></div>${t}${us}</div>`;
+    const us=(i.use_count>0)?'<span class="tag ok">usado</span>':'<span class="tag muted">pendente</span>';
+    return `<div class="row-item"><div class="ico" style="font-family:var(--mono);font-size:10px">${TB.esc((i.code||'').slice(0,4))}</div><div class="body"><div class="nm">${TB.esc(i.label||'(sem rótulo)')}</div><div class="desc"><code>${TB.esc(i.code||'')}</code></div></div>${t}${us}</div>`;
   }).join('');
 }
 
