@@ -242,23 +242,26 @@ async function loadKpis(){
   const kSaidN=document.getElementById('k-said-n');if(kSaidN)kSaidN.textContent=arr.length+' respostas anônimas (k≥3)';
   const f=document.getElementById('f-said');if(f){f.className='farol '+farolCls;f.textContent=farolTxt}
   const kPulsos=document.getElementById('k-pulsos');if(kPulsos)kPulsos.textContent=pulsos14;
-  // pessoas/reconhecimentos: tabelas ainda não existem — mostra — até virarem ferramenta
-  const kP=document.getElementById('k-pessoas');if(kP)kP.textContent='—';
+  // pessoas: agora vem de core_colaborador (Habilitação IS×IP). reconhecimentos: feature futura (—).
+  const np=await TB.safe(()=>sb.from('core_colaborador').select('id',{count:'exact',head:true}).neq('status','desligado'),{count:0});
+  const kP=document.getElementById('k-pessoas');if(kP)kP.textContent=(np.count!=null?np.count:'—');
   const kR=document.getElementById('k-reconhec');if(kR)kR.textContent='—';
 }
 
 async function loadSkill(){
   const sb=window.__IP_SB;
-  const {data}=await TB.safe(()=>sb.from('ip_skill_profile').select('pessoa_id,tecnica,orquestracao,julgamento,relacao,ia_automacao,gestao,pessoa:ip_pessoas(nome)').limit(8),{data:[]});
+  // Schema real: ip_skill_map (s_*) com FK perfil_id -> ip_perfil_colaborador (anônimo: papel/rotulo/equipe)
+  const {data}=await TB.safe(()=>sb.from('ip_skill_map').select('perfil_id,s_tecnica,s_orquestracao,s_julgamento,s_relacao,s_ia_automacao,s_gestao,perfil:ip_perfil_colaborador(papel,rotulo,equipe)').limit(8),{data:[]});
   const el=document.getElementById('skill-people');
   document.getElementById('c-skill').textContent=(data||[]).length;
-  if(!data||!data.length){el.innerHTML='<div class="p-empty">Nenhum perfil mapeado. Cadastrar pessoa em <a href="/sistema/chro/organograma/" style="color:var(--gold)">Organograma</a>.</div>';return}
+  if(!data||!data.length){el.innerHTML='<div class="p-empty">Nenhum perfil mapeado. Cadastrar perfil em <a href="/sistema/chro/organograma/" style="color:var(--gold)">Organograma</a>.</div>';return}
   el.innerHTML=(data||[]).map(p=>{
     const dims=[
-      {l:'TC',v:p.tecnica},{l:'OR',v:p.orquestracao},{l:'JU',v:p.julgamento},
-      {l:'RE',v:p.relacao},{l:'IA',v:p.ia_automacao},{l:'GE',v:p.gestao}
+      {l:'TC',v:p.s_tecnica},{l:'OR',v:p.s_orquestracao},{l:'JU',v:p.s_julgamento},
+      {l:'RE',v:p.s_relacao},{l:'IA',v:p.s_ia_automacao},{l:'GE',v:p.s_gestao}
     ];
-    return `<div style="margin-bottom:12px"><div style="font-family:var(--serif);font-style:italic;color:var(--cream);font-size:14px;margin-bottom:4px">${TB.esc(p.pessoa?.nome||'(sem nome)')}</div><div class="heat6">${dims.map(d=>`<div class="cell ${TB.heatLevel(d.v)}"><div class="lab">${d.l}</div><div class="nbr">${d.v??'—'}</div></div>`).join('')}</div></div>`;
+    const nome=(p.perfil&&(p.perfil.rotulo||p.perfil.papel))||(p.perfil&&p.perfil.equipe)||'(perfil)';
+    return `<div style="margin-bottom:12px"><div style="font-family:var(--serif);font-style:italic;color:var(--cream);font-size:14px;margin-bottom:4px">${TB.esc(nome)}</div><div class="heat6">${dims.map(d=>`<div class="cell ${TB.heatLevel(d.v)}"><div class="lab">${d.l}</div><div class="nbr">${d.v??'—'}</div></div>`).join('')}</div></div>`;
   }).join('');
   document.getElementById('d-skill').className='dot';
 }
@@ -278,12 +281,12 @@ async function loadLead(){
 async function loadPulse(){
   const sb=window.__IP_SB;
   const [tokens,pulsos]=await Promise.all([
-    TB.safe(()=>sb.from('ip_pulso_tokens').select('id',{count:'exact',head:true}),{count:0}),
-    TB.safe(()=>sb.from('ip_pulsos').select('id,papel,equipe,respondido_em').order('respondido_em',{ascending:false}).limit(5),{data:[]}),
+    TB.safe(()=>sb.from('ip_pulse_tokens').select('token',{count:'exact',head:true}),{count:0}),
+    TB.safe(()=>sb.from('ip_pulsos').select('id,rotulo_papel,equipe,created_at').order('created_at',{ascending:false}).limit(5),{data:[]}),
   ]);
   const stats=`<div class="stat-line"><div class="v">${tokens.count||0}</div><div class="l">tokens emitidos (links únicos 14d)</div><div class="badge">seguro</div></div>
   <div class="stat-line"><div class="v">${(pulsos.data||[]).length}</div><div class="l">respostas recentes</div><div class="badge">7Q · 2min</div></div>`;
-  const rows=(pulsos.data||[]).map(p=>`<div class="row-item"><div class="body"><div class="nm" style="font-size:13px">${TB.esc(p.equipe||'(equipe)')}</div><div class="desc">${TB.esc(p.papel||'')}</div></div><span class="tag info">anônimo</span><div class="time">${TB.esc(TB.fmtRel(p.respondido_em))}</div></div>`).join('');
+  const rows=(pulsos.data||[]).map(p=>`<div class="row-item"><div class="body"><div class="nm" style="font-size:13px">${TB.esc(p.equipe||'(equipe)')}</div><div class="desc">${TB.esc(p.rotulo_papel||'')}</div></div><span class="tag info">anônimo</span><div class="time">${TB.esc(TB.fmtRel(p.created_at))}</div></div>`).join('');
   document.getElementById('b-pulse').innerHTML=stats+(rows?'<div style="margin-top:14px">'+rows+'</div>':'<div class="p-empty" style="padding:18px 0">Sem respostas recentes. Disparar via <a href="/sistema/chro/" style="color:var(--gold)">CHRO</a>.</div>');
   document.getElementById('d-pulse').className='dot'+(((pulsos.data||[]).length)>0?'':' idle');
 }
@@ -321,18 +324,20 @@ async function loadRituais(){
 
 async function loadEquipe(){
   const sb=window.__IP_SB;
-  const {data}=await TB.safe(()=>sb.from('ip_pessoas').select('id,nome,cargo,papel,email').limit(8),{data:[]});
+  // Fonte real com nome/cargo/email: core_colaborador (entidade canônica de pessoa, Habilitação IS×IP)
+  const {data}=await TB.safe(()=>sb.from('core_colaborador').select('id,nome,cargo,funcao,email_institucional,status').neq('status','desligado').order('nome').limit(8),{data:[]});
   const el=document.getElementById('b-equipe');
   if(!data||!data.length){return}
-  el.innerHTML=(data||[]).map(p=>`<div class="row-item"><div class="ico">${TB.initials(p.nome)}</div><div class="body"><div class="nm">${TB.esc(p.nome||'(sem nome)')}</div><div class="desc">${TB.esc(p.cargo||p.papel||'')}</div></div><div class="time">${TB.esc((p.email||'').split('@')[0])}</div></div>`).join('');
+  el.innerHTML=(data||[]).map(p=>`<div class="row-item"><div class="ico">${TB.initials(p.nome)}</div><div class="body"><div class="nm">${TB.esc(p.nome||'(sem nome)')}</div><div class="desc">${TB.esc(p.cargo||p.funcao||'')}</div></div><div class="time">${TB.esc((p.email_institucional||'').split('@')[0])}</div></div>`).join('');
 }
 
 async function loadComment(){
   const sb=window.__IP_SB;
   const [pulsos30,rec30,pessoas]=await Promise.all([
-    TB.safe(()=>sb.from('ip_pulsos').select('id',{count:'exact',head:true}).gte('respondido_em',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
-    TB.safe(()=>sb.from('ip_reconhecimentos').select('id',{count:'exact',head:true}).gte('criado_em',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
-    TB.safe(()=>sb.from('ip_pessoas').select('id',{count:'exact',head:true}),{count:0}),
+    TB.safe(()=>sb.from('ip_pulsos').select('id',{count:'exact',head:true}).gte('created_at',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
+    // ip_reconhecimentos nunca foi provisionada — reconhecimentos seguem como feature futura (count honesto = 0)
+    Promise.resolve({count:0}),
+    TB.safe(()=>sb.from('core_colaborador').select('id',{count:'exact',head:true}).neq('status','desligado'),{count:0}),
   ]);
   let texto='';
   if(!pessoas.count){
