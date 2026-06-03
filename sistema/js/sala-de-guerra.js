@@ -64,6 +64,19 @@
   async function _diag(btn){
     btn.disabled=true;const old=btn.textContent;btn.innerHTML='<span class="sg-spin"></span>Analisando&hellip;';
     try{
+      // COGNITIVO: o Concierge (tool-use real) cruza programas+pessoas+pulso+sinais+ações lendo
+      // os dados vivos e escreve a leitura unificada. Fallback p/ a EF consolidada antiga.
+      if(window.IpConcierge){
+        const t=_host.querySelector('#sg-sint-txt');
+        const res=await window.IpConcierge.sintese({ onStep:(s)=>{ if(t&&s.tipo==='tool') t.textContent='Cruzando dados: '+s.nome+'…'; } });
+        if(res.ok){
+          if(t) t.textContent=res.text;
+          const out=_host.querySelector('#sg-ia-out');
+          out.innerHTML=`<div class="sg-ia-card"><div class="sg-ia-b"><span class="sg-ia-h">Leitura unificada · Concierge cognitivo</span><p style="white-space:pre-wrap">${esc(res.text)}</p></div>${res.steps&&res.steps.length?`<div style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin-top:8px">leu: ${esc(res.steps.join(' · '))}</div>`:''}</div>`;
+          T.toast('Síntese cognitiva gerada'); btn.disabled=false;btn.textContent=old; return;
+        }
+        // se o motor falhar, cai no fallback abaixo
+      }
       const {data,error}=await sb().functions.invoke('ip-agent-claude',{body:{ferramenta:'consolidado',persistir:false}});
       if(error)throw await _efErro(error); if(data&&data.erro)throw new Error(data.erro);
       const t=_host.querySelector('#sg-sint-txt'); if(t&&data.sintese)t.textContent=data.sintese;

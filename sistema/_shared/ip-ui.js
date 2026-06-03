@@ -130,5 +130,51 @@
     return '<div role="img" aria-label="Gráfico de ranking">'+rows+'</div>';
   }
 
-  window.IpUI = { esc:esc, kpi:kpi, badge:badge, btn:btn, field:field, select:select, emptyState:emptyState, skeleton:skeleton, toast:toast, modal:modal, doughnut:doughnut, barras:barras };
+  // ---- Gauge semicircular (indice tipo CPI/SPI, semaforo) · 0..max, alvo 1 ----
+  function gauge(valor, opts){
+    opts=opts||{}; var max=opts.max||2, label=opts.label||'', alvo=opts.alvo!=null?opts.alvo:1;
+    var v = valor==null ? null : Math.max(0, Math.min(max, +valor));
+    var frac = v==null ? 0 : v/max;
+    // semaforo: <0.9 vermelho, 0.9-1.1 dourado, >1.1 verde
+    var cor = v==null ? 'var(--ip-ink-4)' : v<alvo*0.9 ? 'var(--ip-danger)' : v>alvo*1.1 ? 'var(--ip-ok)' : 'var(--ip-gold-lum)';
+    var R=52, cx=60, cy=60, ang0=Math.PI, ang1=Math.PI-frac*Math.PI; // semicirculo de 180deg
+    var x0=cx+R*Math.cos(Math.PI), y0=cy+R*Math.sin(Math.PI);
+    var bx=cx+R*Math.cos(0), by=cy+R*Math.sin(0);
+    var px=cx+R*Math.cos(ang1), py=cy+R*Math.sin(ang1);
+    var large = frac>0.5?1:0;
+    var arcBg='M'+x0+','+y0+' A'+R+','+R+' 0 0 1 '+bx+','+by;
+    var arcFg = v==null?'' : 'M'+x0+','+y0+' A'+R+','+R+' 0 '+large+' 1 '+px+','+py;
+    return '<div role="img" aria-label="'+esc(label)+': '+(v==null?'sem dado':v.toFixed(2))+'" style="text-align:center">'
+      +'<svg viewBox="0 0 120 72" width="120" height="72" aria-hidden="true">'
+      +'<path d="'+arcBg+'" fill="none" stroke="rgba(210,174,100,.12)" stroke-width="9" stroke-linecap="round"/>'
+      +(arcFg?'<path d="'+arcFg+'" fill="none" stroke="'+cor+'" stroke-width="9" stroke-linecap="round"/>':'')
+      +'<text x="60" y="56" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="22" fill="'+cor+'">'+(v==null?'—':v.toFixed(2))+'</text></svg>'
+      +'<div style="font:600 9px/1 system-ui;letter-spacing:.12em;text-transform:uppercase;color:var(--ip-ink-3);margin-top:2px">'+esc(label)+'</div></div>';
+  }
+  // ---- Sparkline (tendencia, serie de numeros) ----
+  function sparkline(serie, opts){
+    opts=opts||{}; serie=(serie||[]).map(Number).filter(function(x){return !isNaN(x);});
+    var w=opts.width||120, h=opts.height||32, cor=opts.color||'var(--ip-gold-lum)';
+    if(serie.length<2) return '<div style="height:'+h+'px;display:flex;align-items:center;color:var(--ip-ink-4);font-size:10px">sem tendência</div>';
+    var mn=Math.min.apply(null,serie), mx=Math.max.apply(null,serie), rng=(mx-mn)||1;
+    var pts=serie.map(function(v,i){ var x=(i/(serie.length-1))*w; var y=h-((v-mn)/rng)*(h-4)-2; return x.toFixed(1)+','+y.toFixed(1); }).join(' ');
+    var last=serie[serie.length-1], first=serie[0], up=last>=first;
+    var lx=w, ly=h-((last-mn)/rng)*(h-4)-2;
+    return '<svg viewBox="0 0 '+w+' '+h+'" width="'+w+'" height="'+h+'" aria-hidden="true" style="display:block">'
+      +'<polyline points="'+pts+'" fill="none" stroke="'+cor+'" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>'
+      +'<circle cx="'+lx.toFixed(1)+'" cy="'+ly.toFixed(1)+'" r="2.5" fill="'+(up?'var(--ip-ok)':'var(--ip-danger)')+'"/></svg>';
+  }
+  // ---- statBig (numero-heroi com label, delta opcional, cor) ----
+  function statBig(val, label, opts){
+    opts=opts||{};
+    var deltaHtml='';
+    if(opts.delta!=null){ var d=+opts.delta, c=d>0?'var(--ip-ok)':d<0?'var(--ip-danger)':'var(--ip-ink-3)', a=d>0?'↑':d<0?'↓':'→';
+      deltaHtml='<span style="color:'+c+';font-size:12px;margin-left:6px">'+a+' '+Math.abs(d)+(opts.deltaSuffix||'')+'</span>'; }
+    return '<div style="text-align:'+(opts.align||'left')+'">'
+      +'<div style="font:600 10px/1 system-ui;letter-spacing:.1em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:6px">'+esc(label)+'</div>'
+      +'<div style="font:700 italic 30px Georgia;color:'+(opts.color||'var(--ip-cream)')+';line-height:1">'+(val==null?'—':val)+deltaHtml+'</div>'
+      +(opts.sub?'<div style="font-size:11px;color:var(--ip-ink-4);margin-top:4px">'+esc(opts.sub)+'</div>':'')+'</div>';
+  }
+
+  window.IpUI = { esc:esc, kpi:kpi, badge:badge, btn:btn, field:field, select:select, emptyState:emptyState, skeleton:skeleton, toast:toast, modal:modal, doughnut:doughnut, barras:barras, gauge:gauge, sparkline:sparkline, statBig:statBig };
 })();
