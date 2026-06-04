@@ -115,8 +115,18 @@ em{font-style:italic}
 .hero-meta{margin-top:28px;display:flex;flex-wrap:wrap;gap:32px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
 .hero-meta span strong{color:var(--navy);font-weight:500}
 
-/* LAYOUT */
-.layout{max-width:1480px;margin:0 auto;display:grid;grid-template-columns:var(--side-w) 1fr;gap:0}
+/* SUB-ABAS HORIZONTAIS (substitui o rail vertical interno — fim do "sidebar dentro de sidebar") */
+.chro-subnav{position:sticky;top:var(--nav-h);z-index:40;background:color-mix(in srgb,var(--cream2) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.csub-wrap{max-width:1480px;margin:0 auto;display:flex;gap:6px;padding:11px 38px;overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.csub-wrap::-webkit-scrollbar{height:5px}.csub-wrap::-webkit-scrollbar-thumb{background:rgba(196,163,90,.3);border-radius:4px}
+.csub-link{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:8px 15px;font-size:13px;color:var(--ink2);border-radius:22px;border:1px solid transparent;transition:all .2s;cursor:pointer}
+.csub-link:hover{background:rgba(196,163,90,.08);color:var(--navy)}
+.csub-link.active{background:rgba(196,163,90,.14);color:var(--navy);border-color:rgba(196,163,90,.32);font-weight:500}
+.csub-link .count{font-family:var(--mono);font-size:10px;color:var(--ink4);background:rgba(0,0,0,.06);padding:2px 7px;border-radius:10px}
+html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
+
+/* LAYOUT (coluna única — conteúdo em largura total) */
+.layout{max-width:1480px;margin:0 auto}
 .side{padding:38px 24px 64px;position:sticky;top:var(--nav-h);align-self:start;height:calc(100vh - var(--nav-h));overflow-y:auto;border-right:1px solid var(--border)}
 .side-h{font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;padding-left:4px}
 .side-group{margin-bottom:24px}
@@ -128,7 +138,7 @@ em{font-style:italic}
 .main{padding:38px 38px 80px;min-width:0}
 
 /* SECTION */
-.section{margin-bottom:64px;scroll-margin-top:96px}
+.section{margin-bottom:64px;scroll-margin-top:138px}/* header(74)+sub-abas(48)+respiro */
 .section-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .section-h h2{font-family:var(--serif);font-size:34px;font-weight:400;color:var(--navy);letter-spacing:-.005em}
 .section-h h2 em{color:var(--gold-deep);font-style:italic}
@@ -249,32 +259,23 @@ em{font-style:italic}
   </div>
 </section>
 
-<!-- LAYOUT -->
-<div class="layout">
+<!-- SUB-ABAS (horizontais) — substitui o rail vertical interno; fim do "sidebar dentro de sidebar".
+     Os antigos "Atalhos" saíram daqui pois já são destinos do sidebar principal (sem redundância). -->
+<nav class="chro-subnav" aria-label="Seções do Centro de Comando">
+  <div class="csub-wrap">
+    <a href="#sinal-vivo" class="csub-link active" data-jump>Sinal Vivo <span class="count">3</span></a>
+    <a href="#curadoria" class="csub-link" data-jump>Curadoria <span class="count">4</span></a>
+    <a href="#memoria" class="csub-link" data-jump>Memória <span class="count">3</span></a>
+    <a href="#pessoas" class="csub-link" data-jump>Pessoas <span class="count">5</span></a>
+    <a href="#ritual" class="csub-link" data-jump>Ritual &amp; Cadência <span class="count">4</span></a>
+    <a href="#frentes" class="csub-link" data-jump>Frentes <span class="count">4</span></a>
+    <a href="#bi" class="csub-link" data-jump>BI &amp; Tendências <span class="count">5</span></a>
+    <a href="#governanca" class="csub-link" data-jump>Cultura &amp; Governança <span class="count">5</span></a>
+  </div>
+</nav>
 
-<!-- SIDE NAV -->
-<aside class="side">
-  <div class="side-group">
-    <div class="side-h">Curadoria</div>
-    <a href="#sinal-vivo" class="side-link active" data-jump>Sinal Vivo <span class="count">3</span></a>
-    <a href="#curadoria" class="side-link" data-jump>Curadoria de Trabalhos <span class="count">4</span></a>
-    <a href="#memoria" class="side-link" data-jump>Memória Institucional <span class="count">3</span></a>
-    <a href="#pessoas" class="side-link" data-jump>Pessoas <span class="count">5</span></a>
-    <a href="#ritual" class="side-link" data-jump>Ritual &amp; Cadência <span class="count">4</span></a>
-    <a href="#frentes" class="side-link" data-jump>Frentes <span class="count">4</span></a>
-    <a href="#bi" class="side-link" data-jump>BI &amp; Tendências <span class="count">5</span></a>
-    <a href="#governanca" class="side-link" data-jump>Cultura &amp; Governança <span class="count">5</span></a>
-  </div>
-  <div class="side-group">
-    <div class="side-h">Atalhos</div>
-    <a href="/sistema/chro/painel-mensal/" class="side-link" style="color:var(--gold-deep);font-weight:500">⇢ Painel mensal · executivo</a>
-    <a href="/sistema/chro/organograma/" class="side-link" style="color:var(--gold-deep);font-weight:500">⇢ Organograma · editor de cadeiras</a>
-    <a href="/sistema/chro/folha/" class="side-link" style="color:var(--gold-deep);font-weight:500">⇢ Clientes · folha de pagamento</a>
-    <a href="/sistema/bastidores/" class="side-link" style="color:var(--gold-deep);font-weight:500">→ Bastidores (TI)</a>
-    <a href="/sistema/agentes.html" class="side-link">Agentes (página dedicada)</a>
-    <a href="/sistema/calendar.html" class="side-link">Calendário Google</a>
-  </div>
-</aside>
+<!-- LAYOUT (coluna única) -->
+<div class="layout">
 
 <!-- MAIN -->
 <main class="main">
@@ -995,17 +996,33 @@ async function chroBoot(){
   console.log('[chro] boot');
   const sb=window.__IP_SB;
   if(!sb){console.warn('[chro] sem supabase, modo offline');return paintEmpty()}
-  // Side nav scroll-spy
-  document.querySelectorAll('.side-link[data-jump]').forEach(a=>{
-    a.addEventListener('click',e=>{
+  // Sub-abas horizontais: click suave (com offset das barras sticky) + scroll-spy automático
+  (function(){
+    const links=[...document.querySelectorAll('.csub-link[data-jump]')];
+    if(!links.length)return;
+    let lock=0; // após um click, o scroll-spy respeita a aba escolhida por um instante
+    function setActive(id){
+      links.forEach(x=>x.classList.toggle('active',x.getAttribute('href').slice(1)===id));
+      const a=links.find(x=>x.getAttribute('href').slice(1)===id);
+      if(a)a.scrollIntoView({inline:'nearest',block:'nearest'});
+    }
+    links.forEach(a=>a.addEventListener('click',e=>{
       e.preventDefault();
-      const id=a.getAttribute('href').slice(1);
-      const el=document.getElementById(id);
-      if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
-      document.querySelectorAll('.side-link').forEach(x=>x.classList.remove('active'));
-      a.classList.add('active');
-    });
-  });
+      const id=a.getAttribute('href').slice(1),el=document.getElementById(id);
+      lock=Date.now()+900;
+      if(el)el.scrollIntoView({behavior:'smooth',block:'start'}); // honra .section{scroll-margin-top}
+      setActive(id);
+    }));
+    const secs=links.map(a=>document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+    if('IntersectionObserver' in window && secs.length){
+      const io=new IntersectionObserver(entries=>{
+        if(Date.now()<lock)return; // click recente tem prioridade sobre o scroll-spy
+        const vis=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio);
+        if(vis[0])setActive(vis[0].target.id);
+      },{rootMargin:'-130px 0px -55% 0px',threshold:[.08,.4]});
+      secs.forEach(s=>io.observe(s));
+    }
+  })();
   // Parallel data fetch
   const tasks=[
     loadHeroMetrics(sb),
