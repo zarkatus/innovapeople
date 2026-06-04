@@ -37,6 +37,7 @@
 
     // CURADORIA · CHRO
     {g:'Curadoria · CHRO', i:'⌘', n:'Centro de Comando', p:'/sistema/chro/',               d:'39 instrumentos · curadoria de talento · sinal vivo · rituais · governança', t:'chro centro comando curadoria talento rh gente cultura'},
+    {g:'Curadoria · CHRO', i:'◎', n:'Cockpit de Comando', p:'/sistema/chro/cockpit/',       d:'Leitura unificada · programas (EVM) + pessoas + clima + sinais IREU + resultado, com copiloto cognitivo', t:'cockpit comando holistico leitura unificada evm cpi spi gauge clima sinais ireu resultado concierge visao geral painel'},
     {g:'Curadoria · CHRO', i:'📈', n:'Painel Mensal',     p:'/sistema/chro/painel-mensal/', d:'OLAP tendências · BI · digest semanal', t:'chro painel mensal olap bi tendencias digest analytics'},
     {g:'Curadoria · CHRO', i:'💸', n:'Clientes', p:'/sistema/chro/folha/', d:'Inbox de folhas de pagamento C&S — pipeline InnovaSphere para InnovaPeople', t:'folha pagamento cs c&s engenharia holerite payroll inbox financeiro canteiro competencia'},
     {g:'Curadoria · CHRO', i:'👤', n:'Pessoas · BPO', p:'/sistema/chro/colaboradores/', d:'Ciclo de gente unificado — admissão, alteração, desligamento · core_colaborador (obra ↔ gente) em tempo real', t:'pessoas colaborador colaboradores bpo gente admissao admitir desligar desligamento rh dp folha ponto sst core_colaborador headcount funcionarios'},
