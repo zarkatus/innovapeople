@@ -384,7 +384,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
       </div>
       <div class="card-actions">
         <button class="btn btn-primary" onclick="openMandatos()">Lista de trabalhos</button>
-        <button class="btn btn-ghost" onclick="newMandato()">Novo trabalho</button>
+        <button class="btn btn-gold" onclick="newMandato()">+ Novo cliente</button>
       </div>
     </div>
 
@@ -1558,28 +1558,42 @@ async function openMandatos(){
     }catch(err){target.innerHTML='<div class="dr-err">Erro: '+esc(err.message)+'</div>'}
   });
 }
-function newMandato(){openDrawer('Novo trabalho',`
-  <p class="dr-sub">Registro inicial de um novo trabalho. Os 5 estágios (diagnóstico → plano → plataforma → resultado → parceria) são governados depois pelo backbone.</p>
+function newMandato(){openDrawer('Novo cliente',`
+  <p class="dr-sub">Comece com o essencial: o nome. Tudo o mais — espaço na árvore do grupo, estágio inicial, propagação — nasce automaticamente. Você refina depois, se quiser.</p>
   <form id="nm-form" class="dr-form">
-    <label><span class="dr-lab">Empresa</span><input type="text" name="empresa" required></label>
-    <label><span class="dr-lab">Porte (opcional)</span><input type="text" name="porte" placeholder="ex: 50–200 colab"></label>
-    <label><span class="dr-lab">Setor (opcional)</span><input type="text" name="setor"></label>
-    <label><span class="dr-lab">Sócio responsável</span><input type="text" name="socio" value="raphael@schifino.com.br"></label>
-    <label><span class="dr-lab">Estágio inicial</span><select name="estagio"><option value="diagnostico">diagnóstico</option><option value="plano">plano</option></select></label>
-    <div id="nm-result"></div>
-    <button type="submit" class="btn btn-primary" style="padding:11px 20px;font-size:13px">Registrar</button>
+    <label><span class="dr-lab">Nome do cliente</span><input type="text" name="empresa" required autocomplete="off" placeholder="ex: Construtora Aurora" style="font-size:17px;padding:13px 14px"></label>
+    <div id="nm-result" style="margin:6px 0"></div>
+    <button type="submit" class="btn btn-primary" id="nm-submit" style="padding:13px 22px;font-size:14px;width:100%">Cadastrar cliente</button>
+    <button type="button" class="btn btn-ghost" id="nm-more" style="padding:8px 14px;font-size:12px;margin-top:10px;width:100%;opacity:.75">+ detalhes (opcional)</button>
+    <div id="nm-extra" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <label><span class="dr-lab">Setor (opcional)</span><input type="text" name="setor" placeholder="ex: Engenharia, Saúde, Varejo"></label>
+      <label><span class="dr-lab">Porte (opcional)</span><input type="text" name="porte" placeholder="ex: 50–200 colaboradores"></label>
+      <label><span class="dr-lab">Sócio responsável</span><select name="socio"><option value="">automático (você)</option><option value="raphael">raphael</option><option value="gleice">gleice</option></select></label>
+    </div>
   </form>
 `,body=>{
+  const more=body.querySelector('#nm-more'), extra=body.querySelector('#nm-extra');
+  more.onclick=()=>{ extra.style.display = extra.style.display==='none'?'block':'none'; more.style.display='none'; };
+  setTimeout(()=>{ const inp=body.querySelector('input[name=empresa]'); if(inp) inp.focus(); }, 60);
   body.querySelector('#nm-form').addEventListener('submit',async ev=>{
-    ev.preventDefault();const f=ev.target;const r=body.querySelector('#nm-result');
-    r.innerHTML='<div class="dr-info">Registrando...</div>';
+    ev.preventDefault();const f=ev.target;const r=body.querySelector('#nm-result');const btn=body.querySelector('#nm-submit');
+    const nome=(f.empresa.value||'').trim();
+    if(nome.length<2){ r.innerHTML='<div class="dr-err">Informe o nome do cliente.</div>'; return; }
+    btn.disabled=true; r.innerHTML='<div class="dr-info">Cadastrando e conectando à plataforma…</div>';
     try{
       const sb=window.__IP_SB;
-      const {data,error}=await sb.from('ip_mandatos').insert({empresa:f.empresa.value,porte:f.porte.value||null,setor:f.setor.value||null,socio_responsavel:f.socio.value||null,estagio:f.estagio.value}).select().single();
+      // RPC transacional: cria mandato + nó-org folha (entra na árvore do grupo na hora)
+      const {data,error}=await sb.rpc('fn_ip_criar_cliente',{
+        p_nome:nome, p_setor:f.setor?.value||null, p_porte:f.porte?.value||null, p_socio:f.socio?.value||null });
       if(error)throw error;
-      r.innerHTML='<div class="dr-ok">✓ Trabalho registrado: <strong>'+esc(data.empresa)+'</strong></div>';
-      loadMandatos(sb);loadHeroMetrics(sb);
-    }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
+      if(data&&data.ja_existia){ r.innerHTML='<div class="dr-ok">Já existia um cliente <strong>'+esc(data.nome)+'</strong> — abrindo o existente.</div>'; }
+      else { r.innerHTML='<div class="dr-ok">✓ <strong>'+esc(data.nome)+'</strong> cadastrado e conectado à plataforma. Diagnóstico, Pulso, programas e consolidação já o incluem.</div>'; }
+      f.empresa.value='';
+      try{ loadMandatos(sb);loadHeroMetrics(sb); }catch(_){}
+      try{ if(window.IpOrg&&IpOrg._reload){ await IpOrg._reload(); } }catch(_){}
+      if(window.TB&&TB.toast)TB.toast('Cliente cadastrado');
+    }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message||e)+'</div>'}
+    finally{ btn.disabled=false; }
   });
 })}
 
