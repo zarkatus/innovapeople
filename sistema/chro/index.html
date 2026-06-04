@@ -214,6 +214,8 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
 <script src="/sistema/_shared/ip-concierge.js" defer></script>
 <script src="/sistema/_shared/ip-ui.js" defer></script>
 <script src="/sistema/_shared/ip-diagnostico.js" defer></script>
+<script src="/sistema/_shared/dd-motor.js" defer></script>
+<script src="/sistema/_shared/ip-dd-parecer.js" defer></script>
 <script src="/sistema/_shared/ip-evm.js" defer></script></head>
 
 <body>
@@ -1567,8 +1569,10 @@ function newMandato(){openDrawer('Novo cliente',`
     <div id="nm-result" style="margin:8px 0"></div>
     <button type="submit" class="btn btn-gold" id="nm-buscar" style="padding:13px 22px;font-size:14px;width:100%">⌕ Buscar empresa</button>
     <div id="nm-dossie" style="display:none;margin-top:14px"></div>
+    <div id="nm-parecer" style="display:none;margin-top:14px"></div>
     <div id="nm-confirm" style="display:none;margin-top:14px">
-      <button type="button" class="btn btn-primary" id="nm-submit" style="padding:13px 22px;font-size:14px;width:100%">Cadastrar cliente</button>
+      <button type="button" class="btn btn-primary" id="nm-submit" style="padding:14px 22px;font-size:15px;width:100%">✓ Cadastrar como cliente</button>
+      <div style="font-size:11px;color:var(--ink3);text-align:center;margin-top:7px">A empresa, o dossiê e o parecer de due diligence entram juntos — em um clique.</div>
     </div>
     <button type="button" class="btn btn-ghost" id="nm-manual" style="padding:8px 14px;font-size:12px;margin-top:12px;width:100%;opacity:.7">não tenho o CNPJ — cadastrar só pelo nome</button>
     <div id="nm-manualbox" style="display:none;margin-top:10px;padding-top:12px;border-top:1px solid var(--border)">
@@ -1589,9 +1593,11 @@ function newMandato(){openDrawer('Novo cliente',`
     try{
       const {data,error}=await sb.rpc('fn_ip_criar_cliente', payload);
       if(error)throw error;
+      var ver = (payload.p_dossie&&payload.p_dossie._dd&&payload.p_dossie._dd.veredicto)||null;
+      var verHtml = ver ? ' <span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(196,163,90,.14);color:var(--gold-deep)">DD: '+esc(ver)+'</span>' : '';
       if(data&&data.ja_existia){ result.innerHTML='<div class="dr-ok">Já existia o cliente <strong>'+esc(data.nome)+'</strong> — abrindo o existente.</div>'; }
-      else { result.innerHTML='<div class="dr-ok">✓ <strong>'+esc(data.nome)+'</strong> cadastrado e conectado à plataforma. Diagnóstico, Pulso, programas e consolidação já o incluem.</div>'; }
-      dossieBox.style.display='none'; confirmBox.style.display='none'; inCnpj.value='';
+      else { result.innerHTML='<div class="dr-ok">✓ <strong>'+esc(data.nome)+'</strong> cadastrado — empresa, dossiê e parecer de due diligence'+verHtml+', tudo conectado à plataforma em um clique.</div>'; }
+      dossieBox.style.display='none'; confirmBox.style.display='none'; var par=body.querySelector('#nm-parecer'); if(par)par.style.display='none'; inCnpj.value='';
       try{ loadMandatos(sb);loadHeroMetrics(sb); }catch(_){}
       try{ if(window.IpOrg&&IpOrg._reload) await IpOrg._reload(); }catch(_){}
       if(window.TB&&TB.toast)TB.toast('Cliente cadastrado');
@@ -1625,6 +1631,13 @@ function newMandato(){openDrawer('Novo cliente',`
         +(soc.length?'<div style="font-size:12px;color:var(--ink2);margin-top:8px"><b style="color:var(--ink3)">Sócios ('+(data.socios.length)+'):</b> '+soc.map(s=>esc(s.nome)).join(' · ')+(data.socios.length>6?' …':'')+'</div>':'')
         +'</div>';
       dossieBox.style.display='block'; confirmBox.style.display='block';
+      // DUE DILIGENCE: roda o motor determinístico sobre o dossiê e renderiza o parecer acionável
+      try{
+        if(window.IpDDMotor){
+          _dossie._dd = IpDDMotor.avaliar(data, {});
+          var par=body.querySelector('#nm-parecer'); if(par && window.IpDDParecer){ IpDDParecer.render(par, _dossie._dd); par.style.display='block'; }
+        }
+      }catch(_){}
     }catch(e){ result.innerHTML='<div class="dr-err">'+esc(e.message||e)+'</div>'; }
     finally{ btn.disabled=false; btn.textContent=old; }
   });
