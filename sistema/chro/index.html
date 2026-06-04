@@ -1558,43 +1558,93 @@ async function openMandatos(){
     }catch(err){target.innerHTML='<div class="dr-err">Erro: '+esc(err.message)+'</div>'}
   });
 }
+function _nmFmtCnpj(v){ v=(v||'').replace(/\D/g,'').slice(0,14); return v.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d)/,'.$1/$2').replace(/(\d{4})(\d)/,'$1-$2'); }
 function newMandato(){openDrawer('Novo cliente',`
-  <p class="dr-sub">Comece com o essencial: o nome. Tudo o mais — espaço na árvore do grupo, estágio inicial, propagação — nasce automaticamente. Você refina depois, se quiser.</p>
-  <form id="nm-form" class="dr-form">
-    <label><span class="dr-lab">Nome do cliente</span><input type="text" name="empresa" required autocomplete="off" placeholder="ex: Construtora Aurora" style="font-size:17px;padding:13px 14px"></label>
-    <div id="nm-result" style="margin:6px 0"></div>
-    <button type="submit" class="btn btn-primary" id="nm-submit" style="padding:13px 22px;font-size:14px;width:100%">Cadastrar cliente</button>
-    <button type="button" class="btn btn-ghost" id="nm-more" style="padding:8px 14px;font-size:12px;margin-top:10px;width:100%;opacity:.75">+ detalhes (opcional)</button>
-    <div id="nm-extra" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
-      <label><span class="dr-lab">Setor (opcional)</span><input type="text" name="setor" placeholder="ex: Engenharia, Saúde, Varejo"></label>
-      <label><span class="dr-lab">Porte (opcional)</span><input type="text" name="porte" placeholder="ex: 50–200 colaboradores"></label>
-      <label><span class="dr-lab">Sócio responsável</span><select name="socio"><option value="">automático (você)</option><option value="raphael">raphael</option><option value="gleice">gleice</option></select></label>
+  <p class="dr-sub">Um CNPJ é tudo o que precisamos. A plataforma busca o resto — razão social, porte, setor, sócios, situação cadastral — em várias fontes públicas, e cadastra o cliente já conectado a tudo.</p>
+  <form id="nm-form" class="dr-form" autocomplete="off">
+    <label><span class="dr-lab">CNPJ do cliente</span>
+      <input type="text" name="cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" style="font-size:20px;letter-spacing:.04em;padding:14px 16px;font-family:var(--mono)"></label>
+    <div id="nm-result" style="margin:8px 0"></div>
+    <button type="submit" class="btn btn-gold" id="nm-buscar" style="padding:13px 22px;font-size:14px;width:100%">⌕ Buscar empresa</button>
+    <div id="nm-dossie" style="display:none;margin-top:14px"></div>
+    <div id="nm-confirm" style="display:none;margin-top:14px">
+      <button type="button" class="btn btn-primary" id="nm-submit" style="padding:13px 22px;font-size:14px;width:100%">Cadastrar cliente</button>
+    </div>
+    <button type="button" class="btn btn-ghost" id="nm-manual" style="padding:8px 14px;font-size:12px;margin-top:12px;width:100%;opacity:.7">não tenho o CNPJ — cadastrar só pelo nome</button>
+    <div id="nm-manualbox" style="display:none;margin-top:10px;padding-top:12px;border-top:1px solid var(--border)">
+      <label><span class="dr-lab">Nome do cliente</span><input type="text" name="empresa" placeholder="ex: Construtora Aurora" style="font-size:16px;padding:12px 14px"></label>
+      <button type="button" class="btn btn-primary" id="nm-submit-nome" style="padding:11px 20px;font-size:13px;width:100%;margin-top:6px">Cadastrar pelo nome</button>
     </div>
   </form>
 `,body=>{
-  const more=body.querySelector('#nm-more'), extra=body.querySelector('#nm-extra');
-  more.onclick=()=>{ extra.style.display = extra.style.display==='none'?'block':'none'; more.style.display='none'; };
-  setTimeout(()=>{ const inp=body.querySelector('input[name=empresa]'); if(inp) inp.focus(); }, 60);
-  body.querySelector('#nm-form').addEventListener('submit',async ev=>{
-    ev.preventDefault();const f=ev.target;const r=body.querySelector('#nm-result');const btn=body.querySelector('#nm-submit');
-    const nome=(f.empresa.value||'').trim();
-    if(nome.length<2){ r.innerHTML='<div class="dr-err">Informe o nome do cliente.</div>'; return; }
-    btn.disabled=true; r.innerHTML='<div class="dr-info">Cadastrando e conectando à plataforma…</div>';
+  const sb=window.__IP_SB;
+  const inCnpj=body.querySelector('input[name=cnpj]'), result=body.querySelector('#nm-result');
+  const dossieBox=body.querySelector('#nm-dossie'), confirmBox=body.querySelector('#nm-confirm');
+  let _dossie=null;
+  inCnpj.addEventListener('input',()=>{ inCnpj.value=_nmFmtCnpj(inCnpj.value); _dossie=null; dossieBox.style.display='none'; confirmBox.style.display='none'; });
+  setTimeout(()=>inCnpj.focus(),60);
+
+  async function cadastrar(payload, btn){
+    btn.disabled=true; result.innerHTML='<div class="dr-info">Cadastrando e conectando à plataforma…</div>';
     try{
-      const sb=window.__IP_SB;
-      // RPC transacional: cria mandato + nó-org folha (entra na árvore do grupo na hora)
-      const {data,error}=await sb.rpc('fn_ip_criar_cliente',{
-        p_nome:nome, p_setor:f.setor?.value||null, p_porte:f.porte?.value||null, p_socio:f.socio?.value||null });
+      const {data,error}=await sb.rpc('fn_ip_criar_cliente', payload);
       if(error)throw error;
-      if(data&&data.ja_existia){ r.innerHTML='<div class="dr-ok">Já existia um cliente <strong>'+esc(data.nome)+'</strong> — abrindo o existente.</div>'; }
-      else { r.innerHTML='<div class="dr-ok">✓ <strong>'+esc(data.nome)+'</strong> cadastrado e conectado à plataforma. Diagnóstico, Pulso, programas e consolidação já o incluem.</div>'; }
-      f.empresa.value='';
+      if(data&&data.ja_existia){ result.innerHTML='<div class="dr-ok">Já existia o cliente <strong>'+esc(data.nome)+'</strong> — abrindo o existente.</div>'; }
+      else { result.innerHTML='<div class="dr-ok">✓ <strong>'+esc(data.nome)+'</strong> cadastrado e conectado à plataforma. Diagnóstico, Pulso, programas e consolidação já o incluem.</div>'; }
+      dossieBox.style.display='none'; confirmBox.style.display='none'; inCnpj.value='';
       try{ loadMandatos(sb);loadHeroMetrics(sb); }catch(_){}
-      try{ if(window.IpOrg&&IpOrg._reload){ await IpOrg._reload(); } }catch(_){}
+      try{ if(window.IpOrg&&IpOrg._reload) await IpOrg._reload(); }catch(_){}
       if(window.TB&&TB.toast)TB.toast('Cliente cadastrado');
-    }catch(e){r.innerHTML='<div class="dr-err">Erro: '+esc(e.message||e)+'</div>'}
+    }catch(e){ result.innerHTML='<div class="dr-err">Erro: '+esc(e.message||e)+'</div>'; }
     finally{ btn.disabled=false; }
+  }
+
+  // BUSCAR pelo CNPJ -> a empresa inteira aparece
+  body.querySelector('#nm-form').addEventListener('submit',async ev=>{
+    ev.preventDefault();
+    const cnpj=(inCnpj.value||'').replace(/\D/g,'');
+    if(cnpj.length!==14){ result.innerHTML='<div class="dr-err">Digite os 14 dígitos do CNPJ.</div>'; return; }
+    const btn=body.querySelector('#nm-buscar'); btn.disabled=true; const old=btn.textContent; btn.innerHTML='Buscando em todas as fontes…';
+    result.innerHTML='';
+    try{
+      const {data,error}=await sb.functions.invoke('cnpj-enrich',{body:{cnpj}});
+      if(error)throw error; if(!data||!data.ok)throw new Error((data&&data.erro)||'CNPJ não encontrado');
+      _dossie=data;
+      const soc=(data.socios||[]).slice(0,6);
+      dossieBox.innerHTML=
+        '<div style="background:var(--cream2);border:1px solid var(--border);border-radius:10px;padding:16px 18px">'
+        +'<div style="font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">'+esc(data.cnpj)+' · '+(data.n_fontes||1)+' fonte(s): '+esc((data.fontes||[]).join(' · '))+'</div>'
+        +'<div style="font:700 italic 19px Georgia;color:var(--navy)">'+esc(data.razao_social||'—')+'</div>'
+        +(data.nome_fantasia?'<div style="color:var(--ink2);font-size:13px;margin-top:2px">'+esc(data.nome_fantasia)+'</div>':'')
+        +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">'
+          +(data.porte?'<span style="font-size:11px;padding:4px 10px;border-radius:20px;background:rgba(196,163,90,.12);color:var(--gold-deep)">'+esc(data.porte)+'</span>':'')
+          +(data.situacao?'<span style="font-size:11px;padding:4px 10px;border-radius:20px;background:'+(/ATIVA/i.test(data.situacao)?'rgba(107,174,130,.15);color:var(--green)':'rgba(216,117,117,.15);color:var(--red)')+'">'+esc(data.situacao)+'</span>':'')
+          +(data.uf?'<span style="font-size:11px;padding:4px 10px;border-radius:20px;background:rgba(123,165,216,.12);color:var(--blue)">'+esc(data.municipio||'')+'/'+esc(data.uf)+'</span>':'')
+        +'</div>'
+        +(data.cnae?'<div style="font-size:12px;color:var(--ink2);margin-top:10px"><b style="color:var(--ink3)">Atividade:</b> '+esc(data.cnae)+'</div>':'')
+        +(soc.length?'<div style="font-size:12px;color:var(--ink2);margin-top:8px"><b style="color:var(--ink3)">Sócios ('+(data.socios.length)+'):</b> '+soc.map(s=>esc(s.nome)).join(' · ')+(data.socios.length>6?' …':'')+'</div>':'')
+        +'</div>';
+      dossieBox.style.display='block'; confirmBox.style.display='block';
+    }catch(e){ result.innerHTML='<div class="dr-err">'+esc(e.message||e)+'</div>'; }
+    finally{ btn.disabled=false; btn.textContent=old; }
   });
+
+  // CADASTRAR com o dossiê rico
+  body.querySelector('#nm-submit').onclick=()=>{
+    if(!_dossie){ result.innerHTML='<div class="dr-err">Busque a empresa pelo CNPJ primeiro.</div>'; return; }
+    cadastrar({ p_nome:_dossie.razao_social||_dossie.nome_fantasia, p_setor:_dossie.cnae||null, p_porte:_dossie.porte||null,
+      p_cnpj:_dossie.cnpj_raw||_dossie.cnpj, p_dossie:_dossie, p_email:_dossie.email||null, p_whatsapp:_dossie.telefone||null },
+      body.querySelector('#nm-submit'));
+  };
+
+  // fallback manual (sem CNPJ)
+  const manualBtn=body.querySelector('#nm-manual'), manualBox=body.querySelector('#nm-manualbox');
+  manualBtn.onclick=()=>{ manualBox.style.display = manualBox.style.display==='none'?'block':'none'; manualBtn.style.display='none'; setTimeout(()=>{const i=body.querySelector('input[name=empresa]');if(i)i.focus();},40); };
+  body.querySelector('#nm-submit-nome').onclick=()=>{
+    const nome=(body.querySelector('input[name=empresa]').value||'').trim();
+    if(nome.length<2){ result.innerHTML='<div class="dr-err">Informe o nome.</div>'; return; }
+    cadastrar({ p_nome:nome }, body.querySelector('#nm-submit-nome'));
+  };
 })}
 
 async function openAcoesBib(){
