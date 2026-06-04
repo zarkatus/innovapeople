@@ -834,16 +834,16 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
     <div class="card" data-mod="forecaster">
       <div class="card-head">
         <div>
-          <div class="card-title">Forecaster</div>
-          <div class="card-promise">Projeção de turnover, headcount, custo de pessoas em três cenários.</div>
+          <div class="card-title">Risco de Retenção</div>
+          <div class="card-promise">Quais equipes estão em zona de risco de saída — leitura viva do Pulso, hoje. Projeção de folha 30/60/90 quando houver headcount.</div>
         </div>
-        <span class="status st-spec">Espelho AIPrev</span>
+        <span class="status st-ok">Operacional via Pulso</span>
       </div>
       <div class="card-body">
-        AIPrev tem <code style="font-family:var(--mono);font-size:11px">fn_agent_forecaster</code> para obra. Aqui projeta saída de talento crítico, necessidade de contratação e folha 30/60/90.
+        O risco de retenção já é real e acionável no <strong>Pulso Analytics</strong> (risco de saída por equipe, anônimo). A projeção de turnover/folha em cenários entra quando o headcount e a compensação estiverem populados — sem inventar números.
       </div>
       <div class="card-actions">
-        <button class="btn btn-gold" onclick="openForecaster()">Ver demonstração</button>
+        <button class="btn btn-gold" onclick="openForecaster()">Abrir risco de retenção</button>
       </div>
     </div>
 
@@ -2805,8 +2805,9 @@ function openCpmDev(){
     (function go(){ if(window.IpEvm&&window.IpEvm.renderSequencia){ IpEvm.renderSequencia(host,{}); } else { setTimeout(go,150); } })();
   });
 }
-// Forecaster: próximo item dedicado da fila IREU (honesto — exige headcount/folha real)
-function openForecaster(){openProgramas()}
+// Risco de Retenção: o valor real de previsão já vive no Pulso Analytics (risco de saída por equipe).
+// Folha/headcount projetados em cenários entram quando esses dados estiverem populados (sem stub).
+function openForecaster(){ location.href='/sistema/chro/pulso-analytics/'; }
 
 function notImpl(name){alert('Em construção: '+name+'\n\nO contrato de dados está mapeado — falta a UI dedicada na próxima rodada.')}
 </script>

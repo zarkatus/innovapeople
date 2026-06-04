@@ -55,25 +55,11 @@
 
   function _statusBadge(st){ var c=st==='concluido'?'var(--ip-ok)':st==='em_andamento'?'var(--ip-gold-lum)':'var(--ip-ink-3)'; return '<span style="font:600 9.5px/1 system-ui;padding:3px 8px;border-radius:8px;color:'+c+';background:color-mix(in srgb,'+c+' 16%,transparent)">'+esc(st||'—')+'</span>'; }
 
-  // leitura DETERMINÍSTICA (sem IA) — sempre disponível, mesmo sem créditos Anthropic
-  function _leituraRegras(evm, marcos){
-    var cpi=evm.cpi||0, spi=evm.spi||0, frases=[];
-    if(cpi<0.9) frases.push('Acima do custo (CPI '+cpi.toFixed(2)+'): gasta-se mais do que se entrega de valor.');
-    else if(cpi>1.1) frases.push('Eficiente em custo (CPI '+cpi.toFixed(2)+').');
-    else frases.push('Custo sob controle (CPI '+cpi.toFixed(2)+').');
-    if(spi<0.9) frases.push('Atrasado (SPI '+spi.toFixed(2)+'): avanço físico abaixo do planejado.');
-    else if(spi>=1) frases.push('No prazo (SPI '+spi.toFixed(2)+').');
-    else frases.push('Levemente atrás do plano (SPI '+spi.toFixed(2)+').');
-    // marco que mais pesa: maior gap AC-EV
-    var pesado=marcos.slice().sort(function(a,b){return ((+b.ac||0)-(+b.ev||0))-((+a.ac||0)-(+a.ev||0));})[0];
-    if(pesado && ((+pesado.ac||0)-(+pesado.ev||0))>0) frases.push('Marco que mais pesa: "'+pesado.titulo+'" (AC '+brl(pesado.ac)+' > EV '+brl(pesado.ev)+').');
-    if(cpi<0.9||spi<0.9) frases.push('Ação: replanejar os marcos finais e revisar o esforço antes de novo aporte.');
-    else frases.push('Ação: manter a cadência e apontar avanços para acompanhar a curva.');
-    return frases.join(' ');
-  }
   async function _diagIA(evm, marcos, host){
     var out=host.querySelector('#evm-ia-out'); if(!out) return;
-    var regras=_leituraRegras(evm, marcos);
+    // leitura determinística via módulo reutilizável IpDiag (sempre disponível, sem IA)
+    var dd = window.IpDiag ? IpDiag.evm(evm, marcos) : {leitura:'',acao:''};
+    var regras = (dd.leitura||'') + (dd.acao?(' Ação: '+dd.acao):'');
     out.innerHTML='<div style="color:var(--ip-ink-3);font-style:italic">Lendo o EVM e raciocinando…</div>';
     var resumo='Programa "'+evm.programa+'" ('+evm.tipo+'): PV '+evm.pv+', EV '+evm.ev+', AC '+evm.ac+', CPI '+(evm.cpi||0).toFixed(2)+', SPI '+(evm.spi||0).toFixed(2)+'. Marcos: '+marcos.map(function(m){return m.titulo+' ['+m.status+', pv '+m.pv+'/ev '+m.ev+'/ac '+m.ac+']';}).join('; ')+'.';
     var prompt='Você é o analista de EVM (gestão de valor agregado) da InnovaPeople, aplicado a programas de desenvolvimento de gente. '+resumo+' '
