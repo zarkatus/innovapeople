@@ -216,6 +216,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
 <script src="/sistema/_shared/ip-diagnostico.js" defer></script>
 <script src="/sistema/_shared/dd-motor.js" defer></script>
 <script src="/sistema/_shared/ip-dd-parecer.js" defer></script>
+<script src="/sistema/_shared/dd-consentimento.js" defer></script>
 <script src="/sistema/_shared/ip-evm.js" defer></script></head>
 
 <body>
@@ -1564,12 +1565,13 @@ function _nmFmtCnpj(v){ v=(v||'').replace(/\D/g,'').slice(0,14); return v.replac
 function newMandato(){openDrawer('Novo cliente',`
   <p class="dr-sub">Um CNPJ é tudo o que precisamos. A plataforma busca o resto — razão social, porte, setor, sócios, situação cadastral — em várias fontes públicas, e cadastra o cliente já conectado a tudo.</p>
   <form id="nm-form" class="dr-form" autocomplete="off">
-    <label><span class="dr-lab">CNPJ do cliente</span>
-      <input type="text" name="cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" style="font-size:20px;letter-spacing:.04em;padding:14px 16px;font-family:var(--mono)"></label>
+    <label><span class="dr-lab">CNPJ ou CPF do cliente</span>
+      <input type="text" name="cnpj" inputmode="numeric" placeholder="empresa (CNPJ) ou pessoa (CPF)" style="font-size:20px;letter-spacing:.04em;padding:14px 16px;font-family:var(--mono)"></label>
     <div id="nm-result" style="margin:8px 0"></div>
-    <button type="submit" class="btn btn-gold" id="nm-buscar" style="padding:13px 22px;font-size:14px;width:100%">⌕ Buscar empresa</button>
+    <button type="submit" class="btn btn-gold" id="nm-buscar" style="padding:13px 22px;font-size:14px;width:100%">⌕ Pesquisar</button>
     <div id="nm-dossie" style="display:none;margin-top:14px"></div>
     <div id="nm-parecer" style="display:none;margin-top:14px"></div>
+    <div id="nm-pessoa" style="display:none;margin-top:14px"></div>
     <div id="nm-confirm" style="display:none;margin-top:14px">
       <button type="button" class="btn btn-primary" id="nm-submit" style="padding:14px 22px;font-size:15px;width:100%">✓ Cadastrar como cliente</button>
       <div style="font-size:11px;color:var(--ink3);text-align:center;margin-top:7px">A empresa, o dossiê e o parecer de due diligence entram juntos — em um clique.</div>
@@ -1605,11 +1607,12 @@ function newMandato(){openDrawer('Novo cliente',`
     finally{ btn.disabled=false; }
   }
 
-  // BUSCAR pelo CNPJ -> a empresa inteira aparece
+  // BUSCAR: detecta CNPJ (14) ou CPF (11) e ramifica
   body.querySelector('#nm-form').addEventListener('submit',async ev=>{
     ev.preventDefault();
     const cnpj=(inCnpj.value||'').replace(/\D/g,'');
-    if(cnpj.length!==14){ result.innerHTML='<div class="dr-err">Digite os 14 dígitos do CNPJ.</div>'; return; }
+    if(cnpj.length===11){ return pesquisarPessoa(cnpj); }   // CPF -> fluxo de pessoa
+    if(cnpj.length!==14){ result.innerHTML='<div class="dr-err">Digite um CNPJ (14 dígitos) ou CPF (11 dígitos).</div>'; return; }
     const btn=body.querySelector('#nm-buscar'); btn.disabled=true; const old=btn.textContent; btn.innerHTML='Buscando em todas as fontes…';
     result.innerHTML='';
     try{
@@ -1649,6 +1652,59 @@ function newMandato(){openDrawer('Novo cliente',`
       p_cnpj:_dossie.cnpj_raw||_dossie.cnpj, p_dossie:_dossie, p_email:_dossie.email||null, p_whatsapp:_dossie.telefone||null },
       body.querySelector('#nm-submit'));
   };
+
+  // ===== FLUXO PESSOA (CPF) =====
+  function validaCPF(c){ c=(c||'').replace(/\D/g,''); if(c.length!==11||/^(\d)\1{10}$/.test(c))return false; let s=0;for(let i=0;i<9;i++)s+=parseInt(c[i])*(10-i);let d=11-(s%11);if(d>=10)d=0;if(d!==parseInt(c[9]))return false; s=0;for(let i=0;i<10;i++)s+=parseInt(c[i])*(11-i);d=11-(s%11);if(d>=10)d=0;return d===parseInt(c[10]); }
+  var _pessoa=null;
+  async function pesquisarPessoa(cpf){
+    const sb=window.__IP_SB;
+    const pBox=body.querySelector('#nm-pessoa'); const confirmBox=body.querySelector('#nm-confirm');
+    body.querySelector('#nm-dossie').style.display='none'; body.querySelector('#nm-parecer').style.display='none'; confirmBox.style.display='none';
+    result.innerHTML='';
+    const ok=validaCPF(cpf);
+    if(!ok){ result.innerHTML='<div class="dr-err">CPF inválido — confira os dígitos.</div>'; return; }
+    const btn=body.querySelector('#nm-buscar'); btn.disabled=true; const old=btn.textContent; btn.innerHTML='Pesquisando…';
+    // T0: validação + cruzamento societário público (sem consentimento, com contexto)
+    let t0={};
+    try{ const r=await sb.functions.invoke('dd-pessoa-tiers',{body:{project_id:'ip',pessoa_doc:cpf,contexto_origem:'cliente_curadoria',finalidades:[]}}); if(!r.error)t0=r.data||{}; }catch(_){}
+    btn.disabled=false; btn.innerHTML=old;
+    const empresas=(t0.tier0&&t0.tier0.societario&&t0.tier0.societario.empresas)||[];
+    _pessoa={ cpf:cpf, t0:t0 };
+    pBox.innerHTML=
+      '<div style="background:var(--cream2);border:1px solid var(--border);border-radius:10px;padding:16px 18px">'
+      +'<div style="font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">PESSOA FÍSICA · '+esc(cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/,"$1.$2.$3-$4"))+'</div>'
+      +'<div style="font:600 italic 16px Georgia;color:var(--navy)"><span style="color:var(--green)">✓ CPF válido</span></div>'
+      +'<div style="font-size:12.5px;color:var(--ink2);margin-top:10px"><b style="color:var(--ink3)">Participação societária pública:</b> '+(empresas.length?empresas.map(e=>esc(e.empresa)).join(' · '):'nenhuma empresa encontrada em base (dado público gratuito)')+'</div>'
+      +'<div style="margin-top:14px;padding:12px 14px;background:rgba(196,163,90,.06);border-radius:8px">'
+        +'<div style="font-size:12.5px;color:var(--ink2);line-height:1.5">Pesquisas avançadas (situação cadastral, crédito, processos, PEP, identidade) só com o <b>consentimento da pessoa</b>. Solicite a autorização para desbloquear.</div>'
+        +'<button type="button" class="btn btn-ghost" id="nm-consent" style="margin-top:10px;font-size:12.5px;width:100%">⚖ Solicitar consentimento para pesquisa avançada</button>'
+      +'</div></div>';
+    pBox.style.display='block';
+    // botão cadastrar pessoa (1 clique)
+    const inputNome = '<label style="display:block;margin-top:12px"><span class="dr-lab">Nome da pessoa</span><input type="text" id="nm-pnome" placeholder="nome completo" style="font-size:15px;padding:11px 13px;width:100%"></label>';
+    confirmBox.innerHTML = inputNome + '<button type="button" class="btn btn-primary" id="nm-submit-pessoa" style="padding:14px 22px;font-size:15px;width:100%;margin-top:8px">✓ Cadastrar pessoa como cliente</button><div style="font-size:11px;color:var(--ink3);text-align:center;margin-top:7px">A pessoa, validação e participação societária entram juntas — em um clique.</div>';
+    confirmBox.style.display='block';
+    body.querySelector('#nm-consent').onclick=()=>{
+      if(!window.IpDdConsent){ result.innerHTML='<div class="dr-err">Módulo de consentimento indisponível.</div>'; return; }
+      const nome=(body.querySelector('#nm-pnome')||{}).value||'';
+      IpDdConsent.abrir({ doc:cpf, nome:nome, project_id:'ip', contexto_origem:'cliente_curadoria', onSuccess:()=>{ result.innerHTML='<div class="dr-ok">✓ Consentimento registrado — pesquisas autorizadas liberadas para esta pessoa.</div>'; } });
+    };
+    body.querySelector('#nm-submit-pessoa').onclick=async()=>{
+      const nome=((body.querySelector('#nm-pnome')||{}).value||'').trim();
+      if(nome.length<2){ result.innerHTML='<div class="dr-err">Informe o nome da pessoa.</div>'; return; }
+      const b=body.querySelector('#nm-submit-pessoa'); b.disabled=true; result.innerHTML='<div class="dr-info">Cadastrando pessoa…</div>';
+      try{
+        const sb=window.__IP_SB;
+        const {data,error}=await sb.rpc('fn_ip_criar_cliente',{ p_nome:nome, p_setor:'Pessoa física', p_dossie:{ tipo:'pessoa_fisica', cpf:cpf, t0:_pessoa.t0 } });
+        if(error)throw error;
+        result.innerHTML='<div class="dr-ok">✓ <strong>'+esc(data.nome)+'</strong> cadastrada — pessoa, validação e participação societária, conectada à plataforma em um clique.</div>';
+        pBox.style.display='none'; confirmBox.style.display='none'; inCnpj.value='';
+        try{ loadMandatos(sb);loadHeroMetrics(sb); }catch(_){}
+        try{ if(window.IpOrg&&IpOrg._reload) await IpOrg._reload(); }catch(_){}
+        if(window.TB&&TB.toast)TB.toast('Pessoa cadastrada');
+      }catch(e){ result.innerHTML='<div class="dr-err">Erro: '+esc(e.message||e)+'</div>'; b.disabled=false; }
+    };
+  }
 
   // fallback manual (sem CNPJ)
   const manualBtn=body.querySelector('#nm-manual'), manualBox=body.querySelector('#nm-manualbox');
