@@ -27,7 +27,12 @@
     host.innerHTML='<div id="pp-root"><div class="pp-empty">Consolidando proximos passos&hellip;</div></div>';
     await carregar();
     render();
+    // robustez: se a sessão ainda não estava pronta no 1º boot (tudo vazio), recarrega 1×
+    if(!(_data.sugestoes&&_data.sugestoes.length) && !(_data.mandatos&&_data.mandatos.length) && !_reabriu){
+      _reabriu=true; setTimeout(async function(){ await carregar(); render(); }, 600);
+    }
   }
+  let _reabriu=false;
 
   async function carregar(){
     const [mand, sug, run]=await Promise.all([
@@ -51,7 +56,8 @@
     const root=_host.querySelector('#pp-root');
     const arr=filtradas();
     const sint=_data.lastDiag&&_data.lastDiag.payload&&_data.lastDiag.payload.sintese;
-    const sintTxt=sint?esc(sint):'Sem diagnostico cruzado recente. Clique em <strong>Diagnostico cruzado IA</strong> para a IA dizer por onde comecar.';
+    // sem diagnóstico IA recente -> leitura determinística imediata (não fica vazio esperando crédito de IA)
+    const sintTxt=sint?esc(sint):(esc(_diagDeterministico())+' <span style="font-style:italic;color:var(--cream-dim);font-size:11px">(leitura por regras — peça o diagnóstico cruzado IA para a leitura cognitiva)</span>');
     let html='';
     html+='<div class="pp-hero"><div class="pp-eyebrow">5 camadas &middot; trilha acionavel</div><h1>Proximos <em>passos</em></h1><div class="pp-tag">Cada sinal detectado pelos agentes vem enriquecido por IA (causa + acao especifica). Voce decide a ordem, ou pede o diagnostico cruzado. Tudo o que <strong>ja foi tratado</strong> some daqui, fechando o loop.</div></div>';
     html+='<div class="pp-bar">';
@@ -65,8 +71,13 @@
     html+='<div class="pp-sec-h">'+arr.length+' sinal'+(arr.length===1?'':'is')+' pendente'+(arr.length===1?'':'s')+'</div>';
     if(!arr.length){html+='<div class="pp-empty">Nada pendente neste recorte. Os agentes rodam diariamente as 07:30 UTC ou clique <strong>Reavaliar agora</strong>.</div>';}
     else{ html+='<div class="pp-list">'+arr.map(cardSinal).join('')+'</div>'; }
+    // camada PASSADO · timeline ao vivo do Sistema Nervoso (o que aconteceu, em tempo real)
+    html+='<div class="pp-sec-h" style="margin-top:26px">Linha do tempo &middot; o que aconteceu</div><div id="pp-nervo-tl"></div>';
     root.innerHTML=html;
+    // monta a timeline ao vivo (módulo dedicado; passado das 5 camadas)
+    if(window.IpNervo){ const _tlh=root.querySelector('#pp-nervo-tl'); if(_tlh){ if(_unsubTl)try{_unsubTl();}catch(_){}; IpNervo.timeline(_tlh,{mandato:_data.mandato||undefined,limit:14,live:true}).then(u=>{_unsubTl=u;}); } }
   }
+  let _unsubTl=null;
 
   function cardSinal(s){
     const al=alvo(s.agente);
@@ -98,14 +109,29 @@
     finally{btn.disabled=false;btn.innerHTML=old}
   }
 
+  // diagnóstico DETERMINÍSTICO (sem IA): cruza os sinais pendentes por regras -> "comece por X"
+  function _diagDeterministico(){
+    const arr=filtradas();
+    if(!arr.length) return 'Nada pendente neste recorte — operação em dia. Os agentes rodam diariamente às 07:30.';
+    const crit=arr.filter(s=>(SEV_RANK[s.severidade]||3)>=5).length;
+    const alta=arr.filter(s=>(SEV_RANK[s.severidade]||3)===4).length;
+    const porAgente={}; arr.forEach(s=>{porAgente[s.agente]=(porAgente[s.agente]||0)+1;});
+    const topAgente=Object.entries(porAgente).sort((a,b)=>b[1]-a[1])[0];
+    const primeiro=arr[0];
+    const f=[arr.length+' sinais pendentes'+(crit?' ('+crit+' crítico'+(crit>1?'s':'')+')':alta?' ('+alta+' de alta severidade)':'')+'.'];
+    if(topAgente) f.push('Concentração em "'+topAgente[0]+'" ('+topAgente[1]+').');
+    if(primeiro) f.push('Comece pelo de maior severidade: "'+(primeiro.titulo||'')+'".');
+    return f.join(' ');
+  }
   async function _diag(btn){
     btn.disabled=true;const old=btn.innerHTML;btn.innerHTML='<span class="pp-spin"></span>Cruzando&hellip;';
+    const txt0=document.getElementById('pp-diag-txt');
     try{
       const body={ferramenta:'consolidado',persistir:false};
       const {data,error}=await sb().functions.invoke('ip-agent-claude',{body});
-      if(error)throw error; if(data&&data.erro)throw new Error(data.erro);
+      if(error||(data&&data.erro)){ if(txt0)txt0.innerHTML=esc(_diagDeterministico())+' <span style="font-style:italic;color:var(--cream-dim);font-size:11px">(leitura por regras — copiloto IA indisponível)</span>'; T.toast('Leitura por regras (IA indisponível)'); btn.disabled=false;btn.innerHTML=old; return; }
       const txt=document.getElementById('pp-diag-txt');
-      if(txt)txt.innerHTML=esc(data.sintese||data.diagnostico||'(sem leitura)');
+      if(txt)txt.innerHTML=esc(data.sintese||data.diagnostico||_diagDeterministico());
       const _ps=Array.isArray(data.proximos_passos)?data.proximos_passos:[];
       const _parent=txt&&txt.parentElement;
       if(_parent){const _old=_parent.querySelector('.pp-macro-list'); if(_old)_old.remove();}
@@ -115,7 +141,7 @@
         _parent.appendChild(_list);
       }
       T.toast('Diagnostico cruzado atualizado');
-    }catch(e){T.toast('Erro IA: '+(e.message||e))}
+    }catch(e){ if(txt0)txt0.innerHTML=esc(_diagDeterministico())+' <span style="font-style:italic;color:var(--cream-dim);font-size:11px">(leitura por regras)</span>'; T.toast('Leitura por regras'); }
     finally{btn.disabled=false;btn.innerHTML=old}
   }
 
