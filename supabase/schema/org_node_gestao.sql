@@ -94,6 +94,31 @@ END;
 $fn$;
 GRANT EXECUTE ON FUNCTION public.fn_ip_org_set_dd(uuid,text,jsonb,jsonb) TO authenticated;
 
+-- ── rollup de DUE DILIGENCE por subárvore: consolida os pareceres dos nós com CNPJ ──
+CREATE OR REPLACE FUNCTION public.fn_ip_org_dd_rollup(p_node_id uuid)
+RETURNS jsonb LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path TO 'public' AS $fn$
+DECLARE v_root ltree; v_entrar int; v_cautela int; v_evitar int; v_total int; v_pendentes int; v_pior jsonb;
+BEGIN
+  IF NOT fn_ip_is_socio() THEN RAISE EXCEPTION 'acesso restrito'; END IF;
+  SELECT path INTO v_root FROM ip_org_node WHERE id=p_node_id;
+  SELECT
+    count(*) FILTER (WHERE metadata->'dd'->>'veredicto'='ENTRAR'),
+    count(*) FILTER (WHERE metadata->'dd'->>'veredicto'='CAUTELA'),
+    count(*) FILTER (WHERE metadata->'dd'->>'veredicto'='EVITAR'),
+    count(*) FILTER (WHERE metadata->>'cnpj' IS NOT NULL),
+    count(*) FILTER (WHERE metadata->>'cnpj' IS NOT NULL AND metadata->'dd' IS NULL)
+  INTO v_entrar, v_cautela, v_evitar, v_total, v_pendentes
+  FROM ip_org_node WHERE path <@ v_root AND status='ativo';
+  SELECT jsonb_build_object('nome',nome,'veredicto',metadata->'dd'->>'veredicto','score',(metadata->'dd'->>'risco_score'))
+    INTO v_pior FROM ip_org_node
+    WHERE path <@ v_root AND status='ativo' AND metadata->'dd'->>'veredicto' IN ('EVITAR','CAUTELA')
+    ORDER BY CASE metadata->'dd'->>'veredicto' WHEN 'EVITAR' THEN 0 ELSE 1 END, (metadata->'dd'->>'risco_score')::int NULLS LAST LIMIT 1;
+  RETURN jsonb_build_object('entrar',COALESCE(v_entrar,0),'cautela',COALESCE(v_cautela,0),'evitar',COALESCE(v_evitar,0),
+    'com_cnpj',COALESCE(v_total,0),'dd_pendentes',COALESCE(v_pendentes,0),'pior',v_pior);
+END;
+$fn$;
+GRANT EXECUTE ON FUNCTION public.fn_ip_org_dd_rollup(uuid) TO authenticated;
+
 INSERT INTO public.core_schema_version (patch, descricao)
-VALUES ('org-node-gestao', 'RPCs de gestão da árvore: criar_no/mover_no(anti-ciclo)/renomear/arquivar(guard filhos) + set_dd(anexa DD ao nó), guard fn_ip_is_socio')
+VALUES ('org-node-gestao', 'RPCs de gestão da árvore: criar_no/mover_no(anti-ciclo)/renomear/arquivar(guard filhos) + set_dd(anexa DD ao nó) + dd_rollup(consolida pareceres), guard fn_ip_is_socio')
 ON CONFLICT (patch) DO NOTHING;
