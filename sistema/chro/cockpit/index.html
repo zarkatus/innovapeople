@@ -60,6 +60,7 @@
 <script src="/sistema/_shared/ip-concierge.js" defer></script>
 <script src="/sistema/_shared/ip-nervo.js" defer></script>
 <script src="/sistema/_shared/ip-org.js" defer></script>
+<script src="/sistema/_shared/ip-org-painel.js" defer></script>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -175,6 +176,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
       <button id="cnc-go">Perguntar</button>
     </div>
   </div>
+
+  <!-- Painel consolidado do grupo (aparece só quando o nó corrente é grupo/holding/unidade) -->
+  <div class="sect" id="org-painel" style="display:none"></div>
 
   <!-- KPIs hero -->
   <div class="sect grid g-kpi" id="kpis"></div>
@@ -436,12 +440,14 @@ window.cockpitBoot = function cockpitBoot(){
 
   // espinha organizacional: com 1 empresa o gate esconde tudo (idêntico a hoje);
   // com ≥2, o breadcrumb aparece e trocar de nó re-consolida o cockpit pela subárvore.
+  function _painelGrupo(){ if(window.IpOrgPainel){ IpOrgPainel.render($('org-painel')); } }
   function montarOrg(){
     if(!window.IpOrg){ setTimeout(montarOrg,150); return; }
     IpOrg.init().then(function(st){
       if(st && st.visible){
-        // reescopo: ao trocar o nó, recarrega tudo (as queries filtram por mandatoIds da subárvore)
-        IpOrg.scope.onChange(function(){ carregarTudo(); rodarConcierge(); montarNervo(); });
+        _painelGrupo();
+        // reescopo: ao trocar o nó, recarrega tudo + atualiza o painel do grupo
+        IpOrg.scope.onChange(function(){ carregarTudo(); rodarConcierge(); montarNervo(); _painelGrupo(); });
       }
     });
   }
