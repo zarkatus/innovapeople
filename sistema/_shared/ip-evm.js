@@ -14,7 +14,10 @@
   function brl(n){ if(n==null||isNaN(n))return '—'; return (+n).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}); }
 
   async function _programas(){
-    var r=await SB().from('ip_programas').select('id,nome,tipo,status,pv_total,ev_total,ac_total').neq('status','cancelado').order('nome');
+    var q=SB().from('ip_programas').select('id,nome,tipo,status,pv_total,ev_total,ac_total,mandato_id').neq('status','cancelado').order('nome');
+    var ids = (window.IpOrg && IpOrg.scope && IpOrg.scope.mandatoIds) ? IpOrg.scope.mandatoIds() : null;
+    if(ids && ids.length) q=q.in('mandato_id', ids); // reescopo pela subárvore do nó corrente
+    var r=await q;
     return r.error?[]:(r.data||[]);
   }
   async function _evm(pid){
@@ -143,6 +146,11 @@
     sel.innerHTML=_progs.map(function(p){ return '<button class="evm-pill" data-pid="'+esc(p.id)+'">'+esc(p.nome)+'</button>'; }).join('');
     sel.querySelectorAll('.evm-pill').forEach(function(b){ b.onclick=function(){ _renderProg(host, b.dataset.pid); }; });
     _renderProg(host, opts.programa || _progs[0].id);
+    // reescopo: ao trocar o nó na árvore, recarrega os programas da subárvore (1×)
+    if(window.IpOrg && IpOrg.scope && IpOrg.scope.onChange && !host._ipEvmScoped){
+      host._ipEvmScoped = true;
+      IpOrg.scope.onChange(function(){ render(host, opts); });
+    }
   }
 
   // ── CPM por SEQUÊNCIA (sem datas/dependências fictícias — honesto sobre os dados reais) ──

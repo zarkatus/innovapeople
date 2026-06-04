@@ -58,6 +58,7 @@
 <script src="/sistema/_shared/ip-ui.js" defer></script>
 <script src="/sistema/_shared/ip-diagnostico.js" defer></script>
 <script src="/sistema/_shared/ip-pulso.js" defer></script>
+<script src="/sistema/_shared/ip-org.js" defer></script>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -109,7 +110,10 @@ window.pulsoBoot = function pulsoBoot(){
   $('btnRefresh').onclick=function(){ if(window.IpPulso) IpPulso.render($('pulso-host'),{}); };
   function start(){
     if(!window.IpPulso || !window.IpUI){ setTimeout(start,140); return; }
-    IpPulso.render($('pulso-host'), {});  // visão global (RLS sócios-only); mandato opcional no futuro
+    // espinha organizacional: com 1 empresa o gate esconde tudo (idêntico a hoje);
+    // com ≥2, o breadcrumb aparece e trocar o nó reescopa o Pulso pela subárvore.
+    if(window.IpOrg) IpOrg.init();
+    IpPulso.render($('pulso-host'), {});
   }
   start();
 };

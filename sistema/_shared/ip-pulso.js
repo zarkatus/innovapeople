@@ -18,19 +18,26 @@
     {k:'pertencimento',n:'Pertencimento'},{k:'clareza',n:'Clareza'},{k:'seguranca',n:'Segurança psi.'}
   ];
 
+  // escopo organizacional: se há nó corrente, filtra pela subárvore (várias empresas); senão, atual
+  function _escopo(q, mandato){
+    var ids = (window.IpOrg && IpOrg.scope && IpOrg.scope.mandatoIds) ? IpOrg.scope.mandatoIds() : null;
+    if(ids && ids.length) return q.in('mandato_id', ids);
+    if(mandato) return q.eq('mandato_id', mandato);
+    return q;
+  }
   async function _clima(mandato){
     var q=SB().from('v_core_clima_pulso').select('equipe,respostas,score_medio,proposito,autonomia,competencia,pertencimento,clareza,seguranca,risco_saida,suprimido_privacidade,ultimo_pulso');
-    if(mandato) q=q.eq('mandato_id',mandato);
+    q=_escopo(q,mandato);
     var r=await q.order('respostas',{ascending:false}); return r.error?[]:(r.data||[]);
   }
   async function _tend(mandato){
     var q=SB().from('v_ip_pulso_tendencia').select('equipe,mes,respostas,score_medio,risco_medio,suprimido');
-    if(mandato) q=q.eq('mandato_id',mandato);
+    q=_escopo(q,mandato);
     var r=await q.order('mes',{ascending:true}); return r.error?[]:(r.data||[]);
   }
   async function _coment(mandato){
     var q=SB().from('v_ip_pulso_comentarios').select('equipe,created_at,risco_saida,score,comentario');
-    if(mandato) q=q.eq('mandato_id',mandato);
+    q=_escopo(q,mandato);
     var r=await q.order('created_at',{ascending:false}).limit(12); return r.error?[]:(r.data||[]);
   }
 
@@ -153,6 +160,12 @@
     if(btn) btn.onclick=function(){ _diagnosticoIA(clima, host); };
     // auto-roda o diagnóstico se há equipes visíveis (loop input->output completo)
     if(visiveis.length) _diagnosticoIA(clima, host);
+
+    // reescopo organizacional: ao trocar o nó na árvore, re-renderiza pela subárvore (1×)
+    if(window.IpOrg && IpOrg.scope && IpOrg.scope.onChange && !host._ipPulsoScoped){
+      host._ipPulsoScoped = true;
+      IpOrg.scope.onChange(function(){ render(host, opts); });
+    }
   }
 
   window.IpPulso={ render:render };
