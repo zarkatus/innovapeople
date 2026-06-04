@@ -40,8 +40,8 @@
     if(!ehAgregacao){ host.innerHTML=''; host.style.display='none'; return; }
     host.style.display='block';
     host.innerHTML='<div class="ipgp">'+(U()&&U().skeleton?U().skeleton(3):'Consolidando…')+'</div>';
-    var res=await Promise.all([_rpc('fn_ip_org_evm_rollup',node.id),_rpc('fn_ip_org_pessoas_rollup',node.id),_rpc('fn_ip_org_clima_rollup',node.id),_rpc('fn_ip_org_dd_rollup',node.id)]);
-    var evm=res[0]||{}, pes=res[1]||{}, cli=res[2]||{}, dd=res[3]||{};
+    var res=await Promise.all([_rpc('fn_ip_org_evm_rollup',node.id),_rpc('fn_ip_org_pessoas_rollup',node.id),_rpc('fn_ip_org_clima_rollup',node.id),_rpc('fn_ip_org_dd_rollup',node.id),_rpc('fn_ip_ownership_estrutura',node.id),_rpc('fn_ip_org_financeiro_rollup',node.id)]);
+    var evm=res[0]||{}, pes=res[1]||{}, cli=res[2]||{}, dd=res[3]||{}, own=res[4]||{}, fin=res[5]||{};
 
     var kpis='<div class="ipgp-kpis">'
       +'<div class="ipgp-kpi">'+U().statBig((evm.empresas||0),'Empresas no grupo',{sub:(evm.programas||0)+' programas',color:'var(--ip-gold-lum)'})+'</div>'
@@ -70,12 +70,40 @@
       ddHtml='<div style="font-size:11.5px;color:var(--ip-ink-4,#6B7A90);font-style:italic;margin-top:6px">Nenhuma empresa do grupo tem CNPJ com due diligence ainda. Insira o CNPJ nas unidades para acompanhar a idoneidade consolidada.</div>';
     }
 
+    // ── ESTRUTURA DE PROPRIEDADE (progressive disclosure: só quando há participação declarada) ──
+    var ownHtml='';
+    var parts = (own && own.participacoes) || [];
+    if(parts.length){
+      var metLabel={consolidacao:'controlada · consolida 100%',equity:'coligada · equity',custo:'investida · custo'};
+      var metCor={consolidacao:'var(--ip-ok,#7BD3A0)',equity:'var(--ip-gold-lum,#E5C77E)',custo:'var(--ip-ink-2,#9FB0C5)'};
+      var rows=parts.map(function(p){
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(210,174,100,.07)">'
+          +'<div><div style="font-size:13.5px;color:var(--ip-cream,#F7F3EC)">'+esc(p.nome)+'</div>'
+          +'<div style="font-size:10.5px;color:'+(metCor[p.metodo]||'var(--ip-ink-3)')+';margin-top:2px">'+esc(metLabel[p.metodo]||p.metodo)+(p.controla?' · controle':'')+'</div></div>'
+          +'<div style="font:600 18px Georgia;font-style:italic;color:var(--ip-gold-lum,#E5C77E)">'+(+p.percentual)+'%</div></div>';
+      }).join('');
+      // resultado consolidado IFRS-10 (só mostra a linha financeira se houver apuração fechada de verdade)
+      var finHtml='';
+      if(fin && fin.tem_ownership && (fin.resultado_consolidado||fin.resultado_equity||fin.atribuivel_controlador)){
+        finHtml='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:14px">'
+          +'<div class="ipgp-kpi">'+U().statBig(brl(fin.atribuivel_controlador),'Atribuível ao controlador',{sub:'IFRS-10',color:'var(--ip-ok)'})+'</div>'
+          +(fin.participacao_nao_controladores?'<div class="ipgp-kpi">'+U().statBig(brl(fin.participacao_nao_controladores),'Não-controladores (NCI)',{sub:'minoritários'})+'</div>':'')
+          +(fin.resultado_equity?'<div class="ipgp-kpi">'+U().statBig(brl(fin.resultado_equity),'Equity (coligadas)',{sub:'proporcional'})+'</div>':'')
+          +'</div>';
+      } else {
+        finHtml='<div style="font-size:11px;color:var(--ip-ink-4,#6B7A90);font-style:italic;margin-top:10px">O resultado consolidado IFRS-10 aparece aqui assim que houver apurações fechadas das participadas.</div>';
+      }
+      ownHtml='<div style="font:600 10px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin:18px 0 4px">Estrutura de propriedade · participação societária</div>'
+        +rows+finHtml;
+    }
+
     host.innerHTML='<div class="ipgp">'
       +'<div class="ipgp-h"><h2>'+esc(node.nome)+'</h2><span class="tag">visão consolidada · '+esc(node.tipo_no)+'</span></div>'
       +'<div class="ipgp-sub">Tudo das '+(evm.empresas||0)+' empresa(s) abaixo deste nó, somado em tempo real. Clique numa empresa na árvore para descer.</div>'
       + kpis + gauges
       +'<div style="font:600 10px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin:6px 0 4px">Idoneidade · due diligence das empresas</div>'
       + ddHtml
+      + ownHtml
       +'</div>';
   }
 

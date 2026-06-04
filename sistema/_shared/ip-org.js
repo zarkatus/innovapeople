@@ -159,6 +159,29 @@
   }
   // expõe p/ outras telas dispararem DD de um nó existente
   async function rodarDDdoNo(nodeId, cnpj){ return _ddDoNo(nodeId, (cnpj||'').replace(/\D/g,''), null); }
+
+  // ── declarar PARTICIPAÇÃO societária (este nó detém outro) ──
+  function declararParticipacao(deId){
+    if(!window.IpUI || !IpUI.modal) return;
+    var detido = (_nodes||[]).filter(function(n){ return n.id!==deId; });
+    if(!detido.length){ _toast('Não há outro nó para deter.'); return; }
+    var html='<div style="font:600 italic 17px Georgia;color:var(--ip-gold-lum,#E5C77E);margin-bottom:4px">Participação societária</div>'
+      +'<div style="font-size:11.5px;color:var(--ip-ink-3,#8FA0B5);margin-bottom:12px"><b>'+esc((_byId(deId)||{}).nome||'')+'</b> detém qual empresa, e quanto?</div>'
+      +'<label style="display:block;margin-bottom:10px"><span style="display:block;font:600 10px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin-bottom:5px">Empresa detida</span><select id="own-para" style="width:100%;background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.25);border-radius:9px;padding:10px 12px;color:var(--ip-cream,#F7F3EC);font-size:14px">'+detido.map(function(n){return '<option value="'+esc(n.id)+'">'+esc(n.nome)+'</option>';}).join('')+'</select></label>'
+      +'<label style="display:block;margin-bottom:6px"><span style="display:block;font:600 10px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin-bottom:5px">Percentual (%)</span><input id="own-pct" type="number" min="1" max="100" placeholder="ex: 80" style="width:100%;background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.25);border-radius:9px;padding:10px 12px;color:var(--ip-cream,#F7F3EC);font-size:14px"></label>'
+      +'<div style="font-size:10.5px;color:var(--ip-ink-4,#6B7A90);margin-bottom:10px">O método contábil (consolidação >50% · equity 20-50% · custo &lt;20%) é derivado automaticamente.</div>'
+      +'<div id="own-res" style="font-size:12px;margin:6px 0;min-height:14px"></div>'
+      +'<button class="ipo-mbtn" id="own-ok" style="border-color:var(--ip-gold-lum,#E5C77E);color:var(--ip-gold-lum,#E5C77E);text-align:center;font-weight:600">Declarar participação</button>';
+    var m=IpUI.modal(html,{label:'Participação',width:'min(400px,100%)'}); var box=m.box;
+    box.querySelector('#own-ok').onclick=async function(){
+      var para=box.querySelector('#own-para').value, pct=parseFloat(box.querySelector('#own-pct').value);
+      var res=box.querySelector('#own-res');
+      if(!(pct>0&&pct<=100)){ res.innerHTML='<span style="color:var(--ip-danger,#E8A6A6)">Percentual entre 1 e 100.</span>'; return; }
+      try{ var r=await _rpc('fn_ip_ownership_declarar',{p_de:deId,p_para:para,p_percentual:pct});
+        _toast('Participação: '+r.metodo); m.close(); await _recarregar();
+      }catch(e){ res.innerHTML='<span style="color:var(--ip-danger,#E8A6A6)">Erro: '+esc(e.message||e)+'</span>'; }
+    };
+  }
   async function renomearNo(id){
     var n=_byId(id); var nome=prompt('Renomear:', n?n.nome:''); if(!nome||nome.trim().length<2)return;
     try{ await _rpc('fn_ip_org_renomear',{p_node_id:id,p_nome:nome.trim()}); _toast('Renomeado'); await _recarregar(); }
@@ -182,6 +205,7 @@
       +(dest?'<button class="ipo-mbtn" data-act="movercá" style="border-color:var(--ip-ok,#7BD3A0);color:var(--ip-ok,#7BD3A0)">↳ Mover para cá</button>':'')
       +'<button class="ipo-mbtn" data-act="criar">+ Novo nó dentro deste</button>'
       +'<button class="ipo-mbtn" data-act="mover">⇄ Mover este nó…</button>'
+      +'<button class="ipo-mbtn" data-act="participacao" style="border-color:var(--ip-gold-lum,#E5C77E);color:var(--ip-gold-lum,#E5C77E)">◈ Participação societária…</button>'
       +'<button class="ipo-mbtn" data-act="renomear">✎ Renomear</button>'
       +'<button class="ipo-mbtn" data-act="arquivar" style="color:var(--ip-danger,#E8A6A6)">🗄 Arquivar</button>';
     var m = (window.IpUI&&IpUI.modal) ? IpUI.modal(html,{label:'Gerir nó',width:'min(340px,100%)'}) : null;
@@ -192,6 +216,7 @@
       if(act==='movercá') moverPara(id);
       else if(act==='criar') criarNo(id);
       else if(act==='mover') iniciarMover(id);
+      else if(act==='participacao') declararParticipacao(id);
       else if(act==='renomear') renomearNo(id);
       else if(act==='arquivar') arquivarNo(id);
     }; });
@@ -247,5 +272,6 @@
 
   window.IpOrg = { init:init, scope:scope, gate:gate,
     criarNo:criarNo, moverNo:iniciarMover, renomearNo:renomearNo, arquivarNo:arquivarNo, rodarDDdoNo:rodarDDdoNo,
+    declararParticipacao:declararParticipacao,
     _reload:function(){_nodes=null;return _load();} };
 })();
