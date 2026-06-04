@@ -78,6 +78,18 @@
       if(recente.length){ sinal('Societário','alta','Troca societária recente', recente.length+' sócio(s) entraram há <6 meses', 'Mudança de controle às vésperas da contratação merece atenção.'); passo('Pedir contrato social atualizado — entrada de sócio nos últimos 6 meses.'); }
     }
 
+    // ── EIXO 6 · SANÇÕES & IDONEIDADE (Portal da Transparência — quando ativo) ──
+    var sanc = params.sancoes;
+    if(!sanc || sanc.ativo===false){
+      pendente.push('Sanções (CEIS/CNEP/PEP) — fonte gratuita ainda não ativada (cadastro gov.br pendente).');
+    } else if(sanc.sancionado){
+      veto = true;
+      sinal('Sanções','critica','Registro em lista oficial de sanção/inidoneidade', (sanc.resumo||'sancionado'), 'Empresa/pessoa consta em CEIS/CNEP/PEP — risco legal e reputacional. Veto.');
+      passo('Não contratar — há registro em lista oficial de sanção. Revisar com o jurídico.');
+    } else {
+      sinal('Sanções','info','Sem registro em listas oficiais', 'CEIS/CNEP/PEP consultados', 'Nenhuma sanção/inidoneidade encontrada.');
+    }
+
     // ── EIXO 5 · COERÊNCIA OPERACIONAL ──
     var semContato = !String(d.email||'').trim() && !String(d.telefone||'').trim() && !String(d.logradouro||'').trim();
     if(semContato && (d.email!==undefined || d.telefone!==undefined)){ sinal('Coerência','media','Sem dados de contato', 'email, telefone e endereço vazios', 'Ausência total de contato pode indicar empresa de fachada.'); }
@@ -94,7 +106,6 @@
     var confianca = nf >= 3 ? 'alta' : nf === 2 ? 'média' : 'parcial';
 
     // ── escopo pendente (anti-teatro: o que esta DD grátis NÃO verificou) ──
-    pendente.push('Sanções e idoneidade (CEIS/CNEP/CEPIM) — não verificado nesta DD gratuita.');
     pendente.push('Litígios e execuções (processos judiciais/CNDT) — não verificado.');
     pendente.push('Regularidade fiscal real (CND, CRF do FGTS) — não verificado.');
     pendente.push('Lista Suja (trabalho escravo) e embargos ambientais — não verificado.');

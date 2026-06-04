@@ -1634,10 +1634,13 @@ function newMandato(){openDrawer('Novo cliente',`
         +(soc.length?'<div style="font-size:12px;color:var(--ink2);margin-top:8px"><b style="color:var(--ink3)">Sócios ('+(data.socios.length)+'):</b> '+soc.map(s=>esc(s.nome)).join(' · ')+(data.socios.length>6?' …':'')+'</div>':'')
         +'</div>';
       dossieBox.style.display='block'; confirmBox.style.display='block';
-      // DUE DILIGENCE: roda o motor determinístico sobre o dossiê e renderiza o parecer acionável
+      // DUE DILIGENCE: consulta sanções (Portal Transparência, se ativo) + roda o motor + parecer
       try{
         if(window.IpDDMotor){
-          _dossie._dd = IpDDMotor.avaliar(data, {});
+          var sanc=null;
+          try{ var sr=await sb.functions.invoke('dd-sancoes',{body:{doc:(data.cnpj_raw||cnpj),tipo:'cnpj'}}); if(!sr.error)sanc=sr.data; }catch(_){}
+          _dossie._dd = IpDDMotor.avaliar(data, { sancoes:sanc });
+          _dossie._sancoes = sanc;
           var par=body.querySelector('#nm-parecer'); if(par && window.IpDDParecer){ IpDDParecer.render(par, _dossie._dd); par.style.display='block'; }
         }
       }catch(_){}
