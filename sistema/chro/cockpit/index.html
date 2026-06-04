@@ -61,6 +61,7 @@
 <script src="/sistema/_shared/ip-nervo.js" defer></script>
 <script src="/sistema/_shared/ip-org.js" defer></script>
 <script src="/sistema/_shared/ip-org-painel.js" defer></script>
+<script src="/sistema/_shared/org-lens.js" defer></script>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -440,7 +441,7 @@ window.cockpitBoot = function cockpitBoot(){
 
   // espinha organizacional: com 1 empresa o gate esconde tudo (idêntico a hoje);
   // com ≥2, o breadcrumb aparece e trocar de nó re-consolida o cockpit pela subárvore.
-  function _painelGrupo(){ if(window.IpOrgPainel){ IpOrgPainel.render($('org-painel')); } }
+  function _painelGrupo(){ if(window.OrgLens){ OrgLens.render($('org-painel')); } else if(window.IpOrgPainel){ IpOrgPainel.render($('org-painel')); } }
   function montarOrg(){
     if(!window.IpOrg){ setTimeout(montarOrg,150); return; }
     IpOrg.init().then(function(st){
