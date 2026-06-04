@@ -75,6 +75,25 @@ END;
 $fn$;
 GRANT EXECUTE ON FUNCTION public.fn_ip_org_arquivar(uuid) TO authenticated;
 
+-- ── anexar DD a um nó: grava cnpj + dossiê + parecer no metadata (toda inserção de CNPJ exige DD) ──
+CREATE OR REPLACE FUNCTION public.fn_ip_org_set_dd(p_node_id uuid, p_cnpj text, p_dossie jsonb DEFAULT NULL, p_dd jsonb DEFAULT NULL)
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path TO 'public' AS $fn$
+DECLARE v_cnpj text;
+BEGIN
+  IF NOT fn_ip_is_socio() THEN RAISE EXCEPTION 'acesso restrito'; END IF;
+  v_cnpj := NULLIF(regexp_replace(COALESCE(p_cnpj,''),'\D','','g'),'');
+  UPDATE ip_org_node
+     SET metadata = COALESCE(metadata,'{}'::jsonb)
+                    || jsonb_build_object('cnpj', v_cnpj)
+                    || CASE WHEN p_dossie IS NOT NULL THEN jsonb_build_object('dossie', p_dossie) ELSE '{}'::jsonb END
+                    || CASE WHEN p_dd IS NOT NULL THEN jsonb_build_object('dd', p_dd, 'dd_em', now()) ELSE '{}'::jsonb END,
+         updated_at = now()
+   WHERE id = p_node_id;
+  RETURN jsonb_build_object('ok', true);
+END;
+$fn$;
+GRANT EXECUTE ON FUNCTION public.fn_ip_org_set_dd(uuid,text,jsonb,jsonb) TO authenticated;
+
 INSERT INTO public.core_schema_version (patch, descricao)
-VALUES ('org-node-gestao', 'RPCs de gestão da árvore: criar_no/mover_no(anti-ciclo)/renomear/arquivar(guard filhos), guard fn_ip_is_socio')
+VALUES ('org-node-gestao', 'RPCs de gestão da árvore: criar_no/mover_no(anti-ciclo)/renomear/arquivar(guard filhos) + set_dd(anexa DD ao nó), guard fn_ip_is_socio')
 ON CONFLICT (patch) DO NOTHING;
