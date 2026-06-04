@@ -13,10 +13,11 @@
   // ── estado da árvore (cache) ──
   var _nodes=null, _curNode=null, _listeners=[];
   async function _load(){
-    if(_nodes) return _nodes;
+    if(_nodes && _nodes.length) return _nodes; // só cacheia resultado NÃO-vazio (evita prender [] de uma corrida de boot)
     var sb=SB(); if(!sb) return [];
     var r=await sb.from('ip_org_node').select('id,parent_id,nome,tipo_no,path,mandato_id,status,estagio').eq('status','ativo').order('path');
-    _nodes=(r.error?[]:(r.data||[]));
+    if(r.error) return _nodes||[]; // erro (ex. sessão não pronta) -> não cacheia, permite retry
+    _nodes=(r.data||[]);
     return _nodes;
   }
   function _byId(id){ return (_nodes||[]).find(function(n){return n.id===id;}); }
