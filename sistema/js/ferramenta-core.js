@@ -138,7 +138,7 @@
     finally{btn.disabled=false;btn.textContent=old}
   }
 
-  function srcLabel(t){ return ({ip_pulsos:'Pulso',ip_pulse_tokens:'Link de pulso',ip_plano_acoes:'Plano de acao',ip_agent_sugestoes:'Sugestao de agente',ip_perfil_colaborador:'Colaborador',ip_skill_map:'Skill Map',ip_mandatos:'Trabalho',ip_decisoes:'Decisao',ip_relacionamentos:'Relacionamento'})[t]||t||'evento'; }
+  function srcLabel(t){ return ({ip_pulsos:'Pulso',ip_pulse_tokens:'Link de pulso',ip_plano_acoes:'Plano de acao',ip_agent_sugestoes:'Sugestao de agente',ip_perfil_colaborador:'Colaborador',ip_skill_map:'Skill Map',ip_mandatos:'Trabalho',ip_decisoes:'Decisao',ip_relacionamentos:'Relacionamento',core_colaborador:'Colaborador',core_afastamento:'Afastamento',core_aso:'ASO',core_desligamento:'Desligamento',core_okr:'OKR',core_checkin:'Check-in',core_ato_sensivel:'Ato sensivel',ip_avaliacao_perfil:'Avaliacao',ip_compensacao:'Compensacao',ip_sucessao:'Sucessao',ip_programas:'Programa',ip_programa_marcos:'Marco'})[t]||t||'evento'; }
   function diffKeys(b,a){ b=b||{}; a=a||{}; const ks=new Set([...Object.keys(b),...Object.keys(a)]); const ch=[]; ks.forEach(k=>{ if(k==='updated_at'||k==='created_at'||k==='id')return; if(JSON.stringify(b[k])!==JSON.stringify(a[k]))ch.push(k); }); return ch; }
 
   async function renderPassado(host){

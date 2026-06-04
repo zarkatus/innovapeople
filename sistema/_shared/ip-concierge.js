@@ -62,6 +62,16 @@
         if(r.error) return {erro:r.error.message};
         return { obras: r.data||[] };
       }
+    },
+    eventos_recentes: {
+      def: { name:'eventos_recentes', description:'O que ACONTECEU de verdade na operação nos últimos eventos (trilha cognitiva ip_eventos via Sistema Nervoso): admissões, desligamentos, alterações de colaborador, pulsos, apontamentos, decisões. Use para raciocinar sobre o ESTADO VIVO (não template) e para "o que mudou recentemente".', input_schema:{type:'object',properties:{tipo:{type:'string',description:'opcional: filtra por domínio — pessoa, programa, mandato, plano, agente'}},required:[]} },
+      run: async function(args){
+        var sb=SB(); var q=sb.from('v_ip_timeline_mandato').select('ts,event_type,rotulo,sujeito,actor_email,tipo_negocio');
+        if(args && args.tipo) q=q.eq('tipo_negocio', String(args.tipo));
+        var r=await q.order('ts',{ascending:false}).limit(25);
+        if(r.error) return {erro:r.error.message};
+        return { total:(r.data||[]).length, eventos:(r.data||[]).map(function(e){ return { quando:e.ts, o_que:e.rotulo||e.event_type, sujeito:e.sujeito, por:e.actor_email }; }) };
+      }
     }
   };
 

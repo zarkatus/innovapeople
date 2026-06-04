@@ -58,6 +58,7 @@
 <script src="/sistema/_shared/ip-ui.js" defer></script>
 <script src="/sistema/_shared/ip-ai.js" defer></script>
 <script src="/sistema/_shared/ip-concierge.js" defer></script>
+<script src="/sistema/_shared/ip-nervo.js" defer></script>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -217,6 +218,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     <h2>Resultado por obra</h2>
     <div class="sub">Participação por empreendimento — orçamento, custo lançado e margem.</div>
     <div id="resultado" style="margin-top:8px"></div>
+  </div>
+
+  <!-- Pulso da operação · ao vivo (Sistema Nervoso · ip_eventos via realtime) -->
+  <div class="sect panel">
+    <h2>Pulso da operação</h2>
+    <div class="sub">A trilha cognitiva ao vivo — cada movimento de gente, programa e plano vira evento e aparece aqui no instante em que acontece.</div>
+    <div id="nervo-tl" style="margin-top:8px"></div>
   </div>
 
 </div>
@@ -415,11 +423,22 @@ window.cockpitBoot = function cockpitBoot(){
   $('cnc-go').onclick=perguntar;
   $('cnc-q').addEventListener('keydown',function(e){ if(e.key==='Enter') perguntar(); });
 
+  // timeline ao vivo (Sistema Nervoso) — módulo dedicado, sem lógica de captura aqui
+  var _unsubNervo=null;
+  function montarNervo(){
+    var host=$('nervo-tl'); if(!host) return;
+    if(!window.IpNervo){ setTimeout(montarNervo,150); return; } // espera defer do ip-nervo.js
+    if(_unsubNervo){ try{_unsubNervo();}catch(_){} }
+    // sem mandato => visão global da operação (RLS sócios-only filtra)
+    IpNervo.timeline(host, { limit:18, live:true }).then(function(u){ _unsubNervo=u; });
+  }
+
   // boot
   function start(){
     if(!window.IpUI){ setTimeout(start,120); return; } // espera defer do ip-ui.js
     carregarTudo();
     rodarConcierge();
+    montarNervo();
   }
   start();
 };
