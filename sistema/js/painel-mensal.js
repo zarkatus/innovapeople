@@ -11,11 +11,20 @@
   let _host=null,_d=null;
   const DIMS=[{k:'r_proposito',n:'propósito'},{k:'r_autonomia',n:'autonomia'},{k:'r_competencia',n:'competência'},{k:'r_pertencimento',n:'pertencimento'},{k:'r_clareza',n:'clareza'},{k:'r_seguranca',n:'segurança'}];
 
+  // escopo por mandato_id (tabelas com a coluna); _escopoMand por id (ip_mandatos = tabela-mãe, PK 'id')
+  function _escopo(q){var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;if(ids&&ids.length)return q.in('mandato_id',ids);return q;}
+  function _escopoMand(q){var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;if(ids&&ids.length)return q.in('id',ids);return q;}
+
   async function open(host){
     _host=host;
     host.innerHTML='<div id="pm-root"><div class="pm-empty">Consolidando inteligência mensal&hellip;</div></div>';
+    if(window.IpOrg)IpOrg.init();
     await carregar();
     render();
+    // reescopo organizacional: ao trocar o nó na árvore, reconsolida o mês pela subárvore (1×)
+    if(window.IpOrg&&IpOrg.scope&&IpOrg.scope.onChange&&!host._pmScoped){host._pmScoped=true;
+      IpOrg.scope.onChange(async function(){ await carregar(); render(); });
+    }
     if(window.IpFerramenta){
       const cfg={chave:'consolidado', rotulo:'Painel Mensal',
         diagnosticoHTML:'',
@@ -36,14 +45,14 @@
     const since30=new Date(Date.now()-30*864e5).toISOString();
     const since6m=new Date(Date.now()-180*864e5).toISOString();
     const [mand,pulsos,sug,dec,rel,rx,prog,eventos]=await Promise.all([
-      T.safe(()=>sb().from('ip_mandatos').select('id,empresa,estagio,status,setor,porte').limit(200),{data:[]}),
-      T.safe(()=>sb().from('ip_pulsos').select('mandato_id,equipe,r_proposito,r_autonomia,r_competencia,r_pertencimento,r_clareza,r_seguranca,risco_saida,score,created_at').gte('created_at',since6m).order('created_at',{ascending:false}).limit(3000),{data:[]}),
-      T.safe(()=>sb().from('ip_agent_sugestoes').select('severidade,status,agente,created_at').limit(800),{data:[]}),
-      T.safe(()=>sb().from('ip_decisoes').select('id,nivel,status,created_at').gte('created_at',since6m).limit(500),{data:[]}),
+      T.safe(()=>_escopoMand(sb().from('ip_mandatos').select('id,empresa,estagio,status,setor,porte')).limit(200),{data:[]}),
+      T.safe(()=>_escopo(sb().from('ip_pulsos').select('mandato_id,equipe,r_proposito,r_autonomia,r_competencia,r_pertencimento,r_clareza,r_seguranca,risco_saida,score,created_at')).gte('created_at',since6m).order('created_at',{ascending:false}).limit(3000),{data:[]}),
+      T.safe(()=>_escopo(sb().from('ip_agent_sugestoes').select('severidade,status,agente,created_at,mandato_id')).limit(800),{data:[]}),
+      T.safe(()=>_escopo(sb().from('ip_decisoes').select('id,nivel,status,created_at,mandato_id')).gte('created_at',since6m).limit(500),{data:[]}),
       T.safe(()=>sb().from('ip_relacionamentos').select('id,vinculo_critico').limit(500),{data:[]}),
       T.safe(()=>sb().from('ip_raio_x_submissions').select('status,sintomas_score,created_at').gte('created_at',since6m).order('created_at',{ascending:false}).limit(1000),{data:[]}),
       T.safe(()=>sb().from('ip_programas').select('id,nome').limit(100),{data:[]}),
-      T.safe(()=>sb().from('ip_eventos').select('source_table,operacao,ts').gte('ts',since30).limit(2000),{data:[]}),
+      T.safe(()=>_escopo(sb().from('ip_eventos').select('source_table,operacao,ts,mandato_id')).gte('ts',since30).limit(2000),{data:[]}),
     ]);
     _d={mand:mand.data||[],pulsos:pulsos.data||[],sug:sug.data||[],dec:dec.data||[],rel:rel.data||[],rx:rx.data||[],prog:prog.data||[],eventos:eventos.data||[]};
   }

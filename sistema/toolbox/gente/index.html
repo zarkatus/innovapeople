@@ -15,7 +15,7 @@
 <script src="/sistema/js/skillmap.js" defer></script>
 <script>TBAuth.init('toolbox-gente');</script>
 <link rel="stylesheet" href="/sistema/_shared/sidebar.css"><script src="/sistema/_shared/sidebar.js" defer></script>
-<script src="/sistema/_shared/ip-ai.js" defer></script></head>
+<script src="/sistema/_shared/ip-ai.js" defer></script><script src="/sistema/_shared/ip-org.js" defer></script></head>
 <body>
 
 <nav class="top">
@@ -210,6 +210,7 @@
 <script>
 function boot(){
   document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';
+  if(window.IpOrg)IpOrg.init();
   // FERRAMENTA Mattering (módulo real, 6D) no container do hero-card
   const mt=document.getElementById('mattering-tool');
   if(mt&&window.IpMattering)window.IpMattering.open(mt);

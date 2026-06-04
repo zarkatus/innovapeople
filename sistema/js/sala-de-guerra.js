@@ -11,20 +11,29 @@
   let _host=null,_data=null;
   async function _efErro(error){let m=(error&&error.message)||String(error);try{const b=(error&&error.context&&error.context.json)?await error.context.json():null;if(b&&b.erro)m=b.erro;}catch(_){}return new Error(m);}
 
+  // escopo por mandato_id (tabelas com a coluna); _escopoMand por id (ip_mandatos = tabela-mãe, PK 'id')
+  function _escopo(q){var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;if(ids&&ids.length)return q.in('mandato_id',ids);return q;}
+  function _escopoMand(q){var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;if(ids&&ids.length)return q.in('id',ids);return q;}
+
   async function open(host){
     _host=host;
     host.innerHTML='<div id="sg-root"><div class="sg-empty">Consolidando o quadro de comando&hellip;</div></div>';
+    if(window.IpOrg)IpOrg.init();
     await carregar();
     render();
+    // reescopo organizacional: ao trocar o nó na árvore, reconsolida o quadro pela subárvore (1×)
+    if(window.IpOrg&&IpOrg.scope&&IpOrg.scope.onChange&&!host._sgScoped){host._sgScoped=true;
+      IpOrg.scope.onChange(async function(){ await carregar(); render(); });
+    }
   }
 
   async function carregar(){
     const since=new Date(Date.now()-30*864e5).toISOString();
     const [plano,mand,sug,pulsos]=await Promise.all([
-      T.safe(()=>sb().from('ip_plano_acoes').select('id,titulo,descricao,ireu_score,impacto,relevancia,efeito_borboleta,urgencia,frente,origem,prazo,status,mandato_id,ip_mandatos(empresa)').eq('status','pendente').order('ireu_score',{ascending:false,nullsFirst:false}).limit(300),{data:[]}),
-      T.safe(()=>sb().from('ip_mandatos').select('id,empresa,estagio,status').eq('status','ativo').limit(100),{data:[]}),
-      T.safe(()=>sb().from('ip_agent_sugestoes').select('severidade').eq('status','pendente').limit(500),{data:[]}),
-      T.safe(()=>sb().from('ip_pulsos').select('risco_saida').gte('created_at',since).limit(2000),{data:[]}),
+      T.safe(()=>_escopo(sb().from('ip_plano_acoes').select('id,titulo,descricao,ireu_score,impacto,relevancia,efeito_borboleta,urgencia,frente,origem,prazo,status,mandato_id,ip_mandatos(empresa)')).eq('status','pendente').order('ireu_score',{ascending:false,nullsFirst:false}).limit(300),{data:[]}),
+      T.safe(()=>_escopoMand(sb().from('ip_mandatos').select('id,empresa,estagio,status')).eq('status','ativo').limit(100),{data:[]}),
+      T.safe(()=>_escopo(sb().from('ip_agent_sugestoes').select('severidade')).eq('status','pendente').limit(500),{data:[]}),
+      T.safe(()=>_escopo(sb().from('ip_pulsos').select('risco_saida')).gte('created_at',since).limit(2000),{data:[]}),
     ]);
     _data={plano:plano.data||[],mand:mand.data||[],sug:sug.data||[],pulsos:pulsos.data||[]};
   }

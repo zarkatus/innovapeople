@@ -36,8 +36,22 @@
     </div>`;
     container.querySelectorAll('.sk-tab').forEach(b=>b.onclick=()=>go(b.dataset.t));
     const {data}=await T.safe(()=>sb().from('v_ip_mandatos_overview').select('id,empresa,setor,status').order('created_at',{ascending:false}).limit(50),{data:[]});
-    _s.mandatos=(data||[]).filter(m=>m.status==='ativo'||!m.status); _s.mandato=_s.mandatos[0]?.id||null;
+    _s.mandatos=_filtroEscopo((data||[]).filter(m=>m.status==='ativo'||!m.status)); _s.mandato=_s.mandatos[0]?.id||null;
     await reload(); go('mapa');
+    // reescopo organizacional: ao trocar o nó na árvore, restringe a lista de empresas à subárvore (1×)
+    if(window.IpOrg&&IpOrg.scope&&IpOrg.scope.onChange&&!_s._scoped){_s._scoped=true;
+      IpOrg.scope.onChange(async function(){
+        _s.mandatos=_filtroEscopo((data||[]).filter(m=>m.status==='ativo'||!m.status));
+        if(!_s.mandatos.find(m=>m.id===_s.mandato))_s.mandato=_s.mandatos[0]?.id||null;
+        await reload(); go(_s.tab||'mapa');
+      });
+    }
+  }
+  // restringe a lista de mandatos à subárvore do nó corrente (IpScope); sem nó -> lista cheia (comportamento atual)
+  function _filtroEscopo(arr){
+    var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;
+    if(ids&&ids.length){var set=new Set(ids);return arr.filter(m=>set.has(m.id));}
+    return arr;
   }
 
   async function reload(){

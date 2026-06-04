@@ -9,7 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
 <script src="/sistema/toolbox/_shared/toolbox.js"></script>
 <script>TBAuth.init('toolbox-estrategia');</script>
-<link rel="stylesheet" href="/sistema/_shared/sidebar.css"><script src="/sistema/_shared/sidebar.js" defer></script></head>
+<link rel="stylesheet" href="/sistema/_shared/sidebar.css"><script src="/sistema/_shared/sidebar.js" defer></script><script src="/sistema/_shared/ip-org.js" defer></script></head>
 <body>
 
 <nav class="top"><div class="row">
@@ -113,14 +113,20 @@
 <div id="toast"></div>
 
 <script>
-function boot(){document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';loadAll();setInterval(loadAll,90000)}
+function boot(){document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';if(window.IpOrg)IpOrg.init();loadAll();setInterval(loadAll,90000);
+  if(window.IpOrg&&IpOrg.scope&&IpOrg.scope.onChange&&!window.__estrScoped){window.__estrScoped=true;IpOrg.scope.onChange(function(){loadAll();});}
+}
+// escopo por mandato_id (tabelas que têm a coluna)
+function _escopo(q){var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;if(ids&&ids.length)return q.in('mandato_id',ids);return q;}
+// escopo por id (v_ip_mandatos_overview = a própria entidade mandato; PK é 'id', não 'mandato_id')
+function _escopoMand(q){var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;if(ids&&ids.length)return q.in('id',ids);return q;}
 async function loadAll(){await Promise.all([loadKpis(),loadProj(),loadSys(),loadComment()])}
 
 async function loadKpis(){
   const sb=window.__IP_SB;
   const [mand,sug]=await Promise.all([
-    TB.safe(()=>sb.from('v_ip_mandatos_overview').select('id,estagio',{count:'exact'}).eq('status','ativo'),{data:[],count:0}),
-    TB.safe(()=>sb.from('ip_agent_sugestoes').select('id,severidade',{count:'exact'}).eq('status','pendente').eq('severidade','alta'),{count:0}),
+    TB.safe(()=>_escopoMand(sb.from('v_ip_mandatos_overview').select('id,estagio',{count:'exact'})).eq('status','ativo'),{data:[],count:0}),
+    TB.safe(()=>_escopo(sb.from('ip_agent_sugestoes').select('id,severidade',{count:'exact'})).eq('status','pendente').eq('severidade','alta'),{count:0}),
   ]);
   document.getElementById('k-proj').textContent=mand.count||0;
   document.getElementById('k-risk').textContent=sug.count||0;
@@ -131,7 +137,7 @@ async function loadKpis(){
 
 async function loadProj(){
   const sb=window.__IP_SB;
-  const {data}=await TB.safe(()=>sb.from('v_ip_mandatos_overview').select('id,empresa,setor,estagio,score_30d,sugestoes_pendentes,sugestoes_criticas,created_at').eq('status','ativo').order('created_at',{ascending:false}).limit(8),{data:[]});
+  const {data}=await TB.safe(()=>_escopoMand(sb.from('v_ip_mandatos_overview').select('id,empresa,setor,estagio,score_30d,sugestoes_pendentes,sugestoes_criticas,created_at')).eq('status','ativo').order('created_at',{ascending:false}).limit(8),{data:[]});
   const stagMap={diagnostico:'Diagnóstico',plano:'Plano',execucao:'Execução',rituais:'Rituais',escala:'Escala'};
   const lines=(data||[]).map(m=>{
     const stag=stagMap[m.estagio]||m.estagio||'—';
@@ -148,7 +154,7 @@ async function loadSys(){
   const [dec,rel,eventos]=await Promise.all([
     TB.safe(()=>sb.from('ip_decisoes').select('id',{count:'exact',head:true}),{count:0}),
     TB.safe(()=>sb.from('ip_relacionamentos').select('id',{count:'exact',head:true}),{count:0}),
-    TB.safe(()=>sb.from('ip_eventos').select('id',{count:'exact',head:true}).gte('ts',new Date(Date.now()-7*86400e3).toISOString()),{count:0}),
+    TB.safe(()=>_escopo(sb.from('ip_eventos').select('id',{count:'exact',head:true})).gte('ts',new Date(Date.now()-7*86400e3).toISOString()),{count:0}),
   ]);
   document.getElementById('sys-stats').innerHTML=`
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
@@ -160,7 +166,7 @@ async function loadSys(){
 
 async function loadComment(){
   const sb=window.__IP_SB;
-  const {data:mand}=await TB.safe(()=>sb.from('v_ip_mandatos_overview').select('*').eq('status','ativo'),{data:[]});
+  const {data:mand}=await TB.safe(()=>_escopoMand(sb.from('v_ip_mandatos_overview').select('*')).eq('status','ativo'),{data:[]});
   const n=(mand||[]).length;
   const scores=(mand||[]).map(x=>x.score_30d).filter(Boolean);
   const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;

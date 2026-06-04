@@ -9,7 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
 <script src="/sistema/toolbox/_shared/toolbox.js"></script>
 <script>TBAuth.init('toolbox-operacoes');</script>
-<link rel="stylesheet" href="/sistema/_shared/sidebar.css"><script src="/sistema/_shared/sidebar.js" defer></script></head>
+<link rel="stylesheet" href="/sistema/_shared/sidebar.css"><script src="/sistema/_shared/sidebar.js" defer></script><script src="/sistema/_shared/ip-org.js" defer></script></head>
 <body>
 
 <nav class="top"><div class="row">
@@ -128,13 +128,18 @@
 <div id="toast"></div>
 
 <script>
-function boot(){document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';loadAll();setInterval(loadAll,120000)}
+function boot(){document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';if(window.IpOrg)IpOrg.init();loadAll();setInterval(loadAll,120000);
+  // reescopo organizacional: ao trocar o nó na árvore, re-renderiza pela subárvore (1×)
+  if(window.IpOrg&&IpOrg.scope&&IpOrg.scope.onChange&&!window.__opsScoped){window.__opsScoped=true;IpOrg.scope.onChange(function(){loadAll();});}
+}
+// escopo organizacional: se há nó corrente, filtra pela subárvore; senão, comportamento atual
+function _escopo(q){var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;if(ids&&ids.length)return q.in('mandato_id',ids);return q;}
 async function loadAll(){await Promise.all([loadKpis(),loadAud(),loadComment()])}
 
 async function loadKpis(){
   const sb=window.__IP_SB;
   const [aud30]=await Promise.all([
-    TB.safe(()=>sb.from('ip_eventos').select('id',{count:'exact',head:true}).gte('ts',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
+    TB.safe(()=>_escopo(sb.from('ip_eventos').select('id',{count:'exact',head:true})).gte('ts',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
   ]);
   document.getElementById('k-aud').textContent=aud30.count||0;
   // Docs/RFIs tables ainda não existem
@@ -144,7 +149,7 @@ async function loadKpis(){
 
 async function loadAud(){
   const sb=window.__IP_SB;
-  const {data}=await TB.safe(()=>sb.from('ip_eventos').select('id,ts,operacao,source_table,actor_email').order('ts',{ascending:false}).limit(5),{data:[]});
+  const {data}=await TB.safe(()=>_escopo(sb.from('ip_eventos').select('id,ts,operacao,source_table,actor_email')).order('ts',{ascending:false}).limit(5),{data:[]});
   const lines=(data||[]).map(e=>{
     const opTag=e.operacao==='INSERT'?'<span class="tag ok">+</span>':(e.operacao==='UPDATE'?'<span class="tag info">~</span>':(e.operacao==='DELETE'?'<span class="tag danger">−</span>':'<span class="tag muted">·</span>'));
     return `<div class="row-item"><div class="body"><div class="nm" style="font-size:12.5px">${TB.esc(e.source_table||'evento')}</div><div class="desc">${TB.esc(e.actor_email||'system')}</div></div>${opTag}<div class="time">${TB.esc(TB.fmtRel(e.ts))}</div></div>`;
@@ -154,7 +159,7 @@ async function loadAud(){
 
 async function loadComment(){
   const sb=window.__IP_SB;
-  const {count}=await TB.safe(()=>sb.from('ip_eventos').select('id',{count:'exact',head:true}).gte('ts',new Date(Date.now()-7*86400e3).toISOString()),{count:0});
+  const {count}=await TB.safe(()=>_escopo(sb.from('ip_eventos').select('id',{count:'exact',head:true})).gte('ts',new Date(Date.now()-7*86400e3).toISOString()),{count:0});
   document.getElementById('exec-comment').innerHTML=`Conformidade ativa: <strong>${count||0}</strong> eventos registrados em 7d via EventBus · LGPD com DPO Gleice · hash chain imutável WhatsApp. Próxima revisão: docs vencendo em 30d (placeholder, tabela ainda não criada).`;
 }
 </script>

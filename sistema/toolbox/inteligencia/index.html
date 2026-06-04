@@ -10,7 +10,7 @@
 <script src="/sistema/toolbox/_shared/toolbox.js"></script>
 <script>TBAuth.init('toolbox-inteligencia');</script>
 <link rel="stylesheet" href="/sistema/_shared/sidebar.css"><script src="/sistema/_shared/sidebar.js" defer></script>
-<script src="/sistema/_shared/ip-ai.js" defer></script></head>
+<script src="/sistema/_shared/ip-ai.js" defer></script><script src="/sistema/_shared/ip-org.js" defer></script></head>
 <body>
 
 <nav class="top"><div class="row">
@@ -129,15 +129,19 @@
 <div id="toast"></div>
 
 <script>
-function boot(){document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';loadAll();setInterval(loadAll,90000)}
+function boot(){document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';if(window.IpOrg)IpOrg.init();loadAll();setInterval(loadAll,90000);
+  if(window.IpOrg&&IpOrg.scope&&IpOrg.scope.onChange&&!window.__intelScoped){window.__intelScoped=true;IpOrg.scope.onChange(function(){loadAll();});}
+}
+// escopo organizacional: se há nó corrente, filtra pela subárvore; senão, comportamento atual
+function _escopo(q){var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;if(ids&&ids.length)return q.in('mandato_id',ids);return q;}
 async function loadAll(){await Promise.all([loadKpis(),loadAgents(),loadPulseAnalytics(),loadSug(),loadComment()])}
 
 async function loadKpis(){
   const sb=window.__IP_SB;
   const [runs7,sug,pulse30]=await Promise.all([
-    TB.safe(()=>sb.from('ip_agent_runs').select('id',{count:'exact',head:true}).gte('iniciado_em',new Date(Date.now()-7*86400e3).toISOString()),{count:0}),
-    TB.safe(()=>sb.from('ip_agent_sugestoes').select('id',{count:'exact',head:true}).eq('status','pendente'),{count:0}),
-    TB.safe(()=>sb.from('ip_pulsos').select('id',{count:'exact',head:true}).gte('created_at',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
+    TB.safe(()=>_escopo(sb.from('ip_agent_runs').select('id',{count:'exact',head:true})).gte('iniciado_em',new Date(Date.now()-7*86400e3).toISOString()),{count:0}),
+    TB.safe(()=>_escopo(sb.from('ip_agent_sugestoes').select('id',{count:'exact',head:true})).eq('status','pendente'),{count:0}),
+    TB.safe(()=>_escopo(sb.from('ip_pulsos').select('id',{count:'exact',head:true})).gte('created_at',new Date(Date.now()-30*86400e3).toISOString()),{count:0}),
   ]);
   document.getElementById('k-ag').innerHTML='5<span class="un">/5</span>';
   document.getElementById('k-runs').textContent=runs7.count||0;
@@ -155,7 +159,7 @@ async function loadAgents(){
     {k:'mattering',n:'Mattering',d:'Pertencimento e sentido (SAID Framework)',cron:'07:30 UTC diário'},
     {k:'critic_org',n:'Critic-Org',d:'Crítica sistêmica cross-domain',cron:'07:30 UTC diário'},
   ];
-  const {data}=await TB.safe(()=>sb.from('ip_agent_runs').select('agente,iniciado_em,status,sugestoes_geradas').order('iniciado_em',{ascending:false}).limit(40),{data:[]});
+  const {data}=await TB.safe(()=>_escopo(sb.from('ip_agent_runs').select('agente,iniciado_em,status,sugestoes_geradas')).order('iniciado_em',{ascending:false}).limit(40),{data:[]});
   const ult={};
   for(const r of (data||[])){if(!ult[r.agente])ult[r.agente]=r}
   document.getElementById('b-agents').innerHTML=AG.map(a=>{
@@ -173,8 +177,8 @@ async function loadPulseAnalytics(){
   const SAID_DIMS=['r_pertencimento','r_clareza','r_proposito','r_competencia'];
   const SEL='r_pertencimento,r_clareza,r_proposito,r_competencia,equipe,created_at';
   const [p30,p60]=await Promise.all([
-    TB.safe(()=>sb.from('ip_pulsos').select(SEL).gte('created_at',new Date(Date.now()-30*86400e3).toISOString()),{data:[]}),
-    TB.safe(()=>sb.from('ip_pulsos').select(SEL).gte('created_at',new Date(Date.now()-60*86400e3).toISOString()).lt('created_at',new Date(Date.now()-30*86400e3).toISOString()),{data:[]}),
+    TB.safe(()=>_escopo(sb.from('ip_pulsos').select(SEL)).gte('created_at',new Date(Date.now()-30*86400e3).toISOString()),{data:[]}),
+    TB.safe(()=>_escopo(sb.from('ip_pulsos').select(SEL)).gte('created_at',new Date(Date.now()-60*86400e3).toISOString()).lt('created_at',new Date(Date.now()-30*86400e3).toISOString()),{data:[]}),
   ]);
   const arr30=p30.data||[], arr60=p60.data||[];
   document.getElementById('pa-30').textContent=arr30.length;
@@ -193,7 +197,7 @@ async function loadPulseAnalytics(){
 
 async function loadSug(){
   const sb=window.__IP_SB;
-  const {data}=await TB.safe(()=>sb.from('ip_agent_sugestoes').select('id,agente,severidade,titulo,sugestao,created_at,mandato_id').eq('status','pendente').order('created_at',{ascending:false}).limit(8),{data:[]});
+  const {data}=await TB.safe(()=>_escopo(sb.from('ip_agent_sugestoes').select('id,agente,severidade,titulo,sugestao,created_at,mandato_id')).eq('status','pendente').order('created_at',{ascending:false}).limit(8),{data:[]});
   const lines=(data||[]).map(s=>{
     const sev=s.severidade==='alta'?'danger':(s.severidade==='media'?'warn':'info');
     return `<div class="row-item"><div class="ico" style="background:var(--gold-faint);color:var(--gold)">!</div><div class="body"><div class="nm">${TB.esc(s.titulo||'sugestão')}</div><div class="desc">${TB.esc(s.agente||'')} · ${TB.esc((s.sugestao||'').slice(0,80))}${s.sugestao&&s.sugestao.length>80?'…':''}</div></div><span class="tag ${sev}">${TB.esc(s.severidade||'—')}</span><div class="time">${TB.esc(TB.fmtRel(s.created_at))}</div></div>`;
@@ -205,8 +209,8 @@ async function loadSug(){
 async function loadComment(){
   const sb=window.__IP_SB;
   const [runs7,sug]=await Promise.all([
-    TB.safe(()=>sb.from('ip_agent_runs').select('id,status',{count:'exact'}).gte('iniciado_em',new Date(Date.now()-7*86400e3).toISOString()),{data:[],count:0}),
-    TB.safe(()=>sb.from('ip_agent_sugestoes').select('id,severidade').eq('status','pendente'),{data:[]}),
+    TB.safe(()=>_escopo(sb.from('ip_agent_runs').select('id,status',{count:'exact'})).gte('iniciado_em',new Date(Date.now()-7*86400e3).toISOString()),{data:[],count:0}),
+    TB.safe(()=>_escopo(sb.from('ip_agent_sugestoes').select('id,severidade')).eq('status','pendente'),{data:[]}),
   ]);
   const crit=(sug.data||[]).filter(s=>s.severidade==='alta').length;
   let texto=`<strong>5 agentes</strong> rodando · ${runs7.count||0} execuções nos últimos 7d.`;

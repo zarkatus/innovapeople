@@ -78,12 +78,16 @@
     }catch(e){ T.toast('MFA indisponível: '+(e.message||e)); return false; }
   }
 
+  // escopo organizacional: se há nó corrente, filtra pela subárvore (mandato_id); senão, comportamento atual.
+  // (só tabelas com mandato_id: v_core_colaborador_360, core_colaborador, v_core_clima_pulso. Satélites por colaborador_id e v_core_alocacao por project_id NÃO reescopam.)
+  function _escopo(q){ var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null; if(ids&&ids.length) return q.in('mandato_id',ids); return q; }
+
   // ---------- dados ----------
   async function reload(){
     const sb=SB(); if(!sb) return;
     // tenta a view 360 (flags); cai para tabela base se a view nao existir
-    let r = await sb.from('v_core_colaborador_360').select('*').order('status').order('nome');
-    if(r.error){ r = await sb.from('core_colaborador').select('*').order('status').order('nome'); }
+    let r = await _escopo(sb.from('v_core_colaborador_360').select('*')).order('status').order('nome');
+    if(r.error){ r = await _escopo(sb.from('core_colaborador').select('*')).order('status').order('nome'); }
     if(r.error){ T.toast('Erro ao carregar colaboradores: '+(r.error.message||'')); _rows=[]; return; }
     _rows = r.data||[];
   }
@@ -548,7 +552,7 @@
   async function openEngajamento(){
     const sb=SB();
     const [cl,bm]=await Promise.all([
-      sb.from('v_core_clima_pulso').select('*').order('respostas',{ascending:false}),
+      _escopo(sb.from('v_core_clima_pulso').select('*')).order('respostas',{ascending:false}),
       sb.rpc('fn_core_benchmark_engajamento')
     ]);
     const clima=(cl&&cl.data)||[];
@@ -623,6 +627,9 @@
     });
   }
 
-  function mount(el){ _el=el; if(window.IpUI&&el) el.innerHTML='<div style="max-width:1180px;margin:0 auto;padding:28px 32px">'+window.IpUI.skeleton(6)+'</div>'; refreshAal(); reload().then(()=>{ render(el); subscribe(); }); }
+  function mount(el){ _el=el; if(window.IpUI&&el) el.innerHTML='<div style="max-width:1180px;margin:0 auto;padding:28px 32px">'+window.IpUI.skeleton(6)+'</div>'; refreshAal(); if(window.IpOrg)IpOrg.init(); reload().then(()=>{ render(el); subscribe(); });
+    // reescopo organizacional: ao trocar o nó na árvore, recarrega a lista pela subárvore (1×)
+    if(window.IpOrg&&IpOrg.scope&&IpOrg.scope.onChange&&!el._ipScoped){ el._ipScoped=true; IpOrg.scope.onChange(function(){ reload().then(function(){ render(el); }); }); }
+  }
   window.IpPessoas={ mount, _isShim:false };
 })();
