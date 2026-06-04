@@ -84,11 +84,17 @@
     var resumo=visiveis.map(function(c){ return c.equipe+': 6D[prop '+c.proposito+', auton '+c.autonomia+', compet '+c.competencia+', perten '+c.pertencimento+', clareza '+c.clareza+', segur '+c.seguranca+'], risco_saida '+c.risco_saida+'/5 (N='+c.respostas+')'; }).join(' | ');
     var prompt='Você é o analista de clima organizacional da InnovaPeople. Eis o Pulso 6D anônimo por equipe (escala 1-5; risco_saida 1-5, quanto maior pior): '+resumo+'. '
       +'Em até 4 frases, em português, tom executivo e humano: aponte a equipe e a dimensão de MAIOR risco, explique o que o padrão sugere, e dê UMA ação concreta priorizada. Sem markdown. Seja específico (cite os números).';
+    // leitura determinística (sempre disponível, sem crédito de IA) via módulo central
+    var dd = window.IpDiag ? IpDiag.clima(clima) : {leitura:'',acao:''};
+    var regras = (dd.leitura||'') + (dd.acao?(' Ação: '+dd.acao):'');
+    function fallback(nota){ if(out) out.innerHTML='<div class="pz-ia-txt">'+esc(regras)+'</div>'+(nota?'<div style="font-size:11px;color:var(--ip-ink-4);margin-top:8px;font-style:italic">'+esc(nota)+'</div>':''); }
     try{
       var r=await SB().functions.invoke('ai-proxy',{body:{model:MODEL,max_tokens:400,messages:[{role:'user',content:prompt}]}});
+      if(r.error){ fallback('Leitura por regras — copiloto IA indisponível (verificar créditos da API).'); return; }
       var txt=(r.data&&r.data.content&&r.data.content.filter(function(x){return x.type==='text';}).map(function(x){return x.text;}).join('\n'))||'';
-      if(out) out.innerHTML = txt? '<div class="pz-ia-txt">'+esc(txt)+'</div>' : '<div class="pz-empty">Não consegui gerar o diagnóstico agora.</div>';
-    }catch(e){ if(out) out.innerHTML='<div class="pz-empty">Falha ao consultar a IA.</div>'; }
+      if(txt && out) out.innerHTML='<div class="pz-ia-txt">'+esc(txt)+'</div>';
+      else fallback('Leitura por regras.');
+    }catch(e){ fallback('Leitura por regras — copiloto IA indisponível.'); }
   }
 
   function _injectCss(){
