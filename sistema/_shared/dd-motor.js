@@ -43,6 +43,14 @@
       passo('Não contratar até a regularização cadastral na Receita (situação '+sit+').');
     }
 
+    // situação especial (recuperação judicial / falência) — red flag forte, grátis
+    var espec = String(d.situacao_especial||'').toUpperCase().trim();
+    if(espec){
+      if(/FALEN|FALÊN|LIQUIDA/.test(espec)){ veto=true; sinal('Idoneidade','critica','Situação especial: '+espec, 'situação especial', 'Falência/liquidação — risco máximo de descontinuidade. Veto.'); passo('Não contratar — empresa em '+espec.toLowerCase()+'.'); }
+      else if(/RECUPERA/.test(espec)){ sinal('Idoneidade','alta','Situação especial: '+espec, 'situação especial', 'Em recuperação judicial/extrajudicial — fragilidade financeira; contratar só com garantias.'); passo('Exigir garantias reforçadas — empresa em recuperação ('+espec.toLowerCase()+').'); }
+      else { sinal('Idoneidade','media','Situação especial registrada: '+espec, 'situação especial', 'Há anotação especial na Receita — investigar.'); }
+    }
+
     // ── EIXO 2 · MATURIDADE ──
     var idadeM = mesesDesde(d.abertura);
     if(idadeM==null){ pendente.push('Data de abertura indisponível — maturidade não avaliada.'); }
@@ -94,6 +102,8 @@
     var semContato = !String(d.email||'').trim() && !String(d.telefone||'').trim() && !String(d.logradouro||'').trim();
     if(semContato && (d.email!==undefined || d.telefone!==undefined)){ sinal('Coerência','media','Sem dados de contato', 'email, telefone e endereço vazios', 'Ausência total de contato pode indicar empresa de fachada.'); }
     if(params.cnaes_esperados && d.cnae){ var ok = [].concat(params.cnaes_esperados).some(function(c){ return String(d.cnae).toLowerCase().indexOf(String(c).toLowerCase())>=0; }); if(!ok){ sinal('Coerência','media','Atividade (CNAE) incompatível com o esperado', 'CNAE: '+d.cnae, 'Possível empresa-veículo ou desvio de finalidade.'); } }
+    var nsec = d.n_atividades_secundarias;
+    if(nsec!=null && nsec >= 20){ sinal('Coerência','media','Muitas atividades secundárias ('+nsec+')', nsec+' CNAEs secundários', 'Objeto social muito difuso pode indicar empresa-veículo ou falta de foco.'); }
 
     // ── SCORE ──
     var soma = sinais.reduce(function(a,s){ return a + (PESO[s.severidade]||0); }, 0);
