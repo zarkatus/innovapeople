@@ -59,6 +59,7 @@
 <script src="/sistema/_shared/ip-ai.js" defer></script>
 <script src="/sistema/_shared/ip-concierge.js" defer></script>
 <script src="/sistema/_shared/ip-nervo.js" defer></script>
+<script src="/sistema/_shared/ip-org.js" defer></script>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -433,12 +434,25 @@ window.cockpitBoot = function cockpitBoot(){
     IpNervo.timeline(host, { limit:18, live:true }).then(function(u){ _unsubNervo=u; });
   }
 
+  // espinha organizacional: com 1 empresa o gate esconde tudo (idêntico a hoje);
+  // com ≥2, o breadcrumb aparece e trocar de nó re-consolida o cockpit pela subárvore.
+  function montarOrg(){
+    if(!window.IpOrg){ setTimeout(montarOrg,150); return; }
+    IpOrg.init().then(function(st){
+      if(st && st.visible){
+        // reescopo: ao trocar o nó, recarrega tudo (as queries filtram por mandatoIds da subárvore)
+        IpOrg.scope.onChange(function(){ carregarTudo(); rodarConcierge(); montarNervo(); });
+      }
+    });
+  }
+
   // boot
   function start(){
     if(!window.IpUI){ setTimeout(start,120); return; } // espera defer do ip-ui.js
     carregarTudo();
     rodarConcierge();
     montarNervo();
+    montarOrg();
   }
   start();
 };
