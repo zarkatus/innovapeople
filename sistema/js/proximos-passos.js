@@ -25,6 +25,8 @@
   async function open(host){
     _host=host;
     host.innerHTML='<div id="pp-root"><div class="pp-empty">Consolidando proximos passos&hellip;</div></div>';
+    // espinha organizacional: inicia a árvore (gate de invisibilidade com 1 empresa) e reage ao nó
+    try{ if(window.IpOrg){ IpOrg.init(); if(IpOrg.scope&&IpOrg.scope.onChange&&!_scoped){ _scoped=true; IpOrg.scope.onChange(function(){ render(); }); } } }catch(_){}
     await carregar();
     render();
     // robustez: se a sessão ainda não estava pronta no 1º boot (tudo vazio), recarrega 1×
@@ -32,7 +34,7 @@
       _reabriu=true; setTimeout(async function(){ await carregar(); render(); }, 600);
     }
   }
-  let _reabriu=false;
+  let _reabriu=false, _scoped=false;
 
   async function carregar(){
     const [mand, sug, run]=await Promise.all([
@@ -45,6 +47,9 @@
 
   function filtradas(){
     let arr=_data.sugestoes.slice();
+    // reescopo organizacional: se há nó corrente na árvore, filtra pelos mandatos da subárvore
+    const escopoIds=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;
+    if(escopoIds&&escopoIds.length){ const set=new Set(escopoIds); arr=arr.filter(s=>!s.mandato_id||set.has(s.mandato_id)); }
     if(_data.mandato)arr=arr.filter(s=>s.mandato_id===_data.mandato);
     arr.sort((a,b)=>{const da=SEV_RANK[a.severidade]||3,db=SEV_RANK[b.severidade]||3;if(db!==da)return db-da;return new Date(b.created_at)-new Date(a.created_at);});
     return arr;

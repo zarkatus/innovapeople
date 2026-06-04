@@ -14,7 +14,15 @@
   async function reload(){
     const sb=SB(); if(!sb) return;
     const r=await sb.from('v_plat_resultado_obra').select('*').order('project_id');
-    _obras=(r&&r.data)||[];
+    let obras=(r&&r.data)||[];
+    // reescopo organizacional: SÓ filtra quando o nó corrente declara projetos vinculados
+    // (metadata.project_ids). Sem vínculo, mostra todas (não esconde obras indevidamente — honesto).
+    try{
+      const node=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.node)?IpOrg.scope.node():null;
+      const pids=node&&node.metadata&&node.metadata.project_ids;
+      if(Array.isArray(pids)&&pids.length){ const set=new Set(pids); obras=obras.filter(o=>set.has(o.project_id)); }
+    }catch(_){}
+    _obras=obras;
   }
   function kpi(l,v,c){ return `<div style="flex:1;min-width:150px;background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.18);border-radius:14px;padding:14px 16px;box-shadow:0 6px 18px rgba(0,0,0,.25)"><div style="font:600 11px/1 system-ui;letter-spacing:.08em;text-transform:uppercase;color:var(--ip-ink-3)">${esc(l)}</div><div style="font:700 italic 22px Georgia;color:${c||'var(--ip-gold-lum)'};margin-top:6px">${v}</div></div>`; }
   function btn(id,txt,kind){ const b='font:600 13px/1 system-ui;padding:11px 18px;border-radius:11px;cursor:pointer;border:1px solid;transition:.15s'; return kind==='primary'?`<button id="${id}" style="${b};background:var(--ip-gold);color:var(--ip-bg-deep);border-color:var(--ip-gold-lum)">${txt}</button>`:`<button id="${id}" style="${b};background:transparent;color:var(--ip-gold-lum);border-color:rgba(210,174,100,.4)">${txt}</button>`; }
@@ -128,6 +136,11 @@
     if(r.ok){ if(window.IspCelebra) try{window.IspCelebra()}catch(_){}; T.toast('Apuração salva (rascunho).'); }
   }
 
-  function mount(el){ _el=el; if(window.IpUI&&el) el.innerHTML='<div style="max-width:1080px;margin:0 auto;padding:28px 32px">'+window.IpUI.skeleton(5)+'</div>'; reload().then(()=>render(el)); }
+  function mount(el){
+    _el=el; if(window.IpUI&&el) el.innerHTML='<div style="max-width:1080px;margin:0 auto;padding:28px 32px">'+window.IpUI.skeleton(5)+'</div>';
+    try{ if(window.IpOrg){ IpOrg.init(); if(IpOrg.scope&&IpOrg.scope.onChange&&!_scoped){ _scoped=true; IpOrg.scope.onChange(function(){ reload().then(()=>render(_el)); }); } } }catch(_){}
+    reload().then(()=>render(el));
+  }
+  let _scoped=false;
   window.IpResultado={ mount, _isShim:false };
 })();
