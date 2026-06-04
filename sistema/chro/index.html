@@ -211,7 +211,9 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
 </style>
 <link rel="stylesheet" href="/sistema/_shared/sidebar.css"><script src="/sistema/_shared/sidebar.js" defer></script>
 <script src="/sistema/_shared/ip-ai.js" defer></script>
-<script src="/sistema/_shared/ip-concierge.js" defer></script></head>
+<script src="/sistema/_shared/ip-concierge.js" defer></script>
+<script src="/sistema/_shared/ip-ui.js" defer></script>
+<script src="/sistema/_shared/ip-evm.js" defer></script></head>
 
 <body>
 
@@ -800,15 +802,15 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
       <div class="card-head">
         <div>
           <div class="card-title">EVM de Programas</div>
-          <div class="card-promise">Valor agregado (PV · AC · CPI) aplicado a programas de cultura, liderança, sucessão.</div>
+          <div class="card-promise">Valor agregado (PV · EV · AC · CPI · SPI) sobre os programas de gente vivos, com curva-S e diagnóstico IA.</div>
         </div>
-        <span class="status st-spec">Espelho AIPrev</span>
+        <span class="status st-ok">Operacional</span>
       </div>
       <div class="card-body">
-        O AIPrev usa <code style="font-family:var(--mono);font-size:11px">fn_plat_avanco_resumo</code> para obra. Mesmo padrão para programas de gente — PV é o plano, AC é o esforço gasto, CPI mostra se o programa vale o custo. Portar 1:1.
+        Curva de valor agregado por marco, índices CPI (custo) e SPI (prazo) com semáforo, EVM por marco e leitura cognitiva — sobre os programas reais (<code style="font-family:var(--mono);font-size:11px">fn_ip_evm_resumo</code>).
       </div>
       <div class="card-actions">
-        <button class="btn btn-gold" onclick="openEvmPeople()">Ver demonstração</button>
+        <button class="btn btn-gold" onclick="openEvmPeople()">Abrir EVM</button>
       </div>
     </div>
 
@@ -1456,29 +1458,7 @@ function renderConciergeMd(text){
 // ============================================================
 // FEATURE 5 — EVM PEOPLE (espelho AIPrev, demonstração)
 // ============================================================
-function openEvmPeople(){
-  openDrawer('EVM de Programas (espelho AIPrev)', `
-    <p class="dr-sub">Espelho conceitual de <code class="dr-code">fn_plat_avanco_resumo</code> do AIPrev, aplicado a programas de gente. Schema <code class="dr-code">ip_programas</code> + <code class="dr-code">ip_programa_avanco</code> a portar do <code class="dr-code">plat_plano_*</code>.</p>
-    <div style="background:var(--cream2);padding:22px;border-radius:8px;margin-bottom:18px">
-      <div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px">Programa exemplo · Liderança 2026</div>
-      <table style="width:100%;font-size:13px">
-        <tr><td style="color:var(--ink3);padding:6px 0">PV · Planned Value</td><td style="text-align:right;font-family:var(--mono);color:var(--navy)">R$ 120.000</td></tr>
-        <tr><td style="color:var(--ink3);padding:6px 0">EV · Earned Value</td><td style="text-align:right;font-family:var(--mono);color:var(--navy)">R$ 96.000</td></tr>
-        <tr><td style="color:var(--ink3);padding:6px 0">AC · Actual Cost</td><td style="text-align:right;font-family:var(--mono);color:var(--navy)">R$ 110.000</td></tr>
-        <tr><td style="color:var(--ink3);padding:6px 0;border-top:1px solid var(--border);padding-top:10px">CPI · EV/AC</td><td style="text-align:right;font-family:var(--mono);color:var(--red);border-top:1px solid var(--border);padding-top:10px;font-weight:500">0.87</td></tr>
-        <tr><td style="color:var(--ink3);padding:6px 0">SPI · EV/PV</td><td style="text-align:right;font-family:var(--mono);color:#A86A1F;font-weight:500">0.80</td></tr>
-      </table>
-      <div style="margin-top:16px;padding:12px;background:rgba(168,106,31,.1);border-radius:4px;font-size:12px;color:var(--ink2);font-style:italic;line-height:1.5">CPI &lt; 1 e SPI &lt; 1: programa atrasado e acima do orçamento. Forecaster sugere replanejar marcos finais antes de novo aporte.</div>
-    </div>
-    <div style="padding:16px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.6">
-      <strong style="color:var(--navy)">Próximo passo (espelho AIPrev):</strong><br>
-      1. Criar tabelas <code class="dr-code">ip_programas</code> + <code class="dr-code">ip_programa_marcos</code> + <code class="dr-code">ip_programa_apontamento</code><br>
-      2. Portar RPC <code class="dr-code">fn_plat_avanco_resumo</code> → <code class="dr-code">fn_ip_avanco_resumo</code><br>
-      3. Conectar este painel aos dados reais (PV/EV/AC por programa)<br>
-      4. Adicionar curva-S (acumulado x tempo) com Chart.js
-    </div>
-  `);
-}
+// (openEvmPeople real definido mais abaixo, via módulo ip-evm.js)
 function openCpmDev(){
   openDrawer('CPM de Desenvolvimento (espelho AIPrev)', `
     <p class="dr-sub">Caminho crítico para planos individuais e jornadas de liderança. Cópia conceitual de <code class="dr-code">fn_plat_cpm_forward</code>/<code class="dr-code">_backward</code>/<code class="dr-code">_executar</code> do AIPrev.</p>
@@ -2810,8 +2790,14 @@ async function diagnosticoIAPrograma(programaId,nome){
     }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
   });
 }
-// Redireciona demos antigas para a versao real
-function openEvmPeople(){openProgramas()}
+// EVM People REAL (módulo ip-evm.js): curva-S por marcos + gauges CPI/SPI + EVM por marco + diagnóstico IA
+function openEvmPeople(){
+  openDrawer('EVM de Programas · valor agregado', '<div id="evm-host"><div class="dr-info">Carregando EVM…</div></div>', function(body){
+    var host=body.querySelector('#evm-host');
+    (function go(){ if(window.IpEvm){ IpEvm.render(host,{}); } else { setTimeout(go,150); } })();
+  });
+}
+// CPM e Forecaster: próximos itens dedicados da fila IREU (honesto — sem fingir que funciona)
 function openForecaster(){openProgramas()}
 function openCpmDev(){openProgramas()}
 
