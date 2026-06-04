@@ -15,6 +15,34 @@
   function brl(n){ if(n==null||isNaN(n))return '—'; return (+n).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}); }
   async function _rpc(fn, id){ var r=await SB().rpc(fn,{p_node_id:id}); return r.error?null:r.data; }
 
+  // ── FAIXA DE EVOLUÇÃO (histórico): sparkline + delta de métricas-chave a partir dos snapshots diários ──
+  // metricas = [{m:'evm.avanco_pct', rotulo:'Avanço', suf:'%'}, ...]. Some se não houver série.
+  async function _evolucao(node, metricas){
+    if(!node) return '';
+    var series=await Promise.all(metricas.map(function(mm){
+      return SB().rpc('fn_ip_org_snapshot_serie',{p_node_id:node.id,p_metrica:mm.m,p_dias:180})
+        .then(function(r){ return r.error?null:r.data; }).catch(function(){ return null; });
+    }));
+    var cards=[];
+    for(var i=0;i<metricas.length;i++){
+      var s=series[i]; if(!s || !s.pontos || !s.pontos.length) continue;
+      var vals=s.pontos.map(function(p){ return +p.v; });
+      var ult=vals[vals.length-1], pri=vals[0];
+      var delta=(vals.length>=2)?(Math.round((ult-pri)*100)/100):null;
+      var spark=(U()&&U().sparkline)?U().sparkline(vals,{width:110,height:30}):'';
+      var deltaHtml = delta==null ? '<span style="font-size:10px;color:var(--ip-ink-4,#6B7A90)">acumulando histórico</span>'
+        : '<span style="font-size:11.5px;color:'+(delta>0?'var(--ip-ok,#7BD3A0)':delta<0?'var(--ip-danger,#E8A6A6)':'var(--ip-ink-3,#8FA0B5)')+'">'+(delta>0?'↑':delta<0?'↓':'→')+' '+Math.abs(delta)+(metricas[i].suf||'')+' em '+vals.length+'d</span>';
+      cards.push('<div style="background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.1);border-radius:13px;padding:12px 14px">'
+        +'<div style="font:600 10px/1 system-ui;letter-spacing:.1em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin-bottom:6px">'+esc(metricas[i].rotulo)+'</div>'
+        +'<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:10px">'
+        +'<div style="font:700 italic 22px Georgia;color:var(--ip-cream,#F7F3EC)">'+(ult==null?'—':ult)+(metricas[i].suf||'')+'</div>'+spark+'</div>'
+        +'<div style="margin-top:4px">'+deltaHtml+'</div></div>');
+    }
+    if(!cards.length) return '';
+    return '<div class="olns-sec">Evolução · histórico diário</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px">'+cards.join('')+'</div>';
+  }
+
   var AGREGACAO=['grupo','holding','unidade_negocio','segmento','fundo'];
   var EXECUCAO=['frente','ativo','veiculo'];
 
@@ -71,11 +99,18 @@
       ddHtml='<div class="olns-empty">Sem CNPJ cadastrado. Insira o CNPJ desta empresa (menu ⋯ na árvore) para due diligence automática.</div>';
     }
 
+    var evoHtml=await _evolucao(node, [
+      {m:'evm.avanco_pct', rotulo:'Avanço', suf:'%'},
+      {m:'pessoas.ativos', rotulo:'Colaboradores', suf:''},
+      {m:'evm.cpi', rotulo:'CPI · custo', suf:''}
+    ]);
+
     host.innerHTML='<div class="olns">'
       +'<div class="olns-h"><h2>'+esc(node.nome)+'</h2><span class="olns-lente">lente · empresa</span></div>'
       +'<div class="olns-sub">A operação desta empresa. Suba no grupo (breadcrumb) para ver o consolidado.</div>'
       + kpis + gauges
       +'<div class="olns-sec">Idoneidade · due diligence</div>' + ddHtml
+      + evoHtml
       +'</div>';
   }
 
@@ -110,5 +145,5 @@
     }catch(e){ host.style.display='none'; host.innerHTML=''; }
   }
 
-  window.OrgLens = { render: render };
+  window.OrgLens = { render: render, evolucao: _evolucao };
 })();

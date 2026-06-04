@@ -97,6 +97,17 @@
         +rows+finHtml;
     }
 
+    // faixa de evolução histórica (consome OrgLens.evolucao a partir dos snapshots diários; some sem série)
+    var evoHtml='';
+    if(window.OrgLens && OrgLens.evolucao){
+      try{ evoHtml=await OrgLens.evolucao(node, [
+        {m:'evm.avanco_pct', rotulo:'Avanço consolidado', suf:'%'},
+        {m:'pessoas.ativos', rotulo:'Colaboradores', suf:''},
+        {m:'evm.cpi', rotulo:'CPI · custo', suf:''},
+        {m:'financeiro.atribuivel_controlador', rotulo:'Result. controlador', suf:''}
+      ]); }catch(e){ evoHtml=''; }
+    }
+
     host.innerHTML='<div class="ipgp">'
       +'<div class="ipgp-h"><h2>'+esc(node.nome)+'</h2><span class="tag">visão consolidada · '+esc(node.tipo_no)+'</span></div>'
       +'<div class="ipgp-sub">Tudo das '+(evm.empresas||0)+' empresa(s) abaixo deste nó, somado em tempo real. Clique numa empresa na árvore para descer.</div>'
@@ -104,6 +115,7 @@
       +'<div style="font:600 10px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin:6px 0 4px">Idoneidade · due diligence das empresas</div>'
       + ddHtml
       + ownHtml
+      + evoHtml
       +'</div>';
   }
 
