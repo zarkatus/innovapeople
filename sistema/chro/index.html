@@ -213,6 +213,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
 <script src="/sistema/_shared/ip-ai.js" defer></script>
 <script src="/sistema/_shared/ip-concierge.js" defer></script>
 <script src="/sistema/_shared/ip-ui.js" defer></script>
+<script src="/sistema/_shared/ip-diagnostico.js" defer></script>
 <script src="/sistema/_shared/ip-evm.js" defer></script></head>
 
 <body>
@@ -817,16 +818,16 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
     <div class="card" data-mod="cpm-dev">
       <div class="card-head">
         <div>
-          <div class="card-title">CPM de Desenvolvimento</div>
-          <div class="card-promise">Caminho crítico para planos individuais e jornadas de liderança.</div>
+          <div class="card-title">Caminho de Desenvolvimento</div>
+          <div class="card-promise">A cadeia ordenada de marcos de cada programa — o elo que segura o avanço, visível antes do atraso.</div>
         </div>
-        <span class="status st-spec">Espelho AIPrev</span>
+        <span class="status st-ok">Operacional</span>
       </div>
       <div class="card-body">
-        Cópia conceitual de <code style="font-family:var(--mono);font-size:11px">fn_plat_cpm_forward/_backward/_executar</code>. Cada plano vira grafo de marcos com dependências — gargalo visível antes do atraso.
+        Sequência real dos marcos com status, peso EVM (PV/EV/AC) e diagnóstico do gargalo. Datas e dependências entram quando cadastradas, evoluindo para o caminho crítico temporal.
       </div>
       <div class="card-actions">
-        <button class="btn btn-gold" onclick="openCpmDev()">Ver demonstração</button>
+        <button class="btn btn-gold" onclick="openCpmDev()">Abrir cadeia</button>
       </div>
     </div>
 
@@ -2797,9 +2798,15 @@ function openEvmPeople(){
     (function go(){ if(window.IpEvm){ IpEvm.render(host,{}); } else { setTimeout(go,150); } })();
   });
 }
-// CPM e Forecaster: próximos itens dedicados da fila IREU (honesto — sem fingir que funciona)
+// CPM por sequência REAL (cadeia de marcos, elo que trava) — honesto: datas/dependências entram quando cadastradas
+function openCpmDev(){
+  openDrawer('Caminho de Desenvolvimento · cadeia de marcos', '<div id="cpm-host"><div class="dr-info">Carregando cadeia…</div></div>', function(body){
+    var host=body.querySelector('#cpm-host');
+    (function go(){ if(window.IpEvm&&window.IpEvm.renderSequencia){ IpEvm.renderSequencia(host,{}); } else { setTimeout(go,150); } })();
+  });
+}
+// Forecaster: próximo item dedicado da fila IREU (honesto — exige headcount/folha real)
 function openForecaster(){openProgramas()}
-function openCpmDev(){openProgramas()}
 
 function notImpl(name){alert('Em construção: '+name+'\n\nO contrato de dados está mapeado — falta a UI dedicada na próxima rodada.')}
 </script>

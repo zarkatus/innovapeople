@@ -104,7 +104,15 @@
      +'.evm-mk{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(210,174,100,.06);font-size:12.5px}'
      +'.evm-mk:last-child{border-bottom:none}.evm-mk .nm{color:var(--ip-cream)}.evm-mk .vals{font-family:ui-monospace,monospace;font-size:11px;color:var(--ip-ink-2)}'
      +'.evm-ia{background:linear-gradient(135deg,#0C1626,#0A1320);border:1px solid rgba(210,174,100,.16);border-radius:14px;padding:18px 20px;margin-top:4px}'
-     +'.evm-ia-lbl{font:600 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--ip-gold-lum);margin-bottom:10px}';
+     +'.evm-ia-lbl{font:600 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--ip-gold-lum);margin-bottom:10px}'
+     +'.evm-chainwrap{display:flex;flex-direction:column;gap:0}'
+     +'.evm-chain{display:flex;gap:12px;align-items:flex-start;padding:10px 0 14px;position:relative}'
+     +'.evm-chain:not(:last-child)::after{content:"";position:absolute;left:13px;top:30px;bottom:-2px;width:2px;background:rgba(210,174,100,.14)}'
+     +'.evm-chain-dot{width:28px;height:28px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font:700 12px/1 system-ui;color:var(--ip-bg-deep,#070D15);z-index:1}'
+     +'.evm-chain.gargalo .evm-chain-dot{box-shadow:0 0 0 4px color-mix(in srgb,var(--ip-gold-lum) 22%,transparent)}'
+     +'.evm-chain-nm{font-size:13.5px;color:var(--ip-cream);font-weight:500}'
+     +'.evm-chain-tag{font:600 8.5px/1 system-ui;letter-spacing:.1em;text-transform:uppercase;color:var(--ip-gold-lum);background:color-mix(in srgb,var(--ip-gold-lum) 16%,transparent);padding:3px 7px;border-radius:7px;margin-left:6px}'
+     +'.evm-chain-meta{font-size:11px;color:var(--ip-ink-3);margin-top:4px}';
     (document.head||document.documentElement).appendChild(st);
   }
 
@@ -151,5 +159,41 @@
     _renderProg(host, opts.programa || _progs[0].id);
   }
 
-  window.IpEvm={ render:render };
+  // ── CPM por SEQUÊNCIA (sem datas/dependências fictícias — honesto sobre os dados reais) ──
+  // Mostra a cadeia ordenada de marcos, o elo que trava, o peso EVM de cada um, e o avanço.
+  async function _renderSeqProg(host, pid){
+    _sel=pid;
+    host.querySelectorAll('.evm-pill').forEach(function(p){ p.classList.toggle('on', p.dataset.pid===pid); });
+    var body=host.querySelector('#evm-body');
+    body.innerHTML = U().skeleton ? U().skeleton(4) : 'Carregando…';
+    var marcos=await _marcos(pid);
+    if(!marcos.length){ body.innerHTML='<div style="color:var(--ip-ink-4);font-style:italic;padding:24px">Este programa ainda não tem marcos cadastrados.</div>'; return; }
+    var gargaloIdx=marcos.findIndex(function(m){return m.status!=='concluido';});
+    var chain=marcos.map(function(m,i){
+      var done=m.status==='concluido', isGargalo=i===gargaloIdx;
+      var cor=done?'var(--ip-ok)':isGargalo?'var(--ip-gold-lum)':'var(--ip-ink-3)';
+      var gap=(+m.ac||0)-(+m.ev||0);
+      return '<div class="evm-chain'+(isGargalo?' gargalo':'')+'">'
+        +'<div class="evm-chain-dot" style="background:'+cor+'">'+(done?'✓':i+1)+'</div>'
+        +'<div class="evm-chain-body"><div class="evm-chain-nm">'+esc(m.titulo)+(isGargalo?' <span class="evm-chain-tag">elo atual</span>':'')+'</div>'
+        +'<div class="evm-chain-meta">'+_statusBadge(m.status)+' · PV '+brl(m.pv)+' · EV '+brl(m.ev)+' · AC '+brl(m.ac)+(gap>0?' · <span style="color:var(--ip-danger)">+'+brl(gap)+' acima</span>':'')+'</div></div></div>';
+    }).join('');
+    var diag = window.IpDiag ? IpDiag.card(IpDiag.sequencia(marcos),{semIA:true}) : '';
+    body.innerHTML='<div class="evm-card" style="margin-bottom:16px"><h3>Cadeia de marcos · o que segura o avanço</h3>'
+      +'<div style="font-size:11.5px;color:var(--ip-ink-3);margin-bottom:14px">Sequência ordenada dos marcos. O <b style="color:var(--ip-gold-lum)">elo atual</b> é o primeiro não concluído — destravá-lo libera os seguintes. (Datas e dependências entram quando cadastradas.)</div>'
+      +'<div class="evm-chainwrap">'+chain+'</div></div>'+diag;
+  }
+  async function renderSequencia(host, opts){
+    opts=opts||{}; if(!host) return; _injectCss();
+    if(!window.IpUI || !SB()){ setTimeout(function(){renderSequencia(host,opts);},150); return; }
+    host.innerHTML = '<div class="evm-sel" id="evm-sel"></div><div id="evm-body">'+(U().skeleton?U().skeleton(3):'…')+'</div>';
+    _progs=await _programas();
+    var sel=host.querySelector('#evm-sel');
+    if(!_progs.length){ host.querySelector('#evm-body').innerHTML='<div style="color:var(--ip-ink-4);font-style:italic;padding:24px">Nenhum programa cadastrado.</div>'; return; }
+    sel.innerHTML=_progs.map(function(p){ return '<button class="evm-pill" data-pid="'+esc(p.id)+'">'+esc(p.nome)+'</button>'; }).join('');
+    sel.querySelectorAll('.evm-pill').forEach(function(b){ b.onclick=function(){ _renderSeqProg(host, b.dataset.pid); }; });
+    _renderSeqProg(host, opts.programa || _progs[0].id);
+  }
+
+  window.IpEvm={ render:render, renderSequencia:renderSequencia };
 })();
