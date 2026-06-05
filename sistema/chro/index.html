@@ -217,6 +217,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
 <script src="/sistema/_shared/dd-motor.js" defer></script>
 <script src="/sistema/_shared/ip-dd-parecer.js" defer></script>
 <script src="/sistema/_shared/dd-consentimento.js" defer></script>
+<script src="/sistema/_shared/dd-resultado.js" defer></script>
 <script src="/sistema/_shared/ip-evm.js" defer></script></head>
 
 <body>
@@ -1694,10 +1695,21 @@ function newMandato(){openDrawer('Novo cliente',`
     const inputNome = '<label style="display:block;margin-top:12px"><span class="dr-lab">Nome da pessoa</span><input type="text" id="nm-pnome" placeholder="nome completo" style="font-size:15px;padding:11px 13px;width:100%"></label>';
     confirmBox.innerHTML = inputNome + '<button type="button" class="btn btn-primary" id="nm-submit-pessoa" style="padding:14px 22px;font-size:15px;width:100%;margin-top:8px">✓ Cadastrar pessoa como cliente</button><div style="font-size:11px;color:var(--ink3);text-align:center;margin-top:7px">A pessoa, validação e participação societária entram juntas — em um clique.</div>';
     confirmBox.style.display='block';
+    // caixa de resultado inicial (T0 público) + botões imprimir/PDF — aparece já na pesquisa
+    if(window.IpDdResultado){ try{ IpDdResultado.render(result, { cpf:cpf, nome:(body.querySelector('#nm-pnome')||{}).value||'', t0:t0.tier0||t0, avancado:t0 }); }catch(_){} }
     body.querySelector('#nm-consent').onclick=()=>{
       if(!window.IpDdConsent){ result.innerHTML='<div class="dr-err">Módulo de consentimento indisponível.</div>'; return; }
       const nome=(body.querySelector('#nm-pnome')||{}).value||'';
-      IpDdConsent.abrir({ doc:cpf, nome:nome, project_id:'ip', contexto_origem:'cliente_curadoria', onSuccess:()=>{ result.innerHTML='<div class="dr-ok">✓ Consentimento registrado — pesquisas autorizadas liberadas para esta pessoa.</div>'; } });
+      IpDdConsent.abrir({ doc:cpf, nome:nome, project_id:'ip', contexto_origem:'cliente_curadoria', onSuccess:async (consData, marcadas)=>{
+        // re-pesquisa COM as finalidades consentidas e renderiza a caixa completa (com impressão/PDF)
+        const fins=(marcadas||[]).map(m=>m.finalidade);
+        result.innerHTML='<div class="dr-info">Consentimento registrado — buscando o que foi autorizado…</div>';
+        try{
+          const dados=window.IpDdResultado ? await IpDdResultado.pesquisar({ cpf:cpf, nome:nome, contexto_origem:'cliente_curadoria', finalidades:fins, project_id:'ip' }) : {};
+          _pessoa.t0 = dados.t0 || _pessoa.t0; // atualiza o que será cadastrado
+          if(window.IpDdResultado) IpDdResultado.render(result, { cpf:cpf, nome:nome, t0:dados.t0, avancado:dados.avancado, sancoes:dados.sancoes, consentimento:{ hash:(consData&&consData.hash)||'', finalidades:marcadas, versao:(window.IpDdConsent&&IpDdConsent.VERSAO) } });
+        }catch(e){ result.innerHTML='<div class="dr-ok">✓ Consentimento registrado. (A pesquisa avançada não retornou agora — '+esc(e.message||e)+'.)</div>'; }
+      } });
     };
     body.querySelector('#nm-submit-pessoa').onclick=async()=>{
       const nome=((body.querySelector('#nm-pnome')||{}).value||'').trim();
