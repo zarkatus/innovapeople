@@ -1042,6 +1042,13 @@ async function chroBoot(){
   ];
   await Promise.allSettled(tasks);
   console.log('[chro] boot done');
+  // porta de entrada da Due Diligence: ?novo=1 (ou #dd) abre o fluxo de pesquisa CNPJ/CPF direto
+  try{
+    var _qs=new URLSearchParams(location.search);
+    if(_qs.get('novo')==='1' || location.hash==='#dd' || location.hash==='#novo'){
+      if(typeof newMandato==='function') setTimeout(newMandato, 120);
+    }
+  }catch(_){}
 }
 window.chroBoot=chroBoot;
 
