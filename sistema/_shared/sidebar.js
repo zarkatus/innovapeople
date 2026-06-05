@@ -51,6 +51,7 @@
 
     // COMUNICAÇÃO
     {g:'Comunicação', i:'💬', n:'WhatsApp · Inbox', p:'/sistema/whatsapp/',  d:'Inbox unificada · envio · reply · encaminhar · busca · PTT', t:'whatsapp wa inbox mensagens conversas zap chat'},
+    {g:'Comunicação', i:'✉️', n:'E-mail · Minha Caixa', p:'/sistema/comunicacao/', d:'Sua caixa de e-mail da InnovaPeople dentro da plataforma — sem caixa à parte, sem segundo login', t:'email e-mail correio caixa mail webmail comunicacao minha caixa mensagem inbox correspondencia snappymail'},
     {g:'Comunicação', i:'📅', n:'Calendário',       p:'/sistema/calendar.html', d:'Google Calendar integrado · agendamentos Raio-X', t:'calendar calendario google agendamentos eventos reuniao'},
 
     // INTELIGÊNCIA · GOVERNANÇA

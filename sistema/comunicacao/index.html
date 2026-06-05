@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Comunicação · E-mail · InnovaPeople</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/sistema/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/sistema/toolbox/_shared/toolbox.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script src="/sistema/_shared/ip-allowlist.js" defer></script>
+<script>
+(function ipAuthGate(){
+  const SUPA_URL='https://auth.innovasphere.ia.br';
+  const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br','rapheice@schifino.com.br'];
+  function inj(){if(document.getElementById('ip-auth-ovl'))return;const o=document.createElement('div');o.id='ip-auth-ovl';o.style.cssText='position:fixed;inset:0;background:#0C0816;color:#C4A35A;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647';o.innerHTML='<div>Validando acesso&hellip;</div>';(document.body||document.documentElement).appendChild(o)}
+  function rm(){const o=document.getElementById('ip-auth-ovl');if(o)o.remove()}
+  function allow(email){rm();window.__IP_USER_EMAIL=email;const el=document.getElementById('uname');if(el&&email)el.textContent=email;if(typeof window.comBoot==='function')try{window.comBoot()}catch(e){console.warn(e)}else setTimeout(()=>{if(typeof window.comBoot==='function')try{window.comBoot()}catch(e){}},300)}
+  if(document.body)inj();else document.addEventListener('DOMContentLoaded',inj,{once:true});
+  const s=setTimeout(()=>allow(''),6000);
+  (async()=>{try{
+    try{var _k=Object.keys(localStorage).find(k=>k.startsWith('sb-')&&k.includes('auth-token'));if(_k){var _raw=JSON.parse(localStorage.getItem(_k)||'null');var _ls=_raw&&(_raw.currentSession||_raw.session||_raw);var _em=_ls&&_ls.user&&(_ls.user.email||(_ls.user.user_metadata&&_ls.user.user_metadata.email));var _exp=_ls&&_ls.expires_at?(_ls.expires_at*1000):0;if(_ls&&_ls.access_token&&_em&&(!_exp||_exp>Date.now())&&ALLOWED.includes(_em)){clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){allow(_em)},{once:true});else allow(_em);try{window.__IP_SB=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true}});}catch(_){}return;}}}catch(_){}
+    if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=comunicacao');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
+})();
+</script>
+<script src="/sistema/toolbox/_shared/toolbox.js"></script>
+<link rel="stylesheet" href="/sistema/_shared/tokens.css">
+<link rel="stylesheet" href="/sistema/_shared/sidebar.css">
+<script src="/sistema/_shared/sidebar.js" defer></script>
+<style>
+  .com-wrap{max-width:1280px;margin:0 auto;padding:0 18px}
+  .com-frame{position:relative;width:100%;height:calc(100vh - 230px);min-height:520px;border:1px solid rgba(196,163,90,.18);border-radius:14px;overflow:hidden;background:linear-gradient(135deg,#0C1626,#0A1320)}
+  .com-frame iframe{width:100%;height:100%;border:0;display:block;background:#0A1320}
+  .com-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;background:radial-gradient(circle at 50% 35%,#101d31,#070D15);color:#F7F3EC}
+  .com-overlay .ico{font-size:46px;margin-bottom:14px;opacity:.9}
+  .com-overlay h2{font:400 italic 24px Georgia;color:#E5C77E;margin:0 0 8px}
+  .com-overlay p{font-size:13.5px;color:#9FB0C5;max-width:460px;line-height:1.6;margin:0 0 6px}
+  .com-overlay .addr{font-family:JetBrains Mono,monospace;font-size:12px;color:#E5C77E;background:rgba(229,199,126,.08);border:1px solid rgba(229,199,126,.2);border-radius:8px;padding:7px 12px;margin-top:14px}
+  .com-overlay .hint{font-size:11px;color:#6B7A90;margin-top:18px;font-style:italic}
+  .com-bar{display:flex;align-items:center;gap:10px;margin:0 0 12px;flex-wrap:wrap}
+  .com-bar .who{font-size:12.5px;color:#9FB0C5}
+  .com-bar .who b{color:#E5C77E}
+  .com-bar .badge{font:700 10px/1 system-ui;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:14px}
+  .com-bar .b-ok{background:rgba(123,211,160,.16);color:#7BD3A0}
+  .com-bar .b-cfg{background:rgba(229,199,126,.16);color:#E5C77E}
+  .com-bar a.com-open{margin-left:auto;font-size:12px;color:#9FB0C5;border:1px solid rgba(196,163,90,.25);border-radius:14px;padding:6px 13px;text-decoration:none;transition:.15s}
+  .com-bar a.com-open:hover{border-color:#E5C77E;color:#E5C77E}
+</style>
+</head>
+<body>
+<nav class="top">
+  <div class="row">
+    <a class="brand" href="/sistema/"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="14"/><path d="M16 6 v20 M6 16 h20"/></svg><div><span class="wm">innova · people</span><span class="sub">Comunicação</span></div></a>
+    <div class="nav">
+      <a href="/sistema/">Dashboard</a>
+      <a href="/sistema/toolbox/">ToolBox</a>
+      <a href="/sistema/chro/">CHRO</a>
+      <a href="/sistema/whatsapp/">WhatsApp</a>
+      <a href="/sistema/comunicacao/" class="active">E-mail</a>
+    </div>
+    <div class="user">olá, <strong id="uname">—</strong></div>
+  </div>
+</nav>
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Comunicação · Caixa de E-mail</div>
+    <h1>Minha <em>Caixa</em></h1>
+    <div class="tagline">O e-mail da InnovaPeople vive aqui dentro da plataforma — sem caixa à parte, sem segundo login. Você cai direto na sua caixa.</div>
+  </div>
+</section>
+<div class="hub">
+  <div class="com-wrap">
+    <div class="com-bar">
+      <span class="who">Caixa de <b id="com-email">—</b></span>
+      <span class="badge b-cfg" id="com-status">verificando…</span>
+      <a class="com-open" id="com-open" href="#" target="_blank" rel="noopener">Abrir em nova aba ↗</a>
+    </div>
+    <div class="com-frame">
+      <iframe id="com-iframe" title="Minha Caixa de E-mail" referrerpolicy="no-referrer" loading="lazy"></iframe>
+      <div class="com-overlay" id="com-overlay">
+        <div class="ico">✉️</div>
+        <h2>Sua caixa está em configuração</h2>
+        <p>O servidor de e-mail da InnovaPeople está sendo preparado. Assim que estiver no ar, sua caixa <b>abre aqui dentro</b>, já logada — sem precisar entrar de novo.</p>
+        <div class="addr" id="com-addr">mail.innovapeople.ia.br</div>
+        <div class="hint">Mesma experiência do CRM Piçarras Hills: e-mail dentro da plataforma, zero duplo login.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="foot">Comunicação · <strong>E-mail</strong> · embutido na plataforma · auto-login por ponte de sessão (quando o webmail subir)</div>
+<div id="toast"></div>
+<script>
+// Domínio do webmail (trocar quando o mail real subir). Igual ao padrão do CRM PH (mail.<dominio>).
+window.IP_MAIL_HOST = window.IP_MAIL_HOST || 'mail.innovapeople.ia.br';
+window.comBoot=function(){
+  const el=document.getElementById('uname'); if(el&&window.__IP_USER_EMAIL)el.textContent=window.__IP_USER_EMAIL;
+  const email=window.__IP_USER_EMAIL||'';
+  const host=window.IP_MAIL_HOST;
+  const url='https://'+host+'/';
+  document.getElementById('com-email').textContent=email||'sua conta';
+  document.getElementById('com-addr').textContent=host;
+  const openA=document.getElementById('com-open'); openA.href=url;
+  const iframe=document.getElementById('com-iframe');
+  const overlay=document.getElementById('com-overlay');
+  const status=document.getElementById('com-status');
+  // probe: o webmail responde? (no-cors → só sabemos se a rede resolve; timeout = ainda em config)
+  let respondeu=false;
+  const probe=fetch(url,{mode:'no-cors',cache:'no-store'}).then(()=>{respondeu=true;}).catch(()=>{});
+  const decide=()=>{
+    if(respondeu){
+      // webmail no ar → embute (quando houver SSO-bridge, o src vira a URL de login de uso único)
+      iframe.src=url;
+      overlay.style.display='none';
+      status.textContent='no ar'; status.className='badge b-ok';
+    }else{
+      // ainda em configuração → mantém o overlay elegante (a casca está pronta)
+      status.textContent='em configuração'; status.className='badge b-cfg';
+    }
+  };
+  // dá ~2.5s pro probe; se não responder, assume em configuração (não trava a tela)
+  Promise.race([probe, new Promise(r=>setTimeout(r,2500))]).then(decide);
+};
+</script>
+</body>
+</html>
