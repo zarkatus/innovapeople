@@ -9,6 +9,7 @@
   if(window.IpPessoas && !window.IpPessoas._isShim) return;
 
   const SB = ()=> window.__IP_SB || window.sb;
+  const DOMINIO_EMAIL = window.IP_MAIL_DOMAIN || 'innovapeople.com.br'; // domínio dos e-mails dos colaboradores
   const T  = window.TB || { toast:(m)=>{ try{console.log(m)}catch(_){}} };
   const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const money = v => (v==null||v==='') ? '—' : 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2});
@@ -231,30 +232,68 @@
       ${field('Cargo','f-cargo','','text','ex.: Pedreiro')}
       ${selectField('Modelo de contrato','f-mod','CLT',[['CLT','CLT'],['PJ','PJ'],['Temporário','Temporário'],['Estágio','Estágio'],['Aprendiz','Aprendiz']])}
       ${field('Data de admissão','f-adm','','date')}
-      ${field('E-mail institucional','f-mail','','email','nome@empresa.com.br')}
-      ${field('WhatsApp (E.164)','f-wa','','text','+5547999999999')}
+      ${field('WhatsApp (E.164) *','f-wa','','text','+5547999999999')}
+      ${field('E-mail institucional','f-mail','','email','gerado automaticamente do nome')}
+      <div id="f-mail-hint" style="font-size:11px;color:var(--ip-gold-soft,#C8B58A);margin:-8px 0 14px;font-style:italic">✉ Criado automaticamente em <b>@${esc(DOMINIO_EMAIL)}</b> — a caixa fica pronta na plataforma, sem segundo login. Edite se quiser outro endereço.</div>
       <div style="margin-top:8px">${btn('px-save','Confirmar admissão','primary')}</div>`);
     const d=document.getElementById('px-drawer');
     d.querySelector('#px-x').onclick=close;
     d.querySelector('#px-save').onclick=salvarAdmissao;
+    // e-mail auto-gerado a partir do nome (enquanto o usuário não editar manualmente)
+    const fNome=d.querySelector('#f-nome'), fMail=d.querySelector('#f-mail');
+    let _mailTocado=false;
+    if(fMail) fMail.addEventListener('input',()=>{ _mailTocado=true; });
+    if(fNome&&fMail) fNome.addEventListener('input',()=>{ if(!_mailTocado) fMail.value=_emailSugerido(fNome.value); });
+  }
+  // nome → e-mail: minúsculas, sem acento, "primeiro.ultimo@dominio"
+  function _emailSugerido(nome){
+    var p=String(nome||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z\s]/g,'').trim().split(/\s+/).filter(Boolean);
+    if(!p.length) return '';
+    var local = p.length===1 ? p[0] : (p[0]+'.'+p[p.length-1]);
+    return local+'@'+DOMINIO_EMAIL;
   }
   async function salvarAdmissao(){
     const g=id=>document.getElementById(id);
     const cpf=(g('f-cpf').value||'').replace(/\D/g,''), nome=(g('f-nome').value||'').trim(), proj=(g('f-proj').value||'').trim();
+    const wa=(g('f-wa').value||'').trim();
     if(cpf.length!==11){ T.toast('CPF inválido (11 dígitos).'); return; }
     if(!nome){ T.toast('Informe o nome.'); return; }
     if(!proj){ T.toast('Informe o projeto/obra.'); return; }
+    // WhatsApp OBRIGATÓRIO (E.164) — não cria usuário sem o número (regra CVO)
+    const waNorm=wa.replace(/[^\d+]/g,'');
+    if(!/^\+\d{12,15}$/.test(waNorm)){ T.toast('WhatsApp obrigatório no formato E.164 (ex.: +5547999999999).'); const w=g('f-wa'); if(w){w.focus();w.style.borderColor='var(--ip-danger,#E8A6A6)';} return; }
     if(_rows.some(r=>String(r.cpf).replace(/\D/g,'')===cpf)){ T.toast('Já existe colaborador com este CPF.'); return; }
+    // e-mail: usa o digitado, ou gera automaticamente do nome
+    const email=((g('f-mail').value||'').trim()) || _emailSugerido(nome);
     const payload={ cpf, nome, project_id:proj,
       cargo:(g('f-cargo').value||'').trim()||null, modelo_contrato:g('f-mod').value||null,
-      data_admissao:g('f-adm').value||null, email_institucional:(g('f-mail').value||'').trim()||null,
-      whatsapp_e164:(g('f-wa').value||'').trim()||null, status:'ativo', origem:'innovapeople', criado_por:me() };
+      data_admissao:g('f-adm').value||null, email_institucional:email||null,
+      whatsapp_e164:waNorm, status:'ativo', origem:'innovapeople', criado_por:me() };
     const sv=g('px-save'); sv.disabled=true; sv.textContent='Salvando…';
     const r=await window.IpPersist.write(
       ()=> SB().from('core_colaborador').insert(payload).select(),
       { label:'Admissão', offline:{ op:'insert', table:'core_colaborador', payload } });
-    if(r.ok){ audit('admissao', (r.data&&r.data[0]&&r.data[0].id)||null, {cpf:'***',project_id:proj}); if(window.IspCelebra) try{window.IspCelebra()}catch(_){}; close(); await reload(); render(_el); }
+    if(r.ok){
+      const novoId=(r.data&&r.data[0]&&r.data[0].id)||null;
+      audit('admissao', novoId, {cpf:'***',project_id:proj});
+      // GANCHO de provisionamento de e-mail (cria a mailbox + auto-login SSO quando o webmail estiver no ar).
+      // Hoje é no-op gracioso: registra a intenção; ativa sozinho quando IP_MAIL_PROVISION_URL existir.
+      _provisionarEmail({ email, nome, whatsapp:waNorm, colaborador_id:novoId });
+      if(window.IspCelebra) try{window.IspCelebra()}catch(_){}; close(); await reload(); render(_el);
+    }
     else { sv.disabled=false; sv.textContent='Confirmar admissão'; }
+  }
+  // provisiona a caixa de e-mail do novo colaborador (mesma lógica do sistema C&S: endpoint /provision
+  // cria mailbox + senha provisória + link de 1º acesso; a ponte de sessão dá o auto-login sem 2º login).
+  // Enquanto o webmail da IP não sobe, isto é no-op gracioso (não bloqueia a admissão).
+  async function _provisionarEmail(p){
+    const url=window.IP_MAIL_PROVISION_URL; // definido quando o webmail/provision estiver no ar
+    if(!url || !p.email){ try{ console.log('[email] provision pendente (webmail ainda não no ar):', p.email); }catch(_){}; return; }
+    try{
+      await fetch(url.replace(/\/$/,'')+'/provision',{ method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ email:p.email, nome:p.nome, whatsapp:p.whatsapp, secret:window.IP_MAIL_PROVISION_SECRET||undefined }) });
+      if(window.TB&&TB.toast) TB.toast('Caixa de e-mail '+p.email+' criada');
+    }catch(e){ try{ console.warn('[email] provision falhou (não bloqueia admissão):', e&&e.message); }catch(_){} }
   }
 
   // ---------- detalhe com abas ----------
