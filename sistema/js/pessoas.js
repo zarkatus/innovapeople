@@ -83,9 +83,15 @@
   // (só tabelas com mandato_id: v_core_colaborador_360, core_colaborador, v_core_clima_pulso. Satélites por colaborador_id e v_core_alocacao por project_id NÃO reescopam.)
   function _escopo(q){ var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null; if(ids&&ids.length) return q.in('mandato_id',ids); return q; }
 
+  // RBAC remuneração: só sócio/CVO/CEO vê/edita salário (a view já manda NULL p/ não-sócio na fonte;
+  // aqui escondemos o campo de edição também). Resolvido 1x e cacheado.
+  var _isSocio=null;
+  async function _resolveSocio(){ if(_isSocio!==null) return _isSocio; try{ var r=await SB().rpc('fn_ip_is_socio'); _isSocio=!!(r&&r.data); }catch(_){ _isSocio=false; } return _isSocio; }
+
   // ---------- dados ----------
   async function reload(){
     const sb=SB(); if(!sb) return;
+    await _resolveSocio();
     // tenta a view 360 (flags); cai para tabela base se a view nao existir
     let r = await _escopo(sb.from('v_core_colaborador_360').select('*')).order('status').order('nome');
     if(r.error){ r = await _escopo(sb.from('core_colaborador').select('*')).order('status').order('nome'); }
@@ -328,14 +334,14 @@
         <div><span style="color:var(--ip-ink-3)">Cargo:</span> ${esc(r.cargo||'—')} · ${esc(r.modelo_contrato||'—')}</div>
         <div><span style="color:var(--ip-ink-3)">Admissão:</span> ${dt(r.data_admissao)}</div>
         <div><span style="color:var(--ip-ink-3)">E-mail:</span> ${esc(r.email_institucional||'—')}</div>
-        <div><span style="color:var(--ip-ink-3)">Remuneração:</span> ${money(r.remuneracao)} <span style="color:var(--ip-ink-4);font-size:11px">(armazenada p/ handoff; plataforma não calcula tributo)</span></div>
+        ${_isSocio?`<div><span style="color:var(--ip-ink-3)">Remuneração:</span> ${money(r.remuneracao)} <span style="color:var(--ip-ink-4);font-size:11px">(armazenada p/ handoff; plataforma não calcula tributo)</span></div>`:''}
         ${desligado?`<div><span style="color:var(--ip-ink-3)">Desligamento:</span> ${dt(r.data_desligamento)}</div>`:''}
       </div>
       ${desligado?'<div style="color:var(--ip-ink-3);font-size:12.5px">Colaborador desligado — edição bloqueada. Veja a aba Desligamento.</div>':`
       <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin:0 0 12px">Editar</div>
       ${field('Cargo','e-cargo',r.cargo,'text')}
       ${field('Centro de custo','e-cc',r.centro_custo,'text')}
-      ${field('Remuneração (armazena p/ handoff)','e-rem',r.remuneracao,'number')}
+      ${_isSocio?field('Remuneração (armazena p/ handoff)','e-rem',r.remuneracao,'number'):''}
       ${selectField('Status','e-st',r.status==='desligado'?'ativo':r.status,[['ativo','Ativo'],['afastado','Afastado']])}
       <div style="margin-top:6px">${btn('px-upd','Salvar alterações','primary')}</div>`}`;
   }
@@ -492,7 +498,9 @@
   // ---------- acoes: colaborador ----------
   async function salvarAlteracao(r){
     const g=id=>document.getElementById(id);
-    const rem=g('e-rem').value; const patch={ cargo:(g('e-cargo').value||'').trim()||null, centro_custo:(g('e-cc').value||'').trim()||null, remuneracao:rem===''?null:Number(rem), status:g('e-st').value };
+    const patch={ cargo:(g('e-cargo').value||'').trim()||null, centro_custo:(g('e-cc').value||'').trim()||null, status:g('e-st').value };
+    // remuneração só entra no patch se o usuário é sócio (campo existe) — não-sócio não altera salário
+    const remEl=g('e-rem'); if(_isSocio && remEl){ patch.remuneracao = remEl.value===''?null:Number(remEl.value); }
     const b=g('px-upd'); b.disabled=true; b.textContent='Salvando…';
     const res=await window.IpPersist.write(
       ()=> SB().from('core_colaborador').update(patch).eq('id',r.id).select(),
