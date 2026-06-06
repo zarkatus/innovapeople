@@ -19,7 +19,8 @@ BEGIN
     SELECT jsonb_agg(to_jsonb(x) ORDER BY x.data_documento DESC NULLS LAST, x.created_at DESC)
     FROM (
       SELECT d.id, d.project_id, d.tipo, d.categoria, d.nome, d.descricao, d.file_path,
-             d.file_mime, d.data_documento, d.data_validade, d.responsavel, d.status, d.created_at
+             d.file_mime, d.data_documento, d.data_validade, d.responsavel, d.status, d.created_at,
+             d.metadata   -- inclui drive_url quando o doc tem espelho no Google Drive (fonte canônica)
       FROM public.plat_obra_documentos d
       WHERE d.file_path IS NOT NULL
         -- acesso: quem pode acessar o projeto vê os documentos de gente daquele projeto

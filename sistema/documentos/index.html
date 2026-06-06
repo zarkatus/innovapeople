@@ -48,6 +48,9 @@
   .dc-btn:hover{border-color:var(--ip-gold-lum);color:var(--ip-gold-lum)}
   .dc-btn.gold{background:var(--ip-gold-lum,#E5C77E);color:#1a1205;border-color:var(--ip-gold-lum)}
   .dc-empty{text-align:center;color:var(--ip-ink-4,#6B7A90);font-style:italic;padding:40px}
+  .dc-drive-btn{background:rgba(66,133,244,.12);border:1px solid rgba(66,133,244,.45);color:#8ab4f8;border-radius:9px;padding:9px 13px;font-size:12.5px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .dc-drive-btn:hover{background:rgba(66,133,244,.22)}
+  .dc-drive{font:600 8.5px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:5px;background:rgba(66,133,244,.16);color:#8ab4f8;margin-left:7px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -75,6 +78,7 @@
     <div class="dc-bar">
       <input type="text" id="dc-q" placeholder="Buscar por nome, categoria, tipo, projeto…" oninput="window.IpDocs.filtrar(this.value)">
       <select id="dc-proj" onchange="window.IpDocs.setProj(this.value)"><option value="">Todas as obras</option></select>
+      <button class="dc-drive-btn" id="dc-drive-btn" style="display:none" onclick="window.IpDocs.pastaDrive()">📁 Pasta no Drive</button>
       <span class="dc-kpi" id="dc-kpi">carregando…</span>
     </div>
     <div id="dc-list"><div class="dc-empty">Carregando documentos…</div></div>
@@ -140,7 +144,7 @@
       grupos[g].forEach(function(d){
         html+='<div class="dc-card">'
           +'<div class="dc-ico">'+icone(d.tipo)+'</div>'
-          +'<div class="dc-body"><div class="dc-nome">'+esc(d.nome)+'</div>'
+          +'<div class="dc-body"><div class="dc-nome">'+esc(d.nome)+(_driveUrl(d)?' <span class="dc-drive">Drive</span>':'')+'</div>'
             +'<div class="dc-meta">'+esc(projLabel(d.project_id))+' · '+esc(d.tipo||'—')+(d.responsavel?' · '+esc(d.responsavel):'')+(d.data_documento?' · '+esc(String(d.data_documento).slice(0,10)):'')+'</div></div>'
           +'<div class="dc-acts">'
             +'<button class="dc-btn" onclick="window.IpDocs.ver(\''+d.id+'\')">Ver</button>'
@@ -149,21 +153,50 @@
       });
     });
     list.innerHTML=html;
+    _refreshPastaBtn();
   }
-  async function _signed(id, download){
+  // o Drive é a fonte CANÔNICA (doutrina 'Drive primário + Supabase redundância'): se o doc tem
+  // drive_url, abre/baixa do Drive — assim atualização no Drive reflete e não há discrepância.
+  function _driveUrl(d){ return (d&&d.metadata&&(d.metadata.drive_url||d.metadata.webViewLink))||(d&&d.file_path&&d.file_path.indexOf('http')===0?d.file_path:null); }
+  async function _signed(id){
     var d=_all.find(function(x){return x.id===id;}); if(!d){ return; }
-    if(d.file_path && d.file_path.indexOf('http')===0){ window.open(d.file_path,'_blank'); return; }
-    var opt = download ? { download: (d.nome||'documento')+'.pdf' } : {};
-    var r=await SB().storage.from('obra-docs').createSignedUrl(d.file_path, 300, opt);
+    var du=_driveUrl(d);
+    if(du){ window.open(du,'_blank','noopener'); return; }   // fonte canônica: Google Drive
+    var r=await SB().storage.from('obra-docs').createSignedUrl(d.file_path, 300);  // redundância: bucket
     if(r.error || !r.data){ if(window.TB)TB.toast('Erro ao abrir o documento'); return; }
-    window.open(r.data.signedUrl,'_blank');
+    window.open(r.data.signedUrl,'_blank','noopener');
+  }
+  // abre a MESMA pasta do Drive do projeto (lê innovasphere_data project_X__drive_acervo — igual à
+  // InnovaSphere). Suporta lista de pastas {pastas:[{nome,url}]}. Só aparece se configurado.
+  async function pastaDrive(){
+    var sb=SB(); if(!sb){ return; }
+    var pid=_proj || (_all[0]&&_all[0].project_id);
+    if(!pid){ if(window.TB)TB.toast('Selecione uma obra'); return; }
+    var r=await sb.from('innovasphere_data').select('value').eq('key','project_'+pid+'__drive_acervo').maybeSingle();
+    var pastas=(r&&r.data&&r.data.value&&r.data.value.pastas)||[];
+    if(!pastas.length){ if(window.TB)TB.toast('Pasta do Drive ainda não configurada para esta obra'); return; }
+    if(pastas.length===1){ window.open(pastas[0].url,'_blank','noopener'); return; }
+    // várias pastas: abre todas (ou a 1ª + toast). Mantém simples: abre a 1ª e lista no console.
+    window.open(pastas[0].url,'_blank','noopener');
+    if(window.TB)TB.toast(pastas.length+' pastas no Drive — abrindo "'+(pastas[0].nome||'pasta')+'"');
+  }
+  // mostra/esconde o botão Pasta no Drive conforme o projeto selecionado tem acervo configurado
+  async function _refreshPastaBtn(){
+    var btn=document.getElementById('dc-drive-btn'); if(!btn) return;
+    var sb=SB(); var pid=_proj || (_all[0]&&_all[0].project_id);
+    if(!sb||!pid){ btn.style.display='none'; return; }
+    var r=await sb.from('innovasphere_data').select('value').eq('key','project_'+pid+'__drive_acervo').maybeSingle();
+    var has=!!(r&&r.data&&r.data.value&&(r.data.value.pastas||[]).length);
+    btn.style.display=has?'inline-block':'none';
   }
   window.IpDocs={
     boot:load,
     filtrar:function(v){ _q=v||''; render(); },
-    setProj:function(v){ _proj=v||''; render(); },
-    ver:function(id){ _signed(id,false); },
-    baixar:function(id){ _signed(id,true); }
+    setProj:function(v){ _proj=v||''; render(); _refreshPastaBtn(); },
+    ver:function(id){ _signed(id); },
+    baixar:function(id){ _signed(id); },
+    pastaDrive:pastaDrive,
+    _refreshPastaBtn:_refreshPastaBtn
   };
   window.docBoot=load;
 })();
