@@ -120,10 +120,14 @@
     var r=await sb.rpc('fn_ip_doc_list',{ p_project_id:null, p_filters:{} });
     if(r.error){ document.getElementById('dc-list').innerHTML='<div class="dc-empty">Erro: '+esc(r.error.message)+'</div>'; return; }
     _all=(r.data||[]);
-    // popula seletor de projetos
-    var projs=[...new Set(_all.map(function(d){return d.project_id;}))];
+    // seletor: obras com docs de Gente/SST + obras que têm pasta no Drive configurada (p/ abrir o acervo)
+    var projs=new Set(_all.map(function(d){return d.project_id;}));
+    try{
+      var dk=await sb.from('innovasphere_data').select('key').like('key','%__drive_acervo');
+      (dk.data||[]).forEach(function(row){ var m=String(row.key).match(/^project_(.+)__drive_acervo$/); if(m) projs.add(m[1]); });
+    }catch(_){}
     var sel=document.getElementById('dc-proj');
-    projs.forEach(function(p){ var o=document.createElement('option'); o.value=p; o.textContent=projLabel(p); sel.appendChild(o); });
+    [...projs].sort().forEach(function(p){ var o=document.createElement('option'); o.value=p; o.textContent=projLabel(p); sel.appendChild(o); });
     render();
   }
   function render(){
