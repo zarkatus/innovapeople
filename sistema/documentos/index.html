@@ -88,23 +88,17 @@
   if(window.IpDocs) return;
   var SB=function(){ return window.__IP_SB||window.sb; };
   var esc=function(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); };
-  // foco curado: tipos e categorias de Gente/Gestão/Estratégia/SST
-  var TIPOS_GENTE=['programa_sst','estrategia','orientacao'];
-  var CAT_RX=/MTE\s*\/\s*SST|SSMA|Pessoas|Governan|Operacional|Templates|Institucional|Qualidade|Estrat/i;
   var _all=[], _proj='', _q='';
-  function _relevante(d){
-    if(TIPOS_GENTE.indexOf(d.tipo)>=0) return true;
-    if(d.categoria && CAT_RX.test(d.categoria)) return true;
-    return false;
-  }
   function icone(t){ var m={programa_sst:'🦺',estrategia:'🎯',contrato:'📄',orientacao:'📋',outro:'📄'}; return m[t]||'📄'; }
   function projLabel(p){ var m={horigens:'Horigens',loteamento_fabio_arruda:'Loteamento Fábio Arruda',ph:'Piçarras Hills'}; return m[p]||p; }
 
   async function load(){
     var sb=SB(); if(!sb){ document.getElementById('dc-list').innerHTML='<div class="dc-empty">Sessão indisponível.</div>'; return; }
-    var r=await sb.from('plat_obra_documentos').select('id,project_id,tipo,categoria,nome,descricao,file_path,file_mime,data_documento,responsavel,status').not('file_path','is',null).order('created_at',{ascending:false}).limit(500);
+    // RPC dedicada da IP: libera leitura p/ quem acessa o projeto + foco curado Gente/SST (esconde fiscal).
+    // Não usa SELECT direto (a RLS da tabela exige permissão de compras). fn_ip_doc_list resolve o acesso.
+    var r=await sb.rpc('fn_ip_doc_list',{ p_project_id:null, p_filters:{} });
     if(r.error){ document.getElementById('dc-list').innerHTML='<div class="dc-empty">Erro: '+esc(r.error.message)+'</div>'; return; }
-    _all=(r.data||[]).filter(_relevante);
+    _all=(r.data||[]);
     // popula seletor de projetos
     var projs=[...new Set(_all.map(function(d){return d.project_id;}))];
     var sel=document.getElementById('dc-proj');
