@@ -92,8 +92,25 @@
   function icone(t){ var m={programa_sst:'🦺',estrategia:'🎯',contrato:'📄',orientacao:'📋',outro:'📄'}; return m[t]||'📄'; }
   function projLabel(p){ var m={horigens:'Horigens',loteamento_fabio_arruda:'Loteamento Fábio Arruda',ph:'Piçarras Hills'}; return m[p]||p; }
 
+  // garante que o client está autenticado antes de consultar (fn_ip_doc_list usa auth.jwt()).
+  // O auth-gate cria __IP_SB com persistSession, mas o carregamento da sessão é async e pode não ter
+  // completado no boot — aqui aplicamos a sessão do localStorage explicitamente se faltar.
+  async function _ensureAuth(sb){
+    try{
+      var s=await sb.auth.getSession();
+      if(s&&s.data&&s.data.session) return true;
+      var k=Object.keys(localStorage).find(function(x){return /^sb-/.test(x)&&x.indexOf('auth-token')>=0;});
+      if(!k) return false;
+      var raw=JSON.parse(localStorage.getItem(k)||'null');
+      var ls=raw&&(raw.currentSession||raw.session||raw);
+      if(ls&&ls.access_token&&ls.refresh_token){ await sb.auth.setSession({access_token:ls.access_token, refresh_token:ls.refresh_token}); return true; }
+    }catch(_){}
+    return false;
+  }
+
   async function load(){
     var sb=SB(); if(!sb){ document.getElementById('dc-list').innerHTML='<div class="dc-empty">Sessão indisponível.</div>'; return; }
+    await _ensureAuth(sb);
     // RPC dedicada da IP: libera leitura p/ quem acessa o projeto + foco curado Gente/SST (esconde fiscal).
     // Não usa SELECT direto (a RLS da tabela exige permissão de compras). fn_ip_doc_list resolve o acesso.
     var r=await sb.rpc('fn_ip_doc_list',{ p_project_id:null, p_filters:{} });
