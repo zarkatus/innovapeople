@@ -999,7 +999,7 @@ function renderMandatos(list) {
     <div class="mandato-card" onclick="abrirMandato('${m.id}')">
       <span class="estagio-tag">${ESTAGIO_LABEL[m.estagio] || m.estagio}</span>
       <h3>${escapeHtml(m.empresa)}</h3>
-      <div class="meta">${escapeHtml(m.setor || '—')} · ${escapeHtml(m.porte || '—')} · ${m.socio_responsavel}</div>
+      <div class="meta">${escapeHtml(m.setor || '—')} · ${escapeHtml(m.porte || '—')} · ${escapeHtml(m.socio_responsavel || '—')}</div>
       <div class="mandato-kpis">
         <div class="mandato-kpi">
           <div class="v ${(m.score_30d || 0) < 50 ? 'danger' : (m.score_30d || 0) < 70 ? 'warn' : ''}">${m.score_30d || '—'}</div>
