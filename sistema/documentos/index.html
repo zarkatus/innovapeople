@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Documentos · Gente, Gestão e SST · InnovaPeople</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/sistema/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/sistema/toolbox/_shared/toolbox.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<script src="/sistema/_shared/ip-allowlist.js" defer></script>
+<script>
+(function ipAuthGate(){
+  const SUPA_URL='https://auth.innovasphere.ia.br';
+  const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+  const ALLOWED=['raphael@schifino.com.br','gleice@schifino.com.br','rapheice@schifino.com.br'];
+  function inj(){if(document.getElementById('ip-auth-ovl'))return;const o=document.createElement('div');o.id='ip-auth-ovl';o.style.cssText='position:fixed;inset:0;background:#0C0816;color:#C4A35A;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647';o.innerHTML='<div>Validando acesso&hellip;</div>';(document.body||document.documentElement).appendChild(o)}
+  function rm(){const o=document.getElementById('ip-auth-ovl');if(o)o.remove()}
+  function allow(email){rm();window.__IP_USER_EMAIL=email;const el=document.getElementById('uname');if(el&&email)el.textContent=email;if(typeof window.docBoot==='function')try{window.docBoot()}catch(e){console.warn(e)}else setTimeout(()=>{if(typeof window.docBoot==='function')try{window.docBoot()}catch(e){}},300)}
+  if(document.body)inj();else document.addEventListener('DOMContentLoaded',inj,{once:true});
+  const s=setTimeout(()=>allow(''),6000);
+  (async()=>{try{
+    try{var _k=Object.keys(localStorage).find(k=>k.startsWith('sb-')&&k.includes('auth-token'));if(_k){var _raw=JSON.parse(localStorage.getItem(_k)||'null');var _ls=_raw&&(_raw.currentSession||_raw.session||_raw);var _em=_ls&&_ls.user&&(_ls.user.email||(_ls.user.user_metadata&&_ls.user.user_metadata.email));var _exp=_ls&&_ls.expires_at?(_ls.expires_at*1000):0;if(_ls&&_ls.access_token&&_em&&(!_exp||_exp>Date.now())&&ALLOWED.includes(_em)){clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){allow(_em)},{once:true});else allow(_em);try{window.__IP_SB=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true}});}catch(_){}return;}}}catch(_){}
+    if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=documentos');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
+})();
+</script>
+<script src="/sistema/toolbox/_shared/toolbox.js"></script>
+<link rel="stylesheet" href="/sistema/_shared/tokens.css">
+<link rel="stylesheet" href="/sistema/_shared/sidebar.css">
+<script src="/sistema/_shared/sidebar.js" defer></script>
+<style>
+  .dc-wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+  .dc-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 14px}
+  .dc-bar input,.dc-bar select{background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.25);border-radius:9px;padding:9px 12px;color:var(--ip-cream,#F7F3EC);font-size:13px}
+  .dc-bar input{flex:1;min-width:200px}
+  .dc-kpi{font-size:11.5px;color:var(--ip-ink-3,#8FA0B5);margin-left:auto}
+  .dc-grp{margin:18px 0 6px;font:600 10px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--ip-gold-lum,#E5C77E)}
+  .dc-card{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#0C1626,#0A1320);border:1px solid rgba(210,174,100,.14);border-radius:13px;padding:13px 16px;margin-bottom:8px;transition:.15s}
+  .dc-card:hover{border-color:rgba(210,174,100,.4)}
+  .dc-ico{flex:0 0 auto;width:40px;height:40px;border-radius:9px;background:rgba(210,174,100,.1);display:flex;align-items:center;justify-content:center;font-size:18px}
+  .dc-body{flex:1;min-width:0}
+  .dc-nome{font-size:14px;color:var(--ip-cream,#F7F3EC);font-weight:600}
+  .dc-meta{font-size:11px;color:var(--ip-ink-4,#6B7A90);margin-top:2px}
+  .dc-tag{font:600 8.5px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;padding:3px 7px;border-radius:6px;background:rgba(210,174,100,.12);color:var(--ip-gold-lum,#E5C77E);white-space:nowrap}
+  .dc-acts{flex:0 0 auto;display:flex;gap:7px}
+  .dc-btn{font-size:11.5px;padding:7px 12px;border-radius:9px;border:1px solid rgba(210,174,100,.25);background:transparent;color:var(--ip-ink-2,#9FB0C5);cursor:pointer;transition:.15s;text-decoration:none;display:inline-block}
+  .dc-btn:hover{border-color:var(--ip-gold-lum);color:var(--ip-gold-lum)}
+  .dc-btn.gold{background:var(--ip-gold-lum,#E5C77E);color:#1a1205;border-color:var(--ip-gold-lum)}
+  .dc-empty{text-align:center;color:var(--ip-ink-4,#6B7A90);font-style:italic;padding:40px}
+</style>
+</head>
+<body>
+<nav class="top">
+  <div class="row">
+    <a class="brand" href="/sistema/"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="14"/><path d="M16 6 v20 M6 16 h20"/></svg><div><span class="wm">innova · people</span><span class="sub">Documentos</span></div></a>
+    <div class="nav">
+      <a href="/sistema/">Dashboard</a>
+      <a href="/sistema/toolbox/">ToolBox</a>
+      <a href="/sistema/chro/">CHRO</a>
+      <a href="/sistema/documentos/" class="active">Documentos</a>
+    </div>
+    <div class="user">olá, <strong id="uname">—</strong></div>
+  </div>
+</nav>
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Acervo · Gente, Gestão, Estratégia e SST</div>
+    <h1><em>Documentos</em> institucionais</h1>
+    <div class="tagline">Manuais, programas de SST, políticas, treinamentos e documentos de gente e governança das obras — o mesmo acervo da InnovaSphere, aqui na InnovaPeople.</div>
+  </div>
+</section>
+<div class="hub">
+  <div class="dc-wrap">
+    <div class="dc-bar">
+      <input type="text" id="dc-q" placeholder="Buscar por nome, categoria, tipo, projeto…" oninput="window.IpDocs.filtrar(this.value)">
+      <select id="dc-proj" onchange="window.IpDocs.setProj(this.value)"><option value="">Todas as obras</option></select>
+      <span class="dc-kpi" id="dc-kpi">carregando…</span>
+    </div>
+    <div id="dc-list"><div class="dc-empty">Carregando documentos…</div></div>
+  </div>
+</div>
+<div class="foot">Documentos · <strong>Gente, Gestão e SST</strong> · fonte única plat_obra_documentos · acervo compartilhado InnovaSphere ↔ InnovaPeople</div>
+<div id="toast"></div>
+<script>
+(function(){
+  'use strict';
+  if(window.IpDocs) return;
+  var SB=function(){ return window.__IP_SB||window.sb; };
+  var esc=function(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); };
+  // foco curado: tipos e categorias de Gente/Gestão/Estratégia/SST
+  var TIPOS_GENTE=['programa_sst','estrategia','orientacao'];
+  var CAT_RX=/MTE\s*\/\s*SST|SSMA|Pessoas|Governan|Operacional|Templates|Institucional|Qualidade|Estrat/i;
+  var _all=[], _proj='', _q='';
+  function _relevante(d){
+    if(TIPOS_GENTE.indexOf(d.tipo)>=0) return true;
+    if(d.categoria && CAT_RX.test(d.categoria)) return true;
+    return false;
+  }
+  function icone(t){ var m={programa_sst:'🦺',estrategia:'🎯',contrato:'📄',orientacao:'📋',outro:'📄'}; return m[t]||'📄'; }
+  function projLabel(p){ var m={horigens:'Horigens',loteamento_fabio_arruda:'Loteamento Fábio Arruda',ph:'Piçarras Hills'}; return m[p]||p; }
+
+  async function load(){
+    var sb=SB(); if(!sb){ document.getElementById('dc-list').innerHTML='<div class="dc-empty">Sessão indisponível.</div>'; return; }
+    var r=await sb.from('plat_obra_documentos').select('id,project_id,tipo,categoria,nome,descricao,file_path,file_mime,data_documento,responsavel,status').not('file_path','is',null).order('created_at',{ascending:false}).limit(500);
+    if(r.error){ document.getElementById('dc-list').innerHTML='<div class="dc-empty">Erro: '+esc(r.error.message)+'</div>'; return; }
+    _all=(r.data||[]).filter(_relevante);
+    // popula seletor de projetos
+    var projs=[...new Set(_all.map(function(d){return d.project_id;}))];
+    var sel=document.getElementById('dc-proj');
+    projs.forEach(function(p){ var o=document.createElement('option'); o.value=p; o.textContent=projLabel(p); sel.appendChild(o); });
+    render();
+  }
+  function render(){
+    var list=document.getElementById('dc-list');
+    var docs=_all.filter(function(d){
+      if(_proj && d.project_id!==_proj) return false;
+      if(_q){ var hay=((d.nome||'')+' '+(d.categoria||'')+' '+(d.tipo||'')+' '+(d.descricao||'')+' '+projLabel(d.project_id)).toLowerCase(); if(hay.indexOf(_q.toLowerCase())<0) return false; }
+      return true;
+    });
+    document.getElementById('dc-kpi').textContent=docs.length+' documento(s)';
+    if(!docs.length){ list.innerHTML='<div class="dc-empty">Nenhum documento encontrado para o filtro.</div>'; return; }
+    // agrupa por categoria
+    var grupos={};
+    docs.forEach(function(d){ var g=d.categoria||'Sem categoria'; (grupos[g]=grupos[g]||[]).push(d); });
+    var html='';
+    Object.keys(grupos).sort().forEach(function(g){
+      html+='<div class="dc-grp">'+esc(g)+' · '+grupos[g].length+'</div>';
+      grupos[g].forEach(function(d){
+        html+='<div class="dc-card">'
+          +'<div class="dc-ico">'+icone(d.tipo)+'</div>'
+          +'<div class="dc-body"><div class="dc-nome">'+esc(d.nome)+'</div>'
+            +'<div class="dc-meta">'+esc(projLabel(d.project_id))+' · '+esc(d.tipo||'—')+(d.responsavel?' · '+esc(d.responsavel):'')+(d.data_documento?' · '+esc(String(d.data_documento).slice(0,10)):'')+'</div></div>'
+          +'<div class="dc-acts">'
+            +'<button class="dc-btn" onclick="window.IpDocs.ver(\''+d.id+'\')">Ver</button>'
+            +'<button class="dc-btn gold" onclick="window.IpDocs.baixar(\''+d.id+'\')">Baixar</button>'
+          +'</div></div>';
+      });
+    });
+    list.innerHTML=html;
+  }
+  async function _signed(id, download){
+    var d=_all.find(function(x){return x.id===id;}); if(!d){ return; }
+    if(d.file_path && d.file_path.indexOf('http')===0){ window.open(d.file_path,'_blank'); return; }
+    var opt = download ? { download: (d.nome||'documento')+'.pdf' } : {};
+    var r=await SB().storage.from('obra-docs').createSignedUrl(d.file_path, 300, opt);
+    if(r.error || !r.data){ if(window.TB)TB.toast('Erro ao abrir o documento'); return; }
+    window.open(r.data.signedUrl,'_blank');
+  }
+  window.IpDocs={
+    boot:load,
+    filtrar:function(v){ _q=v||''; render(); },
+    setProj:function(v){ _proj=v||''; render(); },
+    ver:function(id){ _signed(id,false); },
+    baixar:function(id){ _signed(id,true); }
+  };
+  window.docBoot=load;
+})();
+</script>
+</body>
+</html>

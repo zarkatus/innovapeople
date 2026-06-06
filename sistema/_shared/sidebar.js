@@ -45,6 +45,7 @@
     {g:'Curadoria · CHRO', i:'👤', n:'Pessoas · BPO', p:'/sistema/chro/colaboradores/', d:'Ciclo de gente unificado — admissão, alteração, desligamento · core_colaborador (obra ↔ gente) em tempo real', t:'pessoas colaborador colaboradores bpo gente admissao admitir desligar desligamento rh dp folha ponto sst core_colaborador headcount funcionarios'},
     {g:'Curadoria · CHRO', i:'⚖', n:'Resultado por Obra', p:'/sistema/chro/resultado/', d:'Apuração da participação · receita informada − custos reais − cascata waterfall · resultado líquido distribuível', t:'resultado obra participacao apuracao waterfall socios quotas receita vgv custos margem distribuicao lucro liquido financeiro c&s'},
     {g:'Curadoria · CHRO', i:'🗂️', n:'Organograma',        p:'/sistema/chro/organograma/',   d:'Estrutura org dinâmica · badges N0-N5 · export PPTX', t:'organograma estrutura hierarquia cadeiras export pptx'},
+    {g:'Curadoria · CHRO', i:'📁', n:'Documentos',         p:'/sistema/documentos/',        d:'Acervo de Gente, Gestão, Estratégia e SST — manuais, programas, políticas, treinamentos (fonte única InnovaSphere↔InnovaPeople)', t:'documentos docs arquivos acervo biblioteca manual pgr sst ssma seguranca politica treinamento integracao protocolo cartaz gente governanca estrategia institucional'},
 
     // TRABALHOS
     {g:'Trabalhos', i:'💼', n:'Mandatos',  p:'/sistema/#sec-trabalhos', d:'Trabalhos ativos em curadoria · drill-down por mandato', t:'mandatos trabalhos curadoria clientes empresas contratos'},
