@@ -48,7 +48,7 @@
     {g:'Curadoria · CHRO', i:'📁', n:'Documentos',         p:'/sistema/documentos/',        d:'Acervo de Gente, Gestão, Estratégia e SST — manuais, programas, políticas, treinamentos (fonte única InnovaSphere↔InnovaPeople)', t:'documentos docs arquivos acervo biblioteca manual pgr sst ssma seguranca politica treinamento integracao protocolo cartaz gente governanca estrategia institucional'},
 
     // TRABALHOS
-    {g:'Trabalhos', i:'💼', n:'Mandatos',  p:'/sistema/#sec-trabalhos', d:'Trabalhos ativos em curadoria · drill-down por mandato', t:'mandatos trabalhos curadoria clientes empresas contratos'},
+    {g:'Trabalhos', i:'💼', n:'Curadorias',  p:'/sistema/#sec-trabalhos', d:'Trabalhos vivos com cada casa · drill-down por curadoria', t:'curadorias mandatos trabalhos curadoria clientes empresas contratos'},
 
     // COMUNICAÇÃO
     {g:'Comunicação', i:'💬', n:'WhatsApp · Inbox', p:'/sistema/whatsapp/',  d:'Inbox unificada · envio · reply · encaminhar · busca · PTT', t:'whatsapp wa inbox mensagens conversas zap chat'},

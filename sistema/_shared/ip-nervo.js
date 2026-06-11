@@ -36,7 +36,7 @@
     try{ return await fn(id); } finally { await setCorrelation(prev); }
   }
 
-  // ---- Realtime: assina INSERTs de ip_eventos no escopo do mandato (RLS sócios-only filtra) ----
+  // ---- Realtime: assina INSERTs de ip_eventos no escopo da curadoria (RLS sócios-only filtra) ----
   function subscribe(mandatoId, onEvent){
     var sb=SB();
     if(!sb || !sb.channel){ return function(){}; }

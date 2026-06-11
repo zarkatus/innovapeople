@@ -66,7 +66,7 @@
   }
 
   function mandatoSelect(){
-    if(!_state.mandatos.length) return `<div class="mt-warn">Nenhum trabalho ativo. Crie um trabalho (mandato) no <a href="/sistema/" style="color:var(--gold)">Dashboard</a> antes de disparar pulso.</div>`;
+    if(!_state.mandatos.length) return `<div class="mt-warn">Nenhum trabalho ativo. Crie um trabalho (curadoria) no <a href="/sistema/" style="color:var(--gold)">Dashboard</a> antes de disparar pulso.</div>`;
     return `<select id="mt-mandato" onchange="IpMattering._setMandato(this.value)" class="mt-select">
       ${_state.mandatos.map(m=>`<option value="${T.esc(m.id)}" ${m.id===_state.mandato?'selected':''}>${T.esc(m.empresa||'(sem nome)')} · ${T.esc(m.setor||'—')}</option>`).join('')}
     </select>`;

@@ -47,7 +47,7 @@
 
   function filtradas(){
     let arr=_data.sugestoes.slice();
-    // reescopo organizacional: se há nó corrente na árvore, filtra pelos mandatos da subárvore
+    // reescopo organizacional: se há nó corrente na árvore, filtra pelas curadorias da subárvore
     const escopoIds=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;
     if(escopoIds&&escopoIds.length){ const set=new Set(escopoIds); arr=arr.filter(s=>!s.mandato_id||set.has(s.mandato_id)); }
     if(_data.mandato)arr=arr.filter(s=>s.mandato_id===_data.mandato);

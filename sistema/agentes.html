@@ -111,7 +111,7 @@ async function carregar(){
   if(!arr.length){
     document.getElementById('runs-list').innerHTML='<div class="p-empty">Nenhuma execução ainda. Clique em <strong>↻ Rodar agora</strong> ou aguarde o cron diário das 07:30 UTC.</div>';
   }else{
-    document.getElementById('runs-list').innerHTML=`<table class="runs"><thead><tr><th>Agente</th><th>Mandato</th><th>Iniciado</th><th>Duração</th><th>Sugestões</th><th>Status</th></tr></thead><tbody>${arr.slice(0,40).map(r=>{
+    document.getElementById('runs-list').innerHTML=`<table class="runs"><thead><tr><th>Agente</th><th>Curadoria</th><th>Iniciado</th><th>Duração</th><th>Sugestões</th><th>Status</th></tr></thead><tbody>${arr.slice(0,40).map(r=>{
       const dur=r.concluido_em&&r.iniciado_em?Math.round((new Date(r.concluido_em).getTime()-new Date(r.iniciado_em).getTime())/100)/10+'s':'—';
       const ag=AGENTES[r.agente]?.nome||r.agente;
       const st=r.status==='concluido'?'ok':(r.status==='erro'?'danger':'warn');

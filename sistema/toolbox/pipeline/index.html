@@ -46,7 +46,7 @@
   <div class="kpi hero"><div class="lab">Raio-X últimos 30d</div><div class="val" id="k-raio30">—</div><div class="note">submissões qualificadas</div></div>
   <div class="kpi"><div class="lab">Qualificados</div><div class="val" id="k-qual">—</div><div class="note">score ≥ 60</div></div>
   <div class="kpi"><div class="lab">Convites emitidos</div><div class="val" id="k-inv">—</div><div class="note">golden tickets</div></div>
-  <div class="kpi"><div class="lab">Conversão Raio-X→Mandato</div><div class="val" id="k-conv">—<span class="un">%</span></div><div class="note">trimestre</div></div>
+  <div class="kpi"><div class="lab">Conversão Raio-X→Curadoria</div><div class="val" id="k-conv">—<span class="un">%</span></div><div class="note">trimestre</div></div>
 </div>
 
 <div class="hub">
@@ -106,8 +106,8 @@
 function boot(){document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';if(window.IpOrg)IpOrg.init();loadAll();setInterval(loadAll,60000);
   if(window.IpOrg&&IpOrg.scope&&IpOrg.scope.onChange&&!window.__pipeScoped){window.__pipeScoped=true;IpOrg.scope.onChange(function(){loadAll();});}
 }
-// escopo por id para a entidade mandato (ip_mandatos/v_ip_mandatos_overview têm PK 'id', não 'mandato_id').
-// ip_raio_x_submissions NÃO tem coluna de escopo por mandato (filtra por 'empresa') — fica global, por design.
+// escopo por id para a entidade curadoria (ip_mandatos/v_ip_mandatos_overview têm PK 'id', não 'mandato_id').
+// ip_raio_x_submissions NÃO tem coluna de escopo por curadoria (filtra por 'empresa') — fica global, por design.
 function _escopoMand(q){var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;if(ids&&ids.length)return q.in('id',ids);return q;}
 async function loadAll(){await Promise.all([loadKanban(),loadKpis(),loadInv(),loadPort(),loadDist(),loadComment()])}
 
@@ -142,7 +142,7 @@ async function loadKpis(){
   ]);
   document.getElementById('k-raio30').textContent=raio30.count||0;
   document.getElementById('k-qual').textContent=qual.count||0;
-  // Conversão = mandatos 90d / raio-x 90d
+  // Conversão = curadorias 90d / raio-x 90d
   const {count:r90}=await TB.safe(()=>sb.from('ip_raio_x_submissions').select('id',{count:'exact',head:true}).gte('created_at',new Date(Date.now()-90*86400e3).toISOString()),{count:0});
   const conv=r90?Math.round((mand90.count||0)/r90*100):null;
   document.getElementById('k-conv').innerHTML=(conv!=null?conv:'—')+'<span class="un">%</span>';

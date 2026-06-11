@@ -6,6 +6,9 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Sistema · InnovaPeople</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<!-- PERF (CVO 10/06): a imagem do login é a PRIMEIRA coisa a carregar — preload responsivo,
+     servida LOCAL com cache 1yr (antes: Unsplash externo 1.95MB JPEG descoberto só no body). -->
+<link rel="preload" as="image" imagesrcset="/sistema/assets/login-hero-960.avif 960w, /sistema/assets/login-hero-1920.avif 1920w" imagesizes="100vw" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -62,6 +65,19 @@ header.top .row{max-width:1180px;margin:0 auto;padding:0 28px;display:flex;align
 
 .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:48px}
 @media (max-width:880px){.stats-bar{grid-template-columns:repeat(2,1fr)}}
+
+/* ── ALERTAS CRÍTICOS (CVO 10/06: "o que pede atenção AGORA", antes dos números frios) ── */
+.alertas{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:34px}
+.alerta{display:flex;gap:13px;align-items:flex-start;background:#fff;border:1px solid var(--rule);border-left:3px solid var(--warn);border-radius:10px;padding:16px 18px;box-shadow:0 2px 10px rgba(26,22,20,.04);transition:box-shadow .2s ease,transform .2s ease}
+.alerta:hover{box-shadow:0 6px 22px rgba(26,22,20,.09);transform:translateY(-1px)}
+.alerta.danger{border-left-color:var(--danger)}
+.alerta.ok{border-left-color:var(--success);background:linear-gradient(135deg,#fff 0%,#F4FAF6 100%)}
+.alerta .ic{font-size:19px;line-height:1;flex:none;margin-top:2px}
+.alerta .tx{flex:1;min-width:0}
+.alerta .tx .t{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:3px}
+.alerta .tx .d{font-size:12px;color:var(--muted);line-height:1.45}
+.alerta .tx a.cta{display:inline-block;margin-top:7px;font-size:11.5px;font-weight:600;color:var(--violet);letter-spacing:.02em}
+.alerta .tx a.cta:hover{color:var(--violet-deep)}
 .stat{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:22px 24px;position:relative;overflow:hidden}
 .stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--gold))}
 .stat .label{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px}
@@ -254,9 +270,14 @@ html[data-theme="dark"] body.ip-has-sidebar .btn-action{background:var(--violet-
 
   /* Background imagem (Biblioteca privada) com overlay sutil violet + Ken Burns lento */
   .login-wrap-v2{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:32px 24px;font-family:'Inter',sans-serif;color:#FAF7F1;overflow:hidden}
-  .lbg{position:absolute;inset:0;z-index:0;overflow:hidden}
-  .lbg img{width:100%;height:100%;object-fit:cover;display:block;transform-origin:center;animation:kenburns 40s ease-in-out infinite alternate;filter:saturate(.88) contrast(1.05) brightness(.85)}
-  .lbg::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,6,16,.78) 0%,rgba(40,22,60,.55) 35%,rgba(10,6,16,.85) 100%),radial-gradient(48% 70% at 75% 30%,rgba(196,163,90,.18) 0%,transparent 65%);z-index:1}
+  /* placeholder instantâneo (0 bytes): gradiente da marca pinta em 0ms enquanto a foto chega */
+  .lbg{position:absolute;inset:0;z-index:0;overflow:hidden;background:linear-gradient(138deg,#2A1840 0%,#3F2756 38%,#5B3A7A 68%,#9C7E3B 110%)}
+  .lbg picture{position:absolute;inset:0;display:block}
+  /* CVO 10/06 "mais alegre": foto mais luminosa e viva (era brightness .85 / saturate .88) + fade-in suave */
+  .lbg img{width:100%;height:100%;object-fit:cover;display:block;transform-origin:center;animation:kenburns 40s ease-in-out infinite alternate,lbgfade .9s ease-out both;filter:saturate(1.1) contrast(1.04) brightness(.97)}
+  /* overlay mais leve e quente — amanhecer, não noite (legibilidade do card preservada pelo blur do próprio card) */
+  .lbg::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(16,9,26,.60) 0%,rgba(45,26,68,.34) 38%,rgba(16,9,26,.66) 100%),radial-gradient(54% 74% at 76% 26%,rgba(232,198,124,.30) 0%,transparent 62%),radial-gradient(40% 55% at 18% 78%,rgba(123,90,168,.22) 0%,transparent 60%);z-index:1}
+  @keyframes lbgfade{0%{opacity:0}100%{opacity:1}}
   @keyframes kenburns{0%{transform:scale(1.04) translate(.5%,0)}100%{transform:scale(1.14) translate(-2.5%,1.8%)}}
 
   /* Card minimalista — mais respiro, menos elementos visíveis ao mesmo tempo */
@@ -269,7 +290,18 @@ html[data-theme="dark"] body.ip-has-sidebar .btn-action{background:var(--violet-
   .lhead .lwordmark{font-family:'Inter',sans-serif;font-weight:600;font-size:17px;letter-spacing:.42em;color:#F5DDA5;text-transform:uppercase;padding-bottom:26px;margin-bottom:26px;border-bottom:1px solid rgba(245,221,165,.16);text-shadow:0 2px 12px rgba(0,0,0,.4)}
   .lhead h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;color:#FAF7F1;font-size:33px;line-height:1.22;letter-spacing:-.005em;margin-bottom:13px}
   .lhead h1 em{color:#F5DDA5;font-style:italic;font-weight:400}
-  .lhead .sub{font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(250,247,241,.66);font-size:15px;line-height:1.5;max-width:280px;margin:0 auto}
+  .lhead .sub{font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(250,247,241,.72);font-size:15.5px;line-height:1.55;max-width:300px;margin:0 auto}
+  .lhead .sub strong{color:#F5DDA5;font-weight:500;font-style:italic}
+  /* pílulas de valor — o sistema TRABALHA por você (CVO 10/06: percepção de valor) */
+  .lvalue{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:18px}
+  .lvalue span{font-family:'Inter',sans-serif;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:rgba(245,221,165,.78);background:rgba(245,221,165,.08);border:1px solid rgba(245,221,165,.2);padding:5px 11px;border-radius:99px;white-space:nowrap}
+  /* entrada em cascata — percepção de polimento */
+  .lcard{animation:lcardup .65s cubic-bezier(.22,.9,.3,1) both}
+  @keyframes lcardup{0%{opacity:0;transform:translateY(18px) scale(.985)}100%{opacity:1;transform:translateY(0) scale(1)}}
+  .lhead,.lemail-wrap,.lbtn-primary,.ldivider,.lbtn-row,.lfoot{animation:lstag .5s ease-out both}
+  .lhead{animation-delay:.12s}.lemail-wrap{animation-delay:.22s}.lbtn-primary{animation-delay:.3s}.ldivider{animation-delay:.38s}.lbtn-row{animation-delay:.44s}.lfoot{animation-delay:.52s}
+  @keyframes lstag{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
+  @media(prefers-reduced-motion:reduce){.lcard,.lhead,.lemail-wrap,.lbtn-primary,.ldivider,.lbtn-row,.lfoot{animation:none}}
 
   .lemail-wrap{margin-bottom:28px}
   .lemail-wrap input{width:100%;padding:14px 18px;background:transparent;border:none;border-bottom:1px solid rgba(245,221,165,.28);border-radius:0;color:#FAF7F1;font-size:14.5px;font-family:'Cormorant Garamond',serif;font-style:italic;letter-spacing:.01em;transition:all .25s ease;text-align:center}
@@ -330,14 +362,31 @@ html[data-theme="dark"] body.ip-has-sidebar .btn-action{background:var(--violet-
 
 <section class="login-wrap-v2" id="login-gate">
   <div class="lbg" aria-hidden="true">
-    <img src="https://images.unsplash.com/photo-1568667256549-094345857637?w=2400&auto=format&fit=crop&q=88" alt="" loading="eager" fetchpriority="high">
+    <picture>
+      <source type="image/avif" srcset="/sistema/assets/login-hero-960.avif 960w, /sistema/assets/login-hero-1920.avif 1920w" sizes="100vw">
+      <source type="image/webp" srcset="/sistema/assets/login-hero-960.webp 960w, /sistema/assets/login-hero-1920.webp 1920w" sizes="100vw">
+      <img src="/sistema/assets/login-hero-1920.webp" alt="" loading="eager" fetchpriority="high" decoding="async">
+    </picture>
   </div>
   <div class="lcard">
     <div class="lhead">
       <div class="lwordmark">INNOVAPEOPLE</div>
-      <h1>Há uma sala <em>que continua sua.</em></h1>
-      <p class="sub">Entre — está tudo onde você deixou.</p>
+      <h1 id="lgreet">Que bom ter você <em>de volta.</em></h1>
+      <p class="sub" id="lsub">Enquanto você esteve fora, <strong>cinco agentes</strong> seguiram de vigília pelos seus curadorias.</p>
+      <div class="lvalue" aria-hidden="true">
+        <span>5 agentes IA</span><span>auditoria 36 meses</span><span>anonimato k≥3</span>
+      </div>
     </div>
+    <script>
+    /* saudação viva por hora — alegria + valor (CVO 10/06) */
+    (function(){try{
+      var h=new Date().getHours();
+      var g=document.getElementById('lgreet'),s=document.getElementById('lsub');
+      if(h>=5&&h<12){g.innerHTML='Bom dia. <em>A casa já está acordada.</em>';s.innerHTML='Os <strong>cinco agentes</strong> fizeram a ronda da madrugada — há sinais novos esperando por você.';}
+      else if(h>=12&&h<18){g.innerHTML='Boa tarde. <em>Tudo em ordem por aqui.</em>';s.innerHTML='Pulsos, sinais e sugestões <strong>continuaram chegando</strong> — entre e veja o que amadureceu.';}
+      else{g.innerHTML='Boa noite. <em>A casa segue de vigília.</em>';s.innerHTML='Enquanto o dia termina, <strong>cinco agentes</strong> seguem cuidando do que é seu.';}
+    }catch(_){}})();
+    </script>
 
     <div id="login-error" class="lerror"></div>
 
@@ -420,6 +469,9 @@ html[data-theme="dark"] body.ip-has-sidebar .btn-action{background:var(--violet-
       <p class="dash-sub">Trabalhos em andamento, Raio-X recém-recebidos, sugestões dos agentes e o que pede atenção agora.</p>
     </div>
 
+    <!-- O que pede atenção AGORA — derivado dos mesmos dados já carregados (zero query extra) -->
+    <div class="alertas" id="alertas-criticos" style="display:none"></div>
+
     <div class="stats-bar" id="stats-bar">
       <div class="stat"><div class="label">Trabalhos ativos</div><div class="figure" id="kpi-mandatos">—</div></div>
       <div class="stat"><div class="label">Raio-X pendentes</div><div class="figure" id="kpi-raio-x">—</div></div>
@@ -453,7 +505,7 @@ html[data-theme="dark"] body.ip-has-sidebar .btn-action{background:var(--violet-
     <section class="sec-block" id="inbox-section" style="margin-top:48px;display:none">
       <div class="sec-head">
         <h2>Raio-X recebidos · pendentes</h2>
-        <span style="font-size:12px;color:var(--muted)">Cada submissão pode virar mandato</span>
+        <span style="font-size:12px;color:var(--muted)">Cada submissão pode virar curadoria</span>
       </div>
       <div id="inbox-list" class="inbox-list">
         <div class="loading"><span class="spinner"></span></div>
@@ -834,25 +886,87 @@ async function loadDashboard() {
     safe(() => sb.from('ip_raio_x_submissions').select('id,empresa,nome,setor,sintomas_score,urgencia,created_at,status').order('created_at', { ascending: false }).limit(120), { data: [], error: null }),
     safe(() => sb.from('ip_agent_sugestoes').select('id', { count: 'exact', head: true }).eq('status', 'pendente'), { count: 0, error: null })
   ]);
-  const mandatos = res1.data, err1 = res1.error;
+  const curadorias = res1.data, err1 = res1.error;
   const raioX = res2.data, err2 = res2.error;
   const sugCount = res3.count || 0;
 
-  if (err1) { console.warn('mandatos err', err1); }
+  if (err1) { console.warn('curadorias err', err1); }
   if (err2) { console.warn('raio-x err', err2); }
 
-  const mandatosAtivos = (mandatos || []).length;
+  const mandatosAtivos = (curadorias || []).length;
   const raioXPendentes = (raioX || []).length;
-  const scoreMedio = (mandatos || []).reduce((s, m) => s + (m.score_30d || 0), 0) / Math.max(1, mandatos?.filter(m => m.score_30d).length || 0);
+  const scoreMedio = (curadorias || []).reduce((s, m) => s + (m.score_30d || 0), 0) / Math.max(1, curadorias?.filter(m => m.score_30d).length || 0);
 
   document.getElementById('kpi-mandatos').textContent = mandatosAtivos;
   document.getElementById('kpi-raio-x').textContent = raioXPendentes;
   document.getElementById('kpi-sugestoes').textContent = sugCount;
   document.getElementById('kpi-score').innerHTML = (isNaN(scoreMedio) || scoreMedio === 0 ? '—' : Math.round(scoreMedio)) + '<span class="unit">/100</span>';
 
-  renderMandatos(mandatos || []);
+  renderMandatos(curadorias || []);
   renderInbox(raioX || []);
   renderModulos();
+  renderAlertas(curadorias || [], raioX || []);
+}
+
+/* ── ALERTAS CRÍTICOS (CVO 10/06): responde "o que pede atenção AGORA" antes dos números.
+   Derivado 100% dos dados já carregados — zero query extra. ── */
+function renderAlertas(curadorias, raioX) {
+  const el = document.getElementById('alertas-criticos');
+  if (!el) return;
+  const cards = [];
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  // 1. Sugestões críticas dos agentes esperando revisão (a mais acionável)
+  const comCriticas = curadorias.filter(m => (m.sugestoes_criticas || 0) > 0)
+    .sort((a, b) => (b.sugestoes_criticas || 0) - (a.sugestoes_criticas || 0));
+  const totCriticas = comCriticas.reduce((s, m) => s + (m.sugestoes_criticas || 0), 0);
+  if (totCriticas > 0) {
+    const top = comCriticas[0];
+    cards.push({ cls: 'danger', ic: '⚠️',
+      t: totCriticas + (totCriticas === 1 ? ' sugestão crítica espera' : ' sugestões críticas esperam') + ' sua revisão',
+      d: 'Os agentes sinalizaram ' + (comCriticas.length === 1 ? ('em ' + esc(top.empresa)) : ('em ' + comCriticas.length + ' curadorias — a mais carregada é ' + esc(top.empresa) + ' (' + top.sugestoes_criticas + ')')) + '.',
+      href: '/sistema/mandato.html?id=' + top.id + '#sugestoes', cta: 'Revisar agora →' });
+  }
+
+  // 2. Score de clima baixo (saúde da equipe em risco)
+  const scoreBaixo = curadorias.filter(m => m.score_30d != null && +m.score_30d > 0 && +m.score_30d < 50)
+    .sort((a, b) => +a.score_30d - +b.score_30d);
+  if (scoreBaixo.length) {
+    const w = scoreBaixo[0];
+    cards.push({ cls: 'danger', ic: '💓',
+      t: 'Clima de ' + esc(w.empresa) + ' em ' + Math.round(+w.score_30d) + '/100',
+      d: (scoreBaixo.length > 1 ? scoreBaixo.length + ' curadorias' : 'O pulso dos últimos 30 dias') + ' pede(m) atenção ao bem-estar das equipes.',
+      href: '/sistema/mandato.html?id=' + w.id + '#pulsos', cta: 'Ver pulsos →' });
+  }
+
+  // 3. Concentração de conhecimento (relacionamentos críticos)
+  const comRel = curadorias.filter(m => (m.relacionamentos_criticos || 0) > 0);
+  if (comRel.length) {
+    const r = comRel[0];
+    cards.push({ cls: '', ic: '🕸️',
+      t: 'Risco de concentração de conhecimento',
+      d: comRel.length + (comRel.length === 1 ? ' curadoria tem' : ' curadorias têm') + ' relacionamentos críticos mapeados — pessoas-chave sem suplência.',
+      href: '/sistema/mandato.html?id=' + r.id + '#relacionamentos', cta: 'Mapear suplência →' });
+  }
+
+  // 4. Raio-X urgente envelhecendo (>48h sem tratamento)
+  const agora = Date.now();
+  const urgVelhos = raioX.filter(r => (r.urgencia === 'alta') && !['contatado','agendado','convertido','arquivado'].includes(r.status || '') && (agora - new Date(r.created_at).getTime()) > 48 * 3600e3);
+  if (urgVelhos.length) {
+    cards.push({ cls: '', ic: '⏳',
+      t: urgVelhos.length + (urgVelhos.length === 1 ? ' Raio-X urgente espera' : ' Raio-X urgentes esperam') + ' há mais de 48h',
+      d: esc(urgVelhos[0].empresa || urgVelhos[0].nome || 'Um diagnóstico') + ' pediu ajuda com urgência alta e ainda não foi contatado.',
+      href: '#', cta: 'Abrir caixa de entrada →', onclick: "toggleSection('inbox');return false" });
+  }
+
+  // Tudo em paz: o silêncio também é informação (o sistema vigiou e diz que está bem)
+  if (!cards.length) {
+    el.innerHTML = '<div class="alerta ok"><div class="ic">🌿</div><div class="tx"><div class="t">Tudo em ordem — nenhum alerta crítico agora.</div><div class="d">Os agentes seguem de vigília. Se algo mudar, aparece aqui primeiro.</div></div></div>';
+    el.style.display = 'grid';
+    return;
+  }
+  el.innerHTML = cards.map(c => '<div class="alerta ' + c.cls + '"><div class="ic">' + c.ic + '</div><div class="tx"><div class="t">' + c.t + '</div><div class="d">' + c.d + '</div><a class="cta" href="' + c.href + '"' + (c.onclick ? ' onclick="' + c.onclick + '"' : '') + '>' + c.cta + '</a></div></div>').join('');
+  el.style.display = 'grid';
 }
 
 async function renderModulos() {
@@ -1044,7 +1158,7 @@ function renderInbox(list) {
         <div><span class="k-score ${sc}">${score}/100</span></div>
         <div class="k-actions">
           <button onclick="event.stopPropagation();gerarRelatorio('${r.id}')">PDF</button>
-          ${c.k === 'novo' ? `<button onclick="event.stopPropagation();criarMandato('${r.id}')">→ Mandato</button>` : ''}
+          ${c.k === 'novo' ? `<button onclick="event.stopPropagation();criarMandato('${r.id}')">→ Curadoria</button>` : ''}
           ${next ? `<button onclick="event.stopPropagation();moverStatus('${r.id}','${next}')">→ ${nextLabel(next)}</button>` : ''}
           ${c.k !== 'descartado' && c.k !== 'convertido' ? `<button onclick="event.stopPropagation();moverStatus('${r.id}','descartado')">Descartar</button>` : ''}
         </div>
@@ -1103,7 +1217,7 @@ function abrirMandato(id) {
 }
 
 async function criarMandato(submissaoId) {
-  if (!confirm('Criar mandato a partir desta submissão? Você poderá editar todos os campos em seguida.')) return;
+  if (!confirm('Criar curadoria a partir desta submissão? Você poderá editar todos os campos em seguida.')) return;
   const { data: r } = await sb.from('ip_raio_x_submissions').select('*').eq('id', submissaoId).single();
   if (!r) { alert('Erro ao carregar submissão.'); return; }
   const { data: m, error } = await sb.from('ip_mandatos').insert({
@@ -1118,11 +1232,11 @@ async function criarMandato(submissaoId) {
     estagio: 'diagnostico'
   }).select().single();
   if (error) {
-    alert('Erro ao criar mandato: ' + error.message);
+    alert('Erro ao criar curadoria: ' + error.message);
     return;
   }
   await sb.from('ip_raio_x_submissions').update({ status: 'agendado' }).eq('id', submissaoId);
-  alert('Mandato criado. Recarregando dashboard...');
+  alert('curadoria criada. Recarregando dashboard...');
   loadDashboard();
 }
 

@@ -118,7 +118,7 @@ function boot(){document.getElementById('uname').textContent=window.__IP_USER_EM
 }
 // escopo por mandato_id (tabelas que têm a coluna)
 function _escopo(q){var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;if(ids&&ids.length)return q.in('mandato_id',ids);return q;}
-// escopo por id (v_ip_mandatos_overview = a própria entidade mandato; PK é 'id', não 'mandato_id')
+// escopo por id (v_ip_mandatos_overview = a própria entidade curadoria; PK é 'id', não 'mandato_id')
 function _escopoMand(q){var ids=(window.IpOrg&&IpOrg.scope&&IpOrg.scope.mandatoIds)?IpOrg.scope.mandatoIds():null;if(ids&&ids.length)return q.in('id',ids);return q;}
 async function loadAll(){await Promise.all([loadKpis(),loadProj(),loadSys(),loadComment()])}
 

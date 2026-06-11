@@ -258,7 +258,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
     </p>
     <div class="hero-meta">
       <span>Agentes <strong id="m-agents">5</strong> diários</span>
-      <span>Mandatos ativos <strong id="m-mandatos">—</strong></span>
+      <span>Curadorias ativas <strong id="m-mandatos">—</strong></span>
       <span>Pulsos 30d <strong id="m-pulses">—</strong></span>
       <span>Sugestões pendentes <strong id="m-sugg">—</strong></span>
       <span>Programas em curso <strong id="m-programas">—</strong></span>
@@ -1193,7 +1193,7 @@ async function openPulseDisparar(){
   openDrawer('Disparar pulso', `
     <p class="dr-sub">Gera tokens anônimos válidos por 14 dias e enfileira um convite personalizado para cada destinatário no outbox de e-mail.</p>
     <form id="pd-form" class="dr-form">
-      <label><span class="dr-lab">Trabalho (mandato)</span><select name="mandato_id" id="pd-mandato" required><option value="">— escolha um trabalho —</option></select></label>
+      <label><span class="dr-lab">Trabalho (curadoria)</span><select name="mandato_id" id="pd-mandato" required><option value="">— escolha um trabalho —</option></select></label>
       <label><span class="dr-lab">Equipe (opcional)</span><input type="text" name="equipe" placeholder="ex: liderança sênior"></label>
       <label><span class="dr-lab">Papel (opcional)</span><input type="text" name="papel" placeholder="ex: gerente"></label>
       <label><span class="dr-lab">Mensagem personalizada (opcional)</span><textarea name="msg" rows="3" placeholder="Texto extra no convite — tom InnovaPeople."></textarea></label>
@@ -1212,7 +1212,7 @@ async function openPulseDisparar(){
       if(!data||!data.length){
         const o=document.createElement('option');o.value='';o.textContent='(nenhum trabalho ativo — crie um primeiro)';o.disabled=true;sel.appendChild(o);
       }
-    }catch(e){console.warn('[pd] mandatos',e)}
+    }catch(e){console.warn('[pd] curadorias',e)}
     body.querySelector('#pd-form').addEventListener('submit', async (ev)=>{
       ev.preventDefault();
       const f=ev.target;
@@ -2302,7 +2302,7 @@ async function previewDigest(){
   });
 }
 async function sendDigestNow(){
-  if(!confirm('Disparar o digest para TODOS os trabalhos ativos AGORA?\n\nIsso envia e-mail real aos sócios responsáveis registrados em cada mandato.'))return;
+  if(!confirm('Disparar o digest para TODOS os trabalhos ativos AGORA?\n\nIsso envia e-mail real aos sócios responsáveis registrados em cada curadoria.'))return;
   const sb=window.__IP_SB;
   try{
     const {data,error}=await sb.functions.invoke('innovapeople-digest-semanal',{body:{}});

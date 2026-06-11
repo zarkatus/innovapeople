@@ -435,7 +435,7 @@ window.cockpitBoot = function cockpitBoot(){
     var host=$('nervo-tl'); if(!host) return;
     if(!window.IpNervo){ setTimeout(montarNervo,150); return; } // espera defer do ip-nervo.js
     if(_unsubNervo){ try{_unsubNervo();}catch(_){} }
-    // sem mandato => visão global da operação (RLS sócios-only filtra)
+    // sem curadoria => visão global da operação (RLS sócios-only filtra)
     IpNervo.timeline(host, { limit:18, live:true }).then(function(u){ _unsubNervo=u; });
   }
 
