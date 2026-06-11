@@ -78,6 +78,12 @@ header.top .row{max-width:1180px;margin:0 auto;padding:0 28px;display:flex;align
 .alerta .tx .d{font-size:12px;color:var(--muted);line-height:1.45}
 .alerta .tx a.cta{display:inline-block;margin-top:7px;font-size:11.5px;font-weight:600;color:var(--violet);letter-spacing:.02em}
 .alerta .tx a.cta:hover{color:var(--violet-deep)}
+/* dark skin — alertas seguem o design system (mesmos gradientes dos cards nativos) */
+html[data-theme="dark"] body.ip-has-sidebar .alerta{background:linear-gradient(180deg,rgba(28,18,48,.7),rgba(20,13,34,.5));border-color:rgba(245,221,165,.14)}
+html[data-theme="dark"] body.ip-has-sidebar .alerta .tx .t{color:#FAF7F1}
+html[data-theme="dark"] body.ip-has-sidebar .alerta .tx .d{color:rgba(250,247,241,.62)}
+html[data-theme="dark"] body.ip-has-sidebar .alerta .tx a.cta{color:var(--gold)}
+html[data-theme="dark"] body.ip-has-sidebar .alerta.ok{background:linear-gradient(180deg,rgba(22,38,28,.6),rgba(16,28,20,.45))}
 .stat{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:22px 24px;position:relative;overflow:hidden}
 .stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--gold))}
 .stat .label{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px}
@@ -935,7 +941,7 @@ function renderAlertas(curadorias, raioX) {
     const w = scoreBaixo[0];
     cards.push({ cls: 'danger', ic: '💓',
       t: 'Clima de ' + esc(w.empresa) + ' em ' + Math.round(+w.score_30d) + '/100',
-      d: (scoreBaixo.length > 1 ? scoreBaixo.length + ' curadorias' : 'O pulso dos últimos 30 dias') + ' pede(m) atenção ao bem-estar das equipes.',
+      d: (scoreBaixo.length > 1 ? scoreBaixo.length + ' curadorias pedem' : 'O pulso dos últimos 30 dias pede') + ' atenção ao bem-estar das equipes.',
       href: '/sistema/mandato.html?id=' + w.id + '#pulsos', cta: 'Ver pulsos →' });
   }
 
