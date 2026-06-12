@@ -29,7 +29,7 @@
   const TIPO_DESL=[['sem_justa_causa','Sem justa causa'],['pedido_demissao','Pedido de demissão'],['justa_causa','Justa causa'],['termino_contrato','Término de contrato'],['acordo','Acordo (484-A)'],['aposentadoria','Aposentadoria']];
   const AVISO=[['trabalhado','Trabalhado'],['indenizado','Indenizado'],['dispensado','Dispensado']];
 
-  let _rows=[], _filtro={ q:'', status:'todos' }, _el=null, _chans=[], _tab='resumo';
+  let _rows=[], _pix={}, _filtro={ q:'', status:'todos' }, _el=null, _chans=[], _tab='resumo';
   let _sub={ afast:[], aso:[], desl:null, okr:[], checkin:[] }; // satelites do colaborador aberto
   let _aal='aal1';
 
@@ -97,6 +97,11 @@
     if(r.error){ r = await _escopo(sb.from('core_colaborador').select('*')).order('status').order('nome'); }
     if(r.error){ T.toast('Erro ao carregar colaboradores: '+(r.error.message||'')); _rows=[]; return; }
     _rows = r.data||[];
+    // FRENTE B (CVO 12/06): bloco PIX/valor das pessoas de canteiro (plat_alocacao_mo_pessoas, intra-banco)
+    _pix={};
+    try{ const px=await sb.from('plat_alocacao_mo_pessoas').select('cpf,chave_pix,pix_status,valor_real_mensal,is_contratante,project_id');
+      (px&&px.data||[]).forEach(x=>{ _pix[(x.cpf||'').replace(/D/g,'')]=x; });
+    }catch(_){ _pix={}; }
   }
   async function loadSatelites(colabId){
     const sb=SB(); _sub={ afast:[], aso:[], desl:null, okr:[], checkin:[] };
@@ -128,6 +133,8 @@
     const semAso=ativos.filter(r=>'aso_proximo_venc' in r && !r.aso_proximo_venc).length;
     if(!_rows.length) passos.push('Nenhum colaborador ainda — admita o primeiro ou sincronize as admissões da obra.');
     if(semCargo) passos.push(semCargo+' ativo(s) sem cargo — completar para folha/handoff.');
+    const obraSemPix=ativos.filter(r=>(r.origem==='alocacao_mo'||r.origem==='innovasphere') && (()=>{const p=_pix[(r.cpf||'').replace(/D/g,'')];return p&&!p.chave_pix&&!p.is_contratante;})()).length;
+    if(obraSemPix) passos.push(obraSemPix+' pessoa(s) de canteiro sem chave PIX — regra da casa: sem PIX não há pagamento.');
     if(semAdm)   passos.push(semAdm+' sem data de admissão — necessária para vínculo e SST.');
     if(asoVenc)  passos.push(asoVenc+' colaborador(es) com ASO vencendo em 30 dias — agendar exame periódico.');
     if(semAso)   passos.push(semAso+' ativo(s) sem ASO registrado — anexar admissional/periódico.');
@@ -207,14 +214,19 @@
   }
   function cardRow(r){
     const flag = r.tem_afastamento_ativo ? tag('afastado ativo','var(--ip-gold-lum)') : '';
+    const px=_pix[(r.cpf||'').replace(/D/g,'')];
+    const pixFlag = px ? (px.pix_status==='validado' ? tag('PIX ✓ validado','var(--ip-ok,#7BD3A0)')
+      : px.pix_status==='atestado' ? tag('PIX atestado','var(--ip-gold-lum)')
+      : px.is_contratante ? tag('PIX dispensado','var(--ip-ink-4)')
+      : tag('SEM PIX','var(--ip-danger)')) : '';
     const asoFlag = (r.aso_proximo_venc && new Date(r.aso_proximo_venc) < new Date(Date.now()+30*864e5)) ? tag('ASO vencendo','var(--ip-danger)') : '';
     return `<div class="px-card" data-id="${r.id}" style="display:flex;align-items:center;gap:14px;background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.14);border-radius:13px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:.15s">
       <div style="width:42px;height:42px;border-radius:50%;background:rgba(210,174,100,.14);display:flex;align-items:center;justify-content:center;font:700 16px Georgia;color:var(--ip-gold-lum)">${esc((r.nome||'?').trim().charAt(0).toUpperCase())}</div>
       <div style="flex:1;min-width:0">
-        <div style="color:var(--ip-cream);font-weight:600;font-size:15px">${esc(r.nome)} ${flag} ${asoFlag}</div>
-        <div style="color:var(--ip-ink-3);font-size:12.5px;margin-top:2px">${esc(r.cargo||'sem cargo')} · ${esc(r.project_id||r.mandato_id||'—')} · ${esc(r.modelo_contrato||'—')}</div>
+        <div style="color:var(--ip-cream);font-weight:600;font-size:15px">${esc(r.nome)} ${flag} ${asoFlag} ${pixFlag}</div>
+        <div style="color:var(--ip-ink-3);font-size:12.5px;margin-top:2px">${esc(r.cargo||'sem cargo')} · ${esc(r.project_id||r.mandato_id||'—')} · ${esc(r.modelo_contrato||'—')}${px&&px.valor_real_mensal?` · R$ ${(+px.valor_real_mensal).toLocaleString('pt-BR')}/mês`:''}</div>
       </div>
-      <div style="text-align:right">${badge(r.status)}<div style="color:var(--ip-ink-4);font-size:11px;margin-top:5px">${r.origem==='innovasphere'?'da obra':'IP'}</div></div>
+      <div style="text-align:right">${badge(r.status)}<div style="color:var(--ip-ink-4);font-size:11px;margin-top:5px">${(r.origem==='innovasphere'||r.origem==='alocacao_mo')?'da obra':'IP'}</div></div>
     </div>`;
   }
   function bindRows(el){ el.querySelectorAll('.px-card').forEach(c=>{ c.onclick=()=>{ const r=_rows.find(x=>x.id===c.dataset.id); if(r) openDetail(r); }; c.onmouseenter=()=>c.style.borderColor='rgba(210,174,100,.4)'; c.onmouseleave=()=>c.style.borderColor='rgba(210,174,100,.14)'; }); }
