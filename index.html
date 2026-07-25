@@ -270,6 +270,8 @@ section.block.warm{background:linear-gradient(180deg,var(--paper-warm) 0%,var(--
 
 .partners{margin-top:48px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 @media (max-width:880px){.partners{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.partners{grid-template-columns:1fr}}
+.partner{min-width:0}
 .partner{padding:28px 24px;background:#fff;border:1px solid var(--rule);border-radius:14px;transition:all .25s ease;text-decoration:none;color:inherit;display:block;cursor:pointer;position:relative}
 .partner:hover{border-color:var(--violet-light);transform:translateY(-3px);box-shadow:0 12px 28px rgba(63,39,86,.10);color:inherit}
 .partner::after{content:'→';position:absolute;top:24px;right:22px;color:var(--violet-light);font-size:18px;opacity:0;transition:all .3s ease}
