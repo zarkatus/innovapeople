@@ -684,9 +684,10 @@ function toggleMenu(){document.getElementById('mmenu').classList.toggle('open');
     }
     btn.disabled=true;btn.innerHTML='<span class="spin"></span>Enviando…';
     try{
+      const IP_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
       const r=await fetch('https://dqknyhfrrmbqvkdshjfu.supabase.co/functions/v1/innovapeople-contato-submit',{
         method:'POST',
-        headers:{'Content-Type':'application/json'},
+        headers:{'Content-Type':'application/json','apikey':IP_ANON,'Authorization':'Bearer '+IP_ANON},
         body:JSON.stringify({nome,email,empresa,mensagem,origem:'site-principal'})
       });
       if(!r.ok){const t=await r.text();throw new Error(t.slice(0,200));}
