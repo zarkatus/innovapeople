@@ -56,17 +56,17 @@ em{font-style:italic;color:var(--ink-soft)}
 .logo svg{width:38px;height:38px}.logo img.marca,.brand img.marca,a.logo img.marca{height:34px;width:auto;display:block}@media(max-width:640px){.logo img.marca,.brand img.marca,a.logo img.marca{height:27px}}
 .logo .wordmark{font-size:22px}
 
-nav.top{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(250,245,239,.94);backdrop-filter:saturate(180%) blur(14px);-webkit-backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid rgba(217,210,201,.6);transition:padding .3s ease}
-nav.top .nav-inner{display:flex;align-items:center;justify-content:space-between;height:68px;padding:0 32px;max-width:1180px;margin:0 auto}
-nav.top ul{display:flex;gap:30px;list-style:none}
-nav.top ul a{font-size:13.5px;color:var(--ink-soft);font-weight:500;letter-spacing:.01em}
-nav.top ul a:hover{color:var(--marca)}
-nav.top .nav-right{display:flex;align-items:center;gap:22px}
-nav.top .nav-restrita{font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);font-weight:500;font-family:var(--sans);padding:8px 14px;border:1px solid var(--rule);border-radius:4px;transition:all .25s ease;text-decoration:none;background:transparent;white-space:nowrap}
+nav.top{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(250,245,239,.94);backdrop-filter:saturate(180%) blur(14px);-webkit-backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid rgba(28,39,52,.07);transition:padding .3s ease}
+nav.top .nav-inner{display:flex;align-items:center;justify-content:space-between;height:78px;padding:0 40px;max-width:1220px;margin:0 auto;transition:height .3s cubic-bezier(.4,0,.2,1)}nav.top.compacta .nav-inner{height:60px}nav.top.compacta{box-shadow:0 1px 22px rgba(28,39,52,.06)}
+nav.top ul{display:flex;gap:34px;list-style:none}
+nav.top ul a{font-size:12.5px;color:var(--ink-soft);font-weight:400;letter-spacing:.035em;position:relative;padding-bottom:3px}nav.top ul a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--acento);transition:right .32s cubic-bezier(.4,0,.2,1)}nav.top ul a:hover::after{right:0}
+nav.top ul a:hover{color:var(--marca-deep)}
+nav.top .nav-right{display:flex;align-items:center;gap:26px}
+nav.top .nav-util{display:inline-flex;align-items:center;font-family:var(--sans);font-size:10px;letter-spacing:.24em;text-transform:uppercase;font-weight:500;color:var(--ink-soft);opacity:.72;text-decoration:none;transition:opacity .3s ease,color .3s ease}nav.top .nav-util:hover{color:var(--acento);opacity:1}nav.top .nav-fio{width:1px;height:16px;background:rgba(28,39,52,.12);display:inline-block}
 nav.top .nav-restrita:hover{color:var(--marca-deep);border-color:var(--marca-light);background:rgba(28,39,52,.04)}
-nav.top .nav-cta{font-size:13px;padding:10px 22px;border-radius:6px;background:var(--marca);color:#fff;font-weight:600;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 4px 12px rgba(28,39,52,.25)}
+nav.top .nav-cta{font-size:11px;padding:11px 24px;border-radius:3px;background:var(--marca-deep);color:#fff;font-weight:500;letter-spacing:.17em;text-transform:uppercase;font-family:var(--sans);transition:background .3s ease,transform .3s ease;box-shadow:none}nav.top .nav-cta:hover{background:var(--acento);transform:translateY(-1px)}
 nav.top .nav-cta:hover{background:var(--marca-deep);color:#fff;transform:translateY(-1px)}
-@media (max-width:880px){nav.top ul{display:none}nav.top .nav-restrita{display:none}}
+@media (max-width:880px){nav.top ul{display:none}nav.top .nav-util:not(.nav-mail){display:none}nav.top .nav-fio{display:none}nav.top .nav-inner{height:64px;padding:0 18px}nav.top.compacta .nav-inner{height:56px}nav.top .nav-mail{font-size:0;letter-spacing:0}nav.top .nav-mail svg{width:17px;height:17px;margin-right:0}nav.top .nav-cta{font-size:10px;padding:10px 16px;letter-spacing:.14em}nav.top .nav-right{gap:16px}}
 
 .hero{padding:170px 0 130px 0;position:relative;overflow:hidden;color:#fff;min-height:88vh;display:flex;align-items:center}
 .hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden}
@@ -395,7 +395,9 @@ footer .hier a:hover{color:var(--acento)}
       <li><a href="https://jornada.innovapeople.com.br/">Ensaios</a></li>
     </ul>
     <div class="nav-right">
-      <a href="/sistema/" class="nav-restrita" title="Área restrita · acesso à plataforma">Área restrita</a>
+      <a href="https://mail.innovapeople.com.br/" target="_blank" rel="noopener" class="nav-util nav-mail" title="InnovaMail · o e-mail da casa"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" style="margin-right:7px;flex:none"><path d="M1 3h14v10H1z" fill="none" stroke="currentColor" stroke-width="1.1"/><path d="M1.5 3.5L8 9l6.5-5.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>E-mail</a>
+      <a href="/sistema/" class="nav-util" title="Área restrita · acesso à plataforma">Área restrita</a>
+      <span class="nav-fio" aria-hidden="true"></span>
       <a href="/raio-x" class="nav-cta">Marcar Raio-X</a>
     </div>
   </div>
@@ -929,5 +931,6 @@ function lgpdClose(){try{localStorage.setItem('ip_lgpd_consent','1');}catch(_){}
 <div style="text-align:center;padding:20px 16px;border-top:1px solid rgba(160,120,48,.2);background:transparent">
   <span style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;font-weight:400;letter-spacing:.26em;text-transform:uppercase;color:#A8461A">Uma casa do grupo &middot; origem <a href="https://schifino.com.br" style="color:#A8461A;text-decoration:none;border-bottom:1px solid rgba(160,120,48,.4)">Schifino Family Office</a></span>
 </div>
+<script>(function(){var n=document.querySelector("nav.top");if(!n)return;var f=function(){n.classList.toggle("compacta",window.scrollY>40)};f();addEventListener("scroll",f,{passive:true});})();</script>
 </body>
 </html>
