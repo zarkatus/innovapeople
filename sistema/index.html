@@ -634,8 +634,16 @@ window.__IP_SB = sb;
         fechar();
         window.open('mailto:' + CAIXA + '?subject=' + encodeURIComponent(assunto) + '&body=' + encodeURIComponent(corpo));
       };
-      sb.auth.getSession().then(function (s) {
-        var tok = s && s.data && s.data.session && s.data.session.access_token;
+      // O token vem do localStorage, como a própria plataforma já faz no gate de
+      // login. Observação que motivou isto: com sb.auth.getSession() a execução
+      // travava ANTES de qualquer requisição sair -- o botão ficava em "Enviando…"
+      // para sempre e nada aparecia na rede. Leitura síncrona não trava.
+      var tok = null;
+      try {
+        var ch = Object.keys(localStorage).find(function (k) { return k.indexOf('sb-') === 0 && k.indexOf('auth-token') > -1; });
+        if (ch) tok = (JSON.parse(localStorage.getItem(ch)) || {}).access_token || null;
+      } catch (_) { tok = null; }
+      (function () {
         if (!tok) return recuo();
         return fetch('https://dqknyhfrrmbqvkdshjfu.supabase.co/functions/v1/ip-mail-client', {
           method: 'POST',
@@ -646,8 +654,8 @@ window.__IP_SB = sb;
           if (!d || d.ok === false) return recuo();
           fechar();
           try { window.toast ? window.toast('Recebido. Você terá retorno no seu e-mail.') : alert('Recebido. Você terá retorno no seu e-mail.'); } catch (_) {}
-        });
-      }).catch(recuo);
+        }).catch(recuo);
+      })();
     };
     setTimeout(function () { var t = document.getElementById('ipfala-t'); if (t) t.focus(); }, 60);
   }
