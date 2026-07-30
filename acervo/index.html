@@ -7,7 +7,7 @@
 <meta name="description" content="Referências intelectuais que sustentam a leitura autoral da casa. Não bibliografia. Acervo silencioso.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://innovapeople.com.br/acervo/">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/innovapeople-simbolo.png" type="image/png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,50 +15,50 @@
 
 <style>
 :root{
-  --violet:#5B3A7A;--violet-deep:#3F2756;--violet-light:#7B5AA8;
-  --gold:#C4A35A;--gold-deep:#9C7E3B;--gold-soft:#F7EFDD;
+  --marca:#1C2734;--marca-deep:#0E141B;--marca-light:#33475C;
+  --acento:#C85924;--acento-deep:#A8461A;--acento-soft:#FBF0E8;
   --ink:#1A1614;--ink-soft:#3D3531;--muted:#7A6F66;--rule:#D9D2C9;
-  --paper:#FAF7F1;--paper-deep:#F2EDE3;
+  --paper:#FAF5EF;--paper-deep:#F3EADF;
   --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',-apple-system,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.75;min-height:100vh;display:flex;flex-direction:column}
-a{color:var(--violet);text-decoration:none;transition:color .25s ease}
-a:hover{color:var(--violet-deep)}
+a{color:var(--marca);text-decoration:none;transition:color .25s ease}
+a:hover{color:var(--marca-deep)}
 
-nav.top{position:sticky;top:0;z-index:30;background:rgba(250,247,241,.96);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid rgba(217,210,201,.6);padding:14px 0}
+nav.top{position:sticky;top:0;z-index:30;background:rgba(250,245,239,.96);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid rgba(217,210,201,.6);padding:14px 0}
 nav.top .inner{max-width:1080px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between}
-nav.top .logo{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:500;color:var(--violet-deep);letter-spacing:-.015em;text-decoration:none}
-nav.top .logo svg{width:32px;height:32px;color:var(--violet)}
+nav.top .logo{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:500;color:var(--marca-deep);letter-spacing:-.015em;text-decoration:none}
+nav.top .logo svg{width:32px;height:32px;color:var(--marca)}.logo img.marca,.brand img.marca,a.logo img.marca{height:34px;width:auto;display:block}@media(max-width:640px){.logo img.marca,.brand img.marca,a.logo img.marca{height:27px}}
 nav.top .logo .wordmark{font-size:19px}
 nav.top .home-link{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);font-weight:500;font-family:var(--sans)}
-nav.top .home-link:hover{color:var(--violet)}
+nav.top .home-link:hover{color:var(--marca)}
 
 main{flex:1;padding:90px 32px 120px 32px}
 .wrap{max-width:780px;margin:0 auto}
 
-.eyebrow{display:inline-block;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:24px;padding:6px 14px;background:var(--gold-soft);border-radius:20px}
-h1{font-family:var(--serif);font-weight:400;font-size:clamp(38px,5vw,56px);line-height:1.08;letter-spacing:-.02em;color:var(--violet-deep);margin-bottom:24px}
-h1 em{font-style:italic;color:var(--gold-deep);font-weight:500}
+.eyebrow{display:inline-block;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--acento-deep);font-weight:600;margin-bottom:24px;padding:6px 14px;background:var(--acento-soft);border-radius:20px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(38px,5vw,56px);line-height:1.08;letter-spacing:-.02em;color:var(--marca-deep);margin-bottom:24px}
+h1 em{font-style:italic;color:var(--acento-deep);font-weight:500}
 .lede{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(18px,2vw,22px);line-height:1.55;color:var(--ink-soft);margin-bottom:48px;text-align:left;letter-spacing:.005em}
 
-.rule{width:36px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin:48px 0 36px 0}
+.rule{width:36px;height:1px;background:linear-gradient(90deg,var(--acento),transparent);margin:48px 0 36px 0}
 
-h2.sec{font-family:var(--serif);font-weight:500;font-size:22px;color:var(--violet-deep);letter-spacing:-.005em;margin:56px 0 6px 0;line-height:1.25}
-h2.sec em{font-style:italic;color:var(--gold-deep)}
+h2.sec{font-family:var(--serif);font-weight:500;font-size:22px;color:var(--marca-deep);letter-spacing:-.005em;margin:56px 0 6px 0;line-height:1.25}
+h2.sec em{font-style:italic;color:var(--acento-deep)}
 .sec-note{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--muted);margin-bottom:24px;line-height:1.5}
 
 .ref-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid var(--rule)}
 .ref{padding:22px 0 22px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:42px 1fr;gap:18px;align-items:baseline}
-.ref .marker{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--gold-deep);font-weight:500;padding-top:2px}
+.ref .marker{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--acento-deep);font-weight:500;padding-top:2px}
 .ref-body{}
-.ref-author{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:17px;letter-spacing:-.005em;display:block;line-height:1.3}
+.ref-author{font-family:var(--serif);font-weight:500;color:var(--marca-deep);font-size:17px;letter-spacing:-.005em;display:block;line-height:1.3}
 .ref-title{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--ink);font-size:15.5px;letter-spacing:-.005em;display:block;margin-top:3px;line-height:1.45}
 .ref-meta{font-size:11.5px;letter-spacing:.08em;color:var(--muted);margin-top:6px;font-family:var(--sans)}
 .ref-gloss{font-family:var(--serif);font-style:italic;font-size:14.5px;color:var(--ink-soft);margin-top:10px;line-height:1.6;text-align:justify;padding-left:0}
 
-.closing{margin-top:72px;padding:36px 36px;border:1px solid var(--rule);background:#fff;border-left:2px solid var(--gold);border-radius:0 4px 4px 0}
+.closing{margin-top:72px;padding:36px 36px;border:1px solid var(--rule);background:#fff;border-left:2px solid var(--acento);border-radius:0 4px 4px 0}
 .closing p{font-family:var(--serif);font-style:italic;font-size:18px;line-height:1.6;color:var(--ink-soft);margin:0;text-align:justify}
 
 footer{border-top:1px solid var(--rule);padding:22px 32px;background:var(--paper-deep);text-align:center;font-size:12px;color:var(--muted);font-family:var(--sans);letter-spacing:.04em}
@@ -75,8 +75,7 @@ footer a{color:var(--ink-soft)}
 <nav class="top">
   <div class="inner">
     <a href="/" class="logo">
-      <svg><use href="#ip-logo"/></svg>
-      <span class="wordmark">InnovaPeople</span>
+      <img class="marca" src="/assets/innovapeople-lockup.png" alt="InnovaPeople" width="384" height="110">
     </a>
     <a href="/" class="home-link">← Voltar</a>
   </div>

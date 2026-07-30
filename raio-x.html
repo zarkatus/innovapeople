@@ -21,75 +21,75 @@
 
 <style>
 :root{
-  --violet:#5B3A7A;--violet-deep:#3F2756;--violet-light:#7B5AA8;--violet-soft:#F4EFFA;
-  --gold:#C4A35A;--gold-deep:#9C7E3B;
+  --marca:#1C2734;--marca-deep:#0E141B;--marca-light:#33475C;--marca-soft:#ECF0F4;
+  --acento:#C85924;--acento-deep:#A8461A;
   --ink:#1A1614;--ink-soft:#3D3531;--muted:#7A6F66;--rule:#D9D2C9;
-  --paper:#FAF7F1;--paper-deep:#F2EDE3;
+  --paper:#FAF5EF;--paper-deep:#F3EADF;
   --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',sans-serif;
   --success:#2E7D52;--error:#B23B3B;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;min-height:100vh;display:flex;flex-direction:column}
-a{color:var(--violet);text-decoration:none}
+a{color:var(--marca);text-decoration:none}
 .wrap{max-width:760px;margin:0 auto;padding:0 28px;width:100%}
 
 /* HEADER */
 header{padding:28px 0;border-bottom:1px solid var(--rule);background:var(--paper)}
 header .row{display:flex;align-items:center;justify-content:space-between}
-header .brand{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-size:22px;color:var(--violet-deep);font-weight:500;letter-spacing:-.015em;text-decoration:none}
-header .brand svg{width:38px;height:38px;color:var(--violet)}
+header .brand{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-size:22px;color:var(--marca-deep);font-weight:500;letter-spacing:-.015em;text-decoration:none}
+header .brand svg{width:38px;height:38px;color:var(--marca)}.logo img.marca,.brand img.marca,a.logo img.marca{height:34px;width:auto;display:block}@media(max-width:640px){.logo img.marca,.brand img.marca,a.logo img.marca{height:27px}}
 /* LGPD barra */
 .lgpd-bar{position:fixed;bottom:0;left:0;right:0;z-index:80;background:rgba(20,16,15,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:rgba(255,255,255,.86);padding:8px 16px;display:none;align-items:center;justify-content:center;gap:14px;font-size:12px;letter-spacing:.02em;border-top:1px solid rgba(255,255,255,.08);font-family:var(--sans)}
 .lgpd-bar.show{display:flex;animation:lgpdFade .4s ease}
 @keyframes lgpdFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.lgpd-bar a{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(196,163,90,.4);text-underline-offset:2px}
+.lgpd-bar a{color:var(--acento);text-decoration:underline;text-decoration-color:rgba(200,89,36,.4);text-underline-offset:2px}
 .lgpd-bar button{background:transparent;border:none;color:rgba(255,255,255,.55);cursor:pointer;font-size:18px;padding:0 6px;line-height:1;transition:color .2s;margin-left:4px;font-family:inherit}
 .lgpd-bar button:hover{color:#fff}
 header .back{font-size:13px;color:var(--muted);letter-spacing:.04em}
-header .back:hover{color:var(--violet)}
+header .back:hover{color:var(--marca)}
 
 /* HERO */
 .hero{padding:100px 0 60px 0;text-align:center;position:relative;overflow:hidden;color:#fff;min-height:46vh;display:flex;align-items:center;justify-content:center}
 .hero-bg-video{position:absolute;inset:0;z-index:0;overflow:hidden}
 .hero-bg-video video{width:100%;height:100%;object-fit:cover;filter:saturate(0.6) contrast(1.05) brightness(0.62)}
-.hero-bg-video::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(20,12,32,.82) 0%,rgba(63,39,86,.66) 50%,rgba(20,12,32,.85) 100%);z-index:1}
+.hero-bg-video::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(11,17,25,.82) 0%,rgba(14,20,27,.66) 50%,rgba(11,17,25,.85) 100%);z-index:1}
 .hero > .wrap{position:relative;z-index:2}
-.hero .eyebrow{background:rgba(255,255,255,.08);color:#E8D49C;padding:6px 14px;border-radius:20px;border:1px solid rgba(232,212,156,.25)}
+.hero .eyebrow{background:rgba(255,255,255,.08);color:#EDAC80;padding:6px 14px;border-radius:20px;border:1px solid rgba(232,212,156,.25)}
 .hero h1{color:#fff}
-.hero h1 em{color:#E8D49C}
+.hero h1 em{color:#EDAC80}
 .hero .lede{color:rgba(255,255,255,.85)}
-.hero .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#F5DDA5;font-weight:600;margin-bottom:18px;display:inline-block;padding:6px 14px;background:rgba(255,255,255,.10);border:1px solid rgba(245,221,165,.32);border-radius:20px;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.hero .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#F0B48A;font-weight:600;margin-bottom:18px;display:inline-block;padding:6px 14px;background:rgba(255,255,255,.10);border:1px solid rgba(240,180,138,.32);border-radius:20px;text-shadow:0 1px 4px rgba(0,0,0,.5)}
 .hero h1{font-family:var(--serif);font-weight:400;color:#FFFFFF;font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-.02em;margin-bottom:18px;text-shadow:0 2px 14px rgba(0,0,0,.7),0 1px 4px rgba(0,0,0,.55)}
-.hero h1 em{font-style:italic;color:#F5DDA5;font-weight:500;text-shadow:0 2px 14px rgba(0,0,0,.65)}
+.hero h1 em{font-style:italic;color:#F0B48A;font-weight:500;text-shadow:0 2px 14px rgba(0,0,0,.65)}
 .hero .lede{font-family:var(--serif);font-style:italic;color:#FFFFFF;font-size:clamp(17px,1.9vw,22px);line-height:1.5;max-width:560px;margin:0 auto;text-shadow:0 1px 8px rgba(0,0,0,.7),0 1px 3px rgba(0,0,0,.5)}
 
 /* FORM */
 form{max-width:680px;margin:0 auto;padding:40px 0 80px 0}
 .steps-bar{display:flex;gap:8px;margin-bottom:38px;justify-content:center}
 .step-dot{width:38px;height:38px;border-radius:50%;background:#fff;border:1.5px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;color:var(--muted);font-size:16px;transition:all .25s ease}
-.step-dot.active{background:var(--violet);border-color:var(--violet);color:#fff;box-shadow:0 6px 16px rgba(91,58,122,.32)}
-.step-dot.done{background:var(--violet-soft);border-color:var(--violet);color:var(--violet)}
+.step-dot.active{background:var(--marca);border-color:var(--marca);color:#fff;box-shadow:0 6px 16px rgba(28,39,52,.32)}
+.step-dot.done{background:var(--marca-soft);border-color:var(--marca);color:var(--marca)}
 .step-conn{flex-shrink:0;width:38px;height:1.5px;background:var(--rule);align-self:center}
-.step-conn.done{background:var(--violet)}
+.step-conn.done{background:var(--marca)}
 
 .step{display:none}
 .step.active{display:block;animation:slideIn .35s ease}
 @keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-.step-title{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:28px;line-height:1.2;margin-bottom:8px;letter-spacing:-.01em}
+.step-title{font-family:var(--serif);font-weight:500;color:var(--marca-deep);font-size:28px;line-height:1.2;margin-bottom:8px;letter-spacing:-.01em}
 .step-sub{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:16px;margin-bottom:32px}
 
 .field{margin-bottom:22px}
 .field label{display:block;font-size:13px;letter-spacing:.06em;color:var(--ink-soft);font-weight:600;margin-bottom:8px;text-transform:uppercase}
-.field label .req{color:var(--gold-deep);font-weight:700;margin-left:3px}
+.field label .req{color:var(--acento-deep);font-weight:700;margin-left:3px}
 .field input[type=text],.field input[type=email],.field input[type=tel],.field select,.field textarea{
   width:100%;padding:13px 16px;border:1.4px solid var(--rule);border-radius:8px;
   font-family:var(--sans);font-size:15px;color:var(--ink);background:#fff;
   transition:border-color .2s ease, box-shadow .2s ease;
 }
 .field input:focus,.field select:focus,.field textarea:focus{
-  outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(91,58,122,.12);
+  outline:none;border-color:var(--marca);box-shadow:0 0 0 3px rgba(28,39,52,.12);
 }
 .field textarea{resize:vertical;min-height:110px;line-height:1.55}
 .field .hint{font-size:12.5px;color:var(--muted);margin-top:6px;font-style:italic}
@@ -100,29 +100,29 @@ form{max-width:680px;margin:0 auto;padding:40px 0 80px 0}
 .radio-card input{position:absolute;opacity:0;pointer-events:none}
 .radio-card .face{padding:14px 16px;border:1.4px solid var(--rule);border-radius:8px;background:#fff;font-size:14px;color:var(--ink-soft);transition:all .2s ease;display:flex;align-items:center;gap:10px}
 .radio-card .face::before{content:'';display:inline-block;width:16px;height:16px;border-radius:50%;border:1.6px solid var(--rule);flex-shrink:0;transition:all .2s ease}
-.radio-card input:checked + .face{border-color:var(--violet);background:var(--violet-soft);color:var(--violet-deep);font-weight:500}
-.radio-card input:checked + .face::before{border-color:var(--violet);background:radial-gradient(circle at center, var(--violet) 0 4px, #fff 5px 100%)}
+.radio-card input:checked + .face{border-color:var(--marca);background:var(--marca-soft);color:var(--marca-deep);font-weight:500}
+.radio-card input:checked + .face::before{border-color:var(--marca);background:radial-gradient(circle at center, var(--marca) 0 4px, #fff 5px 100%)}
 
 .scale-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
 .scale-card{cursor:pointer;text-align:center}
 .scale-card input{position:absolute;opacity:0;pointer-events:none}
 .scale-card .face{padding:14px 6px;border:1.4px solid var(--rule);border-radius:8px;background:#fff;font-family:var(--serif);font-size:22px;color:var(--ink-soft);transition:all .2s ease}
-.scale-card input:checked + .face{border-color:var(--violet);background:var(--violet);color:#fff}
+.scale-card input:checked + .face{border-color:var(--marca);background:var(--marca);color:#fff}
 .scale-label-row{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 
 .nav-row{display:flex;justify-content:space-between;gap:12px;margin-top:36px;padding-top:28px;border-top:1px solid var(--rule)}
 .btn{padding:13px 26px;border-radius:8px;font-family:var(--sans);font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;transition:all .22s ease}
-.btn-primary{background:linear-gradient(135deg,var(--violet-deep),var(--violet));color:#fff;box-shadow:0 6px 18px rgba(91,58,122,.28)}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(91,58,122,.38)}
+.btn-primary{background:linear-gradient(135deg,var(--marca-deep),var(--marca));color:#fff;box-shadow:0 6px 18px rgba(28,39,52,.28)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(28,39,52,.38)}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-ghost{background:transparent;color:var(--violet);border:1.4px solid var(--violet)}
-.btn-ghost:hover{background:var(--violet-soft)}
+.btn-ghost{background:transparent;color:var(--marca);border:1.4px solid var(--marca)}
+.btn-ghost:hover{background:var(--marca-soft)}
 
 /* CONCLUSÃO */
 .done-card{text-align:center;padding:60px 32px;background:#fff;border:1px solid var(--rule);border-radius:14px;box-shadow:0 8px 24px rgba(26,22,20,.06)}
-.done-card .icon{width:72px;height:72px;border-radius:50%;background:var(--violet-soft);border:1.5px solid var(--violet);display:flex;align-items:center;justify-content:center;margin:0 auto 24px auto;color:var(--violet)}
+.done-card .icon{width:72px;height:72px;border-radius:50%;background:var(--marca-soft);border:1.5px solid var(--marca);display:flex;align-items:center;justify-content:center;margin:0 auto 24px auto;color:var(--marca)}
 .done-card .icon svg{width:36px;height:36px}
-.done-card h2{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:32px;margin-bottom:12px;letter-spacing:-.01em}
+.done-card h2{font-family:var(--serif);font-weight:500;color:var(--marca-deep);font-size:32px;margin-bottom:12px;letter-spacing:-.01em}
 .done-card p{color:var(--ink-soft);font-size:16px;line-height:1.65;margin-bottom:14px;text-align:left}
 .done-card .meta{font-size:13px;color:var(--muted);font-style:italic;margin-top:24px;letter-spacing:.04em}
 
@@ -135,10 +135,10 @@ form{max-width:680px;margin:0 auto;padding:40px 0 80px 0}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 footer{margin-top:auto;padding:32px 0;border-top:1px solid var(--rule);background:var(--paper);text-align:center;font-size:12.5px;color:var(--muted);letter-spacing:.04em}
-footer a{color:var(--violet)}
+footer a{color:var(--marca)}
 footer .foot-links{margin-top:6px;display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
 footer .foot-links a{font-size:12px;color:var(--muted);letter-spacing:.05em}
-footer .foot-links a:hover{color:var(--violet)}
+footer .foot-links a:hover{color:var(--marca)}
 </style>
 </head>
 <body>
@@ -147,14 +147,7 @@ footer .foot-links a:hover{color:var(--violet)}
   <div class="wrap">
     <div class="row">
       <a href="/" class="brand">
-        <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="60" cy="56" r="44" stroke-width="0.5" opacity="0.15"/>
-          <circle cx="60" cy="56" r="34" stroke-width="0.6" opacity="0.25"/>
-          <ellipse cx="60" cy="56" rx="15" ry="20" stroke-width="2.2"/>
-          <line x1="60" y1="24" x2="60" y2="92" stroke-width="2.2"/>
-          <path d="M 32 102 Q 60 108 88 102" stroke-width="1.6" opacity="0.5"/>
-        </svg>
-        <span>InnovaPeople</span>
+        <img class="marca" src="/assets/innovapeople-lockup.png" alt="InnovaPeople" width="384" height="110">
       </a>
       <a href="/" class="back">← voltar ao site</a>
     </div>
@@ -352,8 +345,8 @@ footer .foot-links a:hover{color:var(--violet)}
         <textarea id="observacoes" name="observacoes" placeholder="Indicação de alguém, contexto adicional, restrições de horário..."></textarea>
       </div>
 
-      <div class="field" style="background:var(--violet-soft);border:1px solid var(--violet-light);border-radius:8px;padding:14px 18px;font-size:13px;color:var(--violet-deep);line-height:1.55">
-        Ao enviar, você concorda que a InnovaPeople entre em contato para agendar a entrevista. <strong>Seus dados não são compartilhados</strong> com terceiros. Tratamento conforme a <a href="/privacidade" style="color:var(--violet);text-decoration:underline">Política de Privacidade</a> e os <a href="/termos" style="color:var(--violet);text-decoration:underline">Termos de Uso</a>.
+      <div class="field" style="background:var(--marca-soft);border:1px solid var(--marca-light);border-radius:8px;padding:14px 18px;font-size:13px;color:var(--marca-deep);line-height:1.55">
+        Ao enviar, você concorda que a InnovaPeople entre em contato para agendar a entrevista. <strong>Seus dados não são compartilhados</strong> com terceiros. Tratamento conforme a <a href="/privacidade" style="color:var(--marca);text-decoration:underline">Política de Privacidade</a> e os <a href="/termos" style="color:var(--marca);text-decoration:underline">Termos de Uso</a>.
       </div>
 
       <div class="nav-row">
