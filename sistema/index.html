@@ -529,7 +529,12 @@ html[data-theme="dark"] body.ip-has-sidebar .btn-action{background:var(--violet-
 const SUPA_URL = 'https://auth.innovasphere.ia.br';
 const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
 // Fallback hardcoded — fonte de verdade real é a tabela ip_allowed_users via RPC fn_ip_pode_acessar.
-const ALLOWED_EMAILS = ['raphael@schifino.com.br', 'gleice@schifino.com.br', 'rapheice@schifino.com.br'];
+// Cada pessoa entra com QUALQUER identidade que já tenha (PU-01: uma persona, vários
+// acessos). Quem chega pelo SSO do webmail vem com o endereço @innovapeople.com.br,
+// então ele precisa estar aqui — senão a sessão abre e o acesso é negado logo adiante.
+const ALLOWED_EMAILS = ['raphael@schifino.com.br', 'gleice@schifino.com.br', 'rapheice@schifino.com.br',
+  'raphael@innovapeople.com.br', 'gleice@innovapeople.com.br',
+  'raphael@innovasphere.ia.br', 'gleice@innovasphere.ia.br'];
 
 const sb = window.supabase.createClient(SUPA_URL, SUPA_ANON, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
