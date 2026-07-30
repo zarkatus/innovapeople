@@ -538,6 +538,26 @@ window.sb = sb; // expose para debug + consumers (RPC tests)
 window.__IP_SB = sb;
 
 // ═══════════════════════════════════════════════════════════════════
+// SSO vindo do webmail (mail.innovapeople.com.br)
+// Quem já está logado no e-mail não loga de novo aqui. O webmail manda a
+// sessão no FRAGMENTO da URL (#sso=...&r=...), que nunca trafega até o
+// servidor. Consumimos, abrimos a sessão e limpamos a barra de endereço na
+// mesma batida, para o token não ficar no histórico nem em link copiado.
+// Os dois lados vivem no mesmo projeto Supabase, então a sessão é válida.
+(function () {
+  try {
+    var h = String(location.hash || '');
+    if (h.indexOf('sso=') < 0) return;
+    var p = new URLSearchParams(h.replace(/^#/, ''));
+    var at = p.get('sso'), rt = p.get('r');
+    if (!at || !rt) return;
+    history.replaceState(null, '', location.pathname + location.search);
+    sb.auth.setSession({ access_token: at, refresh_token: rt })
+      .catch(function () { /* sessão inválida ou vencida: segue para o login normal */ });
+  } catch (_) { /* nunca impedir o carregamento da plataforma */ }
+})();
+
+// ═══════════════════════════════════════════════════════════════════
 // CHECAGEM HÍBRIDA: RPC oficial + fallback hardcoded (offline-safe)
 // ═══════════════════════════════════════════════════════════════════
 async function ipPodeAcessar(email){
