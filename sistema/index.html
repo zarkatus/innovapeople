@@ -563,6 +563,88 @@ window.__IP_SB = sb;
 })();
 
 // ═══════════════════════════════════════════════════════════════════
+// Falar com a casa — o mesmo canal do webmail, aqui dentro.
+// O chamado vira e-mail para chamados@innovapeople.com.br: nasce durável,
+// com histórico e com a resposta voltando para a caixa de quem abriu.
+// Sem tabela nova. Se a caixa da pessoa não estiver mapeada, cai no
+// cliente de e-mail dela em vez de falhar em silêncio.
+// ═══════════════════════════════════════════════════════════════════
+(function () {
+  var CAIXA = 'chamados@innovapeople.com.br';
+  function montar() {
+    if (document.getElementById('ipfala')) return;
+    var st = document.createElement('style');
+    st.textContent = [
+      '#ipfala{position:fixed;right:22px;bottom:22px;z-index:9000;border:0;border-radius:26px;padding:12px 18px;',
+      'background:linear-gradient(135deg,#7B5AA8,#5B3A7A);color:#fff;font:600 .78rem/1 Inter,system-ui,sans-serif;',
+      'cursor:pointer;box-shadow:0 8px 24px rgba(91,58,122,.34);display:flex;align-items:center;gap:8px}',
+      '#ipfala:hover{filter:brightness(1.08)}',
+      '#ipfalam{position:fixed;inset:0;background:rgba(20,16,26,.62);z-index:9001;display:flex;align-items:center;justify-content:center;padding:20px}',
+      '#ipfalam .cx{background:#FAF7F1;color:#1A1614;border-radius:14px;width:100%;max-width:470px;padding:26px 28px;box-shadow:0 24px 60px rgba(0,0,0,.4)}',
+      '#ipfalam h3{font:400 1.5rem/1.2 "Cormorant Garamond",Georgia,serif;color:#3F2756;margin:0 0 5px}',
+      '#ipfalam .sb{font:.74rem/1.55 Inter,sans-serif;color:#7A6F66;margin-bottom:16px}',
+      '#ipfalam .tp{display:flex;gap:7px;margin-bottom:12px}',
+      '#ipfalam .tp b{flex:1;text-align:center;border:1px solid #D9D2C9;border-radius:9px;padding:8px;font:600 .71rem Inter,sans-serif;color:#3D3531;cursor:pointer}',
+      '#ipfalam .tp b.on{background:#F4EFFA;border-color:#7B5AA8;color:#3F2756}',
+      '#ipfalam textarea{width:100%;min-height:112px;border:1px solid #D9D2C9;border-radius:10px;padding:11px 12px;',
+      'font:.83rem Inter,sans-serif;color:#1A1614;resize:vertical;outline:none;box-sizing:border-box;background:#fff}',
+      '#ipfalam .ac{display:flex;gap:9px;margin-top:14px}',
+      '#ipfalam .ac button{flex:1;padding:11px;border-radius:10px;font:700 .75rem Inter,sans-serif;cursor:pointer;border:1px solid #D9D2C9;background:#fff;color:#3D3531}',
+      '#ipfalam .ac button.ok{background:linear-gradient(135deg,#7B5AA8,#5B3A7A);color:#fff;border-color:transparent}'
+    ].join('');
+    document.head.appendChild(st);
+    var b = document.createElement('button');
+    b.id = 'ipfala'; b.type = 'button';
+    b.innerHTML = '<span>&#9998;</span>Falar com a casa';
+    b.onclick = abrir;
+    document.body.appendChild(b);
+  }
+  function abrir() {
+    var tipo = 'sugestao';
+    var m = document.createElement('div'); m.id = 'ipfalam';
+    m.innerHTML = '<div class="cx"><h3>Falar com a casa</h3>'
+      + '<div class="sb">Sua mensagem vira uma conversa de verdade: chega como e-mail e a resposta volta para a sua caixa.</div>'
+      + '<div class="tp"><b class="on" data-t="sugestao">Sugest&atilde;o</b><b data-t="problema">Problema</b><b data-t="duvida">D&uacute;vida</b></div>'
+      + '<textarea id="ipfala-t" placeholder="Conte o que voc&ecirc; percebeu, o que faria diferente, ou o que n&atilde;o funcionou."></textarea>'
+      + '<div class="ac"><button id="ipfala-x">Cancelar</button><button class="ok" id="ipfala-ok">Enviar</button></div></div>';
+    document.body.appendChild(m);
+    var bs = m.querySelectorAll('.tp b');
+    Array.prototype.forEach.call(bs, function (x) {
+      x.onclick = function () {
+        Array.prototype.forEach.call(bs, function (y) { y.classList.remove('on'); });
+        x.classList.add('on'); tipo = x.getAttribute('data-t');
+      };
+    });
+    var fechar = function () { if (m.parentNode) m.remove(); };
+    m.querySelector('#ipfala-x').onclick = fechar;
+    m.onclick = function (e) { if (e.target === m) fechar(); };
+    m.querySelector('#ipfala-ok').onclick = function () {
+      var campo = document.getElementById('ipfala-t');
+      var txt = (campo.value || '').trim();
+      if (!txt) { campo.focus(); return; }
+      var btn = this; btn.disabled = true; btn.textContent = 'Enviando…';
+      var rot = { sugestao: 'Sugestão', problema: 'Problema', duvida: 'Dúvida' }[tipo];
+      var assunto = '[' + rot + '] ' + txt.slice(0, 58).replace(/\s+/g, ' ');
+      var corpo = rot + ' registrada pela plataforma InnovaPeople.\n\n' + txt + '\n\n--\nEnviado de innovapeople.com.br/sistema';
+      sb.functions.invoke('ip-mail-client', { body: { op: 'send', to: CAIXA, subject: assunto, body: corpo } })
+        .then(function (r) {
+          var ok = r && r.data && r.data.ok !== false;
+          fechar();
+          if (ok) { try { window.toast ? window.toast('Recebido. Você terá retorno no seu e-mail.') : alert('Recebido. Você terá retorno no seu e-mail.'); } catch (_) {} }
+          else { window.open('mailto:' + CAIXA + '?subject=' + encodeURIComponent(assunto) + '&body=' + encodeURIComponent(corpo)); }
+        })
+        .catch(function () {
+          fechar();
+          window.open('mailto:' + CAIXA + '?subject=' + encodeURIComponent(assunto) + '&body=' + encodeURIComponent(corpo));
+        });
+    };
+    setTimeout(function () { var t = document.getElementById('ipfala-t'); if (t) t.focus(); }, 60);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', montar);
+  else montar();
+})();
+
+// ═══════════════════════════════════════════════════════════════════
 // CHECAGEM HÍBRIDA: RPC oficial + fallback hardcoded (offline-safe)
 // ═══════════════════════════════════════════════════════════════════
 async function ipPodeAcessar(email){
