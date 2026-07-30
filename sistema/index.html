@@ -626,17 +626,28 @@ window.__IP_SB = sb;
       var rot = { sugestao: 'Sugestão', problema: 'Problema', duvida: 'Dúvida' }[tipo];
       var assunto = '[' + rot + '] ' + txt.slice(0, 58).replace(/\s+/g, ' ');
       var corpo = rot + ' registrada pela plataforma InnovaPeople.\n\n' + txt + '\n\n--\nEnviado de innovapeople.com.br/sistema';
-      sb.functions.invoke('ip-mail-client', { body: { op: 'send', to: CAIXA, subject: assunto, body: corpo } })
-        .then(function (r) {
-          var ok = r && r.data && r.data.ok !== false;
+      // Chamada DIRETA ao endpoint de funções. O cliente da plataforma aponta para o
+      // domínio próprio de autenticação, que não roteia Edge Functions -- por ali a
+      // requisição fica pendurada para sempre. Com URL absoluta e prazo máximo, ou
+      // envia, ou cai no cliente de e-mail. Nunca trava esperando.
+      var recuo = function () {
+        fechar();
+        window.open('mailto:' + CAIXA + '?subject=' + encodeURIComponent(assunto) + '&body=' + encodeURIComponent(corpo));
+      };
+      sb.auth.getSession().then(function (s) {
+        var tok = s && s.data && s.data.session && s.data.session.access_token;
+        if (!tok) return recuo();
+        return fetch('https://dqknyhfrrmbqvkdshjfu.supabase.co/functions/v1/ip-mail-client', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'apikey': SUPA_ANON, 'Authorization': 'Bearer ' + tok },
+          body: JSON.stringify({ op: 'send', to: CAIXA, subject: assunto, body: corpo }),
+          signal: AbortSignal.timeout(25000)
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (!d || d.ok === false) return recuo();
           fechar();
-          if (ok) { try { window.toast ? window.toast('Recebido. Você terá retorno no seu e-mail.') : alert('Recebido. Você terá retorno no seu e-mail.'); } catch (_) {} }
-          else { window.open('mailto:' + CAIXA + '?subject=' + encodeURIComponent(assunto) + '&body=' + encodeURIComponent(corpo)); }
-        })
-        .catch(function () {
-          fechar();
-          window.open('mailto:' + CAIXA + '?subject=' + encodeURIComponent(assunto) + '&body=' + encodeURIComponent(corpo));
+          try { window.toast ? window.toast('Recebido. Você terá retorno no seu e-mail.') : alert('Recebido. Você terá retorno no seu e-mail.'); } catch (_) {}
         });
+      }).catch(recuo);
     };
     setTimeout(function () { var t = document.getElementById('ipfala-t'); if (t) t.focus(); }, 60);
   }
