@@ -1,26 +1,31 @@
+@import url("/sistema/_shared/tokens.css");
 /* ToolBox · Tier One — Design System v3 · paleta ÚNICA derivada da tela de login
    CVO 28/05: "as cores do sistema têm que ser as da tela de login". Marinho profundo
    + laranja + creme. Variáveis mantêm nomes legados (--navy-*) por compat, valores
    remapeados para a paleta da casa (marinho + laranja). */
 :root{
-  --navy-deep:#0B1119;
-  --navy-night:#101821;
-  --navy-raised:#16202B;
-  --navy-edge:rgba(240,180,138,.2);
-  --acento:#C85924;
-  --acento-soft:#EDAC80;
-  --acento-glow:rgba(240,180,138,.32);
-  --acento-faint:rgba(200,89,36,.08);
-  --cream:#F7F3EC;
-  --cream-muted:#D6CDB8;
-  --cream-dim:#A99E86;
-  --rule:rgba(240,180,138,.1);
-  --rule-strong:rgba(240,180,138,.18);
-  --marca:#33475C; --marca-mid:#1C2734; --marca-deep:#0E141B;
-  --success:#6BAE82;
-  --warn:#E0763A;
-  --danger:#D87575;
-  --info:#7BA5D8;
+  /* GABARITO (CVO 31/07): os nomes que a tela ja usa apontam para o contrato (_shared/tokens.css).
+     Claro por padrao, escuro por html[data-theme=dark] — sem depender de JS para clarear. */
+  --navy-deep:var(--ip-surface);
+  --navy-night:var(--ip-surface-card);
+  --navy-raised:var(--ip-surface-2);
+  --navy-edge:var(--ip-line-strong);
+  --acento:var(--ip-accent);
+  --acento-soft:var(--ip-accent-strong);
+  --acento-glow:var(--ip-focus);
+  --acento-faint:var(--ip-accent-wash);
+  --cream:var(--ip-text);
+  --cream-muted:var(--ip-text-body);
+  --cream-dim:var(--ip-text-muted);
+  --rule:var(--ip-line);
+  --rule-strong:var(--ip-line-strong);
+  --marca:var(--ip-text);
+  --marca-mid:var(--ip-text-muted);
+  --marca-deep:var(--ip-brand-deep);
+  --success:var(--ip-ok);
+  --warn:var(--ip-warn);
+  --danger:var(--ip-danger);
+  --info:var(--ip-info);
   --serif:'Cormorant Garamond',Georgia,serif;
   --sans:'Inter',-apple-system,'Segoe UI',sans-serif;
   --mono:'JetBrains Mono',Menlo,monospace;
@@ -31,16 +36,7 @@
 }
 /* MODO LIGHT — override de TODOS os tokens do toolbox (CVO 29/05: dark/light
    abrange TODA a plataforma). Mantém nomes legados (--navy-*), troca p/ claro. */
-html[data-theme="light"]{
-  --navy-deep:#F4EFE7; --navy-night:#FFFFFF; --navy-raised:#FBF8F2; --navy-edge:rgba(168,70,26,.34);
-  --acento:#A8461A; --acento-soft:#8A3A15; --acento-glow:rgba(168,70,26,.28); --acento-faint:rgba(168,70,26,.08);
-  --cream:#1C2734; --cream-muted:#3F4A57; --cream-dim:#7C8794;
-  --rule:rgba(14,20,27,.14); --rule-strong:rgba(14,20,27,.2);
-  --marca:#1C2734; --marca-mid:#33475C; --marca-deep:#0E141B;
-  --shadow-raised:0 1px 2px rgba(14,20,27,.06),0 4px 12px rgba(14,20,27,.08);
-  --shadow-lift:0 8px 24px rgba(14,20,27,.1),0 16px 48px rgba(14,20,27,.08);
-  --shadow-hero:0 16px 48px rgba(168,70,26,.16),0 32px 80px rgba(14,20,27,.1);
-}
+
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-font-smoothing:antialiased}
 body{background:var(--navy-deep);color:var(--cream);font-family:var(--sans);font-size:14px;line-height:1.55;min-height:100vh;font-weight:300}

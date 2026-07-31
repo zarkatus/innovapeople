@@ -10,8 +10,31 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+<link rel="stylesheet" href="/sistema/_shared/tokens.css">
 <style>
-:root{--marca:#1C2734;--marca-deep:#0E141B;--marca-light:#33475C;--marca-soft:#ECF0F4;--acento:#C85924;--acento-deep:#A8461A;--acento-soft:#FBF0E8;--ink:#1A1614;--ink-soft:#3D3531;--muted:#7A6F66;--rule:#D9D2C9;--paper:#FAF5EF;--paper-deep:#F3EADF;--success:#2E7D52;--warn:#B14E1E;--danger:#B23B3B;--info:#3A6E9C;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',sans-serif}
+:root{
+  /* GABARITO (CVO 31/07): os nomes que a tela ja usa apontam para o contrato (_shared/tokens.css).
+     Claro por padrao, escuro por html[data-theme=dark] — sem depender de JS para clarear. */
+  --marca:var(--ip-text);
+  --marca-deep:var(--ip-text);
+  --marca-light:var(--ip-line-strong);
+  --marca-soft:var(--ip-surface-2);
+  --acento:var(--ip-accent);
+  --acento-deep:var(--ip-accent-strong);
+  --acento-soft:var(--ip-accent-wash);
+  --ink:var(--ip-text);
+  --ink-soft:var(--ip-text-body);
+  --muted:var(--ip-text-muted);
+  --rule:var(--ip-line);
+  --paper:var(--ip-surface);
+  --paper-deep:var(--ip-surface-2);
+  --success:var(--ip-ok);
+  --warn:var(--ip-warn);
+  --danger:var(--ip-danger);
+  --info:var(--ip-info);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Inter',sans-serif;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-font-smoothing:antialiased}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.55;min-height:100vh;display:flex;flex-direction:column}
@@ -49,7 +72,7 @@ main{flex:1;padding:32px 0 80px 0}
 .estagio-pill.plano{background:#E3EBF5;color:var(--info)}
 .estagio-pill.plataforma{background:var(--marca-soft);color:var(--marca)}
 .estagio-pill.resultado{background:#E2F0E8;color:var(--success)}
-.estagio-pill.parceria{background:#F5E6FB;color:#C85924}
+.estagio-pill.parceria{background:var(--ip-accent-wash);color:var(--ip-accent-strong)}
 .estagio-pill.encerrado{background:#EEE;color:var(--muted)}
 
 /* TABS */
@@ -597,7 +620,7 @@ async function abrirDrillSugestao(id){
     <div style="font-size:14.5px;color:var(--ink-soft);line-height:1.65;margin-bottom:18px;padding:14px 18px;background:var(--paper);border-radius:8px;border-left:3px solid var(--acento)">${esc(s.sugestao)}</div>`;
   if (Object.keys(ctx).length){
     html += `<h4 style="font-family:var(--serif);font-weight:600;color:var(--marca-deep);font-size:15px;margin:18px 0 8px 0">Contexto detectado</h4>
-      <div style="font-family:monospace;font-size:11.5px;background:#F8F4EC;padding:12px 14px;border-radius:6px;border:1px solid var(--rule);color:var(--ink-soft);white-space:pre-wrap;line-height:1.55">${esc(JSON.stringify(ctx, null, 2))}</div>`;
+      <div style="font-family:monospace;font-size:11.5px;background:var(--ip-surface-sunken);padding:12px 14px;border-radius:6px;border:1px solid var(--rule);color:var(--ink-soft);white-space:pre-wrap;line-height:1.55">${esc(JSON.stringify(ctx, null, 2))}</div>`;
   }
   if (ev.metricas){
     html += `<h4 style="font-family:var(--serif);font-weight:600;color:var(--marca-deep);font-size:15px;margin:18px 0 8px 0">Métricas que ativaram a regra</h4>

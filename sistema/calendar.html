@@ -9,8 +9,31 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/sistema/_shared/tokens.css">
 <style>
-:root{--marca:#1C2734;--marca-deep:#0E141B;--marca-soft:#ECF0F4;--acento:#C85924;--acento-deep:#A8461A;--acento-soft:#FBF0E8;--ink:#1A1614;--ink-soft:#3D3531;--muted:#7A6F66;--rule:#D9D2C9;--paper:#FAF5EF;--paper-deep:#F3EADF;--success:#2E7D52;--danger:#B23B3B;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',sans-serif}
+:root{
+  /* GABARITO (CVO 31/07): os nomes que a tela ja usa apontam para o contrato (_shared/tokens.css).
+     Claro por padrao, escuro por html[data-theme=dark] — sem depender de JS para clarear. */
+  --marca:var(--ip-text);
+  --marca-deep:var(--ip-text);
+  --marca-light:var(--ip-line-strong);
+  --marca-soft:var(--ip-surface-2);
+  --acento:var(--ip-accent);
+  --acento-deep:var(--ip-accent-strong);
+  --acento-soft:var(--ip-accent-wash);
+  --ink:var(--ip-text);
+  --ink-soft:var(--ip-text-body);
+  --muted:var(--ip-text-muted);
+  --rule:var(--ip-line);
+  --paper:var(--ip-surface);
+  --paper-deep:var(--ip-surface-2);
+  --success:var(--ip-ok);
+  --warn:var(--ip-warn);
+  --danger:var(--ip-danger);
+  --info:var(--ip-info);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Inter',sans-serif;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.55;min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
 a{color:var(--marca);text-decoration:none}
