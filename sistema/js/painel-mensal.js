@@ -72,7 +72,7 @@
     const n=series[0].labels.length;
     const x=(i)=>pad+(W-pad*2)*(n<=1?0:i/(n-1));
     const y=(v)=>H-pad-(H-pad*2)*(v-mn)/((mx-mn)||1);
-    const colors=['var(--acento,#C85924)','var(--info,#7BA5D8)','var(--ok,#6BAE82)','var(--warn,#E0763A)','var(--danger,#D87575)','var(--cream-muted,#D6CDB8)'];
+    const colors=['var(--acento,#C85924)','var(--info,#7BA5D8)','var(--ip-ok)','var(--warn,#E0763A)','var(--danger,#D87575)','var(--cream-muted,#D6CDB8)'];
     let lines=''; series.forEach((s,si)=>{
       const pts=s.data.map((v,i)=>v==null?null:x(i)+','+y(v)).filter(Boolean).join(' ');
       lines+='<polyline fill="none" stroke="'+colors[si%colors.length]+'" stroke-width="1.6" points="'+pts+'"/>';
@@ -111,7 +111,7 @@
     const buck=monthBucket(d.pulsos,'created_at');
     const series=DIMS.map(dim=>({nome:dim.n,labels:buck.labels,data:buck.labels.map(k=>{const a=buck.map[k]||[];return avg(a.map(p=>p[dim.k]))})}));
     const rxStages=['novo','contatado','agendado','realizado','convertido'];
-    const rxBars=rxStages.map(s=>({l:s,v:d.rx.filter(r=>r.status===s).length,color:s==='convertido'?'var(--ok,#6BAE82)':'var(--acento,#C85924)'}));
+    const rxBars=rxStages.map(s=>({l:s,v:d.rx.filter(r=>r.status===s).length,color:s==='convertido'?'var(--ip-ok)':'var(--acento,#C85924)'}));
     const evtBy={}; d.eventos.forEach(e=>{const k=(e.source_table||'?').replace('ip_','');evtBy[k]=(evtBy[k]||0)+1});
     const evtBars=Object.entries(evtBy).sort((a,b)=>b[1]-a[1]).slice(0,7).map(([k,v])=>({l:k,v,color:'var(--info,#7BA5D8)'}));
     const partes=[];
@@ -159,7 +159,7 @@
   #pm-root .pm-kpi .val .un{font-size:12px;color:var(--cream-dim);font-style:normal;margin-left:2px}
   #pm-root .pm-kpi .note{font-family:var(--mono);font-size:9.5px;color:var(--cream-dim);margin-top:5px}
   #pm-root .pm-kpi .farol{display:inline-block;margin-top:8px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:10px}
-  #pm-root .pm-kpi .farol.no-alvo{background:rgba(116,192,143,.16);color:var(--ok,#6BAE82)}
+  #pm-root .pm-kpi .farol.no-alvo{background:rgba(116,192,143,.16);color:var(--ip-ok)}
   #pm-root .pm-kpi .farol.atencao{background:rgba(224,118,58,.16);color:var(--warn,#E0763A)}
   #pm-root .pm-kpi .farol.fora{background:rgba(216,117,117,.16);color:var(--danger,#D87575)}
   #pm-root .pm-kpi .farol.sem-meta{background:rgba(255,255,255,.04);color:var(--cream-dim)}

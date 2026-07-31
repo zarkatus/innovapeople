@@ -161,7 +161,7 @@
       +'</div>'
       +'<div class="fl-drawer-body">'+body+'</div>'
       +'<div class="fl-drawer-foot">'
-        +(proc?'<span class="fl-mini" style="color:var(--ok,#6BAE82)">&#10003; Processada em '+esc((r.processado_em||'').slice(0,10))+'</span>':'<button class="fl-btn" onclick="IpFolha._processar(\''+esc(r.id)+'\')">Marcar como processada</button>')
+        +(proc?'<span class="fl-mini" style="color:var(--ip-ok)">&#10003; Processada em '+esc((r.processado_em||'').slice(0,10))+'</span>':'<button class="fl-btn" onclick="IpFolha._processar(\''+esc(r.id)+'\')">Marcar como processada</button>')
         +'<button class="fl-btn ghost" onclick="IpFolha._prepararEnvioCS(\''+esc(r.id)+'\')">Preparar envio ao grupo Financeiro</button>'
       +'</div>'
     +'</div>';

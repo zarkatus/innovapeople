@@ -29,7 +29,7 @@
 #fl-root .fl-list{display:flex;flex-direction:column;gap:8px}
 #fl-root .fl-card{display:flex;align-items:center;gap:18px;padding:14px 18px;border-radius:11px;background:var(--navy-raised,var(--cream2,#101821));border:1px solid var(--rule,var(--border,rgba(240,180,138,.12)));border-left:3px solid var(--warn,#E0763A);cursor:pointer;transition:all .18s}
 #fl-root .fl-card:hover{border-color:var(--acento,#C85924);transform:translateX(2px)}
-#fl-root .fl-card.proc{border-left-color:var(--ok,#6BAE82);opacity:.82}
+#fl-root .fl-card.proc{border-left-color:var(--ip-ok);opacity:.82}
 #fl-root .fl-card-main{min-width:150px}
 #fl-root .fl-card-comp{font-family:var(--serif);font-style:italic;font-size:21px;color:var(--acento,#C85924);text-transform:capitalize}
 #fl-root .fl-card-meta{font-size:12px;color:var(--ink2,#D6CDB8);margin-top:2px}
@@ -40,10 +40,10 @@
 #fl-root .fl-card-side{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
 #fl-root .fl-mini{font-family:var(--mono);font-size:9.5px;color:var(--ink3,#A99E86)}
 #fl-root .fl-tag{font-size:10px;padding:3px 9px;border-radius:11px;letter-spacing:.04em;font-family:var(--sans)}
-#fl-root .fl-tag.info{background:rgba(123,165,216,.16);color:var(--blue,#7BA5D8)}
+#fl-root .fl-tag.info{background:var(--ip-info-wash);color:var(--ip-info)}
 #fl-root .fl-tag.warn{background:rgba(224,118,58,.16);color:var(--warn,#E0763A)}
-#fl-root .fl-tag.ok{background:rgba(107,174,130,.16);color:var(--ok,#6BAE82)}
-#fl-root .fl-tag.danger{background:rgba(216,117,117,.16);color:var(--red,#D87575)}
+#fl-root .fl-tag.ok{background:var(--ip-ok-wash);color:var(--ip-ok)}
+#fl-root .fl-tag.danger{background:rgba(216,117,117,.16);color:var(--ip-danger)}
 #fl-root .fl-tag.muted{background:rgba(255,255,255,.05);color:var(--ink3,#A99E86)}
 .fl-drawer-bg{position:fixed;inset:0;background:rgba(8,5,15,.66);z-index:1000;display:flex;justify-content:flex-end;backdrop-filter:blur(3px)}
 .fl-drawer{width:min(640px,94vw);height:100%;overflow-y:auto;background:var(--cream,#0B1119);border-left:1px solid rgba(200,89,36,.25);padding:24px 26px}

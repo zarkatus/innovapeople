@@ -188,8 +188,8 @@
   #pp-root .pp-btn{padding:9px 16px;border:none;border-radius:7px;background:linear-gradient(135deg,var(--acento-glow,#F0B48A),var(--acento));color:#2A1A3B;font-family:var(--sans);font-weight:600;font-size:12.5px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
   #pp-root .pp-btn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(200,89,36,.3)}
   #pp-root .pp-btn.ghost{background:transparent;color:var(--acento);border:1px solid var(--rule-strong)}
-  #pp-root .pp-btn.ghost.ok{color:var(--ok,#6BAE82);border-color:var(--rule-strong)}
-  #pp-root .pp-btn.ghost.ok:hover{border-color:var(--ok,#6BAE82);background:rgba(107,174,130,.08)}
+  #pp-root .pp-btn.ghost.ok{color:var(--ip-ok);border-color:var(--rule-strong)}
+  #pp-root .pp-btn.ghost.ok:hover{border-color:var(--ip-ok);background:rgba(107,174,130,.08)}
   #pp-root .pp-btn:disabled{opacity:.6;cursor:wait}
   #pp-root .pp-spin{display:inline-block;width:11px;height:11px;border:2px solid rgba(42,26,59,.25);border-top-color:#2A1A3B;border-radius:50%;animation:ppspin .8s linear infinite}
   #pp-root .pp-btn.ghost .pp-spin{border-color:rgba(200,89,36,.25);border-top-color:var(--acento)}
