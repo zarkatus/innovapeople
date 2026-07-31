@@ -164,7 +164,7 @@ html[data-theme="light"] #ip-wa-fab .wa-tx b{color:var(--acento-deep)}
 html[data-theme="light"]{
   /* canônicos */
   --bg:#F4EFE7; --bg-soft:#FFFFFF; --bg-raised:#FBF8F2; --bg-sidebar:#FFFFFF;
-  --sb-fg:#1C2734; --cream-muted:#3F4A57; --cream-dim:#7C8794; --cream-faint:#B5ACBE;
+  --sb-fg:#1C2734; --cream-muted:#3F4A57; --cream-dim:#5F6C7A; --cream-faint:#B5ACBE;
   --marca:#1C2734; --marca-mid:#33475C; --marca-deep:#0E141B;
   --acento:#A8461A; --acento-glow:#A8461A; --acento-soft:#D2652B; --acento-deep:#8A3A15;
   --rule:rgba(14,20,27,.14); --rule-soft:rgba(14,20,27,.07); --edge:rgba(168,70,26,.32);

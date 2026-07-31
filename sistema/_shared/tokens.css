@@ -74,7 +74,10 @@ html[data-theme="dark"]{
   --ip-text-on-accent: #14202C;
 
   --ip-accent:         #F0B48A;   /* sobre marinho, o laranja precisa clarear para ler */
-  --ip-accent-strong:  #E9A578;
+  /* No claro, "strong" é mais ESCURO que o acento (mais peso sobre papel). No escuro é o
+     contrário: peso vem de luz. Manter a mesma direção dos dois lados deixava todo texto de
+     acento sobre fundo de acento abaixo do mínimo de contraste (CVO 31/07, auditoria). */
+  --ip-accent-strong:  #F8CBA6;
   --ip-accent-light:   #EDAC80;
   --ip-accent-wash:    rgba(240,180,138,.12);
   --ip-brand-deep:     #060B12;
