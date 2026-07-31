@@ -8,7 +8,9 @@
 
   // ═══ TEMA (dark default / light) — aplica cedo p/ evitar flash ═══
   try{
-    const saved=localStorage.getItem('ip_theme')||'dark';
+    // CVO 31/07: o claro passa a ser o padrao. Quem ja escolheu escuro continua no escuro;
+    // quem nunca escolheu entra no claro, em vez de receber a tela mais escura da casa.
+    const saved=localStorage.getItem('ip_theme')||'light';
     document.documentElement.setAttribute('data-theme',saved);
   }catch(_){}
   function setTheme(t){

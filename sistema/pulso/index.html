@@ -8,8 +8,19 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<link rel="stylesheet" href="/sistema/_shared/tokens.css">
 <style>
-:root{--bg:#0B1119;--bg2:#101821;--bg3:#16202B;--acento:#C85924;--acento-glow:#F0B48A;--cream:#F7F3EC;--cream-muted:#D6CDB8;--cream-dim:#A99E86;--marca:#33475C;--marca-deep:#0E141B;--ok:#6BAE82;--rule:rgba(240,180,138,.14);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',sans-serif}
+:root{
+  /* GABARITO DE CONVERSAO (CVO 31/07): a tela mantem os nomes que ja usa, mas eles passam a
+     apontar para o contrato (_shared/tokens.css). Assim a tela inteira responde ao tema sem
+     reescrever regra por regra, e nenhuma cor nasce aqui. */
+  --bg:var(--ip-surface); --bg2:var(--ip-surface-2); --bg3:var(--ip-surface-card);
+  --acento:var(--ip-accent); --acento-glow:var(--ip-accent-light); --acento-dim:var(--ip-accent-strong);
+  --cream:var(--ip-text); --cream-muted:var(--ip-text-muted); --cream-dim:var(--ip-text-faint);
+  --marca:var(--ip-brand-deep); --marca-deep:var(--ip-brand-deep);
+  --ok:var(--ip-ok); --rule:var(--ip-line);
+  --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter',sans-serif
+}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:radial-gradient(70% 100% at 30% 0%,rgba(51,71,92,.12),transparent 60%),var(--bg);color:var(--cream);font-family:var(--sans);font-weight:300;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px}
 .card{max-width:560px;width:100%;background:linear-gradient(180deg,var(--bg2),var(--bg));border:1px solid var(--rule);border-radius:14px;padding:40px 36px;box-shadow:0 24px 64px rgba(0,0,0,.5)}
@@ -24,11 +35,11 @@ h1{font-family:var(--serif);font-style:italic;font-weight:400;font-size:28px;col
 .scale{display:flex;gap:8px}
 .scale button{flex:1;aspect-ratio:1;border:1px solid var(--rule);border-radius:8px;background:var(--bg3);color:var(--cream-dim);font-family:var(--serif);font-style:italic;font-size:20px;cursor:pointer;transition:all .18s}
 .scale button:hover{border-color:var(--acento);color:var(--cream)}
-.scale button.on{background:linear-gradient(135deg,var(--acento-glow),var(--acento));color:#2A1A3B;border-color:var(--acento);font-weight:500;transform:scale(1.05)}
+.scale button.on{background:linear-gradient(135deg,var(--acento-glow),var(--acento));color:var(--ip-surface-2);border-color:var(--acento);font-weight:500;transform:scale(1.05)}
 .scale-lbl{display:flex;justify-content:space-between;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream-dim);margin-top:6px;font-family:var(--sans)}
 textarea{width:100%;padding:14px;background:var(--bg3);border:1px solid var(--rule);border-radius:8px;color:var(--cream);font-family:var(--sans);font-size:14px;resize:vertical;min-height:80px;margin-top:8px}
 textarea:focus{outline:none;border-color:var(--acento)}
-.btn{width:100%;padding:15px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--acento-glow),var(--acento));color:#2A1A3B;font-family:var(--sans);font-weight:600;font-size:14px;letter-spacing:.06em;cursor:pointer;margin-top:14px;transition:all .2s}
+.btn{width:100%;padding:15px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--acento-glow),var(--acento));color:var(--ip-surface-2);font-family:var(--sans);font-weight:600;font-size:14px;letter-spacing:.06em;cursor:pointer;margin-top:14px;transition:all .2s}
 .btn:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(200,89,36,.4)}
 .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .state{text-align:center;padding:30px 0}
