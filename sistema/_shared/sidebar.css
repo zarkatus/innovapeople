@@ -197,7 +197,7 @@ body.ip-sb-collapsed .sb-theme{flex-direction:column;gap:4px;margin-top:8px;padd
 body.ip-sb-collapsed .sb-theme button span{display:none}
 
 /* Botao Voltar no topo do sidebar (CVO 30/05 — navegacao de volta global) */
-.sb-nav-back{flex-shrink:0;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--sb-rule,rgba(240,180,138,.14));border-radius:8px;background:transparent;color:var(--acento,#C85924);cursor:pointer;transition:all .18s;margin-right:8px}
+.sb-nav-back{flex-shrink:0;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--sb-rule,rgba(240,180,138,.14));border-radius:8px;background:transparent;color:var(--acento, var(--ip-accent));cursor:pointer;transition:all .18s;margin-right:8px}
 .sb-nav-back svg{width:16px;height:16px}
-.sb-nav-back:hover{background:rgba(200,89,36,.12);border-color:var(--acento,#C85924);transform:translateX(-1px)}
+.sb-nav-back:hover{background:rgba(200,89,36,.12);border-color:var(--acento, var(--ip-accent));transform:translateX(-1px)}
 .sb.collapsed .sb-nav-back{margin-right:0}
