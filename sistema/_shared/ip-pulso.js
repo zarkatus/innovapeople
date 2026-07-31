@@ -119,7 +119,7 @@
      +'.pz-nosp{font-size:10px;color:var(--ip-text-muted)}'
      +'.pz-com{display:flex;gap:10px;background:var(--ip-bg-deep);border:1px solid rgba(210,174,100,.07);border-radius:10px;padding:11px 12px;margin-bottom:9px}'
      +'.pz-com-bar{width:3px;border-radius:3px;flex:0 0 auto}.pz-com-tx{font-size:13px;color:var(--ip-cream);line-height:1.45;font-style:italic}'
-     +'.pz-com-meta{font-size:10.5px;color:var(--ip-ink-4);margin-top:5px;font-family:ui-monospace,monospace}'
+     +'.pz-com-meta{font-size:10.5px;color:var(--ip-text-muted);margin-top:5px;font-family:ui-monospace,monospace}'
      +'.pz-ia{background:linear-gradient(135deg,#0C1626,#0A1320);border:1px solid rgba(210,174,100,.16);border-radius:14px;padding:18px 20px;margin-top:8px}'
      +'.pz-ia-lbl{font:600 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--ip-gold-lum);margin-bottom:10px}'
      +'.pz-ia-txt{font-size:14.5px;line-height:1.6;color:var(--ip-cream);white-space:pre-wrap}'

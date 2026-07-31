@@ -19,7 +19,7 @@
   const me = ()=> (window.__IP_USER_EMAIL)||'innovapeople';
 
   const ST = {
-    ativo:    { l:'Ativo',     c:'var(--ip-ok)', bg:'rgba(46,139,87,.16)' },
+    ativo:    { l:'Ativo',     c:'var(--ip-ok)', bg:'var(--ip-ok-wash)' },
     afastado: { l:'Afastado',  c:'var(--ip-gold-lum)', bg:'rgba(210,174,100,.16)' },
     desligado:{ l:'Desligado', c:'var(--ip-danger)', bg:'rgba(199,125,125,.16)' }
   };
