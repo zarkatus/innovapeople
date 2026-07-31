@@ -55,30 +55,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
-/* :root invertido p/ paleta ÚNICA dark violet (CVO 29/05). Bolhas: in=violet
-   escuro, out=violet-deep destacada; texto claro em ambas. */
+/* :root invertido p/ paleta ÚNICA escura da marca (CVO 29/05). Bolhas: in=marinho
+   escuro, out=marinho profundo destacada; texto claro em ambas. */
 :root{
-  --navy:#F5DDA5;--navy2:#E6CB8F;--navy3:#241B33;
-  --cream:#0C0816;--cream2:#140D22;--cream3:#1C1230;--white:#1C1230;
-  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#F5DDA5;--gold-soft:#E6D9B5;
+  --navy:#F0B48A;--navy2:#EDAC80;--navy3:#241B33;
+  --cream:#0B1119;--cream2:#101821;--cream3:#16202B;--white:#16202B;
+  --acento:#C85924;--acento2:#E0763A;--acento-deep:#F0B48A;--acento-soft:#EFD9C6;
   --emerald:#6BAE82;--emerald2:#3DA882;
-  --ink:#F7F3EC;--ink2:#D6CDB8;--ink3:#A99E86;--ink4:#8A7E94;
-  --border:rgba(245,221,165,.12);--border2:rgba(245,221,165,.06);
+  --ink:#F7F3EC;--ink2:#D6CDB8;--ink3:#A99E86;--ink4:#7C8794;
+  --border:rgba(240,180,138,.12);--border2:rgba(240,180,138,.06);
   --serif:'Cormorant Garamond',Georgia,serif;
   --sans:'Inter',-apple-system,Segoe UI,sans-serif;
   --mono:'JetBrains Mono',Menlo,monospace;
-  --red:#D87575;--amber:#E1A754;
-  --in:#1A1228;--out:#3F2756;
+  --red:#D87575;--amber:#E0763A;
+  --in:#1A1228;--out:#0E141B;
 }
 /* MODO LIGHT — valores originais claros + bolhas claras (CVO 29/05) */
 html[data-theme="light"]{
   --navy:#0A1628;--navy2:#0F1D32;--navy3:#152740;
   --cream:#F5F0E8;--cream2:#EFE9DD;--cream3:#E8E2D3;--white:#FBFAF7;
-  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#A88440;--gold-soft:#E6D9B5;
+  --acento:#C85924;--acento2:#E0763A;--acento-deep:#A8461A;--acento-soft:#EFD9C6;
   --emerald:#2E8B6E;--emerald2:#3DA882;
   --ink:#1A1A1A;--ink2:#3A3F47;--ink3:#6B7280;--ink4:#9CA3AF;
   --border:rgba(10,22,40,.08);--border2:rgba(10,22,40,.04);
-  --red:#9B2C2C;--amber:#A86A1F;
+  --red:#9B2C2C;--amber:#A8461A;
   --in:#F0EBE0;--out:#0A1628;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -96,9 +96,9 @@ input,textarea,select{font:inherit}
 .hdr{height:64px;background:rgba(245,240,232,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;flex-shrink:0;z-index:50}
 .hdr-inner{max-width:none;width:100%;display:flex;align-items:center;gap:28px}
 .brand{display:flex;align-items:center;gap:12px}
-.brand .mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:17px;font-style:italic}
+.brand .mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;color:var(--acento);font-family:var(--serif);font-size:17px;font-style:italic}
 .brand .name{font-size:17px;color:var(--navy);letter-spacing:.04em}
-.brand .name em{color:var(--gold-deep);font-weight:500}
+.brand .name em{color:var(--acento-deep);font-weight:500}
 .brand .sub{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink3);margin-left:8px;font-family:var(--mono)}
 .nav{display:flex;gap:22px;flex:1;justify-content:center;font-size:13px;letter-spacing:.06em}
 .nav a{color:var(--ink2);transition:color .2s}
@@ -116,22 +116,22 @@ input,textarea,select{font:inherit}
 .left{background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
 .left-h{padding:20px 22px 14px;border-bottom:1px solid var(--border)}
 .left-h h2{font-family:var(--serif);font-size:26px;color:var(--navy);font-weight:500;letter-spacing:-.005em;margin-bottom:6px}
-.left-h h2 em{color:var(--gold-deep);font-style:italic}
+.left-h h2 em{color:var(--acento-deep);font-style:italic}
 .left-h .sub{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3)}
 .search-box{padding:14px 22px 12px;border-bottom:1px solid var(--border)}
 .search-input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--cream2);color:var(--ink);transition:border-color .2s}
-.search-input:focus{outline:none;border-color:var(--gold)}
+.search-input:focus{outline:none;border-color:var(--acento)}
 .filter-tabs{display:flex;gap:6px;padding:8px 22px 12px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
 .filter-tabs::-webkit-scrollbar{display:none}
 .filter-tab{padding:5px 12px;border-radius:14px;font-size:11px;letter-spacing:.04em;color:var(--ink3);border:1px solid var(--border);background:transparent;white-space:nowrap;transition:all .2s}
 .filter-tab.on{background:var(--navy);color:var(--cream);border-color:var(--navy)}
-.filter-tab:hover:not(.on){border-color:var(--gold);color:var(--gold-deep)}
+.filter-tab:hover:not(.on){border-color:var(--acento);color:var(--acento-deep)}
 .conv-list{flex:1;overflow-y:auto}
 .conv-item{display:flex;gap:11px;padding:13px 22px;cursor:pointer;border-bottom:1px solid var(--border2);transition:background .15s;position:relative}
 .conv-item:hover{background:var(--cream2)}
-.conv-item.on{background:linear-gradient(90deg,rgba(196,163,90,.1),transparent);border-left:2px solid var(--gold)}
-.conv-item.on::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold)}
-.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold-soft),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:18px;color:var(--navy);font-weight:500;flex-shrink:0;letter-spacing:-.02em}
+.conv-item.on{background:linear-gradient(90deg,rgba(200,89,36,.1),transparent);border-left:2px solid var(--acento)}
+.conv-item.on::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--acento)}
+.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--acento-soft),var(--acento));display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:18px;color:var(--navy);font-weight:500;flex-shrink:0;letter-spacing:-.02em}
 .avatar.img{background-size:cover;background-position:center}
 .conv-body{flex:1;min-width:0}
 .conv-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:3px}
@@ -140,7 +140,7 @@ input,textarea,select{font:inherit}
 .conv-preview{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--ink3);line-height:1.35}
 .conv-preview .txt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .conv-preview .dir{flex-shrink:0;font-family:var(--mono);font-size:10px;color:var(--ink4)}
-.conv-unread{display:inline-block;background:var(--gold-deep);color:var(--white);font-family:var(--mono);font-size:9px;font-weight:500;padding:2px 6px;border-radius:8px;min-width:18px;text-align:center;line-height:1.2;flex-shrink:0;margin-left:6px}
+.conv-unread{display:inline-block;background:var(--acento-deep);color:var(--white);font-family:var(--mono);font-size:9px;font-weight:500;padding:2px 6px;border-radius:8px;min-width:18px;text-align:center;line-height:1.2;flex-shrink:0;margin-left:6px}
 .conv-empty{padding:40px 22px;text-align:center;color:var(--ink3);font-style:italic;font-family:var(--serif);font-size:17px}
 
 /* COLUNA CENTRAL · THREAD */
@@ -152,11 +152,11 @@ input,textarea,select{font:inherit}
 #composer-bar[aria-disabled="true"] .composer-tools{opacity:.55}
 #composer-bar[aria-disabled="true"] .composer-input{cursor:default}
 .center-empty{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--ink3);padding:32px;text-align:center}
-.center-empty .ico{font-family:var(--serif);font-size:80px;color:var(--gold-soft);margin-bottom:14px;font-style:italic;line-height:1}
+.center-empty .ico{font-family:var(--serif);font-size:80px;color:var(--acento-soft);margin-bottom:14px;font-style:italic;line-height:1}
 .center-empty h3{font-family:var(--serif);font-size:24px;color:var(--navy);font-weight:400;margin-bottom:10px}
 .center-empty p{font-family:var(--serif);font-size:17px;font-style:italic;max-width:380px;line-height:1.55}
 .thread-h{padding:14px 22px;border-bottom:1px solid var(--border);background:rgba(251,250,247,.92);backdrop-filter:blur(8px);display:flex;align-items:center;gap:12px;flex-shrink:0}
-.thread-h .avatar{width:38px;height:38px;font-size:15px;box-shadow:0 0 0 2px rgba(196,163,90,.25)}
+.thread-h .avatar{width:38px;height:38px;font-size:15px;box-shadow:0 0 0 2px rgba(200,89,36,.25)}
 .thread-h-name{flex:1}
 .thread-h-name .nm{font-family:var(--serif);font-size:18px;color:var(--navy);font-weight:500;line-height:1.1}
 .thread-h-name .ph{font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.04em;margin-top:2px}
@@ -173,7 +173,7 @@ input,textarea,select{font:inherit}
 .msg-bubble{padding:11px 15px;border-radius:14px;font-size:13.5px;line-height:1.55;white-space:pre-wrap;word-wrap:break-word;position:relative;font-family:var(--sans);font-weight:400}
 .msg.in .msg-bubble{background:var(--in);color:var(--ink);border-top-left-radius:4px}
 .msg.out .msg-bubble{background:var(--out);color:var(--cream);border-top-right-radius:4px}
-.msg.out .msg-bubble a{color:var(--gold2);text-decoration:underline}
+.msg.out .msg-bubble a{color:var(--acento2);text-decoration:underline}
 .msg-meta{font-family:var(--mono);font-size:9.5px;color:var(--ink3);letter-spacing:.04em;display:flex;gap:6px;align-items:center;padding:0 4px}
 .msg.out .msg-meta{justify-content:flex-end}
 .msg-status{font-size:10px;line-height:1}
@@ -189,10 +189,10 @@ input,textarea,select{font:inherit}
 .composer{border-top:1px solid var(--border);background:var(--white);padding:14px 22px;display:flex;flex-direction:column;gap:8px;flex-shrink:0}
 .composer-tools{display:flex;gap:6px;align-items:center}
 .tool-btn{padding:7px 11px;border:1px solid var(--border);border-radius:14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);transition:all .2s;background:transparent;cursor:pointer}
-.tool-btn:hover{border-color:var(--gold);color:var(--gold-deep)}
+.tool-btn:hover{border-color:var(--acento);color:var(--acento-deep)}
 .composer-row{display:flex;gap:8px;align-items:flex-end}
 .composer-input{flex:1;padding:11px 14px;border:1px solid var(--border);border-radius:14px;font-size:13.5px;background:var(--cream2);color:var(--ink);resize:none;font-family:var(--sans);min-height:42px;max-height:160px;transition:border-color .2s;line-height:1.5}
-.composer-input:focus{outline:none;border-color:var(--gold);background:var(--white)}
+.composer-input:focus{outline:none;border-color:var(--acento);background:var(--white)}
 .send-btn{padding:11px 22px;background:var(--navy);color:var(--cream);border-radius:14px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;transition:all .2s;cursor:pointer;white-space:nowrap;font-family:var(--sans);border:none}
 .send-btn:hover{background:var(--navy2)}
 .send-btn:disabled{opacity:.4;cursor:not-allowed}
@@ -215,9 +215,9 @@ input,textarea,select{font:inherit}
 .profile-field .k{color:var(--ink3);font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono)}
 .profile-field .v{color:var(--ink);text-align:right;word-break:break-word;font-family:var(--sans)}
 .profile-tags{display:flex;flex-wrap:wrap;gap:5px}
-.tag{display:inline-block;padding:3px 9px;border-radius:11px;font-size:10px;background:rgba(196,163,90,.12);color:var(--gold-deep);letter-spacing:.04em}
-.ai-summary{font-family:var(--serif);font-size:15px;font-style:italic;color:var(--ink2);line-height:1.55;padding:12px;background:linear-gradient(180deg,rgba(196,163,90,.06),rgba(196,163,90,.02));border-radius:6px;border-left:2px solid var(--gold)}
-.ai-summary::before{content:'~';color:var(--gold-deep);margin-right:6px;font-style:normal;font-weight:500}
+.tag{display:inline-block;padding:3px 9px;border-radius:11px;font-size:10px;background:rgba(200,89,36,.12);color:var(--acento-deep);letter-spacing:.04em}
+.ai-summary{font-family:var(--serif);font-size:15px;font-style:italic;color:var(--ink2);line-height:1.55;padding:12px;background:linear-gradient(180deg,rgba(200,89,36,.06),rgba(200,89,36,.02));border-radius:6px;border-left:2px solid var(--acento)}
+.ai-summary::before{content:'~';color:var(--acento-deep);margin-right:6px;font-style:normal;font-weight:500}
 
 /* TEMPLATES DROPDOWN */
 .tpl-menu{position:absolute;bottom:calc(100% + 8px);left:14px;background:var(--white);border:1px solid var(--border);border-radius:8px;box-shadow:0 12px 32px rgba(10,22,40,.14);width:340px;max-height:380px;overflow-y:auto;display:none;z-index:10}
@@ -227,7 +227,7 @@ input,textarea,select{font:inherit}
 .tpl-item{padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--border2);transition:background .15s}
 .tpl-item:hover{background:var(--cream2)}
 .tpl-item-name{font-family:var(--serif);font-size:15px;color:var(--navy);font-weight:500;margin-bottom:3px}
-.tpl-item-cat{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:6px}
+.tpl-item-cat{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--acento-deep);margin-bottom:6px}
 .tpl-item-preview{font-size:11px;color:var(--ink3);line-height:1.4;font-style:italic;font-family:var(--serif);font-size:13px}
 
 /* TOAST */
@@ -239,7 +239,7 @@ input,textarea,select{font:inherit}
 .thread-search-bar{flex-shrink:0;max-height:0;overflow:hidden;padding:0 22px;background:rgba(251,250,247,.92);border-bottom:1px solid transparent;transition:max-height .25s ease,padding .25s ease}
 .thread-search-bar.on{max-height:60px;padding:10px 22px;border-bottom:1px solid var(--border)}
 .thread-search-bar input{width:100%;padding:9px 14px;border:1px solid var(--border);border-radius:12px;font-size:13px;background:var(--cream2);color:var(--ink);font-family:var(--sans)}
-.thread-search-bar input:focus{outline:none;border-color:var(--gold);background:var(--white)}
+.thread-search-bar input:focus{outline:none;border-color:var(--acento);background:var(--white)}
 .right{transition:opacity .2s ease}
 .profile-acoes .acoes-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .profile-acoes .profile-act{width:100%;justify-content:center;text-align:center}
@@ -282,9 +282,9 @@ input,textarea,select{font:inherit}
       <h2>Conversas <em>vivas</em></h2>
       <div class="sub" id="conv-count">— em curso</div>
       <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
-        <a href="/sistema/whatsapp/sequencias/" style="padding:5px 10px;border:1px solid var(--gold);border-radius:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep);font-family:var(--mono)">Sequências</a>
-        <a href="/sistema/whatsapp/broadcast/" style="padding:5px 10px;border:1px solid var(--gold);border-radius:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep);font-family:var(--mono)">Broadcast</a>
-        <a href="/sistema/whatsapp/analytics/" style="padding:5px 10px;border:1px solid var(--gold);border-radius:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep);font-family:var(--mono)">Analytics</a>
+        <a href="/sistema/whatsapp/sequencias/" style="padding:5px 10px;border:1px solid var(--acento);border-radius:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--acento-deep);font-family:var(--mono)">Sequências</a>
+        <a href="/sistema/whatsapp/broadcast/" style="padding:5px 10px;border:1px solid var(--acento);border-radius:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--acento-deep);font-family:var(--mono)">Broadcast</a>
+        <a href="/sistema/whatsapp/analytics/" style="padding:5px 10px;border:1px solid var(--acento);border-radius:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--acento-deep);font-family:var(--mono)">Analytics</a>
       </div>
     </div>
     <div class="search-box">
@@ -554,7 +554,7 @@ function renderThread(){
     }else if(mtype==='audio'&&m.media_url){
       bubble+=`<div class="msg-media"><audio controls src="${esc(m.media_url)}" style="max-width:280px"></audio></div>`;
     }else if(mtype==='document'&&m.media_url){
-      bubble+=`<div class="msg-media"><a href="${esc(m.media_url)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(196,163,90,.08);border:1px solid var(--border);border-radius:8px;color:var(--navy);text-decoration:none"><span style="font-family:var(--serif);font-size:18px;color:var(--gold-deep)">📄</span><span style="font-size:13px">Abrir documento</span></a></div>`;
+      bubble+=`<div class="msg-media"><a href="${esc(m.media_url)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(200,89,36,.08);border:1px solid var(--border);border-radius:8px;color:var(--navy);text-decoration:none"><span style="font-family:var(--serif);font-size:18px;color:var(--acento-deep)">📄</span><span style="font-size:13px">Abrir documento</span></a></div>`;
     }
     if(m.content&&!/^\((imagem|áudio|documento|vídeo|figurinha|gif|mensagem|media)\)$/i.test(m.content))bubble+=esc(m.content);
     // V21.2: ícone azul para read, cinza para delivered/sent
@@ -565,9 +565,9 @@ function renderThread(){
     const evoId=esc(m.evo_message_id||'');
     const safeContent=esc((m.content||'').slice(0,200).replace(/'/g,"\\'"));
     const acoes=`<div class="msg-acoes" style="position:absolute;${dir==='out'?'left:-78px':'right:-78px'};top:0;display:none;background:var(--white);border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 14px rgba(10,22,40,.1);padding:4px;gap:2px;flex-direction:column;z-index:5">
-      <button onclick="setReplyTo('${evoId}','${safeContent}',${dir==='out'?'true':'false'})" title="Responder" style="background:none;border:none;padding:6px 10px;cursor:pointer;text-align:left;font-size:11px;color:var(--ink2);border-radius:3px" onmouseover="this.style.background='rgba(196,163,90,.1)'" onmouseout="this.style.background='none'">↩ Responder</button>
-      <button onclick="abrirEncaminhar('${evoId}','${safeContent}')" title="Encaminhar para você" style="background:none;border:none;padding:6px 10px;cursor:pointer;text-align:left;font-size:11px;color:var(--ink2);border-radius:3px" onmouseover="this.style.background='rgba(196,163,90,.1)'" onmouseout="this.style.background='none'">↪ Encaminhar</button>
-      <button onclick="navigator.clipboard.writeText('${safeContent}');toast('Copiado')" title="Copiar texto" style="background:none;border:none;padding:6px 10px;cursor:pointer;text-align:left;font-size:11px;color:var(--ink2);border-radius:3px" onmouseover="this.style.background='rgba(196,163,90,.1)'" onmouseout="this.style.background='none'">⎘ Copiar</button>
+      <button onclick="setReplyTo('${evoId}','${safeContent}',${dir==='out'?'true':'false'})" title="Responder" style="background:none;border:none;padding:6px 10px;cursor:pointer;text-align:left;font-size:11px;color:var(--ink2);border-radius:3px" onmouseover="this.style.background='rgba(200,89,36,.1)'" onmouseout="this.style.background='none'">↩ Responder</button>
+      <button onclick="abrirEncaminhar('${evoId}','${safeContent}')" title="Encaminhar para você" style="background:none;border:none;padding:6px 10px;cursor:pointer;text-align:left;font-size:11px;color:var(--ink2);border-radius:3px" onmouseover="this.style.background='rgba(200,89,36,.1)'" onmouseout="this.style.background='none'">↪ Encaminhar</button>
+      <button onclick="navigator.clipboard.writeText('${safeContent}');toast('Copiado')" title="Copiar texto" style="background:none;border:none;padding:6px 10px;cursor:pointer;text-align:left;font-size:11px;color:var(--ink2);border-radius:3px" onmouseover="this.style.background='rgba(200,89,36,.1)'" onmouseout="this.style.background='none'">⎘ Copiar</button>
     </div>`;
     html+=`<div class="msg ${dir}" style="position:relative" onmouseenter="this.querySelector('.msg-acoes').style.display='flex'" onmouseleave="this.querySelector('.msg-acoes').style.display='none'">
       ${acoes}
@@ -612,7 +612,7 @@ function novaConversa(){
   _state.convId=null;
   _state.novoNumero=limpo;
   _state.mensagens=[];
-  document.getElementById('thread-zone').innerHTML=`<div class="center-empty"><div class="ico">✎</div><h3>Nova conversa</h3><p>Para <strong style="color:var(--gold-deep)">+${limpo}</strong> · escreva abaixo e envie. A conversa será criada ao enviar.</p></div>`;
+  document.getElementById('thread-zone').innerHTML=`<div class="center-empty"><div class="ico">✎</div><h3>Nova conversa</h3><p>Para <strong style="color:var(--acento-deep)">+${limpo}</strong> · escreva abaixo e envie. A conversa será criada ao enviar.</p></div>`;
   const bar=document.getElementById('composer-bar');if(bar)bar.setAttribute('aria-disabled','false');
   const ci=document.getElementById('composer-input');if(ci){ci.placeholder='Mensagem para +'+limpo+'…';ci.focus()}
 }
@@ -842,14 +842,14 @@ function renderPerfil(){
   </div>`;
 
   html+=`<div class="profile-sec">
-    <div class="profile-sec-h" style="display:flex;justify-content:space-between;align-items:center">Tags <button onclick="editarTags()" style="background:none;border:none;color:var(--gold-deep);font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-family:var(--mono)">${tags.length?'Editar':'+ Adicionar'}</button></div>
+    <div class="profile-sec-h" style="display:flex;justify-content:space-between;align-items:center">Tags <button onclick="editarTags()" style="background:none;border:none;color:var(--acento-deep);font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-family:var(--mono)">${tags.length?'Editar':'+ Adicionar'}</button></div>
     <div class="profile-tags">${tags.length?tags.map(t=>`<span class="tag">${esc(t)}</span>`).join(''):'<span style="color:var(--ink3);font-style:italic;font-size:12px;font-family:var(--serif)">Sem tags</span>'}</div>
   </div>`;
 
   html+=`<div class="profile-sec">
     <div class="profile-sec-h">Vinculação</div>
     ${cv.candidato_nome?`<div class="profile-field"><span class="k">Candidato</span><span class="v">${esc(cv.candidato_nome)}</span></div>`:''}
-    ${cv.candidato_estagio?`<div class="profile-field"><span class="k">Estágio</span><span class="v"><span class="tag" style="background:rgba(196,163,90,.16)">${esc(cv.candidato_estagio)}</span></span></div>`:''}
+    ${cv.candidato_estagio?`<div class="profile-field"><span class="k">Estágio</span><span class="v"><span class="tag" style="background:rgba(200,89,36,.16)">${esc(cv.candidato_estagio)}</span></span></div>`:''}
     ${cv.candidato_score!=null?`<div class="profile-field"><span class="k">Score</span><span class="v" style="font-family:var(--mono)">${cv.candidato_score}/100</span></div>`:''}
     ${cv._assigned?`<div class="profile-field"><span class="k">Atribuída</span><span class="v">${esc(cv._assigned)}</span></div>`:''}
   </div>`;
@@ -878,7 +878,7 @@ function setReplyTo(evoId,content,fromMe){
   const composer=document.querySelector('.composer');
   let chip=document.getElementById('reply-chip');
   if(!chip){chip=document.createElement('div');chip.id='reply-chip';composer.insertBefore(chip,composer.firstChild)}
-  chip.innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(196,163,90,.1);border-left:3px solid var(--gold);margin-bottom:6px;border-radius:0 6px 6px 0">
+  chip.innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(200,89,36,.1);border-left:3px solid var(--acento);margin-bottom:6px;border-radius:0 6px 6px 0">
     <span style="flex:1;font-style:italic;font-size:13px;color:var(--ink2)">Em resposta a: <strong>${esc(content.slice(0,120))}${content.length>120?'…':''}</strong></span>
     <button onclick="clearReplyTo()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:18px;padding:0 4px" title="Cancelar resposta">×</button>
   </div>`;
@@ -895,7 +895,7 @@ const FORWARD_DESTINOS=[
   {nome:'Raphael (Bahia)',phone:'5571982428959'},
 ];
 async function abrirEncaminhar(evoId,content){
-  const opts=FORWARD_DESTINOS.map((d,i)=>`<button onclick="encaminharPara('${d.phone}','${esc(content).replace(/'/g,"\\'")}',this)" style="display:block;width:100%;text-align:left;padding:14px 18px;background:none;border:none;border-bottom:1px solid var(--border2);cursor:pointer;font-size:14px;color:var(--ink2);font-family:var(--sans)" onmouseover="this.style.background='rgba(196,163,90,.08)'" onmouseout="this.style.background='none'">${esc(d.nome)} <span style="color:var(--ink3);font-family:var(--mono);font-size:11px">+${d.phone}</span></button>`).join('');
+  const opts=FORWARD_DESTINOS.map((d,i)=>`<button onclick="encaminharPara('${d.phone}','${esc(content).replace(/'/g,"\\'")}',this)" style="display:block;width:100%;text-align:left;padding:14px 18px;background:none;border:none;border-bottom:1px solid var(--border2);cursor:pointer;font-size:14px;color:var(--ink2);font-family:var(--sans)" onmouseover="this.style.background='rgba(200,89,36,.08)'" onmouseout="this.style.background='none'">${esc(d.nome)} <span style="color:var(--ink3);font-family:var(--mono);font-size:11px">+${d.phone}</span></button>`).join('');
   const ovl=document.createElement('div');
   ovl.id='forward-overlay';
   ovl.style.cssText='position:fixed;inset:0;background:rgba(10,22,40,.45);backdrop-filter:blur(6px);z-index:9000;display:flex;align-items:center;justify-content:center';
@@ -905,7 +905,7 @@ async function abrirEncaminhar(evoId,content){
       <div style="font-family:var(--serif);font-size:18px;color:var(--navy);font-weight:500">Encaminhar mensagem</div>
       <button onclick="document.getElementById('forward-overlay').remove()" style="background:none;border:none;color:var(--ink3);font-size:22px;cursor:pointer">×</button>
     </div>
-    <div style="padding:14px 22px;background:rgba(196,163,90,.05);border-bottom:1px solid var(--border);font-style:italic;font-size:13px;color:var(--ink2);max-height:120px;overflow:auto">"${esc(content.slice(0,400))}${content.length>400?'…':''}"</div>
+    <div style="padding:14px 22px;background:rgba(200,89,36,.05);border-bottom:1px solid var(--border);font-style:italic;font-size:13px;color:var(--ink2);max-height:120px;overflow:auto">"${esc(content.slice(0,400))}${content.length>400?'…':''}"</div>
     <div style="padding:4px 0">${opts}</div>
   </div>`;
   document.body.appendChild(ovl);
@@ -1168,12 +1168,12 @@ async function abrirAuditoria(convId){
   ovl.innerHTML=`<div style="background:var(--white);border-radius:8px;max-width:880px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(10,22,40,.4);overflow:hidden">
     <div style="padding:20px 28px;border-bottom:1px solid var(--border);background:var(--cream);display:flex;justify-content:space-between;align-items:center">
       <div>
-        <h3 style="font-family:var(--serif);font-size:24px;color:var(--navy);font-weight:500;margin:0">Auditoria forense <em style="color:var(--gold-deep);font-style:italic">com hash chain</em></h3>
+        <h3 style="font-family:var(--serif);font-size:24px;color:var(--navy);font-weight:500;margin:0">Auditoria forense <em style="color:var(--acento-deep);font-style:italic">com hash chain</em></h3>
         <div style="font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-top:4px">Conversa ${esc((convId||'').slice(0,8))}… · prev_hash → hash imutável</div>
       </div>
       <button onclick="document.getElementById('audit-overlay').style.display='none'" style="font-size:26px;color:var(--ink3);background:none;border:none;cursor:pointer;padding:4px 12px">×</button>
     </div>
-    <div style="padding:18px 28px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(196,163,90,.06),transparent);display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+    <div style="padding:18px 28px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(200,89,36,.06),transparent);display:flex;gap:10px;align-items:center;flex-wrap:wrap">
       <button onclick="validarChain()" style="padding:9px 20px;background:var(--navy);color:var(--cream);border:none;border-radius:5px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-family:inherit;cursor:pointer">Validar integridade global</button>
       <div id="audit-resultado" style="flex:1;font-size:12px;color:var(--ink3);font-family:var(--serif);font-style:italic;font-size:14px"></div>
     </div>
@@ -1202,7 +1202,7 @@ async function abrirAuditoria(convId){
       '<thead><tr style="background:var(--cream2)"><th style="padding:8px 10px;text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500">Quando</th><th style="padding:8px 10px;text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500">Ação</th><th style="padding:8px 10px;text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500">Ator</th><th style="padding:8px 10px;text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500">prev_hash → hash</th></tr></thead><tbody>'+
       uniq.slice(0,100).map(a=>`<tr style="border-bottom:1px solid var(--border2)">
         <td style="padding:8px 10px;color:var(--ink2);white-space:nowrap">${new Date(a.ocorrido_em).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'})}</td>
-        <td style="padding:8px 10px"><span style="background:rgba(196,163,90,.1);color:var(--gold-deep);padding:2px 8px;border-radius:9px;font-size:10px;letter-spacing:.06em">${esc(a.acao||'')}</span> <span style="color:var(--ink3);font-size:10px;margin-left:6px">${esc(a.entidade||'')}</span></td>
+        <td style="padding:8px 10px"><span style="background:rgba(200,89,36,.1);color:var(--acento-deep);padding:2px 8px;border-radius:9px;font-size:10px;letter-spacing:.06em">${esc(a.acao||'')}</span> <span style="color:var(--ink3);font-size:10px;margin-left:6px">${esc(a.entidade||'')}</span></td>
         <td style="padding:8px 10px;color:var(--ink2);font-size:11px">${esc(a.ator_email||'(sistema)')}</td>
         <td style="padding:8px 10px;color:var(--ink3);font-size:10px;letter-spacing:.04em">${esc((a.prev_hash||'').slice(0,8))}… → ${esc((a.hash||'').slice(0,8))}…</td>
       </tr>`).join('')+'</tbody></table>';

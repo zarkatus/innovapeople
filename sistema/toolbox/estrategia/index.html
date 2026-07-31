@@ -54,7 +54,7 @@
     <div class="p-h"><div class="t"><span class="dot idle"></span>OKRs · Cascateamento Q2 2026</div><a class="openlink" href="/sistema/chro/">cadastrar →</a></div>
     <div class="p-b">
       <div style="font-family:var(--serif);font-style:italic;color:var(--cream-muted);font-size:14px;margin-bottom:14px;max-width:680px">Objetivos ambiciosos + Key Results mensuráveis. Cascateamento da casa → equipe → pessoa, alinhamento vertical e horizontal validado pelo Agente Critic-Org.</div>
-      <div class="p-empty" id="b-okrs">Nenhum OKR cadastrado. <a href="/sistema/chro/" style="color:var(--gold)">Cadastrar primeiro →</a></div>
+      <div class="p-empty" id="b-okrs">Nenhum OKR cadastrado. <a href="/sistema/chro/" style="color:var(--acento)">Cadastrar primeiro →</a></div>
     </div>
   </div>
 
@@ -145,7 +145,7 @@ async function loadProj(){
     const alert=m.sugestoes_criticas>0?`<span class="tag danger">${m.sugestoes_criticas}!</span>`:'';
     const pct=({diagnostico:20,plano:40,execucao:60,rituais:80,escala:100})[m.estagio]||10;
     return `<a class="row-item" href="/sistema/mandato.html?id=${TB.esc(m.id)}" style="text-decoration:none;color:inherit"><div class="ico">${TB.initials(m.empresa)}</div><div class="body"><div class="nm">${TB.esc(m.empresa)} <span style="color:var(--cream-dim);font-weight:400;font-size:11px">· ${TB.esc(m.setor||'—')}</span></div><div class="desc">${TB.esc(stag)}</div><div class="pbar" style="margin-top:6px"><span style="width:${pct}%"></span></div></div>${alert}${sc}</a>`;
-  }).join('')||'<div class="p-empty">Nenhum projeto em delivery. <a href="/sistema/" style="color:var(--gold)">Criar a partir de Raio-X →</a></div>';
+  }).join('')||'<div class="p-empty">Nenhum projeto em delivery. <a href="/sistema/" style="color:var(--acento)">Criar a partir de Raio-X →</a></div>';
   document.getElementById('proj-list').innerHTML=lines;
 }
 

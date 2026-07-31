@@ -63,8 +63,8 @@
       '#ip-org-bar{position:sticky;top:0;z-index:45;display:flex;align-items:center;gap:10px;padding:9px 18px;background:color-mix(in srgb,var(--ip-bg-deep,#070D15) 94%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid rgba(210,174,100,.12);font-size:13px}'
      +'.ipo-crumb{display:flex;align-items:center;gap:6px;flex-wrap:wrap}'
      +'.ipo-crumb a{color:var(--ip-ink-2,#9FB0C5);cursor:pointer;padding:3px 8px;border-radius:8px;transition:.15s}'
-     +'.ipo-crumb a:hover{background:rgba(210,174,100,.1);color:var(--ip-gold-lum,#E5C77E)}'
-     +'.ipo-crumb a.cur{color:var(--ip-gold-lum,#E5C77E);font-weight:600}'
+     +'.ipo-crumb a:hover{background:rgba(210,174,100,.1);color:var(--ip-gold-lum,#E9A578)}'
+     +'.ipo-crumb a.cur{color:var(--ip-gold-lum,#E9A578);font-weight:600}'
      +'.ipo-crumb .sep{color:var(--ip-ink-4,#6B7A90)}'
      +'.ipo-treebtn{margin-left:auto;font-size:11px;color:var(--ip-ink-3);border:1px solid rgba(210,174,100,.16);border-radius:14px;padding:5px 12px;cursor:pointer;background:transparent;transition:.15s}'
      +'.ipo-treebtn:hover{border-color:var(--ip-gold-lum);color:var(--ip-gold-lum)}'
@@ -75,13 +75,13 @@
      +'.ipo-tnode.cur{background:color-mix(in srgb,var(--ip-gold-lum) 14%,transparent);color:var(--ip-gold-lum);font-weight:600}'
      +'.ipo-tnode .tp{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ip-ink-4);margin-left:auto}'
      +'.ipo-gear{flex:0 0 auto;width:24px;height:24px;border-radius:6px;border:none;background:transparent;color:var(--ip-ink-3,#8FA0B5);cursor:pointer;font-size:15px;line-height:1;opacity:.5;transition:.15s}'
-     +'.ipo-tnode:hover .ipo-gear{opacity:1}.ipo-gear:hover{background:rgba(210,174,100,.12);color:var(--ip-gold-lum,#E5C77E)}'
+     +'.ipo-tnode:hover .ipo-gear{opacity:1}.ipo-gear:hover{background:rgba(210,174,100,.12);color:var(--ip-gold-lum,#E9A578)}'
      +'.ipo-gestbtn{font:600 9.5px/1 system-ui;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:14px;border:1px solid rgba(210,174,100,.2);background:transparent;color:var(--ip-ink-3,#8FA0B5);cursor:pointer;transition:.15s}'
-     +'.ipo-gestbtn:hover,.ipo-gestbtn.on{border-color:var(--ip-gold-lum,#E5C77E);color:var(--ip-gold-lum,#E5C77E)}'
+     +'.ipo-gestbtn:hover,.ipo-gestbtn.on{border-color:var(--ip-gold-lum,#E9A578);color:var(--ip-gold-lum,#E9A578)}'
      +'.ipo-mbtn{display:block;width:100%;text-align:left;padding:11px 13px;margin-bottom:7px;border-radius:9px;border:1px solid rgba(210,174,100,.14);background:var(--ip-bg-deep,#070D15);color:var(--ip-ink,#CBD5E1);font-size:13px;cursor:pointer;transition:.15s}'
-     +'.ipo-mbtn:hover{border-color:var(--ip-gold-lum,#E5C77E);color:var(--ip-cream,#F7F3EC)}'
+     +'.ipo-mbtn:hover{border-color:var(--ip-gold-lum,#E9A578);color:var(--ip-cream,#F7F3EC)}'
      +'.ipo-dd{font:700 7.5px/1 system-ui;letter-spacing:.06em;padding:3px 6px;border-radius:6px}'
-     +'.ipo-dd-ok{background:rgba(123,211,160,.16);color:var(--ip-ok,#7BD3A0)}.ipo-dd-cau{background:rgba(229,199,126,.16);color:var(--ip-gold-lum,#E5C77E)}.ipo-dd-no{background:rgba(232,166,166,.16);color:var(--ip-danger,#E8A6A6)}';
+     +'.ipo-dd-ok{background:rgba(123,211,160,.16);color:var(--ip-ok,#7BD3A0)}.ipo-dd-cau{background:rgba(229,199,126,.16);color:var(--ip-gold-lum,#E9A578)}.ipo-dd-no{background:rgba(232,166,166,.16);color:var(--ip-danger,#E8A6A6)}';
     (document.head||document.documentElement).appendChild(st);
   }
   var _treeOpen=false;
@@ -119,12 +119,12 @@
   }
   function _criarNoModal(parentId){
     var tipos=['unidade_negocio','grupo','holding','empresa','frente','segmento','ativo','veiculo','fundo'];
-    var html='<div style="font:600 italic 17px Georgia;color:var(--ip-gold-lum,#E5C77E);margin-bottom:12px">Novo nó'+(parentId?' (dentro deste)':' (raiz)')+'</div>'
+    var html='<div style="font:600 italic 17px Georgia;color:var(--ip-gold-lum,#E9A578);margin-bottom:12px">Novo nó'+(parentId?' (dentro deste)':' (raiz)')+'</div>'
       +'<label style="display:block;margin-bottom:10px"><span style="display:block;font:600 10px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin-bottom:5px">Nome</span><input id="onc-nome" style="width:100%;background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.25);border-radius:9px;padding:10px 12px;color:var(--ip-cream,#F7F3EC);font-size:14px"></label>'
       +'<label style="display:block;margin-bottom:10px"><span style="display:block;font:600 10px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin-bottom:5px">Tipo</span><select id="onc-tipo" style="width:100%;background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.25);border-radius:9px;padding:10px 12px;color:var(--ip-cream,#F7F3EC);font-size:14px">'+tipos.map(function(t){return '<option value="'+t+'">'+t+'</option>';}).join('')+'</select></label>'
       +'<label style="display:block;margin-bottom:6px"><span style="display:block;font:600 10px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin-bottom:5px">CNPJ <span style="color:var(--ip-ink-4,#6B7A90);text-transform:none;letter-spacing:0">(opcional — dispara due diligence)</span></span><input id="onc-cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" style="width:100%;background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.25);border-radius:9px;padding:10px 12px;color:var(--ip-cream,#F7F3EC);font-size:14px;font-family:ui-monospace,monospace"></label>'
       +'<div id="onc-res" style="font-size:12px;margin:8px 0;min-height:16px"></div>'
-      +'<button class="ipo-mbtn" id="onc-ok" style="margin-top:6px;border-color:var(--ip-gold-lum,#E5C77E);color:var(--ip-gold-lum,#E5C77E);text-align:center;font-weight:600">Criar</button>';
+      +'<button class="ipo-mbtn" id="onc-ok" style="margin-top:6px;border-color:var(--ip-gold-lum,#E9A578);color:var(--ip-gold-lum,#E9A578);text-align:center;font-weight:600">Criar</button>';
     var m=IpUI.modal(html,{label:'Novo nó',width:'min(420px,100%)'}); var box=m.box;
     setTimeout(function(){ var i=box.querySelector('#onc-nome'); if(i)i.focus(); },50);
     box.querySelector('#onc-ok').onclick=async function(){
@@ -153,7 +153,7 @@
       var dd = (dossie && window.IpDDMotor) ? IpDDMotor.avaliar(dossie,{sancoes:sanc}) : null;
       // grava no metadata do nó (cnpj + dossiê + parecer)
       await _rpc('fn_ip_org_set_dd',{p_node_id:nodeId, p_cnpj:cnpj, p_dossie:dossie, p_dd:dd});
-      if(resEl && dd) resEl.innerHTML='<span style="color:'+(dd.veredicto==='ENTRAR'?'var(--ip-ok,#7BD3A0)':dd.veredicto==='EVITAR'?'var(--ip-danger,#E8A6A6)':'var(--ip-gold-lum,#E5C77E)')+'">DD: '+esc(dd.veredicto)+' (score '+dd.risco_score+')</span>';
+      if(resEl && dd) resEl.innerHTML='<span style="color:'+(dd.veredicto==='ENTRAR'?'var(--ip-ok,#7BD3A0)':dd.veredicto==='EVITAR'?'var(--ip-danger,#E8A6A6)':'var(--ip-gold-lum,#E9A578)')+'">DD: '+esc(dd.veredicto)+' (score '+dd.risco_score+')</span>';
       return dd;
     }catch(e){ if(resEl) resEl.innerHTML='<span style="color:var(--ip-ink-4)">Nó criado; DD não pôde rodar agora ('+esc((e.message||e)+'').slice(0,40)+').</span>'; return null; }
   }
@@ -165,13 +165,13 @@
     if(!window.IpUI || !IpUI.modal) return;
     var detido = (_nodes||[]).filter(function(n){ return n.id!==deId; });
     if(!detido.length){ _toast('Não há outro nó para deter.'); return; }
-    var html='<div style="font:600 italic 17px Georgia;color:var(--ip-gold-lum,#E5C77E);margin-bottom:4px">Participação societária</div>'
+    var html='<div style="font:600 italic 17px Georgia;color:var(--ip-gold-lum,#E9A578);margin-bottom:4px">Participação societária</div>'
       +'<div style="font-size:11.5px;color:var(--ip-ink-3,#8FA0B5);margin-bottom:12px"><b>'+esc((_byId(deId)||{}).nome||'')+'</b> detém qual empresa, e quanto?</div>'
       +'<label style="display:block;margin-bottom:10px"><span style="display:block;font:600 10px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin-bottom:5px">Empresa detida</span><select id="own-para" style="width:100%;background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.25);border-radius:9px;padding:10px 12px;color:var(--ip-cream,#F7F3EC);font-size:14px">'+detido.map(function(n){return '<option value="'+esc(n.id)+'">'+esc(n.nome)+'</option>';}).join('')+'</select></label>'
       +'<label style="display:block;margin-bottom:6px"><span style="display:block;font:600 10px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin-bottom:5px">Percentual (%)</span><input id="own-pct" type="number" min="1" max="100" placeholder="ex: 80" style="width:100%;background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.25);border-radius:9px;padding:10px 12px;color:var(--ip-cream,#F7F3EC);font-size:14px"></label>'
       +'<div style="font-size:10.5px;color:var(--ip-ink-4,#6B7A90);margin-bottom:10px">O método contábil (consolidação >50% · equity 20-50% · custo &lt;20%) é derivado automaticamente.</div>'
       +'<div id="own-res" style="font-size:12px;margin:6px 0;min-height:14px"></div>'
-      +'<button class="ipo-mbtn" id="own-ok" style="border-color:var(--ip-gold-lum,#E5C77E);color:var(--ip-gold-lum,#E5C77E);text-align:center;font-weight:600">Declarar participação</button>';
+      +'<button class="ipo-mbtn" id="own-ok" style="border-color:var(--ip-gold-lum,#E9A578);color:var(--ip-gold-lum,#E9A578);text-align:center;font-weight:600">Declarar participação</button>';
     var m=IpUI.modal(html,{label:'Participação',width:'min(400px,100%)'}); var box=m.box;
     box.querySelector('#own-ok').onclick=async function(){
       var para=box.querySelector('#own-para').value, pct=parseFloat(box.querySelector('#own-pct').value);
@@ -205,7 +205,7 @@
       +(dest?'<button class="ipo-mbtn" data-act="movercá" style="border-color:var(--ip-ok,#7BD3A0);color:var(--ip-ok,#7BD3A0)">↳ Mover para cá</button>':'')
       +'<button class="ipo-mbtn" data-act="criar">+ Novo nó dentro deste</button>'
       +'<button class="ipo-mbtn" data-act="mover">⇄ Mover este nó…</button>'
-      +'<button class="ipo-mbtn" data-act="participacao" style="border-color:var(--ip-gold-lum,#E5C77E);color:var(--ip-gold-lum,#E5C77E)">◈ Participação societária…</button>'
+      +'<button class="ipo-mbtn" data-act="participacao" style="border-color:var(--ip-gold-lum,#E9A578);color:var(--ip-gold-lum,#E9A578)">◈ Participação societária…</button>'
       +'<button class="ipo-mbtn" data-act="renomear">✎ Renomear</button>'
       +'<button class="ipo-mbtn" data-act="arquivar" style="color:var(--ip-danger,#E8A6A6)">🗄 Arquivar</button>';
     var m = (window.IpUI&&IpUI.modal) ? IpUI.modal(html,{label:'Gerir nó',width:'min(340px,100%)'}) : null;

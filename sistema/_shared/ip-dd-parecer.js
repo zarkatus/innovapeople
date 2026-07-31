@@ -7,8 +7,8 @@
   if(window.IpDDParecer) return;
   var esc=function(s){ return (window.IpUI&&IpUI.esc)?IpUI.esc(s):String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); };
 
-  var COR = { ENTRAR:'var(--ip-ok,#7BD3A0)', CAUTELA:'var(--ip-gold-lum,#E5C77E)', EVITAR:'var(--ip-danger,#E8A6A6)' };
-  var SEVCOR = { critica:'var(--ip-danger,#E8A6A6)', alta:'var(--ip-danger,#E8A6A6)', media:'var(--ip-gold-lum,#E5C77E)', baixa:'var(--ip-ink-3,#8FA0B5)', info:'var(--ip-ink-3,#8FA0B5)' };
+  var COR = { ENTRAR:'var(--ip-ok,#7BD3A0)', CAUTELA:'var(--ip-gold-lum,#E9A578)', EVITAR:'var(--ip-danger,#E8A6A6)' };
+  var SEVCOR = { critica:'var(--ip-danger,#E8A6A6)', alta:'var(--ip-danger,#E8A6A6)', media:'var(--ip-gold-lum,#E9A578)', baixa:'var(--ip-ink-3,#8FA0B5)', info:'var(--ip-ink-3,#8FA0B5)' };
   var SEVICO = { critica:'⛔', alta:'🔴', media:'🟡', baixa:'🔵', info:'·' };
 
   // gauge semicircular de risco (0-100) com a cor do veredicto
@@ -35,14 +35,14 @@
      +'.dd-badge{font:700 13px/1 system-ui;letter-spacing:.08em;text-transform:uppercase;padding:7px 14px;border-radius:20px}'
      +'.dd-syn{font-size:14px;line-height:1.5;color:var(--ip-cream,#F7F3EC);margin-top:8px}'
      +'.dd-conf{font:600 9px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--ip-ink-4,#6B7A90);margin-top:6px}'
-     +'.dd-sec-h{font:600 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--ip-gold-lum,#E5C77E);margin:18px 0 10px}'
+     +'.dd-sec-h{font:600 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--ip-gold-lum,#E9A578);margin:18px 0 10px}'
      +'.dd-sinal{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.07);border-left-width:3px;border-radius:11px;margin-bottom:8px}'
      +'.dd-sinal .ic{font-size:13px;flex:0 0 auto;margin-top:1px}'
      +'.dd-sinal .tx{flex:1;font-size:12.5px;color:var(--ip-ink,#CBD5E1);line-height:1.45}'
      +'.dd-sinal .tx b{color:var(--ip-cream,#F7F3EC)}'
      +'.dd-sinal .ev{font-size:10.5px;color:var(--ip-ink-4,#6B7A90);font-family:ui-monospace,monospace;margin-top:3px}'
      +'.dd-passo{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;color:var(--ip-cream,#F7F3EC);padding:7px 0;border-bottom:1px solid rgba(210,174,100,.06)}'
-     +'.dd-passo .n{color:var(--ip-gold-lum,#E5C77E);font-weight:700}'
+     +'.dd-passo .n{color:var(--ip-gold-lum,#E9A578);font-weight:700}'
      +'.dd-escopo{font-size:11.5px;color:var(--ip-ink-3,#8FA0B5);line-height:1.7;padding:12px 14px;border:1px dashed rgba(210,174,100,.2);border-radius:11px}'
      +'.dd-escopo b{color:var(--ip-ink-2,#9FB0C5)}';
     (document.head||document.documentElement).appendChild(st);

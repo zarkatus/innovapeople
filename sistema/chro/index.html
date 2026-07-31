@@ -58,28 +58,28 @@
 
 <style>
 :root{
-  /* :root invertido p/ paleta ÚNICA dark violet (CVO 29/05) — cream=fundo, ink=texto */
-  --navy:#F5DDA5;--navy2:#E6CB8F;--navy3:#1C1230;
-  --cream:#0C0816;--cream2:#140D22;--white:#1C1230;
-  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#F5DDA5;
+  /* :root invertido p/ paleta ÚNICA escura da marca (CVO 29/05) — cream=fundo, ink=texto */
+  --navy:#F0B48A;--navy2:#EDAC80;--navy3:#16202B;
+  --cream:#0B1119;--cream2:#101821;--white:#16202B;
+  --acento:#C85924;--acento2:#E0763A;--acento-deep:#F0B48A;
   --emerald:#6BAE82;--emerald2:#3DA882;
-  --ink:#F7F3EC;--ink2:#D6CDB8;--ink3:#A99E86;--ink4:#8A7E94;
-  --border:rgba(245,221,165,.12);--border2:rgba(245,221,165,.06);
+  --ink:#F7F3EC;--ink2:#D6CDB8;--ink3:#A99E86;--ink4:#7C8794;
+  --border:rgba(240,180,138,.12);--border2:rgba(240,180,138,.06);
   --serif:'Cormorant Garamond',Georgia,serif;
   --sans:'Inter',-apple-system,Segoe UI,sans-serif;
   --mono:'JetBrains Mono',Menlo,monospace;
-  --green:#6BAE82;--amber:#E1A754;--red:#D87575;--blue:#7BA5D8;
+  --green:#6BAE82;--amber:#E0763A;--red:#D87575;--blue:#7BA5D8;
   --nav-h:74px;--side-w:268px;
 }
 /* MODO LIGHT — valores originais claros (CVO 29/05: dark/light em toda a plataforma) */
 html[data-theme="light"]{
   --navy:#0A1628;--navy2:#0F1D32;--navy3:#152740;
   --cream:#F5F0E8;--cream2:#EFE9DD;--white:#FBFAF7;
-  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#A88440;
+  --acento:#C85924;--acento2:#E0763A;--acento-deep:#A8461A;
   --emerald:#2E8B6E;--emerald2:#3DA882;
   --ink:#1A1A1A;--ink2:#3A3F47;--ink3:#6B7280;--ink4:#9CA3AF;
   --border:rgba(10,22,40,.08);--border2:rgba(10,22,40,.04);
-  --green:#22863a;--amber:#A86A1F;--red:#9B2C2C;--blue:#2C5282;
+  --green:#22863a;--amber:#A8461A;--red:#9B2C2C;--blue:#2C5282;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased}
@@ -92,15 +92,15 @@ em{font-style:italic}
 .hdr{position:sticky;top:0;z-index:50;background:rgba(245,240,232,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:var(--nav-h);display:flex;align-items:center;padding:0 32px}
 .hdr-inner{max-width:1480px;margin:0 auto;width:100%;display:flex;align-items:center;gap:28px}
 .brand{display:flex;align-items:center;gap:12px;font-weight:400;letter-spacing:.04em}
-.brand .mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:18px;font-style:italic}
+.brand .mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);display:flex;align-items:center;justify-content:center;color:var(--acento);font-family:var(--serif);font-size:18px;font-style:italic}
 .brand .name{font-size:18px;color:var(--navy)}
-.brand .name em{color:var(--gold-deep);font-weight:500}
+.brand .name em{color:var(--acento-deep);font-weight:500}
 .brand .sub{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink3);margin-left:8px;font-family:var(--mono)}
 .nav{display:flex;gap:24px;flex:1;justify-content:center;font-size:13px;letter-spacing:.06em}
 .nav a{color:var(--ink2);transition:color .2s}
 .nav a:hover,.nav a.active{color:var(--navy)}
 .nav a.active{font-weight:500}
-.nav .gold{color:var(--gold-deep);font-weight:500}
+.nav .gold{color:var(--acento-deep);font-weight:500}
 .usr{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--ink3);font-family:var(--mono)}
 .usr .logout{padding:6px 14px;border:1px solid var(--border);border-radius:18px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);transition:all .2s}
 .usr .logout:hover{border-color:var(--navy);color:var(--navy)}
@@ -109,7 +109,7 @@ em{font-style:italic}
 .hero{padding:64px 32px 38px;background:linear-gradient(180deg,var(--cream) 0%,var(--cream2) 100%);border-bottom:1px solid var(--border)}
 .hero-inner{max-width:1480px;margin:0 auto}
 .hero h1{font-family:var(--serif);font-size:54px;font-weight:300;line-height:1.06;color:var(--navy);margin-bottom:18px;letter-spacing:-.01em}
-.hero h1 em{color:var(--gold-deep);font-weight:400}
+.hero h1 em{color:var(--acento-deep);font-weight:400}
 .hero .lede{font-size:16px;color:var(--ink2);max-width:680px;line-height:1.6;font-weight:300}
 .hero .lede strong{font-weight:500;color:var(--navy)}
 .hero-meta{margin-top:28px;display:flex;flex-wrap:wrap;gap:32px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
@@ -118,10 +118,10 @@ em{font-style:italic}
 /* SUB-ABAS HORIZONTAIS (substitui o rail vertical interno — fim do "sidebar dentro de sidebar") */
 .chro-subnav{position:sticky;top:var(--nav-h);z-index:40;background:color-mix(in srgb,var(--cream2) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
 .csub-wrap{max-width:1480px;margin:0 auto;display:flex;gap:6px;padding:11px 38px;overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
-.csub-wrap::-webkit-scrollbar{height:5px}.csub-wrap::-webkit-scrollbar-thumb{background:rgba(196,163,90,.3);border-radius:4px}
+.csub-wrap::-webkit-scrollbar{height:5px}.csub-wrap::-webkit-scrollbar-thumb{background:rgba(200,89,36,.3);border-radius:4px}
 .csub-link{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:8px 15px;font-size:13px;color:var(--ink2);border-radius:22px;border:1px solid transparent;transition:all .2s;cursor:pointer}
-.csub-link:hover{background:rgba(196,163,90,.08);color:var(--navy)}
-.csub-link.active{background:rgba(196,163,90,.14);color:var(--navy);border-color:rgba(196,163,90,.32);font-weight:500}
+.csub-link:hover{background:rgba(200,89,36,.08);color:var(--navy)}
+.csub-link.active{background:rgba(200,89,36,.14);color:var(--navy);border-color:rgba(200,89,36,.32);font-weight:500}
 .csub-link .count{font-family:var(--mono);font-size:10px;color:var(--ink4);background:rgba(0,0,0,.06);padding:2px 7px;border-radius:10px}
 html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
 
@@ -131,8 +131,8 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
 .side-h{font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;padding-left:4px}
 .side-group{margin-bottom:24px}
 .side-link{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;font-size:13px;color:var(--ink2);border-radius:6px;transition:all .2s;cursor:pointer;border-left:2px solid transparent}
-.side-link:hover{background:rgba(196,163,90,.08);color:var(--navy)}
-.side-link.active{background:rgba(196,163,90,.12);color:var(--navy);border-left-color:var(--gold);font-weight:500}
+.side-link:hover{background:rgba(200,89,36,.08);color:var(--navy)}
+.side-link.active{background:rgba(200,89,36,.12);color:var(--navy);border-left-color:var(--acento);font-weight:500}
 .side-link .count{font-family:var(--mono);font-size:10px;color:var(--ink4);background:rgba(0,0,0,.04);padding:2px 7px;border-radius:10px}
 
 .main{padding:38px 38px 80px;min-width:0}
@@ -141,7 +141,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
 .section{margin-bottom:64px;scroll-margin-top:138px}/* header(74)+sub-abas(48)+respiro */
 .section-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .section-h h2{font-family:var(--serif);font-size:34px;font-weight:400;color:var(--navy);letter-spacing:-.005em}
-.section-h h2 em{color:var(--gold-deep);font-style:italic}
+.section-h h2 em{color:var(--acento-deep);font-style:italic}
 .section-h .count{font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.14em;text-transform:uppercase}
 .section-sub{font-size:14px;color:var(--ink2);max-width:700px;line-height:1.55;margin-bottom:28px;font-style:italic;font-family:var(--serif);font-size:18px}
 
@@ -161,14 +161,14 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
 .btn-primary:hover{background:var(--navy2)}
 .btn-ghost{border:1px solid var(--border);color:var(--ink2)}
 .btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
-.btn-gold{background:transparent;color:var(--gold-deep);border:1px solid var(--gold)}
-.btn-gold:hover{background:var(--gold);color:var(--white)}
+.btn-gold{background:transparent;color:var(--acento-deep);border:1px solid var(--acento)}
+.btn-gold:hover{background:var(--acento);color:var(--white)}
 
 /* STATUS */
 .status{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:12px;font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:400;white-space:nowrap;flex-shrink:0}
 .status::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
 .st-live{color:var(--emerald);background:rgba(46,139,110,.08)}
-.st-partial{color:var(--gold-deep);background:rgba(196,163,90,.1)}
+.st-partial{color:var(--acento-deep);background:rgba(200,89,36,.1)}
 .st-spec{color:var(--blue);background:rgba(44,82,130,.08)}
 .st-todo{color:var(--ink3);background:rgba(0,0,0,.04)}
 .st-todo::before{background:var(--ink4)}
@@ -182,12 +182,12 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
 
 /* HIGHLIGHT */
 .spark{display:flex;align-items:flex-end;gap:3px;height:36px;margin-top:8px}
-.spark span{flex:1;background:var(--gold);opacity:.6;border-radius:1px 1px 0 0;min-height:2px;transition:all .3s}
-.spark span:last-child{opacity:1;background:var(--gold-deep)}
+.spark span{flex:1;background:var(--acento);opacity:.6;border-radius:1px 1px 0 0;min-height:2px;transition:all .3s}
+.spark span:last-child{opacity:1;background:var(--acento-deep)}
 
 /* PILL */
 .pill{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;letter-spacing:.08em;background:rgba(10,22,40,.06);color:var(--ink2);margin-right:4px;margin-bottom:4px}
-.pill.gold{background:rgba(196,163,90,.14);color:var(--gold-deep)}
+.pill.gold{background:rgba(200,89,36,.14);color:var(--acento-deep)}
 .pill.emerald{background:rgba(46,139,110,.1);color:var(--emerald)}
 
 /* LOADING */
@@ -237,7 +237,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
       <a href="/sistema/chro/" class="active">Curadoria</a>
       <a href="/sistema/bastidores/">Bastidores</a>
       <a href="/sistema/whatsapp/">WhatsApp</a>
-      <a href="/sistema/chro/painel-mensal/" style="color:var(--gold-deep);font-weight:500">Painel mensal</a>
+      <a href="/sistema/chro/painel-mensal/" style="color:var(--acento-deep);font-weight:500">Painel mensal</a>
       <a href="/sistema/chro/folha/">Clientes</a>
     </nav>
     <div class="usr">
@@ -254,7 +254,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
     <p class="lede">
       Trinta e dois instrumentos para o trabalho silencioso de manter uma organização inteira de pé.
       <strong>Pessoas, cultura, ritual, memória, frentes</strong> — tudo o que aparece no palco da curadoria.
-      O backbone técnico (EventBus, canais, compliance) vive em separado, nos <a href="/sistema/bastidores/" style="color:var(--gold-deep);font-weight:500;text-decoration:underline">Bastidores</a>.
+      O backbone técnico (EventBus, canais, compliance) vive em separado, nos <a href="/sistema/bastidores/" style="color:var(--acento-deep);font-weight:500;text-decoration:underline">Bastidores</a>.
     </p>
     <div class="hero-meta">
       <span>Agentes <strong id="m-agents">5</strong> diários</span>
@@ -783,7 +783,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
   </div>
   <p class="section-sub">
     O que o AIPrev faz para obras — caminho crítico, valor agregado, previsão — aqui responde por pessoas, programas e cultura.
-    Bringagem espelhada do schema <code style="font-family:var(--mono);font-size:13px;color:var(--gold-deep);font-style:normal">fn_plat_*</code>: 22 RPCs, cinco agentes diários, EventBus em trinta gatilhos.
+    Bringagem espelhada do schema <code style="font-family:var(--mono);font-size:13px;color:var(--acento-deep);font-style:normal">fn_plat_*</code>: 22 RPCs, cinco agentes diários, EventBus em trinta gatilhos.
   </p>
   <div class="grid">
 
@@ -871,11 +871,11 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
 </section>
 
 <!-- BANDA MATTERING (faixa especial — construção colaborativa) -->
-<section class="section" style="background:linear-gradient(135deg,rgba(196,163,90,.06),rgba(46,139,110,.04));border-radius:12px;padding:32px;border:1px solid rgba(196,163,90,.2)">
+<section class="section" style="background:linear-gradient(135deg,rgba(200,89,36,.06),rgba(46,139,110,.04));border-radius:12px;padding:32px;border:1px solid rgba(200,89,36,.2)">
   <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap">
     <div style="flex:1;min-width:280px">
-      <div style="font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:10px">Em construção colaborativa</div>
-      <h3 style="font-family:var(--serif);font-size:30px;font-weight:400;color:var(--navy);line-height:1.1;margin-bottom:10px">Mattering <em style="color:var(--gold-deep);font-style:italic">— a faixa silenciosa.</em></h3>
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--acento-deep);margin-bottom:10px">Em construção colaborativa</div>
+      <h3 style="font-family:var(--serif);font-size:30px;font-weight:400;color:var(--navy);line-height:1.1;margin-bottom:10px">Mattering <em style="color:var(--acento-deep);font-style:italic">— a faixa silenciosa.</em></h3>
       <p style="font-size:14px;color:var(--ink2);line-height:1.6;font-style:italic;font-family:var(--serif);font-size:18px">
         A sensação de importar antes de aparecer na pesquisa. O agente Mattering Coach já vigia aqui;
         a frente conceitual vive na InnovaSphere ao lado do AIPrev. O que evolui lá, espelha aqui.
@@ -1147,7 +1147,7 @@ async function loadAcoes(sb){
   try{
     const {data,count}=await sb.from('ip_acoes_template').select('*',{count:'exact'}).order('ireu_score',{ascending:false}).limit(5);
     if(!data||!data.length){body.innerHTML='<div style="color:var(--ink3);font-style:italic">Biblioteca vazia — seed inicial pendente.</div>';return}
-    body.innerHTML=`<div style="font-size:12px;color:var(--ink3);margin-bottom:8px">${count} ações curadas · top 5 por IREU:</div>`+data.map(a=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed var(--border2);font-size:12px"><span>${esc(a.titulo||a.nome||'(sem título)')}</span><span style="font-family:var(--mono);color:var(--gold-deep);font-size:11px">${a.ireu_score||0}</span></div>`).join('');
+    body.innerHTML=`<div style="font-size:12px;color:var(--ink3);margin-bottom:8px">${count} ações curadas · top 5 por IREU:</div>`+data.map(a=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed var(--border2);font-size:12px"><span>${esc(a.titulo||a.nome||'(sem título)')}</span><span style="font-family:var(--mono);color:var(--acento-deep);font-size:11px">${a.ireu_score||0}</span></div>`).join('');
   }catch(e){body.innerHTML='<div style="color:var(--ink3);font-size:12px;font-style:italic">Tabela ip_acoes_template ainda não populada.</div>'}
 }
 
@@ -1269,7 +1269,7 @@ async function openAgentesPainel(){
       const {data,error}=await sb.from('ip_agent_sugestoes').select('*').eq('status','pendente').order('severidade',{ascending:false}).order('created_at',{ascending:false}).limit(100);
       if(error)throw error;
       if(!data||!data.length){target.innerHTML='<div class="dr-empty">Nenhuma sugestão pendente. Backbone silencioso.</div>';return}
-      const sevColor={critica:'#9B2C2C',alta:'#A86A1F',media:'#2C5282',baixa:'#6B7280'};
+      const sevColor={critica:'#9B2C2C',alta:'#A8461A',media:'#2C5282',baixa:'#6B7280'};
       target.innerHTML=`<div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px">${data.length} sugestões · ordenadas por severidade</div>`+data.map(s=>{
         const sev=s.severidade||'media';
         const col=sevColor[sev]||'#6B7280';
@@ -1382,15 +1382,15 @@ function openConcierge(){
     </div>
     <style>
       .cnc-msg-u{background:var(--navy);color:var(--cream);padding:11px 14px;border-radius:8px 8px 2px 8px;font-size:13px;align-self:flex-end;max-width:84%;line-height:1.55;white-space:pre-wrap;word-wrap:break-word}
-      .cnc-msg-a{background:var(--cream2);color:var(--ink);padding:13px 16px;border-radius:8px 8px 8px 2px;font-size:13.5px;line-height:1.65;align-self:flex-start;max-width:90%;white-space:pre-wrap;word-wrap:break-word;border-left:2px solid var(--gold)}
+      .cnc-msg-a{background:var(--cream2);color:var(--ink);padding:13px 16px;border-radius:8px 8px 8px 2px;font-size:13.5px;line-height:1.65;align-self:flex-start;max-width:90%;white-space:pre-wrap;word-wrap:break-word;border-left:2px solid var(--acento)}
       .cnc-msg-a strong{color:var(--navy);font-weight:600}
-      .cnc-msg-a em{color:var(--gold-deep);font-style:italic}
-      .cnc-msg-a code{font-family:var(--mono);font-size:11.5px;background:rgba(196,163,90,.1);padding:1px 5px;border-radius:3px}
+      .cnc-msg-a em{color:var(--acento-deep);font-style:italic}
+      .cnc-msg-a code{font-family:var(--mono);font-size:11.5px;background:rgba(200,89,36,.1);padding:1px 5px;border-radius:3px}
       .cnc-typing{color:var(--ink3);font-style:italic;font-size:12px;padding:6px 12px;display:flex;align-items:center;gap:8px;align-self:flex-start}
-      .cnc-typing::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);animation:cncpulse 1s infinite}
+      .cnc-typing::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--acento);animation:cncpulse 1s infinite}
       @keyframes cncpulse{0%,100%{opacity:.3}50%{opacity:1}}
       .cnc-chip{padding:5px 10px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--ink2);font-size:11px;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:all .2s}
-      .cnc-chip:hover{border-color:var(--gold);color:var(--gold-deep);background:rgba(196,163,90,.06)}
+      .cnc-chip:hover{border-color:var(--acento);color:var(--acento-deep);background:rgba(200,89,36,.06)}
       .cnc-err{background:rgba(155,44,44,.08);color:var(--red);padding:10px 14px;border-radius:6px;font-size:12px;align-self:flex-start;max-width:88%;line-height:1.5}
     </style>
   `, (body)=>{
@@ -1484,7 +1484,7 @@ function openCpmDev(){
           {n:'M4 · Projeto cross-área',es:60,ef:180,lat:30,crit:false},
           {n:'M5 · Avaliação 360 final',es:210,ef:224,lat:0,crit:true},
         ].map(m=>`
-          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:${m.crit?'rgba(155,44,44,.06)':'var(--white)'};border-left:3px solid ${m.crit?'var(--red)':'var(--gold)'};border-radius:4px;font-size:12px">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:${m.crit?'rgba(155,44,44,.06)':'var(--white)'};border-left:3px solid ${m.crit?'var(--red)':'var(--acento)'};border-radius:4px;font-size:12px">
             <div style="flex:1;color:var(--navy);font-weight:${m.crit?'500':'400'}">${m.n}</div>
             <div style="font-family:var(--mono);font-size:10px;color:var(--ink3)">dia ${m.es}–${m.ef}${m.lat?' · folga '+m.lat+'d':' <strong style="color:var(--red)">CRÍTICO</strong>'}</div>
           </div>
@@ -1492,7 +1492,7 @@ function openCpmDev(){
       </div>
       <div style="margin-top:14px;padding:10px;background:rgba(155,44,44,.06);border-radius:4px;font-size:11px;color:var(--ink2);font-style:italic">4 dos 5 marcos no caminho crítico. Qualquer atraso em M1, M2, M3 ou M5 desloca o plano inteiro.</div>
     </div>
-    <div style="padding:16px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.6">
+    <div style="padding:16px;background:rgba(200,89,36,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.6">
       <strong style="color:var(--navy)">Próximo passo:</strong> portar schema <code class="dr-code">plat_plano_servicos</code> + <code class="dr-code">plat_plano_vinculos</code> para <code class="dr-code">ip_plano_marcos</code> + <code class="dr-code">ip_plano_dependencias</code>, então rodar <code class="dr-code">fn_ip_cpm_forward/_backward</code>.
     </div>
   `);
@@ -1509,7 +1509,7 @@ function openForecaster(){
         <tr><td style="color:var(--ink3);padding:6px 0;border-top:1px solid var(--border);padding-top:10px">Folha projetada (R$/mês)</td><td style="text-align:right;font-family:var(--mono);color:var(--navy);border-top:1px solid var(--border);padding-top:10px">—</td></tr>
       </table>
     </div>
-    <div style="padding:16px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.6">
+    <div style="padding:16px;background:rgba(200,89,36,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.6">
       <strong style="color:var(--navy)">Próximo passo:</strong> criar tabelas <code class="dr-code">ip_headcount_atual</code> + <code class="dr-code">ip_compensacao_atual</code>, então portar lógica do <code class="dr-code">fn_agent_forecaster</code> com 3 cenários (otimista/base/pessimista).
     </div>
   `);
@@ -1604,7 +1604,7 @@ function newMandato(){openDrawer('Novo cliente',`
       const {data,error}=await sb.rpc('fn_ip_criar_cliente', payload);
       if(error)throw error;
       var ver = (payload.p_dossie&&payload.p_dossie._dd&&payload.p_dossie._dd.veredicto)||null;
-      var verHtml = ver ? ' <span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(196,163,90,.14);color:var(--gold-deep)">DD: '+esc(ver)+'</span>' : '';
+      var verHtml = ver ? ' <span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(200,89,36,.14);color:var(--acento-deep)">DD: '+esc(ver)+'</span>' : '';
       if(data&&data.ja_existia){ result.innerHTML='<div class="dr-ok">Já existia o cliente <strong>'+esc(data.nome)+'</strong> — abrindo o existente.</div>'; }
       else { result.innerHTML='<div class="dr-ok">✓ <strong>'+esc(data.nome)+'</strong> cadastrado — empresa, dossiê e parecer de due diligence'+verHtml+', tudo conectado à plataforma em um clique.</div>'; }
       dossieBox.style.display='none'; confirmBox.style.display='none'; var par=body.querySelector('#nm-parecer'); if(par)par.style.display='none'; inCnpj.value='';
@@ -1634,7 +1634,7 @@ function newMandato(){openDrawer('Novo cliente',`
         +'<div style="font:700 italic 19px Georgia;color:var(--navy)">'+esc(data.razao_social||'—')+'</div>'
         +(data.nome_fantasia?'<div style="color:var(--ink2);font-size:13px;margin-top:2px">'+esc(data.nome_fantasia)+'</div>':'')
         +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">'
-          +(data.porte?'<span style="font-size:11px;padding:4px 10px;border-radius:20px;background:rgba(196,163,90,.12);color:var(--gold-deep)">'+esc(data.porte)+'</span>':'')
+          +(data.porte?'<span style="font-size:11px;padding:4px 10px;border-radius:20px;background:rgba(200,89,36,.12);color:var(--acento-deep)">'+esc(data.porte)+'</span>':'')
           +(data.situacao?'<span style="font-size:11px;padding:4px 10px;border-radius:20px;background:'+(/ATIVA/i.test(data.situacao)?'rgba(107,174,130,.15);color:var(--green)':'rgba(216,117,117,.15);color:var(--red)')+'">'+esc(data.situacao)+'</span>':'')
           +(data.uf?'<span style="font-size:11px;padding:4px 10px;border-radius:20px;background:rgba(123,165,216,.12);color:var(--blue)">'+esc(data.municipio||'')+'/'+esc(data.uf)+'</span>':'')
         +'</div>'
@@ -1686,7 +1686,7 @@ function newMandato(){openDrawer('Novo cliente',`
       +'<div style="font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">PESSOA FÍSICA · '+esc(cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/,"$1.$2.$3-$4"))+'</div>'
       +'<div style="font:600 italic 16px Georgia;color:var(--navy)"><span style="color:var(--green)">✓ CPF válido</span></div>'
       +'<div style="font-size:12.5px;color:var(--ink2);margin-top:10px"><b style="color:var(--ink3)">Participação societária pública:</b> '+(empresas.length?empresas.map(e=>esc(e.empresa)).join(' · '):'nenhuma empresa encontrada em base (dado público gratuito)')+'</div>'
-      +'<div style="margin-top:14px;padding:12px 14px;background:rgba(196,163,90,.06);border-radius:8px">'
+      +'<div style="margin-top:14px;padding:12px 14px;background:rgba(200,89,36,.06);border-radius:8px">'
         +'<div style="font-size:12.5px;color:var(--ink2);line-height:1.5">Pesquisas avançadas (situação cadastral, crédito, processos, PEP, identidade) só com o <b>consentimento da pessoa</b>. Solicite a autorização para desbloquear.</div>'
         +'<button type="button" class="btn btn-ghost" id="nm-consent" style="margin-top:10px;font-size:12.5px;width:100%">⚖ Solicitar consentimento para pesquisa avançada</button>'
       +'</div></div>';
@@ -1753,7 +1753,7 @@ async function openAcoesBib(){
           return `<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
             <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
               <div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500">${esc(a.titulo||'(sem título)')}</div>
-              <span style="font-family:var(--mono);font-size:11px;color:var(--gold-deep);background:rgba(196,163,90,.1);padding:2px 10px;border-radius:10px;letter-spacing:.04em">IRE ${ire}</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--acento-deep);background:rgba(200,89,36,.1);padding:2px 10px;border-radius:10px;letter-spacing:.04em">IRE ${ire}</span>
             </div>
             ${a.frente?`<div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase;margin-bottom:8px">${esc(a.frente)}${a.prazo_dias?` · ${a.prazo_dias}d`:''}</div>`:''}
             <div style="font-size:12px;color:var(--ink2);line-height:1.55;margin-bottom:8px">${esc(a.descricao||'')}</div>
@@ -1793,7 +1793,7 @@ async function runGeneratePlano(){
     if(!acoes.length){res.innerHTML='<div class="dr-empty">RPC executou mas nenhuma ação foi gerada. Pode não haver sintomas ou sugestões críticas suficientes.</div>';return}
     res.innerHTML=`<div class="dr-ok" style="margin-bottom:14px">✓ <strong>${acoes.length}</strong> ações geradas e inseridas em <code class="dr-code">ip_plano_acoes</code>.</div>`+
       acoes.slice(0,12).map(a=>`<div style="background:var(--white);border:1px solid var(--border);border-radius:4px;padding:10px 13px;margin-bottom:6px;font-size:12px">
-        <div style="display:flex;justify-content:space-between;gap:10px"><div style="color:var(--navy);font-weight:500">${esc(a.titulo||a.descricao||'')}</div><span style="font-family:var(--mono);font-size:10px;color:var(--gold-deep)">IREU ${a.ireu_score||0}</span></div>
+        <div style="display:flex;justify-content:space-between;gap:10px"><div style="color:var(--navy);font-weight:500">${esc(a.titulo||a.descricao||'')}</div><span style="font-family:var(--mono);font-size:10px;color:var(--acento-deep)">IREU ${a.ireu_score||0}</span></div>
       </div>`).join('');
   }catch(e){res.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
 }
@@ -1860,7 +1860,7 @@ async function openProtocolos(){
           return `<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
             <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
               <div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500">${esc(p.titulo)}</div>
-              <span style="font-family:var(--mono);font-size:10px;background:rgba(196,163,90,.1);color:var(--gold-deep);padding:2px 8px;border-radius:10px">v${p.versao||1}</span>
+              <span style="font-family:var(--mono);font-size:10px;background:rgba(200,89,36,.1);color:var(--acento-deep);padding:2px 8px;border-radius:10px">v${p.versao||1}</span>
             </div>
             ${p.area?`<div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase;margin-bottom:8px">${esc(p.area)}</div>`:''}
             ${p.conteudo?`<div style="font-size:12px;color:var(--ink2);line-height:1.5;margin-bottom:8px;max-height:120px;overflow-y:auto;border-left:2px solid var(--border);padding-left:10px">${esc((p.conteudo||'').slice(0,400))}${p.conteudo.length>400?'...':''}</div>`:''}
@@ -2143,7 +2143,7 @@ async function openOutbox(){
         sb.from('ip_email_outbox').select('*').or('status.eq.erro,status.eq.falhou').order('created_at',{ascending:false}).limit(15),
       ]);
       const tabs=[
-        {label:'Pendentes',cor:'#A86A1F',data:pend.data||[]},
+        {label:'Pendentes',cor:'#A8461A',data:pend.data||[]},
         {label:'Enviados',cor:'#2E8B6E',data:env.data||[]},
         {label:'Falhas',cor:'#9B2C2C',data:err.data||[]},
       ];
@@ -2173,7 +2173,7 @@ function obTab(i){
       </div>
       <div style="font-size:11px;color:var(--ink3);margin-bottom:4px;word-break:break-all">para: ${esc(para)}${e.tentativas?` · ${e.tentativas} tentativas`:''}</div>
       ${e.erro?`<div style="font-size:11px;color:var(--red);font-family:var(--mono);background:rgba(155,44,44,.06);padding:6px 8px;border-radius:3px;margin-top:6px">${esc((e.erro||'').slice(0,250))}</div>`:''}
-      ${e.contexto?`<div style="font-size:10px;font-family:var(--mono);color:var(--gold-deep);letter-spacing:.06em;margin-top:4px">contexto: ${esc(e.contexto)}</div>`:''}
+      ${e.contexto?`<div style="font-size:10px;font-family:var(--mono);color:var(--acento-deep);letter-spacing:.06em;margin-top:4px">contexto: ${esc(e.contexto)}</div>`:''}
     </div>`;
   }).join('');
 }
@@ -2242,8 +2242,8 @@ async function loadOlapData(janela){
         data:{
           labels:dims.map(d=>d.dimensao||d.nome),
           datasets:[
-            {label:'Janela atual',data:dims.map(d=>+d.media||0),backgroundColor:'#C4A35A',borderRadius:3},
-            {label:'Anterior',data:dims.map(d=>{const m=+d.media||0;const dp=+(d.delta_pct||0);return dp===0?m:m/(1+dp/100)}),backgroundColor:'#D4BA7A88',borderRadius:3},
+            {label:'Janela atual',data:dims.map(d=>+d.media||0),backgroundColor:'#C85924',borderRadius:3},
+            {label:'Anterior',data:dims.map(d=>{const m=+d.media||0;const dp=+(d.delta_pct||0);return dp===0?m:m/(1+dp/100)}),backgroundColor:'#E0763A88',borderRadius:3},
           ]
         },
         options:{
@@ -2455,7 +2455,7 @@ async function openSkillMap(){
       <div style="margin-bottom:18px;display:grid;grid-template-columns:1fr;gap:8px">
         ${dims.map(d=>{
           const v=avg[d];const pct=(v/maxVal)*100;
-          const cor=v<4?'var(--red)':v<6?'var(--amber)':v<8?'var(--gold)':'var(--emerald)';
+          const cor=v<4?'var(--red)':v<6?'var(--amber)':v<8?'var(--acento)':'var(--emerald)';
           return `<div>
             <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px"><span style="color:var(--navy)">${labels[d]}</span><span style="font-family:var(--mono);color:${cor};font-weight:500">${v.toFixed(1)}/10</span></div>
             <div style="height:8px;background:var(--cream2);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${cor};border-radius:4px;transition:width .5s"></div></div>
@@ -2463,7 +2463,7 @@ async function openSkillMap(){
         }).join('')}
       </div>
       <div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px">${data.length} perfis avaliados</div>
-      <div style="padding:12px 14px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.5">
+      <div style="padding:12px 14px;background:rgba(200,89,36,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.5">
         Próximo passo: heatmap individual (perfil × dimensão) com hover qualitativo e identificação de gaps colaborativos. Cruzamento com 9-Box Grid quando o schema estiver completo.
       </div>`;
     }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
@@ -2503,7 +2503,7 @@ function openTriggers(){
         <tr><td><code class="dr-code">ip_agent_sugestoes</code></td><td>UPDATE (status)</td><td>before+after</td></tr>
       </tbody>
     </table>
-    <div style="margin-top:16px;padding:12px 14px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.55">
+    <div style="margin-top:16px;padding:12px 14px;background:rgba(200,89,36,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.55">
       Modelo direto do AIPrev (<code class="dr-code">trg_eventbus_generico</code> em <code class="dr-code">plat_plano_*</code>). Retenção 36 meses por padrão. Indexes em <code class="dr-code">(ts DESC, source, actor)</code> para busca forense via <code class="dr-code">fn_ip_historico_por_termo</code>.
     </div>
   `);
@@ -2523,10 +2523,10 @@ async function open9Box(){
       (data||[]).forEach(a=>{if(a.performance&&a.potencial)grid[a.performance+'-'+a.potencial]=(grid[a.performance+'-'+a.potencial]||0)+1});
       const labels={'1-3':'Diamante Bruto','2-3':'Estrela Emergente','3-3':'Estrela','1-2':'Enigma','2-2':'Núcleo Sólido','3-2':'Alta Performance','1-1':'Risco','2-1':'Eficaz','3-1':'Especialista'};
       const colorCell=(perf,pot)=>{
-        if(perf===3&&pot===3)return'rgba(196,163,90,.32)';
-        if(perf>=2&&pot>=2)return'rgba(196,163,90,.18)';
+        if(perf===3&&pot===3)return'rgba(200,89,36,.32)';
+        if(perf>=2&&pot>=2)return'rgba(200,89,36,.18)';
         if(perf+pot<=3)return'rgba(168,106,31,.16)';
-        return'rgba(196,163,90,.08)';
+        return'rgba(200,89,36,.08)';
       };
       let html=`<p class="dr-sub">${data?.length||0} avaliações ativas em ${new Set((data||[]).map(a=>a.perfil_id)).size} perfis.</p>
         <button class="btn btn-primary" style="margin-bottom:18px" onclick="newAvaliacao()">+ Nova avaliação</button>
@@ -2597,7 +2597,7 @@ async function openSuccession(){
       if(error)throw error;
       let html=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newSuccession()">+ Nova posição-chave</button>`;
       if(!data||!data.length){html+='<div class="dr-empty">Nenhuma posição-chave mapeada. Comece pelas críticas — quais saídas paralisariam o ritmo?</div>';t.innerHTML=html;return}
-      const prCor={ready_now:'#2E8B6E','1y':'#A88440','2y':'#6B7280',indefinido:'#9B2C2C'};
+      const prCor={ready_now:'#2E8B6E','1y':'#A8461A','2y':'#6B7280',indefinido:'#9B2C2C'};
       const prLbl={ready_now:'Pronto agora','1y':'1 ano','2y':'2 anos',indefinido:'indefinido'};
       html+=data.map(s=>`<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:12px">
         <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:8px">
@@ -2771,7 +2771,7 @@ async function openProgramas(){
         const spi=evm.spi!=null?(+evm.spi).toFixed(2):'—';
         const corCpi=evm.cpi==null?'var(--ink3)':+evm.cpi<.9?'var(--red)':+evm.cpi>1.1?'var(--emerald)':'var(--ink2)';
         const corSpi=evm.spi==null?'var(--ink3)':+evm.spi<.9?'var(--red)':+evm.spi>1.1?'var(--emerald)':'var(--ink2)';
-        const statusCor={planejado:'var(--ink3)',em_andamento:'var(--gold-deep)',concluido:'var(--emerald)',cancelado:'var(--ink4)',pausado:'var(--amber)'}[p.status]||'var(--ink3)';
+        const statusCor={planejado:'var(--ink3)',em_andamento:'var(--acento-deep)',concluido:'var(--emerald)',cancelado:'var(--ink4)',pausado:'var(--amber)'}[p.status]||'var(--ink3)';
         return `<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:12px">
           <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
             <div>
@@ -2791,7 +2791,7 @@ async function openProgramas(){
             ${p.inicio?`<span>início: ${new Date(p.inicio).toLocaleDateString('pt-BR')}</span>`:''}
             ${p.fim_planejado?`<span>fim planejado: ${new Date(p.fim_planejado).toLocaleDateString('pt-BR')}</span>`:''}
             <span style="margin-left:auto;display:flex;gap:6px">
-              <button onclick="diagnosticoIAPrograma('${esc(p.id)}','${esc(p.nome)}')" style="padding:4px 10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--gold-deep);border:1px solid var(--gold-deep);border-radius:3px;cursor:pointer;font-family:inherit">◆ Diagnóstico IA</button>
+              <button onclick="diagnosticoIAPrograma('${esc(p.id)}','${esc(p.nome)}')" style="padding:4px 10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--acento-deep);border:1px solid var(--acento-deep);border-radius:3px;cursor:pointer;font-family:inherit">◆ Diagnóstico IA</button>
               <button onclick="openProgramaMarcos('${esc(p.id)}','${esc(p.nome)}')" style="padding:4px 10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--navy);color:var(--cream);border:none;border-radius:3px;cursor:pointer;font-family:inherit">Marcos (${evm.marcos||0})</button>
             </span>
           </div>
@@ -2836,7 +2836,7 @@ async function openProgramaMarcos(programaId,nome){
       let html=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newMarco('${esc(programaId)}','${esc(nome)}')">+ Novo marco</button>`;
       if(!data||!data.length){html+='<div class="dr-empty">Nenhum marco neste programa. Sem marcos, sem EVM.</div>';t.innerHTML=html;return}
       html+=data.map(m=>{
-        const statusCor={aberto:'var(--ink3)',em_andamento:'var(--gold-deep)',concluido:'var(--emerald)',cancelado:'var(--red)'}[m.status]||'var(--ink3)';
+        const statusCor={aberto:'var(--ink3)',em_andamento:'var(--acento-deep)',concluido:'var(--emerald)',cancelado:'var(--red)'}[m.status]||'var(--ink3)';
         return `<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
           <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
             <div style="font-family:var(--serif);font-size:16px;color:var(--navy);font-weight:500">${esc(m.titulo)}</div>
@@ -2932,7 +2932,7 @@ async function diagnosticoIAPrograma(programaId,nome){
         <div style="text-align:center;padding:12px;background:var(--cream2);border-radius:6px"><div style="font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.12em">SPI</div><div style="font-family:var(--mono);font-size:20px;color:${evm.spi==null?'var(--ink3)':+evm.spi<.9?'var(--red)':'var(--emerald)'}">${spi}</div></div>
         <div style="text-align:center;padding:12px;background:var(--cream2);border-radius:6px"><div style="font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.12em">MARCOS</div><div style="font-family:var(--mono);font-size:20px;color:var(--navy)">${evm.marcos||0}</div></div>
       </div>
-      <div style="padding:12px 14px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);margin-bottom:14px">Agente <code class="dr-code">programa_evm</code> rodou: <strong>${ag.sinais_gerados||0}</strong> sinal(is) gerado(s) na Sala de Guerra / Próximos Passos.</div>
+      <div style="padding:12px 14px;background:rgba(200,89,36,.08);border-radius:6px;font-size:12px;color:var(--ink2);margin-bottom:14px">Agente <code class="dr-code">programa_evm</code> rodou: <strong>${ag.sinais_gerados||0}</strong> sinal(is) gerado(s) na Sala de Guerra / Próximos Passos.</div>
       <div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">Leitura cognitiva (IA)</div>
       <div id="di-ai" style="font-family:var(--serif);font-size:14px;color:var(--ink2);line-height:1.6;font-style:italic">Consultando IA…</div>`;
       t.innerHTML=html;
@@ -2990,14 +2990,14 @@ function notImpl(name){alert('Em construção: '+name+'\n\nO contrato de dados e
 .dr-form{display:flex;flex-direction:column;gap:16px}
 .dr-form label{display:flex;flex-direction:column;gap:6px}
 .dr-form input,.dr-form textarea,.dr-form select{padding:10px 12px;border:1px solid var(--border);border-radius:4px;font:inherit;font-size:13px;background:var(--white);color:var(--ink);transition:border-color .2s}
-.dr-form input:focus,.dr-form textarea:focus,.dr-form select:focus{outline:none;border-color:var(--gold)}
+.dr-form input:focus,.dr-form textarea:focus,.dr-form select:focus{outline:none;border-color:var(--acento)}
 .dr-form textarea{resize:vertical;min-height:60px;font-family:inherit}
 .dr-lab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500}
-.dr-info{padding:12px 14px;background:rgba(196,163,90,.08);border-radius:4px;font-size:13px;color:var(--ink2);font-style:italic}
+.dr-info{padding:12px 14px;background:rgba(200,89,36,.08);border-radius:4px;font-size:13px;color:var(--ink2);font-style:italic}
 .dr-ok{padding:12px 14px;background:rgba(46,139,110,.1);border-radius:4px;font-size:13px;color:var(--emerald);line-height:1.5}
 .dr-err{padding:12px 14px;background:rgba(155,44,44,.08);border-radius:4px;font-size:13px;color:var(--red);line-height:1.5}
 .dr-empty{padding:32px;text-align:center;color:var(--ink3);font-style:italic;font-size:14px;font-family:var(--serif);font-size:18px}
-.dr-code{font-family:var(--mono);font-size:11px;color:var(--gold-deep);background:rgba(196,163,90,.08);padding:1px 6px;border-radius:3px;font-style:normal}
+.dr-code{font-family:var(--mono);font-size:11px;color:var(--acento-deep);background:rgba(200,89,36,.08);padding:1px 6px;border-radius:3px;font-style:normal}
 @media(max-width:640px){.dr{width:100vw}.dr-h{padding:18px 20px}.dr-body{padding:20px}}
 </style>
 

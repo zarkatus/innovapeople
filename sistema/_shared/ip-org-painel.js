@@ -19,7 +19,7 @@
     st.textContent=
       '.ipgp{background:linear-gradient(135deg,#0C1626,#0A1320);border:1px solid rgba(210,174,100,.18);border-radius:16px;padding:22px 24px;margin-bottom:18px}'
      +'.ipgp-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px}'
-     +'.ipgp-h h2{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:20px;color:var(--ip-gold-lum,#E5C77E)}'
+     +'.ipgp-h h2{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:20px;color:var(--ip-gold-lum,#E9A578)}'
      +'.ipgp-h .tag{font:600 9px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5)}'
      +'.ipgp-sub{font-size:11.5px;color:var(--ip-ink-3,#8FA0B5);margin-bottom:16px}'
      +'.ipgp-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:16px}'
@@ -27,7 +27,7 @@
      +'.ipgp-dd{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}'
      +'.ipgp-pill{font:700 11px/1 system-ui;padding:7px 12px;border-radius:18px;display:flex;align-items:center;gap:6px}'
      +'.ipgp-pill .n{font-size:14px}'
-     +'.ipgp-ok{background:rgba(123,211,160,.14);color:var(--ip-ok,#7BD3A0)}.ipgp-cau{background:rgba(229,199,126,.14);color:var(--ip-gold-lum,#E5C77E)}.ipgp-no{background:rgba(232,166,166,.14);color:var(--ip-danger,#E8A6A6)}.ipgp-pend{background:rgba(143,160,181,.12);color:var(--ip-ink-2,#9FB0C5)}'
+     +'.ipgp-ok{background:rgba(123,211,160,.14);color:var(--ip-ok,#7BD3A0)}.ipgp-cau{background:rgba(229,199,126,.14);color:var(--ip-gold-lum,#E9A578)}.ipgp-no{background:rgba(232,166,166,.14);color:var(--ip-danger,#E8A6A6)}.ipgp-pend{background:rgba(143,160,181,.12);color:var(--ip-ink-2,#9FB0C5)}'
      +'.ipgp-alerta{margin-top:12px;font-size:12.5px;color:var(--ip-danger,#E8A6A6);background:rgba(232,166,166,.07);border-radius:9px;padding:10px 13px}';
     (document.head||document.documentElement).appendChild(st);
   }
@@ -75,12 +75,12 @@
     var parts = (own && own.participacoes) || [];
     if(parts.length){
       var metLabel={consolidacao:'controlada · consolida 100%',equity:'coligada · equity',custo:'investida · custo'};
-      var metCor={consolidacao:'var(--ip-ok,#7BD3A0)',equity:'var(--ip-gold-lum,#E5C77E)',custo:'var(--ip-ink-2,#9FB0C5)'};
+      var metCor={consolidacao:'var(--ip-ok,#7BD3A0)',equity:'var(--ip-gold-lum,#E9A578)',custo:'var(--ip-ink-2,#9FB0C5)'};
       var rows=parts.map(function(p){
         return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(210,174,100,.07)">'
           +'<div><div style="font-size:13.5px;color:var(--ip-cream,#F7F3EC)">'+esc(p.nome)+'</div>'
           +'<div style="font-size:10.5px;color:'+(metCor[p.metodo]||'var(--ip-ink-3)')+';margin-top:2px">'+esc(metLabel[p.metodo]||p.metodo)+(p.controla?' · controle':'')+'</div></div>'
-          +'<div style="font:600 18px Georgia;font-style:italic;color:var(--ip-gold-lum,#E5C77E)">'+(+p.percentual)+'%</div></div>';
+          +'<div style="font:600 18px Georgia;font-style:italic;color:var(--ip-gold-lum,#E9A578)">'+(+p.percentual)+'%</div></div>';
       }).join('');
       // resultado consolidado IFRS-10 (só mostra a linha financeira se houver apuração fechada de verdade)
       var finHtml='';

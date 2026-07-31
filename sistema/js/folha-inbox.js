@@ -99,7 +99,7 @@
     let html='<div class="fl-crumb"><button class="fl-back" onclick="IpFolha._voltarClientes()">&#8249; Clientes Ativos</button><span class="fl-crumb-sep">/</span><span class="fl-crumb-cur">'+esc(cli?cli.nome:'—')+'</span></div>';
     html+='<div class="fl-kpis">'
       +'<div class="fl-kpi hero"><div class="lab">Folhas recebidas</div><div class="val">'+rows.length+'</div><div class="note">'+comps+' compet&ecirc;ncia(s)</div></div>'
-      +'<div class="fl-kpi"><div class="lab">A processar</div><div class="val" style="'+(pend?'color:var(--warn,#E1A754)':'')+'">'+pend+'</div><div class="note">pendentes de tratamento</div></div>'
+      +'<div class="fl-kpi"><div class="lab">A processar</div><div class="val" style="'+(pend?'color:var(--warn,#E0763A)':'')+'">'+pend+'</div><div class="note">pendentes de tratamento</div></div>'
       +'<div class="fl-kpi"><div class="lab">Total bruto acumulado</div><div class="val" style="font-size:22px">'+fmtBRL(totBruto)+'</div><div class="note">todas as compet&ecirc;ncias</div></div>'
       +'<div class="fl-kpi"><div class="lab">&Uacute;ltima compet&ecirc;ncia</div><div class="val" style="font-size:22px">'+(ult?fmtComp(ult.competencia):'—')+'</div><div class="note">'+(ult?(ult.n_colaboradores||0)+' colaboradores':'sem dados')+'</div></div>'
       +'</div>';
@@ -125,7 +125,7 @@
         +'<div class="fl-num"><span class="k">L&iacute;quido</span><span class="v">'+fmtBRL(r.total_liquido)+'</span></div>'
         +'<div class="fl-num"><span class="k">Colab.</span><span class="v">'+(r.n_colaboradores||0)+'</span></div>'
       +'</div>'
-      +'<div class="fl-card-side">'+estadoTag(r.estado)+(proc?'<span class="fl-mini">processada</span>':'<span class="fl-mini" style="color:var(--warn,#E1A754)">a processar</span>')+'</div>'
+      +'<div class="fl-card-side">'+estadoTag(r.estado)+(proc?'<span class="fl-mini">processada</span>':'<span class="fl-mini" style="color:var(--warn,#E0763A)">a processar</span>')+'</div>'
     +'</div>';
   }
 

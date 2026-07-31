@@ -42,18 +42,18 @@
     st.textContent=
       '.ddc-ov{position:fixed;inset:0;background:rgba(3,7,12,.7);z-index:9100;display:flex;align-items:center;justify-content:center;padding:20px}'
      +'.ddc-box{width:min(560px,100%);max-height:90vh;overflow-y:auto;background:var(--ip-bg,#0A1320);border:1px solid rgba(210,174,100,.25);border-radius:16px;padding:24px 26px}'
-     +'.ddc-h{font:700 italic 20px Georgia;color:var(--ip-gold-lum,#E5C77E);margin-bottom:6px}'
+     +'.ddc-h{font:700 italic 20px Georgia;color:var(--ip-gold-lum,#E9A578);margin-bottom:6px}'
      +'.ddc-termo{font-size:12px;line-height:1.6;color:var(--ip-ink-2,#9FB0C5);background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.1);border-radius:10px;padding:14px 16px;max-height:160px;overflow-y:auto;margin:12px 0}'
      +'.ddc-fin{display:flex;gap:11px;align-items:flex-start;padding:11px 12px;border:1px solid rgba(210,174,100,.1);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.15s}'
      +'.ddc-fin:hover{border-color:rgba(210,174,100,.3)}'
-     +'.ddc-fin input{margin-top:3px;width:17px;height:17px;flex:0 0 auto;accent-color:var(--ip-gold-lum,#E5C77E)}'
+     +'.ddc-fin input{margin-top:3px;width:17px;height:17px;flex:0 0 auto;accent-color:var(--ip-gold-lum,#E9A578)}'
      +'.ddc-fin .nm{font-size:13px;color:var(--ip-cream,#F7F3EC)}.ddc-fin .fo{font-size:10.5px;color:var(--ip-ink-4,#6B7A90);margin-top:2px}'
      +'.ddc-sens{border-color:rgba(232,166,166,.3)!important;background:rgba(232,166,166,.05)}'
      +'.ddc-sens-tag{font:600 8.5px/1 system-ui;letter-spacing:.1em;text-transform:uppercase;color:var(--ip-danger,#E8A6A6);background:rgba(232,166,166,.16);padding:3px 7px;border-radius:7px;margin-left:6px}'
      +'.ddc-art11{font-size:10.5px;color:var(--ip-danger,#E8A6A6);margin:6px 0 12px;font-style:italic}'
      +'.ddc-foot{display:flex;gap:10px;margin-top:16px}'
      +'.ddc-btn{flex:1;padding:13px;border-radius:11px;font:600 13px/1 system-ui;cursor:pointer;border:1px solid}'
-     +'.ddc-ok{background:var(--ip-gold-lum,#E5C77E);color:#1a1205;border-color:var(--ip-gold-lum)}'
+     +'.ddc-ok{background:var(--ip-gold-lum,#E9A578);color:#1a1205;border-color:var(--ip-gold-lum)}'
      +'.ddc-cancel{background:transparent;color:var(--ip-ink-2,#9FB0C5);border-color:rgba(210,174,100,.2)}'
      +'.ddc-res{font-size:12.5px;margin-top:10px}';
     (document.head||document.documentElement).appendChild(st);

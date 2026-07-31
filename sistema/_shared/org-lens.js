@@ -52,15 +52,15 @@
     st.textContent=
       '.olns{background:linear-gradient(135deg,#0C1626,#0A1320);border:1px solid rgba(210,174,100,.18);border-radius:16px;padding:22px 24px;margin-bottom:18px}'
      +'.olns-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px}'
-     +'.olns-h h2{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:20px;color:var(--ip-gold-lum,#E5C77E)}'
-     +'.olns-lente{font:700 9px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--ip-bg-deep,#070D15);background:var(--ip-gold-lum,#E5C77E);padding:5px 9px;border-radius:20px}'
+     +'.olns-h h2{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:20px;color:var(--ip-gold-lum,#E9A578)}'
+     +'.olns-lente{font:700 9px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--ip-bg-deep,#070D15);background:var(--ip-gold-lum,#E9A578);padding:5px 9px;border-radius:20px}'
      +'.olns-sub{font-size:11.5px;color:var(--ip-ink-3,#8FA0B5);margin-bottom:16px}'
      +'.olns-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:16px}'
      +'.olns-kpi{background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.1);border-radius:13px;padding:14px 16px}'
      +'.olns-sec{font:600 10px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin:14px 0 6px}'
      +'.olns-dd{display:flex;gap:8px;flex-wrap:wrap}'
      +'.olns-pill{font:700 11px/1 system-ui;padding:7px 12px;border-radius:18px}'
-     +'.olns-ok{background:rgba(123,211,160,.14);color:var(--ip-ok,#7BD3A0)}.olns-cau{background:rgba(229,199,126,.14);color:var(--ip-gold-lum,#E5C77E)}.olns-no{background:rgba(232,166,166,.14);color:var(--ip-danger,#E8A6A6)}'
+     +'.olns-ok{background:rgba(123,211,160,.14);color:var(--ip-ok,#7BD3A0)}.olns-cau{background:rgba(229,199,126,.14);color:var(--ip-gold-lum,#E9A578)}.olns-no{background:rgba(232,166,166,.14);color:var(--ip-danger,#E8A6A6)}'
      +'.olns-empty{font-size:11.5px;color:var(--ip-ink-4,#6B7A90);font-style:italic;margin-top:6px}';
     (document.head||document.documentElement).appendChild(st);
   }

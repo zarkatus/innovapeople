@@ -66,7 +66,7 @@
       <div class="box9" style="margin:0 auto">
         <div class="cell"><div class="lab">Alta Perf · Baixo Pot</div><div class="nbr">—</div></div>
         <div class="cell hi"><div class="lab">Alta Perf · Médio Pot</div><div class="nbr">—</div></div>
-        <div class="cell hi"><div class="lab">Alta Perf · Alto Pot</div><div class="nbr" style="color:var(--gold)">★</div></div>
+        <div class="cell hi"><div class="lab">Alta Perf · Alto Pot</div><div class="nbr" style="color:var(--acento)">★</div></div>
         <div class="cell"><div class="lab">Média Perf · Baixo Pot</div><div class="nbr">—</div></div>
         <div class="cell"><div class="lab">Média Perf · Médio Pot</div><div class="nbr">—</div></div>
         <div class="cell hi"><div class="lab">Média Perf · Alto Pot</div><div class="nbr">—</div></div>
@@ -87,7 +87,7 @@
       <div class="stat-line"><div class="v">—</div><div class="l">Sucessores identificados</div><div class="badge">pipeline</div></div>
       <div class="stat-line"><div class="v">—</div><div class="l">Papéis críticos cobertos</div><div class="badge">readiness</div></div>
       <div class="stat-line"><div class="v">—</div><div class="l">Bench depth (média)</div><div class="badge">resiliência</div></div>
-      <div style="margin-top:12px;padding:11px 14px;background:var(--navy-raised);border-left:2px solid var(--gold);font-size:11.5px;color:var(--cream-muted);font-style:italic;font-family:var(--serif)">Tabela <code>ip_sucessao_plano</code> aplicada; primeira identificação dispara após cadastrar pessoas e papéis.</div>
+      <div style="margin-top:12px;padding:11px 14px;background:var(--navy-raised);border-left:2px solid var(--acento);font-size:11.5px;color:var(--cream-muted);font-style:italic;font-family:var(--serif)">Tabela <code>ip_sucessao_plano</code> aplicada; primeira identificação dispara após cadastrar pessoas e papéis.</div>
     </div>
   </div>
 
@@ -200,7 +200,7 @@ async function loadSug(){
   const {data}=await TB.safe(()=>_escopo(sb.from('ip_agent_sugestoes').select('id,agente,severidade,titulo,sugestao,created_at,mandato_id')).eq('status','pendente').order('created_at',{ascending:false}).limit(8),{data:[]});
   const lines=(data||[]).map(s=>{
     const sev=s.severidade==='alta'?'danger':(s.severidade==='media'?'warn':'info');
-    return `<div class="row-item"><div class="ico" style="background:var(--gold-faint);color:var(--gold)">!</div><div class="body"><div class="nm">${TB.esc(s.titulo||'sugestão')}</div><div class="desc">${TB.esc(s.agente||'')} · ${TB.esc((s.sugestao||'').slice(0,80))}${s.sugestao&&s.sugestao.length>80?'…':''}</div></div><span class="tag ${sev}">${TB.esc(s.severidade||'—')}</span><div class="time">${TB.esc(TB.fmtRel(s.created_at))}</div></div>`;
+    return `<div class="row-item"><div class="ico" style="background:var(--acento-faint);color:var(--acento)">!</div><div class="body"><div class="nm">${TB.esc(s.titulo||'sugestão')}</div><div class="desc">${TB.esc(s.agente||'')} · ${TB.esc((s.sugestao||'').slice(0,80))}${s.sugestao&&s.sugestao.length>80?'…':''}</div></div><span class="tag ${sev}">${TB.esc(s.severidade||'—')}</span><div class="time">${TB.esc(TB.fmtRel(s.created_at))}</div></div>`;
   }).join('')||'<div class="p-empty">Nenhuma sugestão pendente. Agentes em equilíbrio.</div>';
   document.getElementById('b-sug').innerHTML=lines;
   document.getElementById('d-sug').className='dot'+((data||[]).length>0?' warn':'');
@@ -214,7 +214,7 @@ async function loadComment(){
   ]);
   const crit=(sug.data||[]).filter(s=>s.severidade==='alta').length;
   let texto=`<strong>5 agentes</strong> rodando · ${runs7.count||0} execuções nos últimos 7d.`;
-  if(crit>0)texto+=` <strong style="color:var(--gold)">${crit} sugestão${crit>1?'es':''} crítica${crit>1?'s':''}</strong> aguardando revisão.`;
+  if(crit>0)texto+=` <strong style="color:var(--acento)">${crit} sugestão${crit>1?'es':''} crítica${crit>1?'s':''}</strong> aguardando revisão.`;
   else if((sug.data||[]).length>0)texto+=` ${(sug.data||[]).length} sugestões pendentes (severidade média/baixa).`;
   else texto+=' Nenhuma sugestão pendente — sistema em equilíbrio.';
   document.getElementById('exec-comment').innerHTML=texto;

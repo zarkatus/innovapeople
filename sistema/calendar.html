@@ -10,52 +10,52 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--violet:#5B3A7A;--violet-deep:#3F2756;--violet-soft:#F4EFFA;--gold:#C4A35A;--gold-deep:#9C7E3B;--gold-soft:#F7EFDD;--ink:#1A1614;--ink-soft:#3D3531;--muted:#7A6F66;--rule:#D9D2C9;--paper:#FAF7F1;--paper-deep:#F2EDE3;--success:#2E7D52;--danger:#B23B3B;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',sans-serif}
+:root{--marca:#1C2734;--marca-deep:#0E141B;--marca-soft:#ECF0F4;--acento:#C85924;--acento-deep:#A8461A;--acento-soft:#FBF0E8;--ink:#1A1614;--ink-soft:#3D3531;--muted:#7A6F66;--rule:#D9D2C9;--paper:#FAF5EF;--paper-deep:#F3EADF;--success:#2E7D52;--danger:#B23B3B;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.55;min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
-a{color:var(--violet);text-decoration:none}
+a{color:var(--marca);text-decoration:none}
 header.top{background:var(--paper-deep);border-bottom:1px solid var(--rule);padding:14px 0}
 header.top .row{max-width:1080px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:500;color:var(--violet-deep);letter-spacing:-.015em;font-size:18px;text-decoration:none}
-.logo svg{width:30px;height:30px;color:var(--violet)}
-.logo .sub{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;border-left:1px solid var(--rule);padding-left:9px;margin-left:6px}
+.logo{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:500;color:var(--marca-deep);letter-spacing:-.015em;font-size:18px;text-decoration:none}
+.logo svg{width:30px;height:30px;color:var(--marca)}
+.logo .sub{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--acento-deep);font-weight:600;border-left:1px solid var(--rule);padding-left:9px;margin-left:6px}
 .sys-nav{display:flex;align-items:center;gap:28px;flex:1;justify-content:center}
 .sys-link{font-size:12.5px;color:var(--ink-soft);font-weight:500;text-decoration:none;letter-spacing:.02em;padding:6px 0;border-bottom:1.5px solid transparent;transition:all .22s ease;white-space:nowrap}
-.sys-link:hover{color:var(--violet)}
-.sys-link.active{color:var(--violet-deep);border-bottom-color:var(--gold)}
+.sys-link:hover{color:var(--marca)}
+.sys-link.active{color:var(--marca-deep);border-bottom-color:var(--acento)}
 @media (max-width:980px){.sys-nav{display:none}}
 .nav-user{display:flex;align-items:center;gap:14px;font-size:13px}
 .nav-user a{color:var(--ink-soft);font-weight:500}
-.nav-user a:hover{color:var(--violet)}
+.nav-user a:hover{color:var(--marca)}
 .btn-logout{background:transparent;border:1px solid var(--rule);color:var(--muted);padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer}
 main{flex:1;padding:48px 0 80px 0}
 .wrap{max-width:760px;margin:0 auto;padding:0 28px}
 .head{margin-bottom:36px}
-.head .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:8px;display:inline-block}
-.head h1{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:34px;letter-spacing:-.015em;margin-bottom:8px}
+.head .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--acento-deep);font-weight:600;margin-bottom:8px;display:inline-block}
+.head h1{font-family:var(--serif);font-weight:500;color:var(--marca-deep);font-size:34px;letter-spacing:-.015em;margin-bottom:8px}
 .head .lede{font-family:var(--serif);font-style:italic;color:var(--ink-soft);font-size:18px;line-height:1.5}
 .card{background:#fff;border:1px solid var(--rule);border-radius:14px;padding:32px 36px;margin-bottom:20px;box-shadow:0 4px 14px rgba(26,22,20,.04)}
-.card h2{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:22px;margin-bottom:8px}
+.card h2{font-family:var(--serif);font-weight:500;color:var(--marca-deep);font-size:22px;margin-bottom:8px}
 .card p{color:var(--ink-soft);margin-bottom:14px;line-height:1.6}
 .status-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:12px;letter-spacing:.06em;font-weight:600;margin-bottom:14px}
 .status-pill.ok{background:#E2F0E8;color:var(--success)}
-.status-pill.off{background:var(--gold-soft);color:var(--gold-deep)}
+.status-pill.off{background:var(--acento-soft);color:var(--acento-deep)}
 .status-pill::before{content:'';width:8px;height:8px;border-radius:50%;background:currentColor}
 .btn{padding:13px 28px;border:none;border-radius:8px;font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .22s ease;text-decoration:none;display:inline-block}
-.btn-primary{background:var(--violet);color:#fff;box-shadow:0 6px 18px rgba(91,58,122,.22)}
-.btn-primary:hover{background:var(--violet-deep);color:#fff;transform:translateY(-1px)}
-.btn-ghost{background:transparent;color:var(--violet);border:1.4px solid var(--violet);padding:11px 22px}
-.btn-ghost:hover{background:var(--violet-soft)}
+.btn-primary{background:var(--marca);color:#fff;box-shadow:0 6px 18px rgba(28,39,52,.22)}
+.btn-primary:hover{background:var(--marca-deep);color:#fff;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--marca);border:1.4px solid var(--marca);padding:11px 22px}
+.btn-ghost:hover{background:var(--marca-soft)}
 .btn-google{background:#fff;color:#3c4043;border:1px solid #dadce0;display:inline-flex;align-items:center;gap:12px;text-transform:none;font-size:14px;font-weight:500;letter-spacing:normal;padding:11px 22px}
 .btn-google:hover{background:#F8F9FA;color:#3c4043}
 .btn-google svg{width:18px;height:18px}
 .upcoming{margin-top:32px}
-.upcoming h3{font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:20px;margin-bottom:14px}
-.agend-row{display:flex;justify-content:space-between;align-items:flex-start;padding:14px 18px;background:var(--paper);border-radius:10px;margin-bottom:8px;border-left:3px solid var(--violet)}
-.agend-row .info strong{font-family:var(--serif);font-size:17px;color:var(--violet-deep);font-weight:500}
+.upcoming h3{font-family:var(--serif);font-weight:500;color:var(--marca-deep);font-size:20px;margin-bottom:14px}
+.agend-row{display:flex;justify-content:space-between;align-items:flex-start;padding:14px 18px;background:var(--paper);border-radius:10px;margin-bottom:8px;border-left:3px solid var(--marca)}
+.agend-row .info strong{font-family:var(--serif);font-size:17px;color:var(--marca-deep);font-weight:500}
 .agend-row .info .meta{font-size:11.5px;color:var(--muted);letter-spacing:.04em;margin-top:3px}
 .agend-row .when{text-align:right;font-size:12.5px;color:var(--ink-soft);font-weight:500}
-.toast{position:fixed;bottom:24px;right:24px;background:var(--violet-deep);color:#fff;padding:14px 20px;border-radius:10px;font-size:13px;box-shadow:0 12px 30px rgba(0,0,0,.3);z-index:200;display:none}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--marca-deep);color:#fff;padding:14px 20px;border-radius:10px;font-size:13px;box-shadow:0 12px 30px rgba(0,0,0,.3);z-index:200;display:none}
 .toast.show{display:block}.toast.success{background:var(--success)}.toast.error{background:var(--danger)}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -82,9 +82,9 @@ footer{background:#0E0916;color:rgba(255,255,255,.5);padding:18px;text-align:cen
 
 <a href="/sistema/chro/" class="fab-curadoria" title="Curadoria — Centro de Comando"><span>Curadoria</span></a>
 <style>
-.fab-curadoria{position:fixed;top:92px;right:28px;width:112px;height:112px;border-radius:50%;background:linear-gradient(135deg,#D4BA7A 0%,#A88440 100%);color:#FBFAF7;display:flex;align-items:center;justify-content:center;text-decoration:none;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:21px;letter-spacing:.01em;box-shadow:0 10px 32px rgba(196,163,90,.42),inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1px rgba(255,255,255,.08);transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:60;text-align:center;line-height:1}
-.fab-curadoria::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(196,163,90,.18);pointer-events:none}
-.fab-curadoria:hover{transform:scale(1.07) rotate(-2deg);box-shadow:0 14px 40px rgba(196,163,90,.58)}
+.fab-curadoria{position:fixed;top:92px;right:28px;width:112px;height:112px;border-radius:50%;background:linear-gradient(135deg,#E0763A 0%,#A8461A 100%);color:#FBFAF7;display:flex;align-items:center;justify-content:center;text-decoration:none;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:21px;letter-spacing:.01em;box-shadow:0 10px 32px rgba(200,89,36,.42),inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1px rgba(255,255,255,.08);transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:60;text-align:center;line-height:1}
+.fab-curadoria::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(200,89,36,.18);pointer-events:none}
+.fab-curadoria:hover{transform:scale(1.07) rotate(-2deg);box-shadow:0 14px 40px rgba(200,89,36,.58)}
 .fab-curadoria:active{transform:scale(1.02)}
 @media(max-width:720px){.fab-curadoria{width:84px;height:84px;font-size:16px;top:78px;right:16px}}
 </style>
@@ -93,12 +93,12 @@ footer{background:#0E0916;color:rgba(255,255,255,.5);padding:18px;text-align:cen
   <div class="wrap">
     <div class="head">
       <span class="eyebrow">Google Calendar · Integração</span>
-      <h1>Agendar entrevistas <em style="color:var(--gold-deep);font-style:italic">a partir do Sistema.</em></h1>
+      <h1>Agendar entrevistas <em style="color:var(--acento-deep);font-style:italic">a partir do Sistema.</em></h1>
       <p class="lede">Cada sócio conecta seu Google Calendar uma vez. A partir daí, agendamentos do Sistema criam evento real + link Google Meet + convite por e-mail aos participantes.</p>
     </div>
 
     <div class="card" id="status-card">
-      <div class="loading" style="text-align:center;padding:24px;color:var(--muted)"><span class="spinner" style="border-color:rgba(91,58,122,.2);border-top-color:var(--violet)"></span> verificando conexões...</div>
+      <div class="loading" style="text-align:center;padding:24px;color:var(--muted)"><span class="spinner" style="border-color:rgba(28,39,52,.2);border-top-color:var(--marca)"></span> verificando conexões...</div>
     </div>
 
     <div class="upcoming card" id="upcoming-card" style="display:none">
@@ -143,7 +143,7 @@ async function carregar(){
   card.innerHTML = SOCIOS.map(s => `
     <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--rule)">
       <div>
-        <div style="font-family:var(--serif);font-weight:500;color:var(--violet-deep);font-size:18px">${s.nome}</div>
+        <div style="font-family:var(--serif);font-weight:500;color:var(--marca-deep);font-size:18px">${s.nome}</div>
         <div style="font-size:12px;color:var(--muted);letter-spacing:.04em">${s.email}</div>
         <div id="stat-${s.slug}" class="status-pill off" style="margin-top:8px">verificando…</div>
       </div>

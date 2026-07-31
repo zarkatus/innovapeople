@@ -84,7 +84,7 @@
      +'@keyframes ipnIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}'
      +'@media(prefers-reduced-motion:reduce){.ipn-item{animation:none}}'
      +'.ipn-dot{position:absolute;left:-9px;top:11px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 11px/1 system-ui;color:var(--ip-bg-deep,#070D15)}'
-     +'.ipn-item.ins .ipn-dot{background:var(--ip-ok,#7BD3A0)}.ipn-item.upd .ipn-dot{background:var(--ip-gold-lum,#E5C77E)}.ipn-item.del .ipn-dot{background:var(--ip-danger-2,#C77D7D)}'
+     +'.ipn-item.ins .ipn-dot{background:var(--ip-ok,#7BD3A0)}.ipn-item.upd .ipn-dot{background:var(--ip-gold-lum,#E9A578)}.ipn-item.del .ipn-dot{background:var(--ip-danger-2,#C77D7D)}'
      +'.ipn-line{font-size:13px;color:var(--ip-cream,#F7F3EC)}.ipn-line strong{font-weight:600}'
      +'.ipn-subj{color:var(--ip-ink-2,#9FB0C5);font-weight:400}'
      +'.ipn-meta{font-size:10.5px;color:var(--ip-ink-4,#6B7A90);font-family:ui-monospace,monospace;margin-top:2px}'

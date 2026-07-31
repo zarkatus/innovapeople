@@ -30,13 +30,13 @@
 :root{
   --navy:#0A1628;--navy2:#0F1D32;
   --cream:#F5F0E8;--cream2:#EFE9DD;--white:#FBFAF7;
-  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#A88440;--gold-soft:#E6D9B5;
+  --acento:#C85924;--acento2:#E0763A;--acento-deep:#A8461A;--acento-soft:#EFD9C6;
   --emerald:#2E8B6E;--ink:#1A1A1A;--ink2:#3A3F47;--ink3:#6B7280;--ink4:#9CA3AF;
   --border:rgba(10,22,40,.08);--border2:rgba(10,22,40,.04);
   --serif:'Cormorant Garamond',Georgia,serif;
   --sans:'Outfit',-apple-system,Segoe UI,sans-serif;
   --mono:'JetBrains Mono',Menlo,monospace;
-  --red:#9B2C2C;--amber:#A86A1F;
+  --red:#9B2C2C;--amber:#A8461A;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased;min-height:100vh}
@@ -46,9 +46,9 @@ em{font-style:italic}
 
 .hdr{height:64px;background:rgba(245,240,232,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;position:sticky;top:0;z-index:50}
 .brand{display:flex;align-items:center;gap:12px}
-.brand .mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:17px;font-style:italic}
+.brand .mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;color:var(--acento);font-family:var(--serif);font-size:17px;font-style:italic}
 .brand .name{font-size:17px;color:var(--navy);letter-spacing:.04em}
-.brand .name em{color:var(--gold-deep);font-weight:500}
+.brand .name em{color:var(--acento-deep);font-weight:500}
 .brand .sub{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink3);margin-left:8px;font-family:var(--mono)}
 .nav{display:flex;gap:22px;flex:1;justify-content:center;font-size:13px;letter-spacing:.06em}
 .nav a{color:var(--ink2)}
@@ -60,17 +60,17 @@ em{font-style:italic}
 .hero{padding:48px 32px 28px;background:linear-gradient(180deg,var(--cream),var(--cream2));border-bottom:1px solid var(--border)}
 .hero-inner{max-width:1280px;margin:0 auto}
 .hero h1{font-family:var(--serif);font-size:44px;font-weight:300;line-height:1.06;color:var(--navy);margin-bottom:12px}
-.hero h1 em{color:var(--gold-deep);font-weight:400}
+.hero h1 em{color:var(--acento-deep);font-weight:400}
 .hero .lede{font-size:15px;color:var(--ink2);max-width:680px;line-height:1.6}
 .hero .crumb{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px}
-.hero .crumb a{color:var(--gold-deep)}
+.hero .crumb a{color:var(--acento-deep)}
 
 .main{max-width:1280px;margin:0 auto;padding:38px 32px 80px}
 
 .section{margin-bottom:48px}
 .section-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .section-h h2{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--navy)}
-.section-h h2 em{color:var(--gold-deep);font-style:italic}
+.section-h h2 em{color:var(--acento-deep);font-style:italic}
 .section-h button.add{padding:9px 18px;background:var(--navy);color:var(--cream);border-radius:6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-family:inherit;border:none;cursor:pointer}
 .section-h button.add:hover{background:var(--navy2)}
 
@@ -80,7 +80,7 @@ em{font-style:italic}
 .bc-card-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
 .bc-card-title{font-family:var(--serif);font-size:21px;color:var(--navy);font-weight:500}
 .bc-status{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:10px;font-weight:500;white-space:nowrap}
-.bc-status.preparando{background:rgba(196,163,90,.1);color:var(--gold-deep)}
+.bc-status.preparando{background:rgba(200,89,36,.1);color:var(--acento-deep)}
 .bc-status.em_execucao{background:rgba(46,139,110,.1);color:var(--emerald)}
 .bc-status.concluido,.bc-status.concluida{background:rgba(46,139,110,.06);color:var(--ink3)}
 .bc-status.pausada,.bc-status.pausado{background:rgba(168,106,31,.1);color:var(--amber)}
@@ -88,7 +88,7 @@ em{font-style:italic}
 .bc-card-meta{font-family:var(--mono);font-size:11px;color:var(--ink3);margin-bottom:14px;letter-spacing:.04em}
 
 .bc-progress{height:8px;background:var(--cream2);border-radius:4px;overflow:hidden;margin-bottom:12px}
-.bc-progress-bar{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-deep));border-radius:4px;transition:width .5s}
+.bc-progress-bar{height:100%;background:linear-gradient(90deg,var(--acento),var(--acento-deep));border-radius:4px;transition:width .5s}
 .bc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
 .bc-stat{text-align:center;padding:10px 4px;background:var(--cream2);border-radius:4px}
 .bc-stat-k{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px}
@@ -119,7 +119,7 @@ em{font-style:italic}
 .dr-lab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:500}
 .dr-ok{padding:12px 14px;background:rgba(46,139,110,.1);border-radius:4px;font-size:13px;color:var(--emerald)}
 .dr-err{padding:12px 14px;background:rgba(155,44,44,.08);border-radius:4px;font-size:13px;color:var(--red)}
-.dr-info{padding:12px 14px;background:rgba(196,163,90,.08);border-radius:4px;font-size:13px;color:var(--ink2);font-style:italic}
+.dr-info{padding:12px 14px;background:rgba(200,89,36,.08);border-radius:4px;font-size:13px;color:var(--ink2);font-style:italic}
 
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:11px 22px;background:var(--navy);color:var(--cream);border-radius:6px;font-size:12px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none}
 .toast.on{opacity:1}
@@ -251,7 +251,7 @@ function renderAtivos(list){
       <div class="bc-stats">
         <div class="bc-stat"><div class="bc-stat-k">Total</div><div class="bc-stat-v">${b.total_destinatarios||0}</div></div>
         <div class="bc-stat"><div class="bc-stat-k">Enviados</div><div class="bc-stat-v" style="color:var(--emerald)">${b.total_enviados||0}</div></div>
-        <div class="bc-stat"><div class="bc-stat-k">Pendentes</div><div class="bc-stat-v" style="color:var(--gold-deep)">${b.pendentes||0}</div></div>
+        <div class="bc-stat"><div class="bc-stat-k">Pendentes</div><div class="bc-stat-v" style="color:var(--acento-deep)">${b.pendentes||0}</div></div>
         <div class="bc-stat"><div class="bc-stat-k">Falhas</div><div class="bc-stat-v" style="color:${b.total_falhas>0?'var(--red)':'var(--ink3)'}">${b.total_falhas||0}</div></div>
       </div>
       <div class="bc-card-actions">
@@ -354,7 +354,7 @@ function verDetalhe(id,nome){
       if(error)throw error;
       if(!data||!data.length){body.innerHTML='<div class="dr-info">Sem mensagens enviadas ainda neste broadcast.</div>';return}
       body.innerHTML=`<div class="dr-sub">${data.length} mensagens enviadas (top 100)</div>`+data.map(m=>{
-        const stCor={sent:'var(--ink3)',delivered:'var(--gold-deep)',read:'var(--emerald)',failed:'var(--red)'}[m.status]||'var(--ink3)';
+        const stCor={sent:'var(--ink3)',delivered:'var(--acento-deep)',read:'var(--emerald)',failed:'var(--red)'}[m.status]||'var(--ink3)';
         return `<div style="padding:10px 12px;border-bottom:1px solid var(--border2);font-size:12px;display:flex;justify-content:space-between;gap:10px">
           <div style="flex:1;min-width:0"><strong style="color:var(--navy);font-family:var(--mono)">${esc((m.contact_id||'').slice(0,8))}…</strong><div style="color:var(--ink2);margin-top:2px;line-height:1.4">${esc((m.content||'').slice(0,80))}</div></div>
           <div style="text-align:right;flex-shrink:0">

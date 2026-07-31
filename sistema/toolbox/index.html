@@ -220,9 +220,9 @@ async function loadAgents(){
   }).join('');
   const sugList=(sug.data||[]).map(s=>{
     const sev=s.severidade==='alta'?'danger':(s.severidade==='media'?'warn':'info');
-    return `<div class="row-item"><div class="ico" style="background:var(--gold-faint);color:var(--gold)">!</div><div class="body"><div class="nm">${TB.esc(s.titulo||'sugestão')}</div><div class="desc">${TB.esc(s.agente||'')}</div></div><span class="tag ${sev}">${TB.esc(s.severidade||'—')}</span><div class="time">${TB.esc(TB.fmtRel(s.created_at))}</div></div>`;
+    return `<div class="row-item"><div class="ico" style="background:var(--acento-faint);color:var(--acento)">!</div><div class="body"><div class="nm">${TB.esc(s.titulo||'sugestão')}</div><div class="desc">${TB.esc(s.agente||'')}</div></div><span class="tag ${sev}">${TB.esc(s.severidade||'—')}</span><div class="time">${TB.esc(TB.fmtRel(s.created_at))}</div></div>`;
   }).join('');
-  document.getElementById('b-agents').innerHTML=lines+(sugList?'<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--rule-strong);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:700;font-family:var(--mono)">sugestões pendentes</div>'+sugList:'');
+  document.getElementById('b-agents').innerHTML=lines+(sugList?'<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--rule-strong);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--acento);font-weight:700;font-family:var(--mono)">sugestões pendentes</div>'+sugList:'');
   document.getElementById('c-agents').textContent=AGENTES.length;
   document.getElementById('d-agents').className='dot'+(Object.keys(ultRun).length>=3?'':' warn');
 }
@@ -249,7 +249,7 @@ async function loadMandatos(){
     const sc=m.score_30d?`<span class="tag ok">${m.score_30d}/100</span>`:'<span class="tag muted">sem score</span>';
     const alert=m.sugestoes_criticas>0?`<span class="tag danger">${m.sugestoes_criticas}!</span>`:(m.sugestoes_pendentes>0?`<span class="tag warn">${m.sugestoes_pendentes}</span>`:'');
     return `<a class="row-item" href="/sistema/mandato.html?id=${TB.esc(m.id)}" style="text-decoration:none;color:inherit"><div class="ico">${TB.initials(m.empresa)}</div><div class="body"><div class="nm">${TB.esc(m.empresa)} <span style="color:var(--cream-dim);font-weight:400;font-size:11px">· ${TB.esc(m.setor||'—')}</span></div><div class="desc">${TB.esc(stag)} · sócio ${TB.esc(m.socio_responsavel||'—')}</div></div>${alert}${sc}<div class="time">${TB.esc(TB.fmtRel(m.created_at))}</div></a>`;
-  }).join('')||'<div class="p-empty">Nenhum trabalho ativo. <a href="/sistema/" style="color:var(--gold)">Criar a partir de Raio-X →</a></div>';
+  }).join('')||'<div class="p-empty">Nenhum trabalho ativo. <a href="/sistema/" style="color:var(--acento)">Criar a partir de Raio-X →</a></div>';
   document.getElementById('b-mand').innerHTML=lines;
   document.getElementById('c-mand').textContent=(data||[]).length;
   document.getElementById('d-mand').className='dot';
@@ -296,7 +296,7 @@ async function loadGovernanca(){
     <div class="stat-line"><div class="v">${dec.count||0}</div><div class="l">Decisões registradas <span style="opacity:.6">· Clock Drift</span></div><div class="badge">patrim</div></div>
     <div class="stat-line"><div class="v">${rel.count||0}</div><div class="l">Relacionamentos críticos <span style="opacity:.6">· key persons</span></div><div class="badge">vigia</div></div>
     <div class="stat-line"><div class="v">${wAud.count||0}</div><div class="l">Audit Log WhatsApp <span style="opacity:.6">· hash chain</span></div><div class="badge">imutável</div></div>
-    <div style="margin-top:14px;padding:11px 14px;background:var(--navy-raised);border-radius:6px;font-size:11px;color:var(--cream-muted);line-height:1.55;font-style:italic;font-family:var(--serif);border-left:2px solid var(--gold)">Conformidade contínua: LGPD opt-out em cada disparo · trilha imutável · acesso restrito a sócios.</div>
+    <div style="margin-top:14px;padding:11px 14px;background:var(--navy-raised);border-radius:6px;font-size:11px;color:var(--cream-muted);line-height:1.55;font-style:italic;font-family:var(--serif);border-left:2px solid var(--acento)">Conformidade contínua: LGPD opt-out em cada disparo · trilha imutável · acesso restrito a sócios.</div>
   `;
   document.getElementById('c-gov').textContent=(dec.count||0)+(rel.count||0);
   document.getElementById('d-gov').className='dot';

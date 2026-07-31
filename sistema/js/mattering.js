@@ -66,7 +66,7 @@
   }
 
   function mandatoSelect(){
-    if(!_state.mandatos.length) return `<div class="mt-warn">Nenhum trabalho ativo. Crie um trabalho (curadoria) no <a href="/sistema/" style="color:var(--gold)">Dashboard</a> antes de disparar pulso.</div>`;
+    if(!_state.mandatos.length) return `<div class="mt-warn">Nenhum trabalho ativo. Crie um trabalho (curadoria) no <a href="/sistema/" style="color:var(--acento)">Dashboard</a> antes de disparar pulso.</div>`;
     return `<select id="mt-mandato" onchange="IpMattering._setMandato(this.value)" class="mt-select">
       ${_state.mandatos.map(m=>`<option value="${T.esc(m.id)}" ${m.id===_state.mandato?'selected':''}>${T.esc(m.empresa||'(sem nome)')} · ${T.esc(m.setor||'—')}</option>`).join('')}
     </select>`;
@@ -113,11 +113,11 @@
         <div class="kpi"><div class="lab">Risco de saida</div><div class="val" style="${risco!=null&&risco>=3.5?'color:var(--danger,#d87575)':''}">${risco==null?'—':risco.toFixed(1)}<span class="un">/5</span></div><div class="note">media percebida</div></div>
         <div class="kpi"><div class="lab">Respostas</div><div class="val">${arr.length}</div><div class="note">${last30} nos ultimos 30d &middot; anonimo</div></div>
       </div>
-      <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep,#9a7b3a);font-weight:700;margin-bottom:10px">6 Dimensoes &middot; media agregada</div>
+      <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--acento-deep,#A8461A);font-weight:700;margin-bottom:10px">6 Dimensoes &middot; media agregada</div>
       ${dimVals.map(d=>{
         const pct=d.v==null?0:Math.round(d.v/5*100);
-        const col=d.v==null?'var(--cream-dim)':(d.v>=4?'var(--ok,#6bae82)':(d.v>=3?'var(--warn,#e1a754)':'var(--danger,#d87575)'));
-        return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px"><span style="font-size:13px;color:var(--cream);font-weight:500">${d.n}</span><span style="font-family:var(--serif);font-style:italic;font-size:17px;color:${col}">${d.v==null?'—':d.v.toFixed(1)}</span></div><div class="pbar"><span style="width:${pct}%;background:linear-gradient(90deg,${col},var(--gold))"></span></div></div>`;
+        const col=d.v==null?'var(--cream-dim)':(d.v>=4?'var(--ok,#6bae82)':(d.v>=3?'var(--warn,#E0763A)':'var(--danger,#d87575)'));
+        return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px"><span style="font-size:13px;color:var(--cream);font-weight:500">${d.n}</span><span style="font-family:var(--serif);font-style:italic;font-size:17px;color:${col}">${d.v==null?'—':d.v.toFixed(1)}</span></div><div class="pbar"><span style="width:${pct}%;background:linear-gradient(90deg,${col},var(--acento))"></span></div></div>`;
       }).join('')}
       <div style="margin-top:14px"><button class="mt-btn-ghost" onclick="IpMattering._rodarAgente()">Rodar Mattering Coach (detector)</button></div>`;
     }
@@ -154,7 +154,7 @@
       const tokens=(data||[]).map(r=>typeof r==='string'?r:(r.fn_ip_pulso_token_gerar||r.token||r));
       const base=location.origin+'/sistema/pulso/?t=';
       document.getElementById('mt-links').innerHTML=`
-        <div style="margin-top:18px;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep,#9a7b3a);font-weight:700;margin-bottom:8px">${tokens.length} links gerados · ${T.esc(eq)}</div>
+        <div style="margin-top:18px;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--acento-deep,#A8461A);font-weight:700;margin-bottom:8px">${tokens.length} links gerados · ${T.esc(eq)}</div>
         <div style="display:flex;flex-direction:column;gap:6px">${tokens.map((t,i)=>`<div class="mt-link"><span>#${i+1}</span><code>${base}${T.esc(t)}</code><button onclick="navigator.clipboard.writeText('${base}${T.esc(t)}');IpMattering._toast('Link copiado')">copiar</button></div>`).join('')}</div>
         <button class="mt-btn-ghost" style="margin-top:10px" onclick="navigator.clipboard.writeText('${tokens.map(t=>base+t).join('\\n')}');IpMattering._toast('Todos os links copiados')">Copiar todos</button>`;
       T.toast(tokens.length+' links gerados');
@@ -172,7 +172,7 @@
     const arr=data||[];
     const pend=arr.filter(t=>!t.used_at);
     body.innerHTML=`<div style="margin-bottom:14px">${mandatoSelect()}</div>
-      <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep,#9a7b3a);font-weight:700;margin-bottom:10px">${pend.length} pendentes · ${arr.length-pend.length} respondidos</div>
+      <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--acento-deep,#A8461A);font-weight:700;margin-bottom:10px">${pend.length} pendentes · ${arr.length-pend.length} respondidos</div>
       ${arr.length?arr.map(t=>{
         const used=!!t.used_at;
         const exp=t.expires_at&&new Date(t.expires_at)<new Date();
@@ -197,24 +197,24 @@
   #mt-root .mt-tabs{display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--rule)}
   #mt-root .mt-tab{padding:9px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--cream-dim);font-family:var(--sans);font-size:12.5px;font-weight:500;letter-spacing:.04em;cursor:pointer;transition:all .18s}
   #mt-root .mt-tab:hover{color:var(--cream)}
-  #mt-root .mt-tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+  #mt-root .mt-tab.on{color:var(--acento);border-bottom-color:var(--acento)}
   #mt-root .mt-select{width:100%;max-width:420px;padding:10px 14px;background:var(--navy-raised);border:1px solid var(--rule-strong);border-radius:7px;color:var(--cream);font-family:var(--sans);font-size:13px;margin-bottom:14px}
   #mt-root .mt-field{margin-bottom:14px}
   #mt-root .mt-field label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--cream-dim);font-weight:600;margin-bottom:6px}
   #mt-root .mt-field input{width:100%;padding:11px 14px;background:var(--navy-raised);border:1px solid var(--rule-strong);border-radius:7px;color:var(--cream);font-family:var(--sans);font-size:13.5px}
-  #mt-root .mt-field input:focus{outline:none;border-color:var(--gold)}
-  #mt-root .mt-btn{padding:12px 22px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--gold-glow,#F5DDA5),var(--gold));color:#2A1A3B;font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:.04em;cursor:pointer;transition:all .2s;margin-top:6px}
-  #mt-root .mt-btn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(196,163,90,.3)}
+  #mt-root .mt-field input:focus{outline:none;border-color:var(--acento)}
+  #mt-root .mt-btn{padding:12px 22px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--acento-glow,#F0B48A),var(--acento));color:#2A1A3B;font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:.04em;cursor:pointer;transition:all .2s;margin-top:6px}
+  #mt-root .mt-btn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(200,89,36,.3)}
   #mt-root .mt-btn:disabled{opacity:.5;cursor:not-allowed}
-  #mt-root .mt-btn-ghost{padding:9px 16px;border:1px solid var(--rule-strong);border-radius:7px;background:transparent;color:var(--gold);font-family:var(--sans);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
-  #mt-root .mt-btn-ghost:hover{background:rgba(196,163,90,.1);border-color:var(--gold)}
+  #mt-root .mt-btn-ghost{padding:9px 16px;border:1px solid var(--rule-strong);border-radius:7px;background:transparent;color:var(--acento);font-family:var(--sans);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
+  #mt-root .mt-btn-ghost:hover{background:rgba(200,89,36,.1);border-color:var(--acento)}
   #mt-root .mt-empty{text-align:center;padding:32px 16px;color:var(--cream-dim);font-style:italic;font-family:var(--serif);font-size:15px;line-height:1.5}
-  #mt-root .mt-warn{padding:14px 18px;background:rgba(225,167,84,.1);border-left:2px solid var(--warn,#e1a754);border-radius:6px;color:var(--cream-muted);font-size:13px;font-style:italic;font-family:var(--serif);margin-bottom:14px}
+  #mt-root .mt-warn{padding:14px 18px;background:rgba(224,118,58,.1);border-left:2px solid var(--warn,#E0763A);border-radius:6px;color:var(--cream-muted);font-size:13px;font-style:italic;font-family:var(--serif);margin-bottom:14px}
   #mt-root .mt-link{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--navy-raised);border:1px solid var(--rule);border-radius:6px;font-size:12px}
-  #mt-root .mt-link span{font-family:var(--mono);font-size:10px;color:var(--gold);flex-shrink:0}
+  #mt-root .mt-link span{font-family:var(--mono);font-size:10px;color:var(--acento);flex-shrink:0}
   #mt-root .mt-link code{flex:1;font-family:var(--mono);font-size:10.5px;color:var(--cream-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  #mt-root .mt-link button{background:none;border:1px solid var(--rule-strong);border-radius:4px;color:var(--gold);font-size:10px;padding:3px 8px;cursor:pointer;flex-shrink:0}
-  #mt-root .mt-link button:hover{background:rgba(196,163,90,.1)}`;
+  #mt-root .mt-link button{background:none;border:1px solid var(--rule-strong);border-radius:4px;color:var(--acento);font-size:10px;padding:3px 8px;cursor:pointer;flex-shrink:0}
+  #mt-root .mt-link button:hover{background:rgba(200,89,36,.1)}`;
   function _injectCSS(){if(document.getElementById('mt-css'))return;const s=document.createElement('style');s.id='mt-css';s.textContent=CSS;document.head.appendChild(s)}
   _injectCSS();
 

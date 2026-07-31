@@ -56,28 +56,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
-/* :root invertido p/ paleta ÚNICA dark violet (CVO 29/05) — cream=fundo escuro,
+/* :root invertido p/ paleta ÚNICA escura da marca (CVO 29/05) — cream=fundo escuro,
    ink=texto claro; a página usa estas vars consistentemente, então inverte tudo. */
 :root{
-  --navy:#F5DDA5;--navy2:#E6CB8F;
-  --cream:#0C0816;--cream2:#140D22;--white:#1C1230;
-  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#F5DDA5;
-  --emerald:#6BAE82;--ink:#F7F3EC;--ink2:#D6CDB8;--ink3:#A99E86;--ink4:#8A7E94;
-  --border:rgba(245,221,165,.12);--border2:rgba(245,221,165,.06);
+  --navy:#F0B48A;--navy2:#EDAC80;
+  --cream:#0B1119;--cream2:#101821;--white:#16202B;
+  --acento:#C85924;--acento2:#E0763A;--acento-deep:#F0B48A;
+  --emerald:#6BAE82;--ink:#F7F3EC;--ink2:#D6CDB8;--ink3:#A99E86;--ink4:#7C8794;
+  --border:rgba(240,180,138,.12);--border2:rgba(240,180,138,.06);
   --serif:'Cormorant Garamond',Georgia,serif;
   --sans:'Inter',-apple-system,Segoe UI,sans-serif;
   --mono:'JetBrains Mono',Menlo,monospace;
-  --red:#D87575;--amber:#E1A754;--blue:#7BA5D8;
+  --red:#D87575;--amber:#E0763A;--blue:#7BA5D8;
   --nav-h:74px;
 }
 /* MODO LIGHT — valores originais claros (CVO 29/05) */
 html[data-theme="light"]{
   --navy:#0A1628;--navy2:#0F1D32;
   --cream:#F5F0E8;--cream2:#EFE9DD;--white:#FBFAF7;
-  --gold:#C4A35A;--gold2:#D4BA7A;--gold-deep:#A88440;
+  --acento:#C85924;--acento2:#E0763A;--acento-deep:#A8461A;
   --emerald:#2E8B6E;--ink:#1A1A1A;--ink2:#3A3F47;--ink3:#6B7280;--ink4:#9CA3AF;
   --border:rgba(10,22,40,.08);--border2:rgba(10,22,40,.04);
-  --red:#9B2C2C;--amber:#A86A1F;--blue:#2C5282;
+  --red:#9B2C2C;--amber:#A8461A;--blue:#2C5282;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased}
@@ -88,9 +88,9 @@ em{font-style:italic}
 .hdr{position:sticky;top:0;z-index:50;background:rgba(245,240,232,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:var(--nav-h);display:flex;align-items:center;padding:0 32px}
 .hdr-inner{max-width:1280px;margin:0 auto;width:100%;display:flex;align-items:center;gap:28px}
 .brand{display:flex;align-items:center;gap:12px}
-.brand .mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:18px;font-style:italic}
+.brand .mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;color:var(--acento);font-family:var(--serif);font-size:18px;font-style:italic}
 .brand .name{font-size:18px;color:var(--navy);letter-spacing:.04em}
-.brand .name em{color:var(--gold-deep);font-weight:500}
+.brand .name em{color:var(--acento-deep);font-weight:500}
 .brand .sub{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink3);margin-left:8px;font-family:var(--mono)}
 .nav{display:flex;gap:24px;flex:1;justify-content:center;font-size:13px;letter-spacing:.06em}
 .nav a{color:var(--ink2);transition:color .2s}
@@ -102,7 +102,7 @@ em{font-style:italic}
 .hero{padding:54px 32px 32px;background:linear-gradient(180deg,var(--cream) 0%,var(--cream2) 100%);border-bottom:1px solid var(--border)}
 .hero-inner{max-width:1280px;margin:0 auto}
 .hero h1{font-family:var(--serif);font-size:46px;font-weight:300;line-height:1.06;color:var(--navy);margin-bottom:14px;letter-spacing:-.01em}
-.hero h1 em{color:var(--gold-deep);font-weight:400}
+.hero h1 em{color:var(--acento-deep);font-weight:400}
 .hero .lede{font-size:15px;color:var(--ink2);max-width:680px;line-height:1.6;font-weight:300}
 .hero-meta{margin-top:24px;display:flex;flex-wrap:wrap;gap:28px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
 .hero-meta span strong{color:var(--navy);font-weight:500}
@@ -111,7 +111,7 @@ em{font-style:italic}
 .section{margin-bottom:54px;scroll-margin-top:96px}
 .section-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .section-h h2{font-family:var(--serif);font-size:30px;font-weight:400;color:var(--navy);letter-spacing:-.005em}
-.section-h h2 em{color:var(--gold-deep);font-style:italic}
+.section-h h2 em{color:var(--acento-deep);font-style:italic}
 .section-h .count{font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.14em;text-transform:uppercase}
 .section-sub{font-family:var(--serif);font-size:17px;color:var(--ink2);max-width:700px;line-height:1.55;margin-bottom:24px;font-style:italic}
 
@@ -131,8 +131,8 @@ em{font-style:italic}
 .status{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:12px;font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:400;white-space:nowrap;flex-shrink:0}
 .status::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
 .st-live{color:var(--emerald);background:rgba(46,139,110,.08)}
-.st-partial{color:var(--gold-deep);background:rgba(196,163,90,.1)}
-.dr-code{font-family:var(--mono);font-size:11px;color:var(--gold-deep);background:rgba(196,163,90,.08);padding:1px 6px;border-radius:3px;font-style:normal}
+.st-partial{color:var(--acento-deep);background:rgba(200,89,36,.1)}
+.dr-code{font-family:var(--mono);font-size:11px;color:var(--acento-deep);background:rgba(200,89,36,.08);padding:1px 6px;border-radius:3px;font-style:normal}
 .dt{width:100%;border-collapse:collapse;font-size:12px}
 .dt th{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:500}
 .dt td{padding:9px 10px;border-bottom:1px solid var(--border2);color:var(--ink2)}
@@ -149,7 +149,7 @@ em{font-style:italic}
 .dr-x:hover{background:rgba(0,0,0,.06);color:var(--navy)}
 .dr-body{flex:1;overflow-y:auto;padding:24px 28px}
 .dr-sub{font-style:italic;font-family:var(--serif);font-size:17px;color:var(--ink2);margin-bottom:22px;line-height:1.5}
-.dr-info{padding:12px 14px;background:rgba(196,163,90,.08);border-radius:4px;font-size:13px;color:var(--ink2);font-style:italic}
+.dr-info{padding:12px 14px;background:rgba(200,89,36,.08);border-radius:4px;font-size:13px;color:var(--ink2);font-style:italic}
 .dr-ok{padding:12px 14px;background:rgba(46,139,110,.1);border-radius:4px;font-size:13px;color:var(--emerald);line-height:1.5}
 .dr-err{padding:12px 14px;background:rgba(155,44,44,.08);border-radius:4px;font-size:13px;color:var(--red);line-height:1.5}
 .dr-empty{padding:32px;text-align:center;color:var(--ink3);font-family:var(--serif);font-size:18px;font-style:italic}
@@ -417,7 +417,7 @@ function openTriggers(){
         <tr><td><code class="dr-code">ip_agent_sugestoes</code></td><td>U (status)</td><td>before+after</td></tr>
       </tbody>
     </table>
-    <div style="margin-top:16px;padding:12px 14px;background:rgba(196,163,90,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.55">Modelo direto do AIPrev (<code class="dr-code">trg_eventbus_generico</code> em <code class="dr-code">plat_plano_*</code>). Retenção 36 meses.</div>
+    <div style="margin-top:16px;padding:12px 14px;background:rgba(200,89,36,.08);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.55">Modelo direto do AIPrev (<code class="dr-code">trg_eventbus_generico</code> em <code class="dr-code">plat_plano_*</code>). Retenção 36 meses.</div>
   `);
 }
 
@@ -458,7 +458,7 @@ async function openOutbox(){
         sb.from('ip_email_outbox').select('*').or('status.eq.erro,status.eq.falhou').order('created_at',{ascending:false}).limit(15),
       ]);
       const tabs=[
-        {label:'Pendentes',cor:'#A86A1F',data:pend.data||[]},
+        {label:'Pendentes',cor:'#A8461A',data:pend.data||[]},
         {label:'Enviados',cor:'#2E8B6E',data:env.data||[]},
         {label:'Falhas',cor:'#9B2C2C',data:err.data||[]},
       ];

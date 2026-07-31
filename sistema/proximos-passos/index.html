@@ -59,7 +59,7 @@
 function boot(){
   document.getElementById('uname').textContent=window.__IP_USER_EMAIL||'';
   const h=document.getElementById('pp-host');
-  let tries=0; const mount=()=>{ if(window.IpProximosPassos&&h)return window.IpProximosPassos.open(h); if(++tries>40){h.innerHTML='<div style="text-align:center;padding:30px;color:#A99E86;font-style:italic">Não foi possível carregar. <a href="" style="color:#C4A35A">Recarregar</a></div>';return;} setTimeout(mount,150); };
+  let tries=0; const mount=()=>{ if(window.IpProximosPassos&&h)return window.IpProximosPassos.open(h); if(++tries>40){h.innerHTML='<div style="text-align:center;padding:30px;color:#A99E86;font-style:italic">Não foi possível carregar. <a href="" style="color:#C85924">Recarregar</a></div>';return;} setTimeout(mount,150); };
   mount();
 }
 </script>

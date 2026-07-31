@@ -116,7 +116,7 @@
       if(!n && !e){ if(b)b.remove(); return; }
       if(!b){ b=document.createElement('div'); b.id='ip-persist-badge'; b.style.cssText='position:fixed;bottom:18px;left:18px;z-index:2147483600;font:600 11px/1 Inter,system-ui;letter-spacing:.04em;padding:8px 13px;border-radius:20px;box-shadow:0 6px 18px rgba(0,0,0,.3);cursor:pointer'; document.body.appendChild(b); }
       if(e){ b.style.background='#5A1F1F'; b.style.color='#F5C9C9'; b.style.border='1px solid rgba(216,117,117,.5)'; b.title='Escritas com erro permanente. Clique para tentar de novo.'; b.textContent='⚠ '+e+' erro(s) ao salvar'+(n?' · '+n+' na fila':''); b.onclick=function(){retryFailed();}; }
-      else { b.style.background='#3F2756'; b.style.color='#F5DDA5'; b.style.border='1px solid rgba(245,221,165,.3)'; b.title='Escritas aguardando reenvio. Clique para tentar agora.'; b.textContent='↻ '+n+' p/ sincronizar'; b.onclick=function(){drain();}; }
+      else { b.style.background='#0E141B'; b.style.color='#F0B48A'; b.style.border='1px solid rgba(240,180,138,.3)'; b.title='Escritas aguardando reenvio. Clique para tentar agora.'; b.textContent='↻ '+n+' p/ sincronizar'; b.onclick=function(){drain();}; }
     }catch(_){}
   }
   if(typeof window!=='undefined'){

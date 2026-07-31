@@ -186,7 +186,7 @@
       <a class="openlink" href="/sistema/chro/organograma/">organograma →</a>
     </div>
     <div class="p-b" id="b-equipe">
-      <div class="p-empty">Sócios + consultores em curadoria. Cadastrar pessoas no <a href="/sistema/chro/organograma/" style="color:var(--gold)">Organograma</a>.</div>
+      <div class="p-empty">Sócios + consultores em curadoria. Cadastrar pessoas no <a href="/sistema/chro/organograma/" style="color:var(--acento)">Organograma</a>.</div>
     </div>
   </div>
 
@@ -256,7 +256,7 @@ async function loadSkill(){
   const {data}=await TB.safe(()=>sb.from('ip_skill_map').select('perfil_id,s_tecnica,s_orquestracao,s_julgamento,s_relacao,s_ia_automacao,s_gestao,perfil:ip_perfil_colaborador(papel,rotulo,equipe)').limit(8),{data:[]});
   const el=document.getElementById('skill-people');
   document.getElementById('c-skill').textContent=(data||[]).length;
-  if(!data||!data.length){el.innerHTML='<div class="p-empty">Nenhum perfil mapeado. Cadastrar perfil em <a href="/sistema/chro/organograma/" style="color:var(--gold)">Organograma</a>.</div>';return}
+  if(!data||!data.length){el.innerHTML='<div class="p-empty">Nenhum perfil mapeado. Cadastrar perfil em <a href="/sistema/chro/organograma/" style="color:var(--acento)">Organograma</a>.</div>';return}
   el.innerHTML=(data||[]).map(p=>{
     const dims=[
       {l:'TC',v:p.s_tecnica},{l:'OR',v:p.s_orquestracao},{l:'JU',v:p.s_julgamento},
@@ -289,7 +289,7 @@ async function loadPulse(){
   const stats=`<div class="stat-line"><div class="v">${tokens.count||0}</div><div class="l">tokens emitidos (links únicos 14d)</div><div class="badge">seguro</div></div>
   <div class="stat-line"><div class="v">${(pulsos.data||[]).length}</div><div class="l">respostas recentes</div><div class="badge">7Q · 2min</div></div>`;
   const rows=(pulsos.data||[]).map(p=>`<div class="row-item"><div class="body"><div class="nm" style="font-size:13px">${TB.esc(p.equipe||'(equipe)')}</div><div class="desc">${TB.esc(p.rotulo_papel||'')}</div></div><span class="tag info">anônimo</span><div class="time">${TB.esc(TB.fmtRel(p.created_at))}</div></div>`).join('');
-  document.getElementById('b-pulse').innerHTML=stats+(rows?'<div style="margin-top:14px">'+rows+'</div>':'<div class="p-empty" style="padding:18px 0">Sem respostas recentes. Disparar via <a href="/sistema/chro/" style="color:var(--gold)">CHRO</a>.</div>');
+  document.getElementById('b-pulse').innerHTML=stats+(rows?'<div style="margin-top:14px">'+rows+'</div>':'<div class="p-empty" style="padding:18px 0">Sem respostas recentes. Disparar via <a href="/sistema/chro/" style="color:var(--acento)">CHRO</a>.</div>');
   document.getElementById('d-pulse').className='dot'+(((pulsos.data||[]).length)>0?'':' idle');
 }
 
