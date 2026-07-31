@@ -73,7 +73,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* topbar */
 .cpk-top{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--ip-bg-deep) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid rgba(210,174,100,.1);padding:14px 28px;display:flex;align-items:center;gap:18px}
-.cpk-top .mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#0C1626,#152740);display:flex;align-items:center;justify-content:center;color:var(--ip-gold-lum);font-family:Georgia,serif;font-style:italic;font-size:17px;flex:0 0 auto}
+.cpk-top .mark{width:32px;height:32px;border-radius:50%;background:var(--ip-brand-deep);color:#FAF5EF;display:flex;align-items:center;justify-content:center;color:var(--ip-gold-lum);font-family:Georgia,serif;font-style:italic;font-size:17px;flex:0 0 auto}
 .cpk-top .ttl{font-family:Georgia,serif;font-style:italic;font-size:18px;color:var(--ip-cream)}
 .cpk-top .ttl b{color:var(--ip-gold-lum);font-weight:400}
 .cpk-top .spacer{flex:1}
@@ -100,7 +100,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 @media(max-width:880px){.g-2{grid-template-columns:1fr}}
 
 /* concierge band */
-.cnc{background:linear-gradient(135deg,#0C1626,#0A1320);border:1px solid rgba(210,174,100,.16);border-radius:18px;padding:24px 26px;position:relative;overflow:hidden}
+.cnc{background:var(--ip-surface-card);border:1px solid rgba(210,174,100,.16);border-radius:18px;padding:24px 26px;position:relative;overflow:hidden}
 .cnc::before{content:"";position:absolute;inset:0;background:radial-gradient(680px 200px at 80% -40%,rgba(210,174,100,.10),transparent);pointer-events:none}
 .cnc .lbl{font:600 10px/1 system-ui;letter-spacing:.18em;text-transform:uppercase;color:var(--ip-gold-lum);display:flex;align-items:center;gap:9px}
 .cnc .lbl .dot{width:7px;height:7px;border-radius:50%;background:var(--ip-ok);box-shadow:0 0 0 0 rgba(123,211,160,.55);animation:pulse 2s infinite}
