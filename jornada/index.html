@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jornada · Ensaios sobre Design Organizacional — InnovaPeople</title>
+<meta name="description" content="Ensaios longos sobre defasagem decisória, engenharia de contexto, retenção de conhecimento e a arquitetura da decisão distribuída. Por InnovaPeople.">
+<meta name="author" content="InnovaPeople">
+<link rel="canonical" href="https://jornada.innovapeople.com.br/">
+<link rel="icon" href="/assets/innovapeople-simbolo.png" type="image/png">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jornada — Ensaios InnovaPeople">
+<meta property="og:description" content="Onde o resultado permanece oculto, o trabalho começa. Ensaios sobre design organizacional.">
+<meta property="og:url" content="https://jornada.innovapeople.com.br/">
+<meta property="og:locale" content="pt_BR">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Blog","name":"Jornada InnovaPeople","description":"Ensaios sobre design organizacional, engenharia de contexto, retenção de conhecimento e arquitetura da liderança.","url":"https://jornada.innovapeople.com.br","publisher":{"@type":"Organization","name":"InnovaPeople","url":"https://innovapeople.com.br"},"inLanguage":"pt-BR"}
+</script>
+
+<style>
+:root{
+  --marca:#1C2734;--marca-deep:#0E141B;--marca-light:#33475C;--marca-soft:#ECF0F4;
+  --acento:#C85924;--acento-deep:#A8461A;--acento-soft:#FBF0E8;
+  --ink:#1A1614;--ink-soft:#3D3531;--muted:#7A6F66;--rule:#D9D2C9;
+  --paper:#FAF5EF;--paper-warm:#F5EFE3;
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.7;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--marca);text-decoration:none;transition:color .25s ease}
+a:hover{color:var(--marca-deep)}
+.wrap{max-width:780px;margin:0 auto;padding:0 28px;width:100%}
+.wrap-wide{max-width:1080px;margin:0 auto;padding:0 28px;width:100%}
+
+.logo{display:inline-flex;align-items:center;gap:12px;font-family:var(--serif);font-weight:500;color:var(--marca-deep);letter-spacing:-.015em}
+.logo svg{width:36px;height:36px;color:var(--marca)}
+.logo .wordmark{font-size:22px}
+.logo .sub{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--acento-deep);font-weight:600;border-left:1px solid var(--rule);padding-left:10px;margin-left:8px}
+
+header.top{background:var(--paper);border-bottom:1px solid var(--rule);padding:22px 0}
+header.top .row{max-width:1080px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
+header.top .nav-links{display:flex;gap:24px;font-size:13.5px}
+header.top .nav-links a{color:var(--ink-soft);font-weight:500;letter-spacing:.01em}
+header.top .nav-links a:hover{color:var(--marca)}
+@media (max-width:680px){header.top .nav-links{display:none}}
+
+/* HERO */
+.hero{padding:90px 0 70px 0;position:relative;overflow:hidden;color:#fff;min-height:70vh;display:flex;align-items:center}
+.hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden}
+.hero-bg video{width:100%;height:100%;object-fit:cover;filter:saturate(0.55) contrast(1.06) brightness(0.6)}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(11,17,25,.82) 0%,rgba(22,32,43,.66) 50%,rgba(11,17,25,.85) 100%);z-index:1}
+.hero > .wrap, .hero > .wrap-wide{position:relative;z-index:2}
+.hero-inner{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;align-items:center}
+@media (max-width:880px){.hero-inner{grid-template-columns:1fr;gap:36px}}
+.hero .eyebrow{background:rgba(255,255,255,.10);color:#EDAC80;border:1px solid rgba(232,212,156,.25)}
+.hero h1{color:#fff}
+.hero h1 em{color:#EDAC80}
+.hero .lede{color:rgba(255,255,255,.84)}
+.hero-portrait-side{position:relative;width:100%;max-width:340px;margin:0 auto;aspect-ratio:3/4;border-radius:16px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.45),0 0 0 1px rgba(232,212,156,.18)}
+.hero-portrait-side img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(0.55) contrast(1.05);transition:transform 12s ease}
+.hero-portrait-side:hover img{transform:scale(1.05)}
+/* LGPD barra */
+.lgpd-bar{position:fixed;bottom:0;left:0;right:0;z-index:80;background:rgba(20,16,15,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:rgba(255,255,255,.86);padding:8px 16px;display:none;align-items:center;justify-content:center;gap:14px;font-size:12px;letter-spacing:.02em;border-top:1px solid rgba(255,255,255,.08);font-family:var(--sans)}
+.lgpd-bar.show{display:flex;animation:lgpdFade .4s ease}
+@keyframes lgpdFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.lgpd-bar a{color:var(--acento);text-decoration:underline;text-decoration-color:rgba(200,89,36,.4);text-underline-offset:2px}
+.lgpd-bar button{background:transparent;border:none;color:rgba(255,255,255,.55);cursor:pointer;font-size:18px;padding:0 6px;line-height:1;transition:color .2s;margin-left:4px;font-family:inherit}
+.lgpd-bar button:hover{color:#fff}
+/* ESSAY HERO IMAGE */
+.essay-card{position:relative}
+.essay-photo{position:relative;width:100%;aspect-ratio:21/10;border-radius:12px;overflow:hidden;margin:18px 0;box-shadow:0 12px 28px rgba(14,20,27,.10)}
+.essay-photo img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(0.65) contrast(1.05);transition:transform .9s ease,filter .6s ease}
+.essay-card:hover .essay-photo img{transform:scale(1.04);filter:saturate(0.95) contrast(1.05)}
+.essay-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(14,20,27,.35) 100%);pointer-events:none}
+/* LGPD barra */
+.lgpd-bar{position:fixed;bottom:0;left:0;right:0;z-index:80;background:rgba(20,16,15,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:rgba(255,255,255,.86);padding:8px 16px;display:none;align-items:center;justify-content:center;gap:14px;font-size:12px;letter-spacing:.02em;border-top:1px solid rgba(255,255,255,.08);font-family:var(--sans)}
+.lgpd-bar.show{display:flex;animation:lgpdFade .4s ease}
+@keyframes lgpdFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.lgpd-bar a{color:var(--acento);text-decoration:underline;text-decoration-color:rgba(200,89,36,.4);text-underline-offset:2px}
+.lgpd-bar button{background:transparent;border:none;color:rgba(255,255,255,.55);cursor:pointer;font-size:18px;padding:0 6px;line-height:1;transition:color .2s;margin-left:4px;font-family:inherit}
+.lgpd-bar button:hover{color:#fff}
+.hero .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#F0B48A;font-weight:600;margin-bottom:18px;display:inline-block;padding:5px 14px;background:rgba(255,255,255,.10);border:1px solid rgba(240,180,138,.32);border-radius:18px;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.hero h1{font-family:var(--serif);font-weight:400;color:#FFFFFF;font-size:clamp(36px,5vw,60px);line-height:1.05;letter-spacing:-.02em;margin-bottom:24px;text-shadow:0 2px 14px rgba(0,0,0,.7),0 1px 4px rgba(0,0,0,.55)}
+.hero h1 em{color:#F0B48A;font-style:italic;font-weight:500;text-shadow:0 2px 14px rgba(0,0,0,.65)}
+.hero .lede{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(18px,2.1vw,24px);line-height:1.55;color:#FFFFFF;max-width:680px;text-align:left;text-shadow:0 1px 8px rgba(0,0,0,.7),0 1px 3px rgba(0,0,0,.5)}
+
+/* INDEX DE ENSAIOS */
+.essays{padding:60px 0 100px 0}
+.essay-list{display:flex;flex-direction:column;gap:2px}
+.essay-card{
+  display:block;padding:32px 0;border-top:1px solid var(--rule);
+  transition:padding .3s ease;text-decoration:none;
+}
+.essay-card:last-child{border-bottom:1px solid var(--rule)}
+.essay-card:hover{padding-left:14px;background:linear-gradient(90deg,var(--paper-warm) 0%,transparent 70%)}
+.essay-meta{display:flex;gap:14px;align-items:center;margin-bottom:10px;font-size:11.5px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.essay-meta .num{font-family:var(--serif);font-style:italic;color:var(--acento);font-size:14px;letter-spacing:-.01em;text-transform:none}
+.essay-meta .dot{width:3px;height:3px;border-radius:50%;background:var(--rule)}
+.essay-card h2{font-family:var(--serif);font-weight:500;color:var(--marca-deep);font-size:clamp(26px,3.2vw,36px);line-height:1.18;letter-spacing:-.015em;margin-bottom:12px;transition:color .25s ease}
+.essay-card:hover h2{color:var(--marca)}
+.essay-card .ex{font-family:var(--serif);font-style:italic;font-weight:300;color:var(--ink-soft);font-size:18px;line-height:1.55;text-align:left;max-width:680px}
+.essay-card .read{display:inline-block;margin-top:14px;font-family:var(--sans);font-size:12px;color:var(--marca);letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.essay-card:hover .read{color:var(--marca-deep)}
+
+/* TEASER (próximos ensaios) */
+.coming{background:var(--paper-warm);padding:64px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.coming h3{font-family:var(--serif);font-weight:500;color:var(--marca-deep);font-size:24px;margin-bottom:14px;letter-spacing:-.005em}
+.coming .lede{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:17px;margin-bottom:28px;line-height:1.5}
+.coming-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:24px}
+@media (max-width:680px){.coming-grid{grid-template-columns:1fr}}
+.coming-item{padding:20px 22px;border-left:2px solid var(--acento-deep);background:rgba(255,255,255,.5);border-radius:0 8px 8px 0}
+.coming-item h4{font-family:var(--serif);font-weight:600;color:var(--marca-deep);font-size:18px;margin-bottom:4px;letter-spacing:-.005em}
+.coming-item p{font-size:13.5px;color:var(--muted);line-height:1.5;font-style:italic;margin:0}
+
+/* QUEM ESCREVE */
+.who{padding:80px 0;text-align:center;background:var(--paper)}
+.who h3{font-family:var(--serif);font-weight:400;color:var(--marca-deep);font-size:32px;margin-bottom:18px;letter-spacing:-.015em}
+.who h3 em{color:var(--acento-deep);font-style:italic;font-weight:500}
+.who p{font-family:var(--serif);font-style:italic;font-size:19px;color:var(--ink-soft);max-width:580px;margin:0 auto;line-height:1.5}
+.who a{display:inline-block;margin-top:28px;padding:14px 28px;border:1.4px solid var(--marca);border-radius:8px;color:var(--marca-deep);font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase;transition:all .22s ease}
+.who a:hover{background:var(--marca-soft);transform:translateY(-2px)}
+
+/* FOOTER */
+footer{margin-top:auto;background:#0B1119;color:rgba(255,255,255,.65);padding:48px 0 24px 0;font-size:13.5px}
+footer .grid{max-width:1080px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;margin-bottom:28px}
+footer .brand-foot{font-family:var(--serif);font-size:24px;color:#fff;font-weight:500;display:flex;align-items:center;gap:12px}
+footer .brand-foot svg{width:36px;height:36px;color:var(--acento)}
+footer .nav-foot{display:flex;gap:24px;flex-wrap:wrap;font-size:13px;align-items:center}
+footer .nav-foot a{color:rgba(255,255,255,.72)}
+footer .nav-foot a:hover{color:var(--acento)}
+footer .copy{max-width:1080px;margin:0 auto;padding:18px 28px 0 28px;border-top:1px solid rgba(255,255,255,.10);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:11.5px;color:rgba(255,255,255,.45);letter-spacing:.05em}
+footer .copy .hier{font-family:var(--serif);font-style:italic;color:rgba(255,255,255,.55)}
+footer .copy .hier a{color:var(--marca-light)}
+
+.reveal{opacity:0;transform:translateY(20px);transition:all .8s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+.logo img.marca,.brand img.marca,a.logo img.marca,.marca{height:32px;width:auto;display:block}@media(max-width:640px){.logo img.marca,.brand img.marca,a.logo img.marca,.marca{height:26px}}</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="row">
+    <a href="/jornada/" class="logo">
+      <img class="marca" src="/assets/innovapeople-lockup.png" alt="InnovaPeople" width="384" height="110">
+      <span class="sub">Jornada · Arquitetura do Encantamento</span>
+    </a>
+    <div class="nav-links">
+      <a href="/jornada/">Site principal</a>
+      <a href="/raio-x">Conversar</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-bg">
+    <video autoplay muted loop playsinline preload="auto" poster="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1600&auto=format&fit=crop&q=70">
+      <source src="https://assets.mixkit.co/videos/2168/2168-720.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="wrap-wide">
+    <div class="hero-inner">
+      <div>
+        <span class="eyebrow">Jornada · A Arquitetura do Encantamento</span>
+        <h1>Onde o resultado <em>permanece oculto,</em> o encantamento começa.</h1>
+        <p class="lede">Encantar não é provocar surpresa. É revelar o que sempre esteve ali, e que ainda não havia, até agora, modo de ver. Cada ensaio desta Jornada é exercício desse encantamento aplicado à empresa contemporânea — defasagem decisória, engenharia de contexto, retenção de conhecimento, arquitetura da decisão distribuída. Pensamento aberto, para quem quer entender antes de contratar.</p>
+      </div>
+      <div class="hero-portrait-side">
+        <img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=720&h=960&fit=crop&q=80&auto=format" alt="Pessoa em leitura contemplativa" loading="eager">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="essays">
+  <div class="wrap">
+
+    <a href="/jornada/ensaios/clock-drift.html" class="essay-card">
+      <div class="essay-meta">
+        <span class="num">N.º 01</span>
+        <span class="dot"></span>
+        <span>26 de Maio · 2026</span>
+        <span class="dot"></span>
+        <span>~ 14 min de leitura</span>
+      </div>
+      <h2>Defasagem Decisória: o intervalo que sua empresa não está medindo.</h2>
+      <div class="essay-photo">
+        <img src="https://images.unsplash.com/photo-1501139083538-0139583c060f?w=1400&h=666&fit=crop&q=80&auto=format" alt="Relógio antigo sobre mesa de mármore — passar do tempo" loading="lazy">
+      </div>
+      <p class="ex">A inteligência artificial fecha projetos em minutos enquanto a sua empresa ainda discute se aprova o piloto. Não é falha de execução. É falha de design. Sobre por que a velocidade interna das decisões virou o ativo competitivo mais subestimado dos próximos cinco anos — e o que fazer a respeito sem cair em automação de fachada.</p>
+      <span class="read">Ler ensaio →</span>
+    </a>
+
+    <a href="/jornada/ensaios/ativo-sem-nome.html" class="essay-card">
+      <div class="essay-meta">
+        <span class="num">N.º 02</span>
+        <span class="dot"></span>
+        <span>26 de Maio · 2026</span>
+        <span class="dot"></span>
+        <span>~ 11 min de leitura</span>
+      </div>
+      <h2>O ativo que ainda não tem nome.</h2>
+      <div class="essay-photo">
+        <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1400&h=666&fit=crop&q=80&auto=format" alt="Documento contábil antigo com colunas e lápis em silêncio" loading="lazy">
+      </div>
+      <p class="ex">Enquanto as empresas listam "ágil", "data-driven" e "DEI" nos relatórios anuais, o ativo que decide se elas vão sobreviver à era da inteligência artificial não aparece em balanço nenhum. Sobre por que o contexto proprietário ainda não foi nomeado pela contabilidade — e por que essa lacuna é, ao mesmo tempo, a maior fragilidade e a maior oportunidade da próxima década.</p>
+      <span class="read">Ler ensaio →</span>
+    </a>
+
+    <a href="/jornada/ensaios/hiperesticao-organizacional.html" class="essay-card">
+      <div class="essay-meta">
+        <span class="num">N.º 03</span>
+        <span class="dot"></span>
+        <span>26 de Maio · 2026</span>
+        <span class="dot"></span>
+        <span>~ 13 min de leitura</span>
+      </div>
+      <h2>Hiperestição organizacional.</h2>
+      <div class="essay-photo">
+        <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=1400&h=666&fit=crop&q=80&auto=format" alt="Reflexo sobre vidro — figura repetida em superfícies sucessivas" loading="lazy">
+      </div>
+      <p class="ex">Há um tipo de descrição que não apenas observa o objeto — produz o objeto que pareciam apenas registrar. Quando uma empresa repete certas frases sobre si mesma, essas frases re-entram via cultura, contratação e retenção, e materializam o comportamento que pareciam só descrever. Sobre o mecanismo pelo qual cultura organizacional se compõe — e por que engenharia de contexto é, em parte, a escolha consciente de quais frases alimentar.</p>
+      <span class="read">Ler ensaio →</span>
+    </a>
+
+    <a href="/jornada/ensaios/confused-deputy-c-level.html" class="essay-card">
+      <div class="essay-meta">
+        <span class="num">N.º 04</span>
+        <span class="dot"></span>
+        <span>26 de Maio · 2026</span>
+        <span class="dot"></span>
+        <span>~ 12 min de leitura</span>
+      </div>
+      <h2>O confused deputy do C-level.</h2>
+      <div class="essay-photo">
+        <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1400&h=666&fit=crop&q=80&auto=format" alt="Documento sendo assinado sob luz baixa — mãos sem rosto" loading="lazy">
+      </div>
+      <p class="ex">Há uma vulnerabilidade que pesquisadores documentam em agentes autônomos — o procurador confuso, agente legítimo dirigido por input contaminado — e que descreve, com precisão, o risco que executivos correm todos os dias. A defesa não é controle apertado. É design de contexto. Sobre como organizações inteiras se tornam veículos de propósitos que ninguém autorizou conscientemente — e como o vocabulário da casa reabre a possibilidade de soberania institucional.</p>
+      <span class="read">Ler ensaio →</span>
+    </a>
+
+    <a href="/jornada/ensaios/aposentadoria-ausencia-lacuna.html" class="essay-card">
+      <div class="essay-meta">
+        <span class="num">N.º 05</span>
+        <span class="dot"></span>
+        <span>26 de Maio · 2026</span>
+        <span class="dot"></span>
+        <span>~ 11 min de leitura</span>
+      </div>
+      <h2>Aposentadoria, ausência, lacuna.</h2>
+      <div class="essay-photo">
+        <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1400&h=666&fit=crop&q=80&auto=format" alt="Cadeira vazia perto de janela, luz lateral" loading="lazy">
+      </div>
+      <p class="ex">A única reserva de capacidade humana ainda não-extraída em organizações brasileiras está saindo, em silêncio, pela porta da frente. Sobre o que se perde quando o trabalhador 55+ é tratado como custo, e não como acervo — e sobre a janela específica que o Brasil tem agora para tratar essa coorte como ativo institucional, antes que a janela feche.</p>
+      <span class="read">Ler ensaio →</span>
+    </a>
+
+    <a href="/jornada/ensaios/boring-ai.html" class="essay-card">
+      <div class="essay-meta">
+        <span class="num">N.º 06</span>
+        <span class="dot"></span>
+        <span>26 de Maio · 2026</span>
+        <span class="dot"></span>
+        <span>~ 10 min de leitura</span>
+      </div>
+      <h2>Boring AI.</h2>
+      <div class="essay-photo">
+        <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1400&h=666&fit=crop&q=80&auto=format" alt="Sala de operações silenciosa, luz lateral" loading="lazy">
+      </div>
+      <p class="ex">As iniciativas de inteligência artificial de maior retorno raramente são as que aparecem em manchete. Sobre por que a IA que importa opera em silêncio — e por que o mercado vende, e o comprador compra, exatamente o oposto do que funciona. Cinco marcas que distinguem instalação de fachada de instalação que se acomoda à organização.</p>
+      <span class="read">Ler ensaio →</span>
+    </a>
+
+    <a href="/jornada/ensaios/escada-que-ia-fechou.html" class="essay-card">
+      <div class="essay-meta">
+        <span class="num">N.º 07</span>
+        <span class="dot"></span>
+        <span>26 de Maio · 2026</span>
+        <span class="dot"></span>
+        <span>~ 10 min de leitura</span>
+      </div>
+      <h2>A escada que IA fechou primeiro.</h2>
+      <div class="essay-photo">
+        <img src="https://images.unsplash.com/photo-1503551723145-6c040742065b?w=1400&h=666&fit=crop&q=80&auto=format" alt="Escada antiga em prédio histórico, ascensão visível" loading="lazy">
+      </div>
+      <p class="ex">A escada de carreira não foi removida pela inteligência artificial. Foi tornada invisível para quem entrava por baixo. Sobre o colapso silencioso da progressão profissional — e sobre as organizações que ainda formam, em silêncio, enquanto o resto do mercado contrata pronto. A janela competitiva mais desigual disponível agora.</p>
+      <span class="read">Ler ensaio →</span>
+    </a>
+
+    <a href="/jornada/ensaios/o-que-permanece.html" class="essay-card">
+      <div class="essay-meta">
+        <span class="num">N.º 08</span>
+        <span class="dot"></span>
+        <span>26 de Maio · 2026</span>
+        <span class="dot"></span>
+        <span>~ 11 min de leitura</span>
+      </div>
+      <h2>O que permanece quando alguém vai.</h2>
+      <div class="essay-photo">
+        <img src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=1400&h=666&fit=crop&q=80&auto=format" alt="Porta entreaberta, luz que se vai" loading="lazy">
+      </div>
+      <p class="ex">Por que tratar uma demissão como custo de RH é o erro de classificação mais caro da gestão moderna. Sobre a categoria contábil que falta — o patrimônio relacional que sai pela porta sem que ninguém lance — e o que muda no instante em que uma liderança decide nomear, conscientemente, o ativo que sempre existiu invisível.</p>
+      <span class="read">Ler ensaio →</span>
+    </a>
+
+  </div>
+</section>
+
+<section class="coming">
+  <div class="wrap">
+    <h3>O arco fechado.</h3>
+    <p class="lede">Esta primeira temporada da Jornada compõe um arco editorial coerente em oito ensaios — do <em>drift externo</em> que define a era, ao <em>ativo interno</em> que a sustenta, passando pelos mecanismos culturais que a constituem e pelas armadilhas arquiteturais que ela esconde. Próximos arcos virão, com calma, conforme problemas concretos vividos em trabalho exigirem resposta. Aqui não há calendário editorial. Há repertório vivo da casa.</p>
+  </div>
+</section>
+
+<section class="who">
+  <div class="wrap">
+    <h3>A casa que escreve.</h3>
+    <p>Esta Jornada é o repertório vivo da <strong>InnovaPeople</strong> — boutique de design organizacional, engenharia de contexto e retenção de conhecimento. Cada ensaio aparece porque um problema concreto, atravessado em proximidade real com uma organização que nos procurou, exigiu resposta que o vocabulário corrente ainda não tinha. A filosofia da casa privilegia o tempo longo, a observação demorada, a recusa do hype. A cultura interna cultiva a discordância sofisticada — o desconforto produtivo que separa pensamento original de citação reciclada. O engajamento intelectual com cada texto se mede no que precisou ser entendido antes da primeira palavra. É essa composição que entra na página.</p>
+    <a href="/#quem-assina">Conhecer a casa →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="grid">
+    <div class="brand-foot">
+      
+      <span>InnovaPeople</span>
+    </div>
+    <div class="nav-foot">
+      <a href="/jornada/">Site principal</a>
+      <a href="/raio-x">Conversar</a>
+      <a href="/privacidade">Privacidade</a>
+      <a href="/termos">Termos</a>
+      <a href="/#conversar">Conversar</a>
+    </div>
+  </div>
+  <div class="copy">
+    <div class="hier">Casa especializada da <a href="https://innovasphere.ia.br">InnovaSphere</a> · braço de inteligência e gestão da <a href="https://inncorporate.com.br">InnCorporate</a></div>
+    <div>© 2026 InnovaPeople · Todos os direitos reservados</div>
+  </div>
+</footer>
+
+<div id="lgpd-bar" class="lgpd-bar" role="status">
+  <span>Tratamos apenas dados estritamente necessários. <a href="/privacidade">Política de Privacidade</a>.</span>
+  <button type="button" aria-label="Fechar" onclick="lgpdClose()">×</button>
+</div>
+
+<script>
+const io = new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.1});
+document.querySelectorAll('.essay-card, .coming-item, .who h3').forEach(el=>{el.classList.add('reveal');io.observe(el)});
+function lgpdClose(){try{localStorage.setItem('ip_lgpd_consent','1');}catch(_){}document.getElementById('lgpd-bar').classList.remove('show');}
+(function(){try{if(!localStorage.getItem('ip_lgpd_consent')){setTimeout(()=>document.getElementById('lgpd-bar').classList.add('show'),900);}}catch(_){}})();
+</script>
+
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a238727f6ed99410',t:'MTc4NTQ1NzMzMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

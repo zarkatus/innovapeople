@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>O confused deputy do C-level · Jornada InnovaPeople</title>
+<meta name="description" content="Sobre como liderança bem-intencionada, com contexto contaminado, executa silenciosamente ordens disfarçadas usando os próprios privilégios — e por que a defesa não é controle apertado, mas design de contexto.">
+<meta name="author" content="Raphael Schifino · InnovaPeople">
+<link rel="canonical" href="https://jornada.innovapeople.com.br/ensaios/confused-deputy-c-level.html">
+<link rel="icon" href="/assets/innovapeople-simbolo.png" type="image/png">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="O confused deputy do C-level">
+<meta property="og:description" content="A vulnerabilidade que pesquisadores documentam em agentes autônomos descreve, com precisão, o risco que executivos correm todos os dias.">
+<meta property="og:url" content="https://jornada.innovapeople.com.br/ensaios/confused-deputy-c-level.html">
+<meta property="og:locale" content="pt_BR">
+<meta property="article:published_time" content="2026-05-26">
+<meta property="article:author" content="Raphael Schifino">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"O confused deputy do C-level","author":{"@type":"Person","name":"Raphael Schifino"},"publisher":{"@type":"Organization","name":"InnovaPeople","url":"https://innovapeople.com.br"},"datePublished":"2026-05-26","inLanguage":"pt-BR","mainEntityOfPage":"https://jornada.innovapeople.com.br/ensaios/confused-deputy-c-level.html"}
+</script>
+
+<style>
+:root{--marca:#1C2734;--marca-deep:#0E141B;--marca-light:#33475C;--marca-soft:#ECF0F4;--acento:#C85924;--acento-deep:#A8461A;--acento-soft:#FBF0E8;--ink:#1A1614;--ink-soft:#2D2622;--muted:#7A6F66;--rule:#D9D2C9;--paper:#FAF5EF;--paper-warm:#F5EFE3;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:19px;line-height:1.7;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--marca);text-decoration:underline;text-decoration-color:rgba(28,39,52,.3);text-underline-offset:3px;transition:all .22s ease}
+a:hover{color:var(--marca-deep);text-decoration-color:var(--marca)}
+.wrap{max-width:720px;margin:0 auto;padding:0 28px;width:100%}
+.logo{display:inline-flex;align-items:center;gap:12px;font-family:var(--serif);font-weight:500;color:var(--marca-deep);letter-spacing:-.015em;text-decoration:none}
+.logo svg{width:34px;height:34px;color:var(--marca)}
+.logo .wordmark{font-size:20px}
+.logo .sub{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--acento-deep);font-weight:600;border-left:1px solid var(--rule);padding-left:10px;margin-left:6px;font-family:var(--sans)}
+header.top{background:var(--paper);border-bottom:1px solid var(--rule);padding:18px 0}
+header.top .row{max-width:1080px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;font-family:var(--sans)}
+header.top .back{font-size:13px;color:var(--muted);text-decoration:none;letter-spacing:.04em}
+header.top .back:hover{color:var(--marca)}
+article{padding:0 0 80px 0;flex:1}
+.art-hero{position:relative;width:100%;height:54vh;min-height:380px;overflow:hidden;margin-bottom:48px}
+.art-hero img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(0.55) contrast(1.05) brightness(0.78);animation:slowZoom 30s ease-in-out infinite alternate}
+@keyframes slowZoom{0%{transform:scale(1)}100%{transform:scale(1.07)}}
+.art-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,17,25,.35) 0%,rgba(250,245,239,.05) 60%,rgba(250,245,239,1) 100%);z-index:1}
+.art-hero-caption{position:absolute;bottom:80px;left:0;right:0;text-align:center;z-index:2;color:#fff;padding:0 28px}
+.art-hero-caption .eyebrow-photo{display:inline-block;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#EDAC80;font-weight:600;padding:6px 14px;border:1px solid rgba(232,212,156,.35);border-radius:20px;background:rgba(0,0,0,.18)}
+.art-head{margin-bottom:48px;border-bottom:1px solid var(--rule);padding-bottom:36px}
+.art-meta{display:flex;gap:14px;align-items:center;margin-bottom:18px;font-size:11.5px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:var(--sans)}
+.art-meta .num{font-family:var(--serif);font-style:italic;color:var(--acento);font-size:15px;letter-spacing:-.01em;text-transform:none;font-weight:500}
+.art-meta .dot{width:3px;height:3px;border-radius:50%;background:var(--rule)}
+.art-head h1{font-family:var(--serif);font-weight:500;color:var(--marca-deep);font-size:clamp(36px,5vw,56px);line-height:1.08;letter-spacing:-.018em;margin-bottom:18px}
+.art-head .standfirst{font-family:var(--serif);font-style:italic;font-weight:300;font-size:22px;line-height:1.5;color:var(--ink-soft);margin-bottom:24px}
+.art-head .byline{font-family:var(--sans);font-size:13px;color:var(--muted);letter-spacing:.06em}
+.art-head .byline strong{color:var(--ink);font-weight:600}
+article p{margin:0 0 1.3em 0;color:var(--ink-soft);text-align:justify;hyphens:auto;-webkit-hyphens:auto;line-height:1.7}
+article p:first-of-type::first-letter{font-family:var(--serif);font-size:78px;line-height:.85;font-weight:500;color:var(--marca);float:left;margin:8px 14px 0 0}
+article strong{color:var(--ink);font-weight:600}
+article em{font-style:italic}
+article h2{font-family:var(--serif);font-weight:500;color:var(--marca);font-size:32px;line-height:1.18;letter-spacing:-.01em;margin:50px 0 16px 0;padding-bottom:8px;border-bottom:1px solid var(--rule)}
+article blockquote{margin:32px 0;padding:20px 28px;border-left:4px solid var(--acento);background:var(--marca-soft);border-radius:0 12px 12px 0;font-style:italic;font-size:22px;color:var(--marca-deep);line-height:1.45}
+.pull{margin:48px -40px;padding:32px 40px;font-family:var(--serif);font-style:italic;font-weight:300;font-size:30px;line-height:1.3;color:var(--marca-deep);text-align:center;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);position:relative}
+@media (max-width:680px){.pull{margin:32px 0;padding:24px 0;font-size:24px}}
+.pull::before{content:'"';font-size:60px;color:var(--acento);line-height:1;opacity:.5;display:block;margin-bottom:-12px}
+.end{margin:50px 0 0 0;padding-top:32px;border-top:1px solid var(--rule);text-align:center;font-family:var(--sans);font-size:13px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+.end::before{content:'§ § §';display:block;color:var(--acento);font-size:16px;margin-bottom:18px;letter-spacing:.4em}
+.post-cta{margin-top:64px;padding:42px 36px;background:linear-gradient(135deg,var(--marca-soft) 0%,var(--acento-soft) 100%);border-radius:14px;text-align:center;border:1px solid var(--rule)}
+.post-cta h3{font-family:var(--serif);font-weight:500;color:var(--marca-deep);font-size:26px;margin-bottom:10px;letter-spacing:-.005em}
+.post-cta p{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink-soft);margin-bottom:22px;text-align:center}
+.post-cta a{display:inline-block;padding:13px 26px;border-radius:8px;background:var(--marca);color:#fff;font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;box-shadow:0 6px 18px rgba(28,39,52,.28);transition:all .22s ease}
+.post-cta a:hover{background:var(--marca-deep);transform:translateY(-2px);color:#fff}
+footer{margin-top:auto;background:#0B1119;color:rgba(255,255,255,.65);padding:42px 0 22px 0;font-size:13px;font-family:var(--sans)}
+footer .grid{max-width:1080px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;margin-bottom:22px}
+footer .brand-foot{font-family:var(--serif);font-size:22px;color:#fff;font-weight:500;display:flex;align-items:center;gap:12px}
+footer .brand-foot svg{width:32px;height:32px;color:var(--acento)}
+footer .nav-foot{display:flex;gap:22px;flex-wrap:wrap;font-size:12.5px;align-items:center}
+footer .nav-foot a{color:rgba(255,255,255,.72);text-decoration:none}
+footer .nav-foot a:hover{color:var(--acento)}
+footer .copy{max-width:1080px;margin:0 auto;padding:16px 28px 0 28px;border-top:1px solid rgba(255,255,255,.10);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.05em}
+footer .copy .hier{font-family:var(--serif);font-style:italic}
+footer .copy .hier a{color:var(--marca-light);text-decoration:none}
+.logo img.marca,.brand img.marca,a.logo img.marca,.marca{height:32px;width:auto;display:block}@media(max-width:640px){.logo img.marca,.brand img.marca,a.logo img.marca,.marca{height:26px}}</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="row">
+    <a href="/" class="logo">
+      <img class="marca" src="/assets/innovapeople-lockup.png" alt="InnovaPeople" width="384" height="110">
+      <span class="sub">Jornada</span>
+    </a>
+    <a href="/" class="back">← todos os ensaios</a>
+  </div>
+</header>
+
+<article>
+  <div class="art-hero">
+    <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=2000&h=1100&fit=crop&q=85&auto=format" alt="Documento sendo assinado sob luz baixa — mãos sem rosto" loading="eager">
+    <div class="art-hero-caption"><span class="eyebrow-photo">Ensaio N.º 04 · Confused Deputy</span></div>
+  </div>
+  <div class="wrap">
+
+    <div class="art-head">
+      <div class="art-meta">
+        <span class="num">Ensaio N.º 04</span>
+        <span class="dot"></span>
+        <span>26 de Maio · 2026</span>
+        <span class="dot"></span>
+        <span>~ 12 min de leitura</span>
+      </div>
+      <h1>O confused deputy do C-level.</h1>
+      <p class="standfirst">Há uma vulnerabilidade que pesquisadores documentam em agentes autônomos e que descreve, palavra por palavra, o risco que executivos correm — sem proteção e, em geral, sem nome — todos os dias. A defesa não é controle apertado. É design de contexto.</p>
+      <p class="byline">Por <strong>Raphael Schifino</strong> · CVO, InnCorporate · curadoria intelectual InnovaPeople</p>
+    </div>
+
+    <p>Em literatura técnica de segurança, há um padrão de falha que aparece sempre que sistemas computacionais delegam autoridade. O sistema A, com privilégios legítimos para executar certas ações, recebe instruções de B, que não tem esses privilégios. B convence A — não por engano grosseiro, mas por linguagem cuidadosamente alinhada com o que A esperava ouvir — de que a instrução é legítima. A executa. O dano se materializa. Quando se vai apurar o que aconteceu, descobre-se que B nunca tocou no sistema. A fez tudo, com autoridade própria, em direção desalinhada com o interesse de quem confiou em A. A literatura cunhou um nome para essa figura: <em>confused deputy</em> — o procurador confuso.</p>
+
+    <p>O termo é antigo. Vem de pesquisa de segurança de sistemas operacionais dos anos setenta. Em meses recentes, pesquisadores que trabalham com agentes autônomos de inteligência artificial documentaram, com novo rigor, como esse padrão se reativa de forma alarmante em modelos que navegam a web, leem mensagens e executam ações em nome de usuários humanos. Eles mostram, com taxas de sucesso assustadoras, que basta um input cuidadosamente construído — encaixado em metadado HTML, escondido em notificação móvel, plantado em um documento que o agente lê — para que esse agente passe a executar instruções que parecem alinhadas ao trabalho, mas servem a outro propósito.</p>
+
+    <p>O ponto deste ensaio é simples: <strong>o mesmo padrão opera, com força idêntica, em organizações humanas inteiras</strong>. E porque não está nomeado, não está defendido. E porque não está defendido, opera todos os dias, em todas as salas onde lideranças bem-intencionadas tomam decisões que parecem coerentes, mas que servem a forças que ninguém autorizou conscientemente a operar.</p>
+
+    <h2>O perfil do confused deputy organizacional</h2>
+
+    <p>Imagine um CEO de uma empresa de porte médio. Ele tem autoridade legítima para decidir contratações, demissões, investimentos, parcerias estratégicas. Tem essa autoridade porque alguém — fundadores, conselho, sócios — confiou nele. Toda essa autoridade existe sob a premissa de que ele exercerá em direção alinhada ao interesse da organização, com bom critério, dentro do seu trabalho.</p>
+
+    <p>Agora considere os inputs que esse CEO recebe ao longo de uma semana. Conversas no café com o head de operações que sutilmente pintam o head de produto como "difícil". Relatórios da área financeira que enquadram um cliente como "marginal" antes mesmo que a discussão estratégica comece. Mensagens informais da assessoria que sinalizam, sem dizer, qual diretor "já está sendo cogitado para sair". O bullet point que aparece na pauta da reunião do conselho com framing específico, decidido em outra sala, antes de ele ver. A ata, redigida por terceiro, que registra a decisão com precisão técnica — mas com uma nuance sutil que altera o sentido do que foi acordado.</p>
+
+    <p>Cada um desses inputs é, em algum grau, plausível. Cada um se apresenta como informação neutra. Cada um vem por canal legítimo. E cada um, em isolamento, parece inócuo. Mas o conjunto, ao longo de seis meses, modela quais decisões parecem óbvias, quais parecem polêmicas, quais nem chegam à mesa. O CEO continua exercendo sua autoridade legítima — mas a autoridade está sendo, sutilmente, dirigida por inputs cuja origem ele não rastreou. Confused deputy do andar de cima.</p>
+
+    <div class="pull">A autoridade não foi tomada. Foi dirigida.</div>
+
+    <h2>O que torna o padrão particularmente difícil de detectar</h2>
+
+    <p>Três características fazem desse padrão um risco organizacional que escapa às defesas convencionais.</p>
+
+    <p>Primeira: <strong>o confused deputy nunca tem consciência de que está confundido</strong>. Por definição, ele agiu de acordo com sua melhor interpretação do que era certo. Não há sinal subjetivo de erro. O sentimento, durante e depois, é de coerência decisória. Quem pergunta "como você chegou nessa conclusão?" recebe explicação articulada, plausível e sincera. Mas a explicação rastreia apenas a metade visível do processo — as razões que apareceram. Ela não rastreia, porque não tem como, as razões que foram filtradas antes de aparecer.</p>
+
+    <p>Segunda: <strong>controles convencionais — governança, auditoria, comitês de ética — operam no nível das ações registradas</strong>, não no nível dos inputs que conformaram a decisão. Eles podem detectar se uma decisão violou política, se um conflito foi declarado, se um voto foi computado corretamente. Mas não detectam se, antes de a decisão ser sequer formulada, o framing já havia eliminado três alternativas que mereceriam discussão. O confused deputy passa por todas as checagens formais. As checagens não foram desenhadas para esse tipo de problema.</p>
+
+    <p>Terceira: <strong>o padrão se reforça por sucesso aparente</strong>. As decisões filtradas tendem a se mostrar, no curto prazo, coerentes — afinal, foram filtradas exatamente para parecerem assim. O CEO confused deputy entrega trimestre após trimestre dentro do esperado. Performa. É elogiado. A própria performance vira evidência de que o sistema de inputs está funcionando bem — quando, na verdade, está apenas funcionando de modo consistente com sua direção implícita, que ninguém autorizou conscientemente.</p>
+
+    <h2>Por que isso piora na era da inteligência operacional</h2>
+
+    <p>Há uma razão estrutural pela qual esse padrão se torna mais perigoso, não menos, à medida que ferramentas de inteligência se incorporam à rotina do C-level. Agentes inteligentes, assistentes que resumem reuniões, sistemas que filtram correspondência, modelos que recomendam decisões — todos eles aumentam o volume de input processável e reduzem a latência de resposta. Isso parece progresso. E em muitos sentidos é.</p>
+
+    <p>Mas há um efeito secundário menos discutido. Cada uma dessas camadas introduz uma nova superfície sobre a qual o framing pode ser, deliberadamente ou não, conformado. O e-mail do conselheiro, antes de chegar ao CEO, passa por sumarização. A pauta da reunião, antes de ser distribuída, é estruturada por assessor. O brief do candidato a diretor, antes de ser lido, é organizado por sistema. Cada filtro é, no melhor cenário, neutro. No pior, vetor. <strong>E na maior parte dos casos reais, é algo entre os dois, sem que ninguém tenha decidido onde, exatamente, o filtro deveria estar calibrado.</strong></p>
+
+    <p>Pesquisadores recentes documentam, em ambiente controlado, taxas de sucesso de ataque a agentes autônomos da ordem de oitenta a noventa e cinco por cento quando o input contaminado é cuidadosamente elaborado. Não há razão estrutural para acreditar que organizações humanas — que operam com inputs menos rastreáveis, menos calibráveis e mais carregados de afeto — sejam materialmente mais resistentes.</p>
+
+    <h2>A defesa que não funciona</h2>
+
+    <p>A reação intuitiva, quando uma liderança começa a suspeitar que está sendo dirigida por inputs cuja origem não controla, é apertar o controle. Pedir mais relatórios. Adicionar camadas de revisão. Centralizar mais decisões. Cobrar mais. Vigiar mais.</p>
+
+    <p>Isso quase nunca funciona — e frequentemente piora o problema. Por uma razão geometricamente simples: o controle apertado <em>aumenta</em> a dependência da liderança em filtros, porque ninguém consegue, com mais reuniões, mais reports e mais aprovações, processar diretamente o volume de input bruto que essa centralização passa a exigir. Mais controle, mais filtros. Mais filtros, mais superfícies onde o framing pode operar. Mais framing, mais confused deputy.</p>
+
+    <p>Há uma analogia operacional valiosa na literatura técnica que estudei sobre o tema. Os pesquisadores que documentam confused deputy em agentes de IA são claros sobre o ponto: a defesa contra esse padrão não vem de monitorar mais o que o agente faz. Vem de <em>desenhar contexto suficientemente claro</em> para que o agente tenha critério interno de distinguir comando legítimo de comando camuflado. A defesa é de design — não de vigilância.</p>
+
+    <h2>A defesa que funciona</h2>
+
+    <p>Trazendo para o vocabulário organizacional, isso se traduz em quatro deslocamentos arquiteturais. Eles não eliminam o risco. Eles reduzem a superfície sobre a qual o padrão consegue operar.</p>
+
+    <p>Primeiro deslocamento: <strong>contexto proprietário explícito</strong>. A organização precisa ter, em alta resolução, uma compreensão articulada do que ela é, do que ela quer, do que ela rejeita. Não como manifesto de parede. Como referência viva contra a qual cada input recebido pode ser cotejado. Quando o head de operações chega com framing sutil sobre o head de produto, a liderança com contexto proprietário forte percebe o framing como tal — porque tem padrão interno contra o qual o input dissona. Liderança com contexto proprietário fraco interpreta o framing como informação neutra.</p>
+
+    <p>Segundo deslocamento: <strong>diversidade de canais</strong>. Quando todo input crítico chega por dois ou três assessores muito próximos, o framing desses assessores se torna o framing da organização. Quando inputs chegam por canais estruturalmente diversos — equipes de campo, conselheiros externos, conversas com clientes diretos, parcerias com casas independentes —, nenhum canal isolado consegue dirigir o conjunto. A redundância informacional é defesa arquitetural.</p>
+
+    <p>Terceiro deslocamento: <strong>rastreio de origem</strong>. Toda recomendação que chega ao C-level deveria carregar, junto, a história de como chegou ali. Quem framou? Sob que premissa? Quais alternativas foram filtradas antes? Não como burocracia, mas como hábito. A organização que treina seus quadros para essa pergunta — "como esse input se formou antes de chegar aqui?" — recupera a capacidade de detectar o confused deputy enquanto ele ainda é evitável.</p>
+
+    <p>Quarto deslocamento: <strong>resistência cultivada</strong>. Há uma virtude que precisa ser cultivada nas lideranças e que raramente é nomeada: a capacidade de, diante de input sofisticadamente framed, dizer "preciso de mais tempo". Não como táctica de poder. Como ato de cuidado epistêmico. O confused deputy é mais frequentemente capturado pela velocidade que pelo conteúdo. Lideranças que internalizaram a permissão de pausar, contra-perguntar e exigir o input que está faltando reduzem materialmente sua exposição.</p>
+
+    <div class="pull">A defesa contra confused deputy não é controle apertado. <em>É design de contexto.</em></div>
+
+    <h2>O retorno do silêncio</h2>
+
+    <p>Há um efeito colateral elegante quando a organização começa a operar com essa consciência. As pessoas que ganhavam vantagem framando inputs perdem essa vantagem. Não porque foram confrontadas — em geral, não vale a pena confrontar. Mas porque o input framed para de funcionar. Ele chega, é cotejado contra o contexto proprietário, é triangulado com canais diversos, é interrogado sobre origem. Sobrevive ou não sobrevive. Quando não sobrevive, fica claro para quem framou que o framing perdeu eficácia. Em geral, o framing simplesmente cessa.</p>
+
+    <p>O resultado, ao longo de um ano, é uma sutil transformação do ambiente decisório. As conversas se tornam mais diretas — porque indireção parou de pagar. As pautas se tornam mais técnicas — porque framing parou de funcionar. Os relatórios se tornam mais completos — porque ausência fica visível. A organização ganha algo que nem sabia que tinha perdido: <em>a clareza sobre quem efetivamente está dirigindo cada decisão</em>.</p>
+
+    <h2>O ativo que essa defesa protege</h2>
+
+    <p>Há uma última observação que vale ser feita, porque ela conecta este ensaio à categoria mais ampla que esta casa opera. Quando uma organização permanece confused deputy por anos, o dano não é apenas decisional. É <em>identitário</em>. A empresa, ao executar decisões cuja origem não rastreou, se torna progressivamente um veículo de propósitos que não são exatamente os dela. As pessoas, dentro, começam a perceber esse descolamento — sem conseguir nomeá-lo. A cultura, ao redor, começa a sustentar comportamentos cuja função é defensiva. A organização perde, lentamente, a coerência interna entre o que ela diz que é e o que ela faz.</p>
+
+    <p>É esse o ativo que a defesa contra o confused deputy protege. Não é apenas a qualidade da decisão individual. É a possibilidade de uma organização permanecer, ao longo do tempo, fiel a si mesma — e portanto reconhecível, durável, integrada. Em era em que tantos vetores de input operam silenciosamente, esse tipo de coerência institucional deixou de ser luxo. Virou condição de continuidade.</p>
+
+    <p>É por isso, no fim, que Engenharia de Contexto importa. Não como técnica gerencial. Como mecanismo de soberania.</p>
+
+    <div class="end">Fim do ensaio</div>
+
+    <div class="post-cta">
+      <h3>Se este ensaio ressoou com algo que sua organização está atravessando.</h3>
+      <p>Uma conversa de trinta minutos basta para entender se faz sentido — para os dois lados.</p>
+      <a href="/#conversar">Iniciar conversa</a>
+    </div>
+
+  </div>
+</article>
+
+<footer>
+  <div class="grid">
+    <div class="brand-foot">
+      
+      <span>InnovaPeople · Jornada</span>
+    </div>
+    <div class="nav-foot">
+      <a href="/">Site principal</a>
+      <a href="/">Outros ensaios</a>
+      <a href="/acervo/">Acervo</a>
+      <a href="/#conversar">Conversar</a>
+    </div>
+  </div>
+  <div class="copy">
+    <div class="hier">Casa especializada da <a href="https://innovasphere.ia.br">InnovaSphere</a> · braço de inteligência e gestão da <a href="https://inncorporate.com.br">InnCorporate</a></div>
+    <div>© 2026 InnovaPeople · Todos os direitos reservados</div>
+  </div>
+</footer>
+
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a23872876a665221',t:'MTc4NTQ1NzMzMg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
