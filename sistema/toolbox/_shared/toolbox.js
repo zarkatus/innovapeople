@@ -45,7 +45,7 @@ window.TBAuth = {
     function rmovl(){const o=document.getElementById('ipovl');if(o)o.remove()}
     if(document.body)ovl();else document.addEventListener('DOMContentLoaded',ovl,{once:true});
     const safety=setTimeout(()=>{rmovl();deny()},6000);
-    (async()=>{
+ (async()=>{
       try{
         // [perf 30/05] fast-path: token local valido (gate V4) libera sem await getSession
         try{var _k=Object.keys(localStorage).find(k=>k.startsWith('sb-')&&k.includes('auth-token'));if(_k){var _raw=JSON.parse(localStorage.getItem(_k)||'null');var _ls=_raw&&(_raw.currentSession||_raw.session||_raw);var _em=_ls&&_ls.user&&(_ls.user.email||(_ls.user.user_metadata&&_ls.user.user_metadata.email));var _exp=_ls&&_ls.expires_at?(_ls.expires_at*1000):0;if(_ls&&_ls.access_token&&_em&&(!_exp||_exp>Date.now())&&TBAuth.ALLOWED.includes(_em)){clearTimeout(safety);try{window.__IP_SB=window.supabase.createClient(TBAuth.SUPA_URL,TBAuth.SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true}});}catch(_){}window.__IP_USER_EMAIL=_em;var _fire=function(){rmovl();if(typeof onAuth==='function')onAuth(_em);if(typeof boot==='function')boot()};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_fire,{once:true});else _fire();return;}}}catch(_){}

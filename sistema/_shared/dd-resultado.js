@@ -54,7 +54,7 @@
      +'.ddr-card .t{font-size:13px;font-weight:600;color:var(--navy,#0A1320)}.ddr-card .d{font-size:11.5px;color:var(--ink3,#8A8170);margin-top:3px}'
      +'.ddr-lastro{font-size:10.5px;color:var(--ink3,#8A8170);font-style:italic;border-top:1px dashed var(--border,#E5DFD2);padding-top:10px;margin-top:6px}'
      +'@media print{ body *{visibility:hidden} .ddr,.ddr *{visibility:visible} .ddr{position:absolute;left:0;top:0;width:100%;border:none;margin:0} .ddr-actions{display:none} }';
-    (document.head||document.documentElement).appendChild(st);
+ (document.head||document.documentElement).appendChild(st);
   }
 
   function _statusPill(o){
@@ -88,7 +88,7 @@
     tb.forEach(function(b){ avHtml+='<div class="ddr-card"><div class="t">'+esc(FINLAB[b.finalidade]||b.finalidade)+' <span class="ddr-pill ddr-pend">sem consentimento</span></div></div>'; });
     if(!avHtml) avHtml='<div class="d" style="font-size:12px;color:var(--ink3)">Nenhuma pesquisa avançada solicitada. Solicite o consentimento da pessoa para liberar situação cadastral, sanções, crédito e mais.</div>';
 
-    var lastro = cons ? ('Consentimento registrado em '+hoje()+' · '+((cons.finalidades&&cons.finalidades.length)||(cons.n_fins)||'?')+' finalidade(s) · hash '+esc(String(cons.hash||cons.termo_hash||'').slice(0,16))+'… · versão '+esc(cons.versao||cons.termo_versao||'dd-pf-v1')+'. Lastro imutável no cofre LGPD.') : 'Pesquisa pública (T0) — sem consentimento avançado registrado.';
+    var lastro = cons ? ('Consentimento registrado em '+hoje()+' · '+((cons.finalidades&&cons.finalidades.length)||(cons.n_fins)||'?')+' finalidade(s) · hash '+esc(String(cons.hash||cons.termo_hash||'').slice(0,16))+'… · versão '+esc(cons.versao||cons.termo_versao||'dd-pf-v1')+'. Lastro imutável no cofre LGPD.'): 'Pesquisa pública (T0), sem consentimento avançado registrado.';
 
     host.innerHTML=''
       +'<div class="ddr" id="ddr-print">'
@@ -99,7 +99,7 @@
           +'<div class="ddr-row"><span class="k">CPF</span><span class="v">'+(valido?'<span class="ddr-pill ddr-ok">✓ válido</span>':'<span class="ddr-pill ddr-no">inválido</span>')+'</span></div></div>'
         +'<div class="ddr-sec"><div class="ddr-sec-h">Participação societária <span class="ddr-pill ddr-ok">público · grátis</span></div>'
           +(empresas.length? empresas.map(function(e){ return '<div class="ddr-card"><div class="t">'+esc(e.empresa||'(empresa)')+'</div><div class="d">'+esc(e.qualificacao||'sócio')+(e.cnpj?' · CNPJ '+esc(e.cnpj):'')+'</div></div>'; }).join('')
-              : '<div class="d" style="font-size:12px;color:var(--ink3)">Nenhuma empresa encontrada na base (cruzamento dos 6 dígitos centrais × QSA público).</div>')
+: '<div class="d" style="font-size:12px;color:var(--ink3)">Nenhuma empresa encontrada na base (cruzamento dos 6 dígitos centrais × QSA público).</div>')
           +'</div>'
         +(sancHtml?'<div class="ddr-sec"><div class="ddr-sec-h">Sanções e PEP</div>'+sancHtml+'</div>':'')
         +'<div class="ddr-sec"><div class="ddr-sec-h">Pesquisas avançadas</div>'+avHtml+'</div>'

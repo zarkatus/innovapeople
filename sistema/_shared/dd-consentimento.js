@@ -23,7 +23,7 @@
 
   function termoTexto(ctx, projeto){
     var ctxLabel = {onboarding:'admissão',candidato:'formalização de vínculo',socio_vinculado:'verificação de sócio',cliente_curadoria:'relacionamento de curadoria comercial'}[ctx]||'verificação';
-    return 'TERMO DE CONSENTIMENTO PARA VERIFICAÇÃO CADASTRAL E DE IDONEIDADE (DD-PF) — Versão '+VERSAO+'. '
+    return 'TERMO DE CONSENTIMENTO PARA VERIFICAÇÃO CADASTRAL E DE IDONEIDADE (DD-PF), Versão '+VERSAO+'. '
       +'A InnCorporate / InnovaSphere solicita seu consentimento livre, informado, específico e inequívoco para realizar verificações de natureza cadastral e de idoneidade a seu respeito, com a finalidade exclusiva de '+ctxLabel+', no âmbito do projeto '+(projeto||'InnovaPeople')+'. '
       +'Esta verificação integra nosso dever de diligência e compliance. Não há decisão automatizada com efeitos sobre você sem revisão humana (art. 20 LGPD). '
       +'Você autoriza ITEM A ITEM apenas o que marcar abaixo. Seus direitos (acesso, correção, revogação a qualquer tempo) estão garantidos pela LGPD; a revogação interrompe novas consultas. '
@@ -56,7 +56,7 @@
      +'.ddc-ok{background:var(--ip-gold-lum,#E9A578);color:#1a1205;border-color:var(--ip-gold-lum)}'
      +'.ddc-cancel{background:transparent;color:var(--ip-ink-2,#9FB0C5);border-color:rgba(210,174,100,.2)}'
      +'.ddc-res{font-size:12.5px;margin-top:10px}';
-    (document.head||document.documentElement).appendChild(st);
+ (document.head||document.documentElement).appendChild(st);
   }
 
   function abrir(opts){
@@ -68,13 +68,13 @@
     var temSens = FINS.some(function(f){return f.sens;});
     ov.innerHTML='<div class="ddc-box" role="dialog" aria-modal="true">'
       +'<div class="ddc-h">Consentimento para pesquisa avançada</div>'
-      +'<div style="font-size:12.5px;color:var(--ip-ink-3,#8FA0B5)">'+esc(opts.nome||('CPF '+doc.slice(0,3)+'***'))+' — autorize item a item o que pode ser consultado.</div>'
+      +'<div style="font-size:12.5px;color:var(--ip-ink-3,#8FA0B5)">'+esc(opts.nome||('CPF '+doc.slice(0,3)+'***'))+', autorize item a item o que pode ser consultado.</div>'
       +'<div class="ddc-termo">'+esc(snapshotTermo)+'</div>'
       +'<div id="ddc-fins">'+FINS.map(function(f){
           return '<label class="ddc-fin'+(f.sens?' ddc-sens':'')+'"><input type="checkbox" data-fin="'+f.k+'" data-sens="'+(f.sens?1:0)+'">'
             +'<div><div class="nm">'+esc(f.n)+(f.sens?'<span class="ddc-sens-tag">dado sensível</span>':'')+'</div><div class="fo">Fonte: '+esc(f.fonte)+'</div></div></label>';
         }).join('')+'</div>'
-      +(temSens?'<div class="ddc-art11">Itens marcados como “dado sensível” (art. 11 LGPD) exigem aceite específico e destacado — só serão consultados se você marcá-los expressamente.</div>':'')
+      +(temSens?'<div class="ddc-art11">Itens marcados como “dado sensível” (art. 11 LGPD) exigem aceite específico e destacado, só serão consultados se você marcá-los expressamente.</div>':'')
       +'<div id="ddc-res" class="ddc-res"></div>'
       +'<div class="ddc-foot"><button class="ddc-btn ddc-cancel" id="ddc-cancel">Agora não</button><button class="ddc-btn ddc-ok" id="ddc-ok">Consentir o que marquei</button></div>'
       +'</div>';

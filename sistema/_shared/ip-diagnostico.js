@@ -21,14 +21,14 @@
       else f.push('Levemente atrás (SPI '+spi.toFixed(2)+').'); }
     var pesado=marcos.slice().sort(function(a,b){return ((n(b.ac)||0)-(n(b.ev)||0))-((n(a.ac)||0)-(n(a.ev)||0));})[0];
     if(pesado && ((n(pesado.ac)||0)-(n(pesado.ev)||0))>0) f.push('Marco que mais pesa: "'+pesado.titulo+'" (AC '+brl(pesado.ac)+' > EV '+brl(pesado.ev)+').');
-    var acao = (cpi!=null&&cpi<0.9)||(spi!=null&&spi<0.9) ? 'Replanejar os marcos finais e revisar o esforço antes de novo aporte.' : 'Manter a cadência e apontar avanços para acompanhar a curva.';
+    var acao = (cpi!=null&&cpi<0.9)||(spi!=null&&spi<0.9) ? 'Replanejar os marcos finais e revisar o esforço antes de novo aporte.': 'Manter a cadência e apontar avanços para acompanhar a curva.';
     return { titulo:'Saúde do programa', leitura:f.join(' '), severidade:sev, acao:acao, sinais:sinais };
   }
 
   // CLIMA (Pulso 6D): equipes visíveis -> maior risco/dimensão crítica
   function clima(equipes){
     equipes=(equipes||[]).filter(function(e){return !e.suprimido_privacidade;});
-    if(!equipes.length) return { titulo:'Clima', leitura:'Sem equipes com N≥5 — colete mais respostas (privacidade).', severidade:'neutro', acao:'Ampliar a base de respostas do Pulso.', sinais:[] };
+    if(!equipes.length) return { titulo:'Clima', leitura:'Sem equipes com N≥5, colete mais respostas (privacidade).', severidade:'neutro', acao:'Ampliar a base de respostas do Pulso.', sinais:[] };
     var DIMS=['proposito','autonomia','competencia','pertencimento','clareza','seguranca'];
     var pior=null, piorDim=null, piorVal=99;
     equipes.forEach(function(e){ DIMS.forEach(function(d){ var v=n(e[d]); if(v!=null && v<piorVal){piorVal=v;pior=e;piorDim=d;} }); });
@@ -36,8 +36,8 @@
     var f=[];
     if(pior) f.push('Menor nota: '+piorDim+' em '+pior.equipe+' ('+piorVal+'/5).');
     if(risco && n(risco.risco_saida)!=null) f.push('Maior risco de saída: '+risco.equipe+' ('+risco.risco_saida+'/5).');
-    var sev = piorVal<2.5||(risco&&n(risco.risco_saida)>=3.5) ? 'alta' : piorVal<3 ? 'media' : 'ok';
-    var acao = sev==='alta' ? 'Conversa estruturada com '+(risco?risco.equipe:pior.equipe)+' sobre '+piorDim+'.' : 'Manter o ritual de Pulso e acompanhar a tendência.';
+    var sev = piorVal<2.5||(risco&&n(risco.risco_saida)>=3.5) ? 'alta': piorVal<3 ? 'media': 'ok';
+    var acao = sev==='alta' ? 'Conversa estruturada com '+(risco?risco.equipe:pior.equipe)+' sobre '+piorDim+'.': 'Manter o ritual de Pulso e acompanhar a tendência.';
     return { titulo:'Clima das equipes', leitura:f.join(' '), severidade:sev, acao:acao, sinais: sev==='alta'?[piorDim+'_baixo']:[] };
   }
 
@@ -51,8 +51,8 @@
     var gargalo=marcos.find(function(m){return m.status!=='concluido';});
     var f=[concl+' de '+marcos.length+' marcos concluídos.'];
     if(gargalo) f.push('Próximo elo da cadeia: "'+gargalo.titulo+'" ('+gargalo.status+').');
-    if(andamento.length>1) f.push(andamento.length+' marcos em paralelo — atenção à dispersão de esforço.');
-    var sev = (concl/marcos.length)<0.34 ? 'media' : 'ok';
+    if(andamento.length>1) f.push(andamento.length+' marcos em paralelo, atenção à dispersão de esforço.');
+    var sev = (concl/marcos.length)<0.34 ? 'media': 'ok';
     return { titulo:'Sequência de marcos', leitura:f.join(' '), severidade:sev, acao: gargalo?('Destravar "'+gargalo.titulo+'" para liberar os marcos seguintes.'):'Avançar para o próximo programa.', sinais:[] };
   }
 

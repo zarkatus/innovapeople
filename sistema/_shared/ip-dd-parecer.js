@@ -45,7 +45,7 @@
      +'.dd-passo .n{color:var(--ip-gold-lum,#E9A578);font-weight:700}'
      +'.dd-escopo{font-size:11.5px;color:var(--ip-ink-3,#8FA0B5);line-height:1.7;padding:12px 14px;border:1px dashed rgba(210,174,100,.2);border-radius:11px}'
      +'.dd-escopo b{color:var(--ip-ink-2,#9FB0C5)}';
-    (document.head||document.documentElement).appendChild(st);
+ (document.head||document.documentElement).appendChild(st);
   }
 
   function render(el, dd){
@@ -63,7 +63,7 @@
     html += (dd.sinais||[]).map(function(s){
       return '<div class="dd-sinal" style="border-left-color:'+(SEVCOR[s.severidade]||'var(--ip-ink-3)')+'">'
         +'<span class="ic">'+(SEVICO[s.severidade]||'·')+'</span>'
-        +'<div class="tx"><b>'+esc(s.titulo)+'</b> — '+esc(s.por_que)
+        +'<div class="tx"><b>'+esc(s.titulo)+'</b>, '+esc(s.por_que)
         +(s.evidencia?'<div class="ev">'+esc(s.evidencia)+'</div>':'')+'</div></div>';
     }).join('');
 

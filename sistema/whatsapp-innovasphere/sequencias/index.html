@@ -18,7 +18,7 @@
   function allow(email){rm();window.__IP_USER_EMAIL=email;const el=document.getElementById('user-display');if(el&&email)el.textContent=email;if(typeof window.seqBoot==='function')try{window.seqBoot()}catch(e){}else setTimeout(()=>{if(typeof window.seqBoot==='function')try{window.seqBoot()}catch(e){}},300)}
   if(document.body)inj();else document.addEventListener('DOMContentLoaded',inj,{once:true});
   const s=setTimeout(()=>allow(''),6000);
-  (async()=>{try{if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=sequencias');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
+ (async()=>{try{if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=sequencias');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
 })();
 </script>
 
@@ -165,7 +165,7 @@ em{font-style:italic}
     <h1>Jornadas <em>automatizadas.</em></h1>
     <p class="lede">
       Fluxos de mensagens disparados por evento: cadastro no Raio-X, nova curadoria, decisão registrada, conversão.
-      Cada etapa com seu delay próprio — a casa fala no ritmo do interlocutor.
+      Cada etapa com seu delay próprio, a casa fala no ritmo do interlocutor.
     </p>
   </div>
 </section>
@@ -258,7 +258,7 @@ function renderSeq(){
           <span class="stage-num">${i+1}</span>
           <span class="stage-txt">${esc((e.texto||e.template||e.mensagem||'(etapa)').slice(0,60))}</span>
           <span class="stage-delay">${e.delay_h?'+'+e.delay_h+'h':e.delay_min?'+'+e.delay_min+'min':e.delay?'+'+e.delay:'imediato'}</span>
-        </div>`).join(''):'<div style="color:var(--ink3);font-style:italic;font-size:12px;padding:6px">Sem etapas — adicione pelo editor</div>'}
+        </div>`).join(''):'<div style="color:var(--ink3);font-style:italic;font-size:12px;padding:6px">Sem etapas, adicione pelo editor</div>'}
         ${etapas.length>5?`<div style="font-family:var(--mono);font-size:10px;color:var(--ink3);text-align:center;padding:4px">+${etapas.length-5} etapas</div>`:''}
       </div>
       <div class="seq-card-actions">
@@ -417,7 +417,7 @@ async function dispararSeq(id,nome){
       estado:'em_curso',
     });
     if(error)throw error;
-    toast('Disparada — primeira etapa enfileirada');
+    toast('Disparada, primeira etapa enfileirada');
     loadExec();
   }catch(e){toast('Erro: '+e.message)}
 }

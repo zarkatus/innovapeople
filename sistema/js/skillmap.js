@@ -87,13 +87,13 @@
       await _mount(b,html);return;
     }
     // cabeçalho dimensões
-    html+=`<div style="display:grid;grid-template-columns:1.4fr repeat(6,1fr) .7fr;gap:6px;align-items:center;margin-bottom:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--acento-deep);font-weight:700">
+    html+=`<div style="display:grid;grid-template-columns:1.4fr repeat(6,1fr).7fr;gap:6px;align-items:center;margin-bottom:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--acento-deep);font-weight:700">
       <div>Colaborador</div>${DIMS.map(d=>`<div style="text-align:center" title="${esc(d.n)}">${d.ab}</div>`).join('')}<div style="text-align:center">Σ</div></div>`;
     _s.perfis.forEach(p=>{
       const s=_s.skills[p.id];
       const cells=DIMS.map(d=>{const v=s?s[d.k]:null;return `<div class="heat-cell ${lvl(v)}" title="${esc(d.n)}: ${v??'—'}">${v??'·'}</div>`}).join('');
       const tot=s?s.s_score_total:null;
-      html+=`<div style="display:grid;grid-template-columns:1.4fr repeat(6,1fr) .7fr;gap:6px;align-items:center;margin-bottom:6px">
+      html+=`<div style="display:grid;grid-template-columns:1.4fr repeat(6,1fr).7fr;gap:6px;align-items:center;margin-bottom:6px">
         <div style="min-width:0"><div style="font-size:13px;color:var(--cream);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.rotulo||p.papel||'(sem rótulo)')}</div><div style="font-size:10.5px;color:var(--cream-dim)">${esc(p.equipe||'—')}</div></div>
         ${cells}
         <div style="text-align:center;font-family:var(--serif);font-style:italic;font-size:18px;color:${tot==null?'var(--cream-dim)':(tot>=24?'var(--ok)':(tot>=15?'var(--warn)':'var(--danger)'))}">${tot??'—'}</div>
@@ -121,7 +121,7 @@
         <div>
           <div class="sk-h">Avaliar competências 6D</div>
           <div class="sk-field"><label>Colaborador</label><select id="sk-perfil-sel" class="sk-select" onchange="IpSkillMap._loadSkillForm(this.value)">
-            <option value="">— selecione —</option>
+            <option value="">(selecione)</option>
             ${_s.perfis.map(p=>`<option value="${esc(p.id)}">${esc(p.rotulo||p.papel||'(sem rótulo)')} · ${esc(p.equipe||'')}</option>`).join('')}
           </select></div>
           <div id="sk-sliders"></div>
@@ -154,7 +154,7 @@
       const existing=_s.skills[perfilId];
       const r=existing
         ? await IpPersist.write(()=>sb().from('ip_skill_map').update(row).eq('id',existing.id).select(),{label:'Avaliação 6D',offline:{table:'ip_skill_map',op:'update',payload:row,match:[['id',existing.id]]}})
-        : await IpPersist.write(()=>sb().from('ip_skill_map').insert(row).select(),{label:'Avaliação 6D',offline:{table:'ip_skill_map',op:'insert',payload:row}});
+: await IpPersist.write(()=>sb().from('ip_skill_map').insert(row).select(),{label:'Avaliação 6D',offline:{table:'ip_skill_map',op:'insert',payload:row}});
       if(!r.ok&&!r.queued)return;
       await reload();go('mapa');
     }catch(e){T.toast('Erro: '+(e.message||e))}

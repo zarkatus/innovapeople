@@ -23,7 +23,7 @@
       }
     },
     contar_colaboradores: {
-      def: { name:'contar_colaboradores', description:'Conta colaboradores por status (ativo/afastado/desligado) — o headcount da operação.', input_schema:{type:'object',properties:{},required:[]} },
+      def: { name:'contar_colaboradores', description:'Conta colaboradores por status (ativo/afastado/desligado), o headcount da operação.', input_schema:{type:'object',properties:{},required:[]} },
       run: async function(){
         var sb=SB(); var r=await sb.from('core_colaborador').select('status');
         if(r.error) return {erro:r.error.message};
@@ -64,7 +64,7 @@
       }
     },
     eventos_recentes: {
-      def: { name:'eventos_recentes', description:'O que ACONTECEU de verdade na operação nos últimos eventos (trilha cognitiva ip_eventos via Sistema Nervoso): admissões, desligamentos, alterações de colaborador, pulsos, apontamentos, decisões. Use para raciocinar sobre o ESTADO VIVO (não template) e para "o que mudou recentemente".', input_schema:{type:'object',properties:{tipo:{type:'string',description:'opcional: filtra por domínio — pessoa, programa, mandato, plano, agente'}},required:[]} },
+      def: { name:'eventos_recentes', description:'O que ACONTECEU de verdade na operação nos últimos eventos (trilha cognitiva ip_eventos via Sistema Nervoso): admissões, desligamentos, alterações de colaborador, pulsos, apontamentos, decisões. Use para raciocinar sobre o ESTADO VIVO (não template) e para "o que mudou recentemente".', input_schema:{type:'object',properties:{tipo:{type:'string',description:'opcional: filtra por domínio, pessoa, programa, mandato, plano, agente'}},required:[]} },
       run: async function(args){
         var sb=SB(); var q=sb.from('v_ip_timeline_mandato').select('ts,event_type,rotulo,sujeito,actor_email,tipo_negocio');
         if(args && args.tipo) q=q.eq('tipo_negocio', String(args.tipo));
@@ -75,7 +75,7 @@
     }
   };
 
-  var SYSTEM = 'Você é o Concierge da InnovaPeople — copiloto cognitivo da gestão de gente e operação. '
+  var SYSTEM = 'Você é o Concierge da InnovaPeople, copiloto cognitivo da gestão de gente e operação. '
     +'Você NÃO inventa dados: usa as ferramentas para LER o estado real e responde com base nelas. '
     +'Pode chamar várias ferramentas antes de concluir. Tom executivo, caloroso, direto, português do Brasil, sem markdown. '
     +'Quando relevante, priorize por IREU e aponte UMA próxima ação. Se uma ferramenta retornar vazio, diga com honestidade.';
@@ -106,7 +106,7 @@
           if(opts.onStep) try{ opts.onStep({ tipo:'tool', nome:tu.name }); }catch(_){}
           steps.push(tu.name);
           var out;
-          try{ out = TOOLS[tu.name] ? await TOOLS[tu.name].run(tu.input||{}) : { erro:'ferramenta desconhecida' }; }
+          try{ out = TOOLS[tu.name] ? await TOOLS[tu.name].run(tu.input||{}): { erro:'ferramenta desconhecida' }; }
           catch(e){ out = { erro:(''+e).slice(0,100) }; }
           results.push({ type:'tool_result', tool_use_id: tu.id, content: JSON.stringify(out) });
         }

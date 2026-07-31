@@ -31,13 +31,13 @@
 
   // ── SCOPE: o nó corrente move a plataforma. Telas leem nodeId()/mandatoIds(). ──
   var scope = {
-    nodeId: function(){ return _curNode? _curNode.id : null; },
+    nodeId: function(){ return _curNode? _curNode.id: null; },
     node: function(){ return _curNode; },
     // ids de mandato da subárvore corrente (p/ telas que filtram por mandato_id)
     mandatoIds: function(){
       if(!_curNode) return null; // sem hierarquia -> telas usam o comportamento atual
       var root=_curNode, out=[];
-      (_nodes||[]).forEach(function(n){ if((n.path===root.path || (n.path||'').indexOf(root.path+'.')===0) && n.mandato_id) out.push(n.mandato_id); });
+ (_nodes||[]).forEach(function(n){ if((n.path===root.path || (n.path||'').indexOf(root.path+'.')===0) && n.mandato_id) out.push(n.mandato_id); });
       return out;
     },
     set: async function(nodeId){
@@ -82,7 +82,7 @@
      +'.ipo-mbtn:hover{border-color:var(--ip-gold-lum,#E9A578);color:var(--ip-cream,#F7F3EC)}'
      +'.ipo-dd{font:700 7.5px/1 system-ui;letter-spacing:.06em;padding:3px 6px;border-radius:6px}'
      +'.ipo-dd-ok{background:rgba(123,211,160,.16);color:var(--ip-ok,#7BD3A0)}.ipo-dd-cau{background:rgba(229,199,126,.16);color:var(--ip-gold-lum,#E9A578)}.ipo-dd-no{background:rgba(232,166,166,.16);color:var(--ip-danger,#E8A6A6)}';
-    (document.head||document.documentElement).appendChild(st);
+ (document.head||document.documentElement).appendChild(st);
   }
   var _treeOpen=false;
   function _crumbHtml(){
@@ -96,9 +96,9 @@
     var cur=_curNode&&n.id===_curNode.id;
     var kids=_children(n.id);
     var pad=8+depth*14;
-    var gear = _gestao ? '<button class="ipo-gear" data-gear="'+esc(n.id)+'" title="Gerir">⋯</button>' : '';
+    var gear = _gestao ? '<button class="ipo-gear" data-gear="'+esc(n.id)+'" title="Gerir">⋯</button>': '';
     var dd = n.metadata && n.metadata.dd;
-    var ddBadge = dd ? '<span class="ipo-dd ipo-dd-'+(dd.veredicto==='ENTRAR'?'ok':dd.veredicto==='EVITAR'?'no':'cau')+'" title="Due diligence: '+esc(dd.veredicto)+' · score '+(dd.risco_score)+'">'+esc(dd.veredicto)+'</span>' : '';
+    var ddBadge = dd ? '<span class="ipo-dd ipo-dd-'+(dd.veredicto==='ENTRAR'?'ok':dd.veredicto==='EVITAR'?'no':'cau')+'" title="Due diligence: '+esc(dd.veredicto)+' · score '+(dd.risco_score)+'">'+esc(dd.veredicto)+'</span>': '';
     return '<div class="ipo-tnode'+(cur?' cur':'')+'" style="padding-left:'+pad+'px">'
       +'<span class="ipo-tnode-clk" data-node="'+esc(n.id)+'" style="flex:1;display:flex;gap:7px;align-items:center"><span>'+esc(n.nome)+'</span><span class="tp">'+esc(n.tipo_no)+'</span>'+ddBadge+'</span>'+gear+'</div>'
       + kids.map(function(k){return _treeNodeHtml(k, depth+1);}).join('');
@@ -122,7 +122,7 @@
     var html='<div style="font:600 italic 17px Georgia;color:var(--ip-gold-lum,#E9A578);margin-bottom:12px">Novo nó'+(parentId?' (dentro deste)':' (raiz)')+'</div>'
       +'<label style="display:block;margin-bottom:10px"><span style="display:block;font:600 10px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin-bottom:5px">Nome</span><input id="onc-nome" style="width:100%;background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.25);border-radius:9px;padding:10px 12px;color:var(--ip-cream,#F7F3EC);font-size:14px"></label>'
       +'<label style="display:block;margin-bottom:10px"><span style="display:block;font:600 10px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin-bottom:5px">Tipo</span><select id="onc-tipo" style="width:100%;background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.25);border-radius:9px;padding:10px 12px;color:var(--ip-cream,#F7F3EC);font-size:14px">'+tipos.map(function(t){return '<option value="'+t+'">'+t+'</option>';}).join('')+'</select></label>'
-      +'<label style="display:block;margin-bottom:6px"><span style="display:block;font:600 10px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin-bottom:5px">CNPJ <span style="color:var(--ip-ink-4,#6B7A90);text-transform:none;letter-spacing:0">(opcional — dispara due diligence)</span></span><input id="onc-cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" style="width:100%;background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.25);border-radius:9px;padding:10px 12px;color:var(--ip-cream,#F7F3EC);font-size:14px;font-family:ui-monospace,monospace"></label>'
+      +'<label style="display:block;margin-bottom:6px"><span style="display:block;font:600 10px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin-bottom:5px">CNPJ <span style="color:var(--ip-ink-4,#6B7A90);text-transform:none;letter-spacing:0">(opcional, dispara due diligence)</span></span><input id="onc-cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" style="width:100%;background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.25);border-radius:9px;padding:10px 12px;color:var(--ip-cream,#F7F3EC);font-size:14px;font-family:ui-monospace,monospace"></label>'
       +'<div id="onc-res" style="font-size:12px;margin:8px 0;min-height:16px"></div>'
       +'<button class="ipo-mbtn" id="onc-ok" style="margin-top:6px;border-color:var(--ip-gold-lum,#E9A578);color:var(--ip-gold-lum,#E9A578);text-align:center;font-weight:600">Criar</button>';
     var m=IpUI.modal(html,{label:'Novo nó',width:'min(420px,100%)'}); var box=m.box;
@@ -150,7 +150,7 @@
       var enr=await sb.functions.invoke('cnpj-enrich',{body:{cnpj:cnpj}});
       var dossie=(enr&&!enr.error)?enr.data:null;
       var sanc=null; try{ var sr=await sb.functions.invoke('dd-sancoes',{body:{doc:cnpj,tipo:'cnpj'}}); if(!sr.error)sanc=sr.data; }catch(_){}
-      var dd = (dossie && window.IpDDMotor) ? IpDDMotor.avaliar(dossie,{sancoes:sanc}) : null;
+      var dd = (dossie && window.IpDDMotor) ? IpDDMotor.avaliar(dossie,{sancoes:sanc}): null;
       // grava no metadata do nó (cnpj + dossiê + parecer)
       await _rpc('fn_ip_org_set_dd',{p_node_id:nodeId, p_cnpj:cnpj, p_dossie:dossie, p_dd:dd});
       if(resEl && dd) resEl.innerHTML='<span style="color:'+(dd.veredicto==='ENTRAR'?'var(--ip-ok,#7BD3A0)':dd.veredicto==='EVITAR'?'var(--ip-danger,#E8A6A6)':'var(--ip-gold-lum,#E9A578)')+'">DD: '+esc(dd.veredicto)+' (score '+dd.risco_score+')</span>';
@@ -208,8 +208,8 @@
       +'<button class="ipo-mbtn" data-act="participacao" style="border-color:var(--ip-gold-lum,#E9A578);color:var(--ip-gold-lum,#E9A578)">◈ Participação societária…</button>'
       +'<button class="ipo-mbtn" data-act="renomear">✎ Renomear</button>'
       +'<button class="ipo-mbtn" data-act="arquivar" style="color:var(--ip-danger,#E8A6A6)">🗄 Arquivar</button>';
-    var m = (window.IpUI&&IpUI.modal) ? IpUI.modal(html,{label:'Gerir nó',width:'min(340px,100%)'}) : null;
-    var box = m ? m.box : null;
+    var m = (window.IpUI&&IpUI.modal) ? IpUI.modal(html,{label:'Gerir nó',width:'min(340px,100%)'}): null;
+    var box = m ? m.box: null;
     if(!box) return;
     box.querySelectorAll('.ipo-mbtn').forEach(function(b){ b.onclick=function(){
       var act=b.getAttribute('data-act'); m.close();
@@ -251,8 +251,8 @@
     var header='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
       +'<span style="font:600 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--ip-gold-lum)">Árvore do grupo</span>'
       +'<button class="ipo-gestbtn'+(_gestao?' on':'')+'" id="ipo-gestbtn">'+(_gestao?'✓ gerindo':'⚙ gerir')+'</button></div>';
-    var moverHint = _mover ? '<div style="font-size:11px;color:var(--ip-ok,#7BD3A0);margin-bottom:10px;padding:8px 10px;background:rgba(123,211,160,.08);border-radius:8px">Movendo "'+esc((_byId(_mover)||{}).nome||'')+'" — abra o ⋯ do destino e escolha "Mover para cá". <a id="ipo-cancelmover" style="cursor:pointer;text-decoration:underline">cancelar</a></div>' : '';
-    var novoRaiz = _gestao ? '<button class="ipo-mbtn" id="ipo-novoraiz" style="margin-top:10px">+ Novo grupo/holding (raiz)</button>' : '';
+    var moverHint = _mover ? '<div style="font-size:11px;color:var(--ip-ok,#7BD3A0);margin-bottom:10px;padding:8px 10px;background:rgba(123,211,160,.08);border-radius:8px">Movendo "'+esc((_byId(_mover)||{}).nome||'')+'", abra o ⋯ do destino e escolha "Mover para cá". <a id="ipo-cancelmover" style="cursor:pointer;text-decoration:underline">cancelar</a></div>': '';
+    var novoRaiz = _gestao ? '<button class="ipo-mbtn" id="ipo-novoraiz" style="margin-top:10px">+ Novo grupo/holding (raiz)</button>': '';
     t.innerHTML=header+moverHint+_treeNodeHtml(_root(),0)+novoRaiz;
     _bind(t);
     var gb=t.querySelector('#ipo-gestbtn'); if(gb) gb.onclick=function(){ _gestao=!_gestao; if(!_gestao)_mover=null; _renderTree(); };
@@ -265,7 +265,7 @@
     opts=opts||{};
     await _load();
     if(!_nodes.length) return; // sem árvore -> nada (não deveria, bootstrap cria folhas)
-    _curNode = opts.nodeId? (_byId(opts.nodeId)||_root()) : _root();
+    _curNode = opts.nodeId? (_byId(opts.nodeId)||_root()): _root();
     _render();
     return { count: gate.count(), visible: gate.visible(), node: _curNode };
   }

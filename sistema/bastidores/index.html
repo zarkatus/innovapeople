@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bastidores · InnovaPeople</title>
-<meta name="description" content="Backbone técnico, auditoria, canais e compliance — InnovaPeople">
+<meta name="description" content="Backbone técnico, auditoria, canais e compliance · InnovaPeople">
 <meta name="robots" content="noindex,nofollow">
 
 <!-- IP-AUTH-GATE -->
@@ -20,7 +20,7 @@
     const ovl=document.createElement('div');ovl.id='ip-auth-ovl';
     ovl.style.cssText='position:fixed;inset:0;background:#0A1628;color:#3DA882;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647;transition:opacity .35s';
     ovl.innerHTML='<div style="text-align:center"><div style="margin-bottom:14px;font-size:11px;opacity:.5">InnovaPeople</div><div>Validando acesso<span>…</span></div></div>';
-    (document.body||document.documentElement).appendChild(ovl);
+ (document.body||document.documentElement).appendChild(ovl);
   }
   function removeOverlay(){const o=document.getElementById('ip-auth-ovl');if(!o)return;o.style.opacity='0';setTimeout(()=>{if(o.parentNode)o.parentNode.removeChild(o)},400)}
   function deny(r){console.warn('[ip-auth] deny:',r);location.replace('/sistema/?from=bastidores')}
@@ -33,7 +33,7 @@
   }
   if(document.body){injectOverlay()}else{document.addEventListener('DOMContentLoaded',injectOverlay,{once:true})}
   const safety=setTimeout(()=>{allow('')},6000);
-  (async function run(){
+ (async function run(){
     try{
       // [perf 30/05] fast-path: token local valido (gate V4) libera sem await getSession
       try{var _k=Object.keys(localStorage).find(k=>k.startsWith('sb-')&&k.includes('auth-token'));if(_k){var _raw=JSON.parse(localStorage.getItem(_k)||'null');var _s=_raw&&(_raw.currentSession||_raw.session||_raw);var _em=_s&&_s.user&&(_s.user.email||(_s.user.user_metadata&&_s.user.user_metadata.email));var _exp=_s&&_s.expires_at?(_s.expires_at*1000):0;if(_s&&_s.access_token&&_em&&(!_exp||_exp>Date.now())&&ALLOWED.includes(_em)){clearTimeout(safety);if(typeof s!=='undefined')clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){allow(_em)},{once:true});else allow(_em);try{var _bg=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true}});window.__IP_SB=_bg;}catch(_){}return;}}}catch(_){}
@@ -253,7 +253,7 @@ em{font-style:italic}
     </div>
 
     <div class="card">
-      <div class="card-head"><div><div class="card-title">WhatsApp · Inbox</div><div class="card-promise">Conversas, sequências e broadcast — Aman/JHSF, perfil 360, auditoria forense.</div></div><span class="status st-live">Operacional</span></div>
+      <div class="card-head"><div><div class="card-title">WhatsApp · Inbox</div><div class="card-promise">Conversas, sequências e broadcast: Aman/JHSF, perfil 360, auditoria forense.</div></div><span class="status st-live">Operacional</span></div>
       <div class="card-body">Reusa o backbone <code class="dr-code">wa_*</code> da InnovaSphere (contatos, conversas, mensagens, templates, sequências, broadcast, audit hash chain). Realtime ativo.</div>
       <div class="card-actions" style="flex-wrap:wrap;gap:6px">
         <a href="/sistema/whatsapp/" class="btn btn-primary">Inbox</a>
@@ -524,7 +524,7 @@ function openWaSend(){
 }
 function openWaTemplates(){
   const tpls=[
-    {nome:'Convite Raio-X',texto:'Olá. Há uma sala que reflete sobre sua organização — sem comércio. Posso te mostrar?\n\n→ innovapeople.com.br/raio-x'},
+    {nome:'Convite Raio-X',texto:'Olá. Há uma sala que reflete sobre sua organização, sem comércio. Posso te mostrar?\n\n→ innovapeople.com.br/raio-x'},
     {nome:'Convite Ritual',texto:'Te aguardo no nosso ritual de [DIA] às [HORA]. Pauta breve abaixo.'},
     {nome:'Confirmação de trabalho',texto:'Confirmando o início do trabalho. Documento de escopo em [LINK]. Qualquer ajuste antes de assinar?'},
     {nome:'Pulso quinzenal',texto:'Olá. Está aberto o pulso quinzenal. Anônimo, 2 minutos.\n\n[LINK]'},
@@ -566,14 +566,14 @@ async function openLgpd(){
         sb.from('ip_pulse_tokens').select('*',{count:'exact',head:true}),
         sb.from('ip_relacionamentos').select('*',{count:'exact',head:true}),
       ]);
-      t.innerHTML=`<p class="dr-sub">Compliance é constitutivo — anonimato no pulso (k≥3), tokens descartáveis (14d), audit trail (36m), zero PII direto.</p>
+      t.innerHTML=`<p class="dr-sub">Compliance é constitutivo: anonimato no pulso (k≥3), tokens descartáveis (14d), audit trail (36m), zero PII direto.</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
         <div style="padding:14px;background:var(--cream2);border-radius:6px"><div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">Eventos auditáveis</div><div style="font-family:var(--serif);font-size:28px;font-weight:500;color:var(--navy)">${evCnt.count??0}</div><div style="font-size:11px;color:${(evOld.count||0)>0?'var(--amber)':'var(--ink3)'};margin-top:2px">${evOld.count||0} fora da janela 36m</div></div>
         <div style="padding:14px;background:var(--cream2);border-radius:6px"><div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">Pulsos anônimos</div><div style="font-family:var(--serif);font-size:28px;font-weight:500;color:var(--navy)">${pulsosCnt.count??0}</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">k-anonimato ≥ 3</div></div>
         <div style="padding:14px;background:var(--cream2);border-radius:6px"><div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">Tokens descartáveis</div><div style="font-family:var(--serif);font-size:28px;font-weight:500;color:var(--navy)">${tokensCnt.count??0}</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">TTL 14 dias</div></div>
         <div style="padding:14px;background:var(--cream2);border-radius:6px"><div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">E-mails outbox</div><div style="font-family:var(--serif);font-size:28px;font-weight:500;color:var(--navy)">${emailCnt.count??0}</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">CC governamental</div></div>
       </div>
-      <div style="padding:14px;background:rgba(46,139,110,.06);border-left:3px solid var(--emerald);border-radius:4px;font-size:12px;color:var(--ink2);line-height:1.6"><strong style="color:var(--navy)">Garantias ativas:</strong><br>· Audit trail append-only com snapshot before/after<br>· Tokens de pulso com expires_at = created_at + 14d<br>· Pulsos sem PII direto (apenas hash opcional)<br>· Perfil sem nome — só rótulo, papel, equipe<br>· ${relacCnt.count??0} relacionamentos com consentimento implícito</div>`;
+      <div style="padding:14px;background:rgba(46,139,110,.06);border-left:3px solid var(--emerald);border-radius:4px;font-size:12px;color:var(--ink2);line-height:1.6"><strong style="color:var(--navy)">Garantias ativas:</strong><br>· Audit trail append-only com snapshot before/after<br>· Tokens de pulso com expires_at = created_at + 14d<br>· Pulsos sem PII direto (apenas hash opcional)<br>· Perfil sem nome, só rótulo, papel, equipe<br>· ${relacCnt.count??0} relacionamentos com consentimento implícito</div>`;
     }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
   });
 }

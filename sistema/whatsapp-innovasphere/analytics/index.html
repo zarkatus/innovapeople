@@ -19,7 +19,7 @@
   function allow(email){rm();window.__IP_USER_EMAIL=email;const el=document.getElementById('user-display');if(el&&email)el.textContent=email;if(typeof window.anBoot==='function')try{window.anBoot()}catch(e){}else setTimeout(()=>{if(typeof window.anBoot==='function')try{window.anBoot()}catch(e){}},300)}
   if(document.body)inj();else document.addEventListener('DOMContentLoaded',inj,{once:true});
   const s=setTimeout(()=>allow(''),6000);
-  (async()=>{try{if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=analytics');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
+ (async()=>{try{if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=analytics');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
 })();
 </script>
 
@@ -155,7 +155,7 @@ em{font-style:italic}
   <div class="hero-inner">
     <div class="crumb"><a href="/sistema/whatsapp/">WhatsApp</a> · Analytics</div>
     <h1>O que se <em>mede.</em></h1>
-    <p class="lede">Volume real, ritmo humano de leitura, templates que ressoam, broadcasts que convertem — sem vaidade, sem ruído.</p>
+    <p class="lede">Volume real, ritmo humano de leitura, templates que ressoam, broadcasts que convertem, sem vaidade, sem ruído.</p>
   </div>
 </section>
 
@@ -380,7 +380,7 @@ async function renderTopConv(convs){
   let contacts={};
   if(contactIds.length){
     const {data}=await sb().from('wa_contacts').select('id, name, phone').in('id',contactIds);
-    (data||[]).forEach(c=>contacts[c.id]=c);
+ (data||[]).forEach(c=>contacts[c.id]=c);
   }
   target.innerHTML='<table class="dt"><thead><tr><th>Contato</th><th class="num">Mensagens</th><th>Status</th><th class="num">Última atividade</th></tr></thead><tbody>'+
     convs.slice(0,10).map(c=>{

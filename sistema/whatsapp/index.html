@@ -19,7 +19,7 @@
     const ovl=document.createElement('div');ovl.id='ip-auth-ovl';
     ovl.style.cssText='position:fixed;inset:0;background:#0A1628;color:#3DA882;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647;transition:opacity .35s';
     ovl.innerHTML='<div style="text-align:center"><div style="margin-bottom:14px;font-size:11px;opacity:.5">InnovaPeople</div><div>Validando acesso<span>…</span></div></div>';
-    (document.body||document.documentElement).appendChild(ovl);
+ (document.body||document.documentElement).appendChild(ovl);
   }
   function removeOverlay(){const o=document.getElementById('ip-auth-ovl');if(!o)return;o.style.opacity='0';setTimeout(()=>{if(o.parentNode)o.parentNode.removeChild(o)},400)}
   function deny(r){location.replace('/sistema/?from=whatsapp')}
@@ -32,7 +32,7 @@
   }
   if(document.body){injectOverlay()}else{document.addEventListener('DOMContentLoaded',injectOverlay,{once:true})}
   const safety=setTimeout(()=>{allow('')},6000);
-  (async function run(){
+ (async function run(){
     try{
       // [perf 30/05] fast-path: token local valido (gate V4) libera sem await getSession
       try{var _k=Object.keys(localStorage).find(k=>k.startsWith('sb-')&&k.includes('auth-token'));if(_k){var _raw=JSON.parse(localStorage.getItem(_k)||'null');var _s=_raw&&(_raw.currentSession||_raw.session||_raw);var _em=_s&&_s.user&&(_s.user.email||(_s.user.user_metadata&&_s.user.user_metadata.email));var _exp=_s&&_s.expires_at?(_s.expires_at*1000):0;if(_s&&_s.access_token&&_em&&(!_exp||_exp>Date.now())&&ALLOWED.includes(_em)){clearTimeout(safety);if(typeof s!=='undefined')clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){allow(_em)},{once:true});else allow(_em);try{var _bg=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true}});window.__IP_SB=_bg;}catch(_){}return;}}}catch(_){}
@@ -280,7 +280,7 @@ input,textarea,select{font:inherit}
   <aside class="left">
     <div class="left-h">
       <h2>Conversas <em>vivas</em></h2>
-      <div class="sub" id="conv-count">— em curso</div>
+      <div class="sub" id="conv-count">, em curso</div>
       <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
         <a href="/sistema/whatsapp/sequencias/" style="padding:5px 10px;border:1px solid var(--acento);border-radius:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--acento-deep);font-family:var(--mono)">Sequências</a>
         <a href="/sistema/whatsapp/broadcast/" style="padding:5px 10px;border:1px solid var(--acento);border-radius:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--acento-deep);font-family:var(--mono)">Broadcast</a>

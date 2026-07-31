@@ -20,7 +20,7 @@
   function allow(email){rm();window.__IP_USER_EMAIL=email;const el=document.getElementById('uname');if(el&&email)el.textContent=email;if(typeof window.comBoot==='function')try{window.comBoot()}catch(e){console.warn(e)}else setTimeout(()=>{if(typeof window.comBoot==='function')try{window.comBoot()}catch(e){}},300)}
   if(document.body)inj();else document.addEventListener('DOMContentLoaded',inj,{once:true});
   const s=setTimeout(()=>allow(''),6000);
-  (async()=>{try{
+ (async()=>{try{
     try{var _k=Object.keys(localStorage).find(k=>k.startsWith('sb-')&&k.includes('auth-token'));if(_k){var _raw=JSON.parse(localStorage.getItem(_k)||'null');var _ls=_raw&&(_raw.currentSession||_raw.session||_raw);var _em=_ls&&_ls.user&&(_ls.user.email||(_ls.user.user_metadata&&_ls.user.user_metadata.email));var _exp=_ls&&_ls.expires_at?(_ls.expires_at*1000):0;if(_ls&&_ls.access_token&&_em&&(!_exp||_exp>Date.now())&&ALLOWED.includes(_em)){clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){allow(_em)},{once:true});else allow(_em);try{window.__IP_SB=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true}});}catch(_){}return;}}}catch(_){}
     if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=comunicacao');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
 })();
@@ -67,7 +67,7 @@
   <div class="wrap">
     <div class="eyebrow">Comunicação · Caixa de E-mail</div>
     <h1>Minha <em>Caixa</em></h1>
-    <div class="tagline">O e-mail da InnovaPeople vive aqui dentro da plataforma — sem caixa à parte, sem segundo login. Você cai direto na sua caixa.</div>
+    <div class="tagline">O e-mail da InnovaPeople vive aqui dentro da plataforma, sem caixa à parte, sem segundo login. Você cai direto na sua caixa.</div>
   </div>
 </section>
 <div class="hub">
@@ -82,7 +82,7 @@
       <div class="com-overlay" id="com-overlay">
         <div class="ico">✉️</div>
         <h2>Sua caixa está em configuração</h2>
-        <p>O servidor de e-mail da InnovaPeople está sendo preparado. Assim que estiver no ar, sua caixa <b>abre aqui dentro</b>, já logada — sem precisar entrar de novo.</p>
+        <p>O servidor de e-mail da InnovaPeople está sendo preparado. Assim que estiver no ar, sua caixa <b>abre aqui dentro</b>, já logada, sem precisar entrar de novo.</p>
         <div class="addr" id="com-addr">mail.innovapeople.ia.br</div>
         <div class="hint">Mesma experiência do CRM Piçarras Hills: e-mail dentro da plataforma, zero duplo login.</div>
       </div>

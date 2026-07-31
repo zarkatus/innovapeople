@@ -20,7 +20,7 @@
 
   // escopo organizacional: se há nó corrente, filtra pela subárvore (várias empresas); senão, atual
   function _escopo(q, mandato){
-    var ids = (window.IpOrg && IpOrg.scope && IpOrg.scope.mandatoIds) ? IpOrg.scope.mandatoIds() : null;
+    var ids = (window.IpOrg && IpOrg.scope && IpOrg.scope.mandatoIds) ? IpOrg.scope.mandatoIds(): null;
     if(ids && ids.length) return q.in('mandato_id', ids);
     if(mandato) return q.eq('mandato_id', mandato);
     return q;
@@ -49,7 +49,7 @@
     var head='<th style="text-align:left">Equipe</th>'+DIMS.map(function(d){return '<th>'+esc(d.n)+'</th>';}).join('')+'<th>Risco saída</th><th>N</th>';
     var rows=clima.map(function(c){
       if(c.suprimido_privacidade){
-        return '<tr><td>'+esc(c.equipe)+'</td><td colspan="7" style="color:var(--ip-ink-4);font-style:italic">🔒 menos de 5 respostas — oculto por privacidade</td><td>'+c.respostas+'</td></tr>';
+        return '<tr><td>'+esc(c.equipe)+'</td><td colspan="7" style="color:var(--ip-ink-4);font-style:italic">🔒 menos de 5 respostas, oculto por privacidade</td><td>'+c.respostas+'</td></tr>';
       }
       var cells=DIMS.map(function(d){ var v=c[d.k]; var cor=corDim(v);
         return '<td><span class="pz-cell" style="background:color-mix(in srgb,'+cor+' 20%,transparent);color:'+cor+'">'+(v==null?'—':v)+'</span></td>'; }).join('');
@@ -67,7 +67,7 @@
     var keys=Object.keys(byEq); if(!keys.length) return '';
     return '<div class="pz-trends">'+keys.map(function(eq){
       var serie=byEq[eq].map(function(x){return x.score_medio==null?null:+x.score_medio;}).filter(function(x){return x!=null;});
-      var spark = serie.length>=2 && U().sparkline ? U().sparkline(serie,{width:120,height:30}) : '<span class="pz-nosp">série curta</span>';
+      var spark = serie.length>=2 && U().sparkline ? U().sparkline(serie,{width:120,height:30}): '<span class="pz-nosp">série curta</span>';
       var last=serie.length?serie[serie.length-1]:null;
       return '<div class="pz-trend"><div class="pz-trend-h"><span>'+esc(eq)+'</span><b>'+(last!=null?last+'/100':'—')+'</b></div>'+spark+'</div>';
     }).join('')+'</div>';
@@ -87,21 +87,21 @@
   async function _diagnosticoIA(clima, host){
     var out=host.querySelector('#pz-ia-out'); if(out) out.innerHTML='<div class="pz-ia-load">Lendo o clima e raciocinando…</div>';
     var visiveis=clima.filter(function(c){return !c.suprimido_privacidade;});
-    if(!visiveis.length){ if(out)out.innerHTML='<div class="pz-empty">Sem equipes com N≥5 — colete mais respostas para o diagnóstico (privacidade).</div>'; return; }
+    if(!visiveis.length){ if(out)out.innerHTML='<div class="pz-empty">Sem equipes com N≥5, colete mais respostas para o diagnóstico (privacidade).</div>'; return; }
     var resumo=visiveis.map(function(c){ return c.equipe+': 6D[prop '+c.proposito+', auton '+c.autonomia+', compet '+c.competencia+', perten '+c.pertencimento+', clareza '+c.clareza+', segur '+c.seguranca+'], risco_saida '+c.risco_saida+'/5 (N='+c.respostas+')'; }).join(' | ');
     var prompt='Você é o analista de clima organizacional da InnovaPeople. Eis o Pulso 6D anônimo por equipe (escala 1-5; risco_saida 1-5, quanto maior pior): '+resumo+'. '
       +'Em até 4 frases, em português, tom executivo e humano: aponte a equipe e a dimensão de MAIOR risco, explique o que o padrão sugere, e dê UMA ação concreta priorizada. Sem markdown. Seja específico (cite os números).';
     // leitura determinística (sempre disponível, sem crédito de IA) via módulo central
-    var dd = window.IpDiag ? IpDiag.clima(clima) : {leitura:'',acao:''};
+    var dd = window.IpDiag ? IpDiag.clima(clima): {leitura:'',acao:''};
     var regras = (dd.leitura||'') + (dd.acao?(' Ação: '+dd.acao):'');
     function fallback(nota){ if(out) out.innerHTML='<div class="pz-ia-txt">'+esc(regras)+'</div>'+(nota?'<div style="font-size:11px;color:var(--ip-ink-4);margin-top:8px;font-style:italic">'+esc(nota)+'</div>':''); }
     try{
       var r=await SB().functions.invoke('ai-proxy',{body:{model:MODEL,max_tokens:400,messages:[{role:'user',content:prompt}]}});
-      if(r.error){ fallback('Leitura por regras — copiloto IA indisponível (verificar créditos da API).'); return; }
+      if(r.error){ fallback('Leitura por regras, copiloto IA indisponível (verificar créditos da API).'); return; }
       var txt=(r.data&&r.data.content&&r.data.content.filter(function(x){return x.type==='text';}).map(function(x){return x.text;}).join('\n'))||'';
       if(txt && out) out.innerHTML='<div class="pz-ia-txt">'+esc(txt)+'</div>';
       else fallback('Leitura por regras.');
-    }catch(e){ fallback('Leitura por regras — copiloto IA indisponível.'); }
+    }catch(e){ fallback('Leitura por regras, copiloto IA indisponível.'); }
   }
 
   function _injectCss(){
@@ -125,13 +125,13 @@
      +'.pz-ia-txt{font-size:14.5px;line-height:1.6;color:var(--ip-cream);white-space:pre-wrap}'
      +'.pz-ia-load,.pz-empty{color:var(--ip-ink-3);font-style:italic;padding:8px 0}'
      +'.pz-ia-btn{margin-top:12px;background:var(--ip-gold-lum);color:#1a1205;font-weight:600;font-size:12.5px;padding:9px 16px;border-radius:10px;border:none;cursor:pointer}';
-    (document.head||document.documentElement).appendChild(st);
+ (document.head||document.documentElement).appendChild(st);
   }
 
   async function render(host, opts){
     opts=opts||{}; if(!host) return; _injectCss();
     if(!window.IpUI || !SB()){ setTimeout(function(){render(host,opts);},150); return; }
-    host.innerHTML = U().skeleton ? U().skeleton(5) : 'Carregando…';
+    host.innerHTML = U().skeleton ? U().skeleton(5): 'Carregando…';
     var res=await Promise.all([_clima(opts.mandato),_tend(opts.mandato),_coment(opts.mandato)]);
     var clima=res[0], tend=res[1], coment=res[2];
     // robustez: se a sessão ainda não estava pronta (clima vazio mas há comentários), re-tenta 1×

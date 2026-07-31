@@ -15,7 +15,7 @@
 
   async function _programas(){
     var q=SB().from('ip_programas').select('id,nome,tipo,status,pv_total,ev_total,ac_total,mandato_id').neq('status','cancelado').order('nome');
-    var ids = (window.IpOrg && IpOrg.scope && IpOrg.scope.mandatoIds) ? IpOrg.scope.mandatoIds() : null;
+    var ids = (window.IpOrg && IpOrg.scope && IpOrg.scope.mandatoIds) ? IpOrg.scope.mandatoIds(): null;
     if(ids && ids.length) q=q.in('mandato_id', ids); // reescopo pela subárvore do nó corrente
     var r=await q;
     return r.error?[]:(r.data||[]);
@@ -61,7 +61,7 @@
   async function _diagIA(evm, marcos, host){
     var out=host.querySelector('#evm-ia-out'); if(!out) return;
     // leitura determinística via módulo reutilizável IpDiag (sempre disponível, sem IA)
-    var dd = window.IpDiag ? IpDiag.evm(evm, marcos) : {leitura:'',acao:''};
+    var dd = window.IpDiag ? IpDiag.evm(evm, marcos): {leitura:'',acao:''};
     var regras = (dd.leitura||'') + (dd.acao?(' Ação: '+dd.acao):'');
     out.innerHTML='<div style="color:var(--ip-ink-3);font-style:italic">Lendo o EVM e raciocinando…</div>';
     var resumo='Programa "'+evm.programa+'" ('+evm.tipo+'): PV '+evm.pv+', EV '+evm.ev+', AC '+evm.ac+', CPI '+(evm.cpi||0).toFixed(2)+', SPI '+(evm.spi||0).toFixed(2)+'. Marcos: '+marcos.map(function(m){return m.titulo+' ['+m.status+', pv '+m.pv+'/ev '+m.ev+'/ac '+m.ac+']';}).join('; ')+'.';
@@ -70,7 +70,7 @@
     function fallback(nota){ out.innerHTML='<div style="font-size:14px;line-height:1.6;color:var(--ip-cream)">'+esc(regras)+'</div>'+(nota?'<div style="font-size:11px;color:var(--ip-ink-4);margin-top:8px;font-style:italic">'+esc(nota)+'</div>':''); }
     try{
       var r=await SB().functions.invoke('ai-proxy',{body:{model:MODEL,max_tokens:380,messages:[{role:'user',content:prompt}]}});
-      if(r.error){ fallback('Leitura por regras (copiloto IA indisponível — verificar créditos da API).'); return; }
+      if(r.error){ fallback('Leitura por regras (copiloto IA indisponível, verificar créditos da API).'); return; }
       var txt=(r.data&&r.data.content&&r.data.content.filter(function(x){return x.type==='text';}).map(function(x){return x.text;}).join('\n'))||'';
       if(txt) out.innerHTML='<div style="font-size:14px;line-height:1.6;color:var(--ip-cream);white-space:pre-wrap">'+esc(txt)+'</div>';
       else fallback('Leitura por regras.');
@@ -102,7 +102,7 @@
      +'.evm-chain-nm{font-size:13.5px;color:var(--ip-cream);font-weight:500}'
      +'.evm-chain-tag{font:600 8.5px/1 system-ui;letter-spacing:.1em;text-transform:uppercase;color:var(--ip-gold-lum);background:color-mix(in srgb,var(--ip-gold-lum) 16%,transparent);padding:3px 7px;border-radius:7px;margin-left:6px}'
      +'.evm-chain-meta{font-size:11px;color:var(--ip-ink-3);margin-top:4px}';
-    (document.head||document.documentElement).appendChild(st);
+ (document.head||document.documentElement).appendChild(st);
   }
 
   var _progs=[], _sel=null;
@@ -110,12 +110,12 @@
     _sel=pid;
     host.querySelectorAll('.evm-pill').forEach(function(p){ p.classList.toggle('on', p.dataset.pid===pid); });
     var body=host.querySelector('#evm-body');
-    body.innerHTML = U().skeleton ? U().skeleton(4) : 'Carregando…';
+    body.innerHTML = U().skeleton ? U().skeleton(4): 'Carregando…';
     var res=await Promise.all([_evm(pid), _marcos(pid)]);
     var evm=res[0], marcos=res[1];
     if(!evm){ body.innerHTML='<div style="color:var(--ip-ink-4);font-style:italic;padding:24px">Sem EVM para este programa.</div>'; return; }
     var c=_curvaS(marcos);
-    var avancoPct = evm.pv>0 ? Math.round(evm.ev/evm.pv*100) : 0;
+    var avancoPct = evm.pv>0 ? Math.round(evm.ev/evm.pv*100): 0;
     body.innerHTML =
       '<div class="evm-grid">'
         +'<div class="evm-card"><h3>Curva de valor agregado</h3>'+_svgCurva(c)+'</div>'
@@ -159,7 +159,7 @@
     _sel=pid;
     host.querySelectorAll('.evm-pill').forEach(function(p){ p.classList.toggle('on', p.dataset.pid===pid); });
     var body=host.querySelector('#evm-body');
-    body.innerHTML = U().skeleton ? U().skeleton(4) : 'Carregando…';
+    body.innerHTML = U().skeleton ? U().skeleton(4): 'Carregando…';
     var marcos=await _marcos(pid);
     if(!marcos.length){ body.innerHTML='<div style="color:var(--ip-ink-4);font-style:italic;padding:24px">Este programa ainda não tem marcos cadastrados.</div>'; return; }
     var gargaloIdx=marcos.findIndex(function(m){return m.status!=='concluido';});
@@ -172,9 +172,9 @@
         +'<div class="evm-chain-body"><div class="evm-chain-nm">'+esc(m.titulo)+(isGargalo?' <span class="evm-chain-tag">elo atual</span>':'')+'</div>'
         +'<div class="evm-chain-meta">'+_statusBadge(m.status)+' · PV '+brl(m.pv)+' · EV '+brl(m.ev)+' · AC '+brl(m.ac)+(gap>0?' · <span style="color:var(--ip-danger)">+'+brl(gap)+' acima</span>':'')+'</div></div></div>';
     }).join('');
-    var diag = window.IpDiag ? IpDiag.card(IpDiag.sequencia(marcos),{semIA:true}) : '';
+    var diag = window.IpDiag ? IpDiag.card(IpDiag.sequencia(marcos),{semIA:true}): '';
     body.innerHTML='<div class="evm-card" style="margin-bottom:16px"><h3>Cadeia de marcos · o que segura o avanço</h3>'
-      +'<div style="font-size:11.5px;color:var(--ip-ink-3);margin-bottom:14px">Sequência ordenada dos marcos. O <b style="color:var(--ip-gold-lum)">elo atual</b> é o primeiro não concluído — destravá-lo libera os seguintes. (Datas e dependências entram quando cadastradas.)</div>'
+      +'<div style="font-size:11.5px;color:var(--ip-ink-3);margin-bottom:14px">Sequência ordenada dos marcos. O <b style="color:var(--ip-gold-lum)">elo atual</b> é o primeiro não concluído, destravá-lo libera os seguintes. (Datas e dependências entram quando cadastradas.)</div>'
       +'<div class="evm-chainwrap">'+chain+'</div></div>'+diag;
   }
   async function renderSequencia(host, opts){

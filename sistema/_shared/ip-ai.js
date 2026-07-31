@@ -15,7 +15,7 @@
     opts = opts || {};
     var messages = Array.isArray(input)
       ? input
-      : [{ role:'user', content: String(input||'') }];
+: [{ role:'user', content: String(input||'') }];
     var body = {
       model: opts.model || 'claude-haiku-4-5-20251001',
       max_tokens: opts.maxTokens || 1024,
@@ -41,7 +41,7 @@
   // askJson(prompt, opts) -> Promise<{ok, json, error}>: força o modelo a responder JSON e parseia.
   async function askJson(input, opts){
     opts = opts || {};
-    var sys = (opts.system ? opts.system+'\n\n' : '') + 'Responda APENAS com JSON válido, sem markdown, sem texto fora do JSON.';
+    var sys = (opts.system ? opts.system+'\n\n': '') + 'Responda APENAS com JSON válido, sem markdown, sem texto fora do JSON.';
     var r = await ask(input, Object.assign({}, opts, { system: sys }));
     if(!r.ok) return { ok:false, error:r.error };
     try{

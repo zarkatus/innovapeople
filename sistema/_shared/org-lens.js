@@ -31,7 +31,7 @@
       var delta=(vals.length>=2)?(Math.round((ult-pri)*100)/100):null;
       var spark=(U()&&U().sparkline)?U().sparkline(vals,{width:110,height:30}):'';
       var deltaHtml = delta==null ? '<span style="font-size:10px;color:var(--ip-ink-4,#6B7A90)">acumulando histórico</span>'
-        : '<span style="font-size:11.5px;color:'+(delta>0?'var(--ip-ok,#7BD3A0)':delta<0?'var(--ip-danger,#E8A6A6)':'var(--ip-ink-3,#8FA0B5)')+'">'+(delta>0?'↑':delta<0?'↓':'→')+' '+Math.abs(delta)+(metricas[i].suf||'')+' em '+vals.length+'d</span>';
+: '<span style="font-size:11.5px;color:'+(delta>0?'var(--ip-ok,#7BD3A0)':delta<0?'var(--ip-danger,#E8A6A6)':'var(--ip-ink-3,#8FA0B5)')+'">'+(delta>0?'↑':delta<0?'↓':'→')+' '+Math.abs(delta)+(metricas[i].suf||'')+' em '+vals.length+'d</span>';
       cards.push('<div style="background:var(--ip-bg-deep,#070D15);border:1px solid rgba(210,174,100,.1);border-radius:13px;padding:12px 14px">'
         +'<div style="font:600 10px/1 system-ui;letter-spacing:.1em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5);margin-bottom:6px">'+esc(metricas[i].rotulo)+'</div>'
         +'<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:10px">'
@@ -62,7 +62,7 @@
      +'.olns-pill{font:700 11px/1 system-ui;padding:7px 12px;border-radius:18px}'
      +'.olns-ok{background:rgba(123,211,160,.14);color:var(--ip-ok,#7BD3A0)}.olns-cau{background:rgba(229,199,126,.14);color:var(--ip-gold-lum,#E9A578)}.olns-no{background:rgba(232,166,166,.14);color:var(--ip-danger,#E8A6A6)}'
      +'.olns-empty{font-size:11.5px;color:var(--ip-ink-4,#6B7A90);font-style:italic;margin-top:6px}';
-    (document.head||document.documentElement).appendChild(st);
+ (document.head||document.documentElement).appendChild(st);
   }
 
   // ── LENTE DA EMPRESA (folha): a operação da própria empresa, não a soma do grupo ──
@@ -130,7 +130,7 @@
   // ── ROTEADOR DE LENTE: lê o tipo do nó e delega ──
   async function render(host){
     if(!host) return; _injectCss();
-    var node = (window.IpOrg && IpOrg.scope && IpOrg.scope.node) ? IpOrg.scope.node() : null;
+    var node = (window.IpOrg && IpOrg.scope && IpOrg.scope.node) ? IpOrg.scope.node(): null;
     if(!node){ host.innerHTML=''; host.style.display='none'; return; }
     try{
       if(AGREGACAO.indexOf(node.tipo_no)>=0){

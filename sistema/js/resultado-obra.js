@@ -75,7 +75,7 @@
     const host=document.getElementById('ro-hist'); if(!host||!_sel) return;
     const r=await SB().from('plat_resultado_apuracao').select('competencia,receita_vgv,resultado_liquido,created_at').eq('project_id',_sel.project_id).order('created_at',{ascending:true}).limit(24);
     const aps=(r.error||!r.data)?[]:r.data;
-    if(!aps.length){ host.innerHTML='<div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:8px">Histórico de apurações</div><div style="color:var(--ip-ink-4);font-size:12.5px;font-style:italic">Ainda sem apurações salvas para esta obra. Cada apuração que você salvar entra aqui — formando a curva do resultado ao longo do tempo e propagando para a linha do tempo da operação.</div>'; return; }
+    if(!aps.length){ host.innerHTML='<div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:8px">Histórico de apurações</div><div style="color:var(--ip-ink-4);font-size:12.5px;font-style:italic">Ainda sem apurações salvas para esta obra. Cada apuração que você salvar entra aqui, formando a curva do resultado ao longo do tempo e propagando para a linha do tempo da operação.</div>'; return; }
     const serie=aps.map(a=>Number(a.resultado_liquido)||0);
     const ultimo=serie[serie.length-1], penult=serie.length>1?serie[serie.length-2]:null;
     const spark=(window.IpUI&&serie.length>=2)?window.IpUI.sparkline(serie,{width:260,height:44,color: ultimo>=0?'var(--ip-ok)':'var(--ip-danger)'}):'';
@@ -83,7 +83,7 @@
     let diag='';
     if(penult!=null){ const dv=ultimo-penult, pct=penult!==0?Math.round(dv/Math.abs(penult)*100):0;
       const cor=dv>=0?'var(--ip-ok)':'var(--ip-danger)';
-      diag='<div style="font-size:12.5px;color:var(--ip-ink-2);margin-top:8px">Variação vs. apuração anterior: <b style="color:'+cor+'">'+(dv>=0?'+':'')+money(dv)+' ('+(pct>=0?'+':'')+pct+'%)</b>.'+(pct<=-10?' <span style="color:var(--ip-danger)">Queda relevante — revisar custos e cascata.</span>':pct>=10?' Trajetória positiva.':'')+'</div>'; }
+      diag='<div style="font-size:12.5px;color:var(--ip-ink-2);margin-top:8px">Variação vs. apuração anterior: <b style="color:'+cor+'">'+(dv>=0?'+':'')+money(dv)+' ('+(pct>=0?'+':'')+pct+'%)</b>.'+(pct<=-10?' <span style="color:var(--ip-danger)">Queda relevante, revisar custos e cascata.</span>':pct>=10?' Trajetória positiva.':'')+'</div>'; }
     const rows=aps.slice().reverse().slice(0,6).map(a=>{ const rl=Number(a.resultado_liquido)||0;
       return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(210,174,100,.06);font-size:12.5px"><span style="color:var(--ip-ink-2)">'+esc(a.competencia||(a.created_at||'').slice(0,10))+'</span><span style="color:'+(rl>=0?'var(--ip-ok)':'var(--ip-danger)')+';font-family:monospace">'+money(rl)+'</span></div>'; }).join('');
     host.innerHTML='<div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:10px">Histórico de apurações · '+aps.length+'</div>'
@@ -104,7 +104,7 @@
       {l:'NF obra',v:Number(cd.custo_nf_obra)||0,c:'var(--ip-ink-2)'},
       {l:'NF suprim.',v:Number(cd.custo_nf_suprimentos)||0,c:'var(--ip-ink-3)'}
     ].filter(s=>s.v>0);
-    const compHtml = (window.IpUI && compSlices.length) ? `<div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:10px">Composição do custo real</div><div style="background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.14);border-radius:12px;padding:16px;margin-bottom:18px">${window.IpUI.doughnut(compSlices)}</div>` : '';
+    const compHtml = (window.IpUI && compSlices.length) ? `<div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:10px">Composição do custo real</div><div style="background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.14);border-radius:12px;padding:16px;margin-bottom:18px">${window.IpUI.doughnut(compSlices)}</div>`: '';
     return `${compHtml}<div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:8px">Cascata do waterfall</div>
       <table style="width:100%;border-collapse:collapse"><thead><tr style="color:var(--ip-ink-4);font-size:10.5px;text-transform:uppercase"><th style="text-align:left;padding:4px 6px">Camada</th><th style="text-align:right;padding:4px 6px">Valor</th><th style="text-align:right;padding:4px 6px">Saldo após</th></tr></thead><tbody>${rows}</tbody></table>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding:14px 16px;background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.25);border-radius:12px">
@@ -131,7 +131,7 @@
       resultado_liquido:_ap.resultado_liquido, status:'rascunho',
       criado_por:(window.__IP_USER_EMAIL)||'innovapeople' };
     const r=await window.IpPersist.write(
-      ()=> SB().from('plat_resultado_apuracao').insert(payload).select(),
+ ()=> SB().from('plat_resultado_apuracao').insert(payload).select(),
       { label:'Apuração', offline:{ op:'insert', table:'plat_resultado_apuracao', payload } });
     if(r.ok){ if(window.IspCelebra) try{window.IspCelebra()}catch(_){}; T.toast('Apuração salva (rascunho).'); }
   }

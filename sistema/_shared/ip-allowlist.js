@@ -39,7 +39,7 @@
     _checked=true;
     var res = await check(sb, email);
     if(res.via==='rpc' && res.ok===false){    // SÓ desloga quando a tabela afirma revogado
-      try{ console.warn('[IpAllowlist] acesso revogado na fonte de verdade — deslogando', email); }catch(_){}
+      try{ console.warn('[IpAllowlist] acesso revogado na fonte de verdade, deslogando', email); }catch(_){}
       try{ if(sb.auth&&sb.auth.signOut) await sb.auth.signOut(); }catch(_){}
       try{ location.replace('/sistema/?revoked=1'); }catch(_){ location.href='/sistema/'; }
     }

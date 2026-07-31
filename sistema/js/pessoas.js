@@ -12,10 +12,10 @@
   const DOMINIO_EMAIL = window.IP_MAIL_DOMAIN || 'innovapeople.com.br'; // domínio dos e-mails dos colaboradores
   const T  = window.TB || { toast:(m)=>{ try{console.log(m)}catch(_){}} };
   const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const money = v => (v==null||v==='') ? '—' : 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2});
+  const money = v => (v==null||v==='') ? '—': 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2});
   const dt = d => { if(!d) return '—'; try{ return new Date(String(d).slice(0,10)+'T00:00:00').toLocaleDateString('pt-BR'); }catch(_){ return esc(d); } };
   const today = ()=> new Date().toISOString().slice(0,10);
-  const cpfMask = c => { c=String(c||'').replace(/\D/g,''); return c.length===11 ? c.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4') : esc(c||'—'); };
+  const cpfMask = c => { c=String(c||'').replace(/\D/g,''); return c.length===11 ? c.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4'): esc(c||'—'); };
   const me = ()=> (window.__IP_USER_EMAIL)||'innovapeople';
 
   const ST = {
@@ -43,7 +43,7 @@
   }
   function aalBadge(){
     const ok=_aal==='aal2';
-    return `<span title="${ok?'Sessão com 2º fator (AAL2)':'Sessão de 1 fator (AAL1) — ato é auditado; ative MFA para AAL2'}" style="font:600 10px/1 system-ui;padding:4px 9px;border-radius:20px;color:${ok?'var(--ip-ok)':'var(--ip-gold-lum)'};background:${ok?'rgba(46,139,87,.14)':'rgba(210,174,100,.12)'};border:1px solid ${ok?'var(--ip-ok-deep)55':'var(--ip-gold)55'}">${ok?'MFA · AAL2':'sessão AAL1'}</span>`;
+    return `<span title="${ok?'Sessão com 2º fator (AAL2)':'Sessão de 1 fator (AAL1) · ato é auditado; ative MFA para AAL2'}" style="font:600 10px/1 system-ui;padding:4px 9px;border-radius:20px;color:${ok?'var(--ip-ok)':'var(--ip-gold-lum)'};background:${ok?'rgba(46,139,87,.14)':'rgba(210,174,100,.12)'};border:1px solid ${ok?'var(--ip-ok-deep)55':'var(--ip-gold)55'}">${ok?'MFA · AAL2':'sessão AAL1'}</span>`;
   }
   async function audit(ato, colaborador_id, detalhe){
     try{ await SB().from('core_ato_sensivel').insert({ ato, colaborador_id:colaborador_id||null, ator_email:me(), aal:_aal, detalhe:detalhe||{} }); }catch(_){}
@@ -100,7 +100,7 @@
     // FRENTE B (CVO 12/06): bloco PIX/valor das pessoas de canteiro (plat_alocacao_mo_pessoas, intra-banco)
     _pix={};
     try{ const px=await sb.from('plat_alocacao_mo_pessoas').select('cpf,chave_pix,pix_status,valor_real_mensal,is_contratante,project_id');
-      (px&&px.data||[]).forEach(x=>{ _pix[(x.cpf||'').replace(/D/g,'')]=x; });
+ (px&&px.data||[]).forEach(x=>{ _pix[(x.cpf||'').replace(/D/g,'')]=x; });
     }catch(_){ _pix={}; }
   }
   async function loadSatelites(colabId){
@@ -131,13 +131,13 @@
     const semAdm=ativos.filter(r=>!r.data_admissao).length;
     const asoVenc=_rows.filter(r=>r.aso_proximo_venc && new Date(r.aso_proximo_venc) < new Date(Date.now()+30*864e5)).length;
     const semAso=ativos.filter(r=>'aso_proximo_venc' in r && !r.aso_proximo_venc).length;
-    if(!_rows.length) passos.push('Nenhum colaborador ainda — admita o primeiro ou sincronize as admissões da obra.');
-    if(semCargo) passos.push(semCargo+' ativo(s) sem cargo — completar para folha/handoff.');
+    if(!_rows.length) passos.push('Nenhum colaborador ainda, admita o primeiro ou sincronize as admissões da obra.');
+    if(semCargo) passos.push(semCargo+' ativo(s) sem cargo, completar para folha/handoff.');
     const obraSemPix=ativos.filter(r=>(r.origem==='alocacao_mo'||r.origem==='innovasphere') && (()=>{const p=_pix[(r.cpf||'').replace(/D/g,'')];return p&&!p.chave_pix&&!p.is_contratante;})()).length;
-    if(obraSemPix) passos.push(obraSemPix+' pessoa(s) de canteiro sem chave PIX — regra da casa: sem PIX não há pagamento.');
-    if(semAdm)   passos.push(semAdm+' sem data de admissão — necessária para vínculo e SST.');
-    if(asoVenc)  passos.push(asoVenc+' colaborador(es) com ASO vencendo em 30 dias — agendar exame periódico.');
-    if(semAso)   passos.push(semAso+' ativo(s) sem ASO registrado — anexar admissional/periódico.');
+    if(obraSemPix) passos.push(obraSemPix+' pessoa(s) de canteiro sem chave PIX, regra da casa: sem PIX não há pagamento.');
+    if(semAdm)   passos.push(semAdm+' sem data de admissão, necessária para vínculo e SST.');
+    if(asoVenc)  passos.push(asoVenc+' colaborador(es) com ASO vencendo em 30 dias, agendar exame periódico.');
+    if(semAso)   passos.push(semAso+' ativo(s) sem ASO registrado, anexar admissional/periódico.');
     return { passos };
   }
 
@@ -199,7 +199,7 @@
           <option value="desligado"${_filtro.status==='desligado'?' selected':''}>Desligados</option>
         </select>
       </div>
-      <div id="px-list">${ list.length ? list.map(cardRow).join('') : (window.IpUI && _filtro.q==='' && _filtro.status==='todos' ? window.IpUI.emptyState({icon:'☶',eyebrow:'Sem colaboradores',title:'Nenhum colaborador ainda',description:'Admita o primeiro pelo botão acima, ou sincronize as admissões que já existem na obra.'}) : `<div style="padding:48px;text-align:center;color:var(--ip-ink-4);border:1px dashed rgba(210,174,100,.2);border-radius:14px">Nenhum colaborador para o filtro atual.</div>`) }</div>
+      <div id="px-list">${ list.length ? list.map(cardRow).join(''): (window.IpUI && _filtro.q==='' && _filtro.status==='todos' ? window.IpUI.emptyState({icon:'☶',eyebrow:'Sem colaboradores',title:'Nenhum colaborador ainda',description:'Admita o primeiro pelo botão acima, ou sincronize as admissões que já existem na obra.'}): `<div style="padding:48px;text-align:center;color:var(--ip-ink-4);border:1px dashed rgba(210,174,100,.2);border-radius:14px">Nenhum colaborador para o filtro atual.</div>`) }</div>
     </div>
     <div id="px-drawer"></div>`;
     el.querySelector('#px-novo').onclick=()=>openForm();
@@ -213,13 +213,13 @@
     bindRows(el);
   }
   function cardRow(r){
-    const flag = r.tem_afastamento_ativo ? tag('afastado ativo','var(--ip-gold-lum)') : '';
+    const flag = r.tem_afastamento_ativo ? tag('afastado ativo','var(--ip-gold-lum)'): '';
     const px=_pix[(r.cpf||'').replace(/D/g,'')];
     const pixFlag = px ? (px.pix_status==='validado' ? tag('PIX ✓ validado','var(--ip-ok,#7BD3A0)')
-      : px.pix_status==='atestado' ? tag('PIX atestado','var(--ip-gold-lum)')
-      : px.is_contratante ? tag('PIX dispensado','var(--ip-ink-4)')
-      : tag('SEM PIX','var(--ip-danger)')) : '';
-    const asoFlag = (r.aso_proximo_venc && new Date(r.aso_proximo_venc) < new Date(Date.now()+30*864e5)) ? tag('ASO vencendo','var(--ip-danger)') : '';
+: px.pix_status==='atestado' ? tag('PIX atestado','var(--ip-gold-lum)')
+: px.is_contratante ? tag('PIX dispensado','var(--ip-ink-4)')
+: tag('SEM PIX','var(--ip-danger)')): '';
+    const asoFlag = (r.aso_proximo_venc && new Date(r.aso_proximo_venc) < new Date(Date.now()+30*864e5)) ? tag('ASO vencendo','var(--ip-danger)'): '';
     return `<div class="px-card" data-id="${r.id}" style="display:flex;align-items:center;gap:14px;background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.14);border-radius:13px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:.15s">
       <div style="width:42px;height:42px;border-radius:50%;background:rgba(210,174,100,.14);display:flex;align-items:center;justify-content:center;font:700 16px Georgia;color:var(--ip-gold-lum)">${esc((r.nome||'?').trim().charAt(0).toUpperCase())}</div>
       <div style="flex:1;min-width:0">
@@ -243,7 +243,7 @@
   // ---------- admitir ----------
   function openForm(){
     drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px"><h2 style="font:700 italic 22px Georgia;color:var(--ip-gold-lum);margin:0;flex:1">Admitir colaborador</h2>${btn('px-x','✕ Fechar','ghost')}</div>
-      <div style="background:rgba(210,174,100,.08);border:1px solid rgba(210,174,100,.2);border-radius:10px;padding:10px 12px;color:var(--ip-gold-soft);font-size:12px;margin-bottom:18px">Admissão é ato sensível — registrada em auditoria (${esc(_aal)}).</div>
+      <div style="background:rgba(210,174,100,.08);border:1px solid rgba(210,174,100,.2);border-radius:10px;padding:10px 12px;color:var(--ip-gold-soft);font-size:12px;margin-bottom:18px">Admissão é ato sensível, registrada em auditoria (${esc(_aal)}).</div>
       ${field('CPF *','f-cpf','','text','000.000.000-00')}
       ${field('Nome completo *','f-nome','','text','Nome do colaborador')}
       ${field('Projeto / Obra *','f-proj','','text','ex.: horigens, ph')}
@@ -252,7 +252,7 @@
       ${field('Data de admissão','f-adm','','date')}
       ${field('WhatsApp (E.164) *','f-wa','','text','+5547999999999')}
       ${field('E-mail institucional','f-mail','','email','gerado automaticamente do nome')}
-      <div id="f-mail-hint" style="font-size:11px;color:var(--ip-gold-soft,#C8B58A);margin:-8px 0 14px;font-style:italic">✉ Criado automaticamente em <b>@${esc(DOMINIO_EMAIL)}</b> — a caixa fica pronta na plataforma, sem segundo login. Edite se quiser outro endereço.</div>
+      <div id="f-mail-hint" style="font-size:11px;color:var(--ip-gold-soft,#C8B58A);margin:-8px 0 14px;font-style:italic">✉ Criado automaticamente em <b>@${esc(DOMINIO_EMAIL)}</b>, a caixa fica pronta na plataforma, sem segundo login. Edite se quiser outro endereço.</div>
       <div style="margin-top:8px">${btn('px-save','Confirmar admissão','primary')}</div>`);
     const d=document.getElementById('px-drawer');
     d.querySelector('#px-x').onclick=close;
@@ -267,7 +267,7 @@
   function _emailSugerido(nome){
     var p=String(nome||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z\s]/g,'').trim().split(/\s+/).filter(Boolean);
     if(!p.length) return '';
-    var local = p.length===1 ? p[0] : (p[0]+'.'+p[p.length-1]);
+    var local = p.length===1 ? p[0]: (p[0]+'.'+p[p.length-1]);
     return local+'@'+DOMINIO_EMAIL;
   }
   async function salvarAdmissao(){
@@ -289,7 +289,7 @@
       whatsapp_e164:waNorm, status:'ativo', origem:'innovapeople', criado_por:me() };
     const sv=g('px-save'); sv.disabled=true; sv.textContent='Salvando…';
     const r=await window.IpPersist.write(
-      ()=> SB().from('core_colaborador').insert(payload).select(),
+ ()=> SB().from('core_colaborador').insert(payload).select(),
       { label:'Admissão', offline:{ op:'insert', table:'core_colaborador', payload } });
     if(r.ok){
       const novoId=(r.data&&r.data[0]&&r.data[0].id)||null;
@@ -349,7 +349,7 @@
         ${_isSocio?`<div><span style="color:var(--ip-ink-3)">Remuneração:</span> ${money(r.remuneracao)} <span style="color:var(--ip-ink-4);font-size:11px">(armazenada p/ handoff; plataforma não calcula tributo)</span></div>`:''}
         ${desligado?`<div><span style="color:var(--ip-ink-3)">Desligamento:</span> ${dt(r.data_desligamento)}</div>`:''}
       </div>
-      ${desligado?'<div style="color:var(--ip-ink-3);font-size:12.5px">Colaborador desligado — edição bloqueada. Veja a aba Desligamento.</div>':`
+      ${desligado?'<div style="color:var(--ip-ink-3);font-size:12.5px">Colaborador desligado, edição bloqueada. Veja a aba Desligamento.</div>':`
       <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin:0 0 12px">Editar</div>
       ${field('Cargo','e-cargo',r.cargo,'text')}
       ${field('Centro de custo','e-cc',r.centro_custo,'text')}
@@ -387,7 +387,7 @@
         ${s.anexo_path?`<div style="color:var(--ip-ink-2);font-size:11.5px;margin-top:4px">Anexo: ${esc(s.anexo_path)}</div>`:''}
       </div>`;
     }).join('')||'<div style="color:var(--ip-ink-4);font-size:13px;padding:14px 0">Sem ASO registrado.</div>';
-    return `<div style="background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.18);border-radius:10px;padding:10px 12px;color:var(--ip-gold-soft);font-size:12px;margin-bottom:14px">A plataforma <strong>registra</strong> o ASO emitido pelo médico do trabalho — não emite laudo nem substitui PCMSO/PGR.</div>
+    return `<div style="background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.18);border-radius:10px;padding:10px 12px;color:var(--ip-gold-soft);font-size:12px;margin-bottom:14px">A plataforma <strong>registra</strong> o ASO emitido pelo médico do trabalho, não emite laudo nem substitui PCMSO/PGR.</div>
       ${list}${desligado?'':`<div style="border-top:1px solid rgba(210,174,100,.15);margin-top:14px;padding-top:16px">
       <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:12px">Registrar ASO</div>
       ${selectField('Tipo','as-tipo','periodico',TIPO_ASO)}
@@ -480,7 +480,7 @@
     const payload={ colaborador_id:r.id, ciclo, objetivo:obj, key_results:parseKrs(g('ok-krs').value), progresso:0, status:'ativo', criado_por:me() };
     const b=g('ok-add'); b.disabled=true; b.textContent='Salvando…';
     const res=await window.IpPersist.write(
-      ()=> SB().from('core_okr').insert(payload).select(),
+ ()=> SB().from('core_okr').insert(payload).select(),
       { label:'OKR', offline:{ op:'insert', table:'core_okr', payload } });
     if(!res.ok){ b.disabled=false; b.textContent='Criar OKR'; return; }
     await loadSatelites(r.id); paintDetail(_rows.find(x=>x.id===r.id)||r);
@@ -490,7 +490,7 @@
     if(atual==null) return; const n=Math.max(0,Math.min(100,Number(atual)||0));
     const patch={ progresso:n, status: n>=100?'concluido':'ativo' };
     const res=await window.IpPersist.write(
-      ()=> SB().from('core_okr').update(patch).eq('id',o.id).select(),
+ ()=> SB().from('core_okr').update(patch).eq('id',o.id).select(),
       { label:'Progresso OKR', offline:{ op:'update', table:'core_okr', payload:patch, match:[['id',o.id]] } });
     if(res.ok){ await loadSatelites(r.id); paintDetail(_rows.find(x=>x.id===r.id)||r); }
   }
@@ -501,7 +501,7 @@
       okr_id:(_sub.okr[0]&&_sub.okr[0].id)||null, criado_por:me() };
     const b=g('ck-add'); b.disabled=true; b.textContent='Salvando…';
     const res=await window.IpPersist.write(
-      ()=> SB().from('core_checkin').insert(payload).select(),
+ ()=> SB().from('core_checkin').insert(payload).select(),
       { label:'Check-in', offline:{ op:'insert', table:'core_checkin', payload } });
     if(!res.ok){ b.disabled=false; b.textContent='Registrar check-in'; return; }
     await loadSatelites(r.id); paintDetail(_rows.find(x=>x.id===r.id)||r);
@@ -515,27 +515,27 @@
     const remEl=g('e-rem'); if(_isSocio && remEl){ patch.remuneracao = remEl.value===''?null:Number(remEl.value); }
     const b=g('px-upd'); b.disabled=true; b.textContent='Salvando…';
     const res=await window.IpPersist.write(
-      ()=> SB().from('core_colaborador').update(patch).eq('id',r.id).select(),
+ ()=> SB().from('core_colaborador').update(patch).eq('id',r.id).select(),
       { label:'Alteração', offline:{ op:'update', table:'core_colaborador', payload:patch, match:[['id',r.id]] } });
     if(res.ok){ audit('alteracao', r.id, {campos:Object.keys(patch)}); close(); await reload(); render(_el); } else { b.disabled=false; b.textContent='Salvar alterações'; }
   }
   async function desligar(r){
     const g=id=>document.getElementById(id);
     if((g('dl-conf').value||'').trim().toUpperCase()!=='DESLIGAR'){ T.toast('Confirme digitando DESLIGAR.'); return; }
-    if(!(await ensureAal2())){ T.toast('Desligamento cancelado — verificação MFA não concluída.'); return; }
+    if(!(await ensureAal2())){ T.toast('Desligamento cancelado, verificação MFA não concluída.'); return; }
     const dataDesl=g('dl-data').value||today();
     const detalhe={ colaborador_id:r.id, tipo:g('dl-tipo').value, aviso_previo:g('dl-aviso').value,
       data_aviso:g('dl-aviso-data').value||null, data_desligamento:dataDesl, motivo:(g('dl-motivo').value||'').trim()||null, criado_por:me() };
     const b=g('dl-go'); b.disabled=true; b.textContent='Processando…';
     // 1) detalhe de rescisao
     const r1=await window.IpPersist.write(
-      ()=> SB().from('core_desligamento').insert(detalhe).select(),
+ ()=> SB().from('core_desligamento').insert(detalhe).select(),
       { label:'Rescisão', offline:{ op:'insert', table:'core_desligamento', payload:detalhe } });
     if(!r1.ok){ b.disabled=false; b.textContent='Desligar colaborador'; return; }
     // 2) status do colaborador (dispara pessoa:desligada)
     const patch={ status:'desligado', data_desligamento:dataDesl };
     const r2=await window.IpPersist.write(
-      ()=> SB().from('core_colaborador').update(patch).eq('id',r.id).select(),
+ ()=> SB().from('core_colaborador').update(patch).eq('id',r.id).select(),
       { label:'Desligamento', offline:{ op:'update', table:'core_colaborador', payload:patch, match:[['id',r.id]] } });
     if(r2.ok){ audit('desligamento', r.id, {tipo:detalhe.tipo}); close(); await reload(); render(_el); } else { b.disabled=false; b.textContent='Desligar colaborador'; }
   }
@@ -548,7 +548,7 @@
       status: g('af-fim').value ? 'encerrado':'ativo', observacoes:(g('af-obs').value||'').trim()||null, criado_por:me() };
     const b=g('af-add'); b.disabled=true; b.textContent='Salvando…';
     const res=await window.IpPersist.write(
-      ()=> SB().from('core_afastamento').insert(payload).select(),
+ ()=> SB().from('core_afastamento').insert(payload).select(),
       { label:'Afastamento', offline:{ op:'insert', table:'core_afastamento', payload } });
     if(!res.ok){ b.disabled=false; b.textContent='Registrar afastamento'; return; }
     audit('afastamento', r.id, {tipo:payload.tipo});
@@ -562,7 +562,7 @@
   async function encerrarAfast(r,a){
     const patch={ status:'encerrado', data_fim:today() };
     const res=await window.IpPersist.write(
-      ()=> SB().from('core_afastamento').update(patch).eq('id',a.id).select(),
+ ()=> SB().from('core_afastamento').update(patch).eq('id',a.id).select(),
       { label:'Encerrar afastamento', offline:{ op:'update', table:'core_afastamento', payload:patch, match:[['id',a.id]] } });
     if(!res.ok) return;
     // se nao restam afastamentos ativos, devolve colaborador a ativo
@@ -583,7 +583,7 @@
       anexo_path:(g('as-anx').value||'').trim()||null, criado_por:me() };
     const b=g('as-add'); b.disabled=true; b.textContent='Salvando…';
     const res=await window.IpPersist.write(
-      ()=> SB().from('core_aso').insert(payload).select(),
+ ()=> SB().from('core_aso').insert(payload).select(),
       { label:'ASO', offline:{ op:'insert', table:'core_aso', payload } });
     if(!res.ok){ b.disabled=false; b.textContent='Registrar ASO'; return; }
     audit('aso', r.id, {tipo:payload.tipo,resultado:payload.resultado});
@@ -619,16 +619,16 @@
     const dimRow=(d)=>{ const pct=Math.max(0,Math.min(100,(Number(d.media)||0)/5*100));
       return `<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--ip-ink)"><span>${esc(d.dimensao)}</span><span style="color:var(--ip-gold-lum)">${d.media} <span style="color:var(--ip-ink-4)">(n=${d.n})</span></span></div>
         <div style="height:6px;border-radius:4px;background:var(--ip-bg-deep);margin-top:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:linear-gradient(90deg,var(--ip-gold),var(--ip-gold-lum))"></div></div></div>`; };
-    const benchHtml = bench && bench.dimensoes ? (bench.dimensoes.length ? bench.dimensoes.map(dimRow).join('') : '<div style="color:var(--ip-ink-4);font-size:12.5px">Sem dimensões com amostra suficiente.</div>') : '<div style="color:var(--ip-ink-4);font-size:12.5px">Indisponível.</div>';
+    const benchHtml = bench && bench.dimensoes ? (bench.dimensoes.length ? bench.dimensoes.map(dimRow).join(''): '<div style="color:var(--ip-ink-4);font-size:12.5px">Sem dimensões com amostra suficiente.</div>'): '<div style="color:var(--ip-ink-4);font-size:12.5px">Indisponível.</div>';
     drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><h2 style="font:700 italic 22px Georgia;color:var(--ip-gold-lum);margin:0;flex:1">Engajamento</h2>${btn('px-x','✕','ghost')}</div>
-      <div style="background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.18);border-radius:10px;padding:10px 12px;color:var(--ip-gold-soft);font-size:12px;margin-bottom:18px">O Pulso é <strong>anônimo por desenho</strong>. Aqui você vê o clima agregado — grupos com menos de 5 respostas são suprimidos (LGPD); nunca o indivíduo.</div>
+      <div style="background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.18);border-radius:10px;padding:10px 12px;color:var(--ip-gold-soft);font-size:12px;margin-bottom:18px">O Pulso é <strong>anônimo por desenho</strong>. Aqui você vê o clima agregado, grupos com menos de 5 respostas são suprimidos (LGPD); nunca o indivíduo.</div>
       <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin-bottom:12px">Benchmark por dimensão (6D · anônimo)</div>
       ${benchHtml}
       ${bench&&bench.suprimidas?`<div style="color:var(--ip-ink-4);font-size:11px;margin-top:6px">${bench.suprimidas} dimensão(ões) suprimida(s) por amostra &lt; 5.</div>`:''}
       <div style="font:600 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--ip-ink-3);margin:22px 0 12px">Clima por equipe</div>
       ${clima.length?clima.map(c=>`<div style="background:var(--ip-bg-card);border:1px solid rgba(210,174,100,.14);border-radius:11px;padding:12px 14px;margin-bottom:9px">
         <div style="display:flex;justify-content:space-between;align-items:baseline"><strong style="color:var(--ip-cream);font-size:13.5px">${esc(c.equipe)}</strong><span style="color:var(--ip-ink-3);font-size:11.5px">${c.respostas} resposta(s)</span></div>
-        ${c.suprimido_privacidade?'<div style="color:var(--ip-ink-4);font-size:12px;margin-top:4px">Score oculto — menos de 5 respostas (privacidade).</div>':`<div style="color:var(--ip-gold-lum);font:700 italic 17px Georgia;margin-top:4px">${c.score_medio} <span style="color:var(--ip-ink-4);font-size:12px;font-style:normal">score médio</span></div>`}
+        ${c.suprimido_privacidade?'<div style="color:var(--ip-ink-4);font-size:12px;margin-top:4px">Score oculto, menos de 5 respostas (privacidade).</div>':`<div style="color:var(--ip-gold-lum);font:700 italic 17px Georgia;margin-top:4px">${c.score_medio} <span style="color:var(--ip-ink-4);font-size:12px;font-style:normal">score médio</span></div>`}
       </div>`).join(''):'<div style="color:var(--ip-ink-4);padding:14px 0">Sem dados de Pulso ainda.</div>'}`);
     document.getElementById('px-drawer').querySelector('#px-x').onclick=close;
   }
@@ -636,7 +636,7 @@
   // ---------- P7 · handoff contabil (export estruturado; NAO calcula tributo) ----------
   async function openExport(){
     drawer(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px"><h2 style="font:700 italic 22px Georgia;color:var(--ip-gold-lum);margin:0;flex:1">Handoff contábil</h2>${btn('px-x','✕','ghost')}</div>
-      <div style="background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.18);border-radius:10px;padding:11px 13px;color:var(--ip-gold-soft);font-size:12.5px;margin-bottom:18px">Exporta o cadastro de pessoas em formato estruturado para a contabilidade. A plataforma <strong>não calcula tributo, folha líquida nem eSocial</strong> — apenas entrega o dado-fonte para quem faz o cálculo.</div>
+      <div style="background:rgba(210,174,100,.06);border:1px solid rgba(210,174,100,.18);border-radius:10px;padding:11px 13px;color:var(--ip-gold-soft);font-size:12.5px;margin-bottom:18px">Exporta o cadastro de pessoas em formato estruturado para a contabilidade. A plataforma <strong>não calcula tributo, folha líquida nem eSocial</strong>, apenas entrega o dado-fonte para quem faz o cálculo.</div>
       ${selectField('Escopo','xp-scope','ativos',[['ativos','Somente ativos'],['todos','Todos os status']])}
       ${selectField('Formato','xp-fmt','csv',[['csv','CSV (planilha)'],['json','JSON']])}
       <div style="margin-top:8px">${btn('xp-go','Gerar e baixar','primary')}</div>
@@ -646,9 +646,9 @@
     d.querySelector('#xp-go').onclick=fazerExport;
   }
   async function fazerExport(){
-    if(!(await ensureAal2())){ T.toast('Exportação cancelada — verificação MFA não concluída.'); return; }
+    if(!(await ensureAal2())){ T.toast('Exportação cancelada, verificação MFA não concluída.'); return; }
     const scope=document.getElementById('xp-scope').value, fmt=document.getElementById('xp-fmt').value;
-    const src=_rows.filter(r=> scope==='todos' ? true : r.status==='ativo');
+    const src=_rows.filter(r=> scope==='todos' ? true: r.status==='ativo');
     const cols=['cpf','matricula','nome','project_id','centro_custo','cargo','modelo_contrato','data_admissao','data_desligamento','status','remuneracao','email_institucional'];
     let blob, fname;
     if(fmt==='json'){
@@ -662,7 +662,7 @@
     }
     const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=fname; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),2000);
     audit('export_handoff', null, {scope, fmt, n:src.length});
-    T.toast('Handoff gerado ('+src.length+' colaboradores). Sem cálculo de tributo — dado-fonte para a contabilidade.');
+    T.toast('Handoff gerado ('+src.length+' colaboradores). Sem cálculo de tributo, dado-fonte para a contabilidade.');
   }
 
   // ---------- sync da obra ----------

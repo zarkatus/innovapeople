@@ -68,7 +68,7 @@ async function init(){
   const {data,error}=await sb.rpc('fn_ip_pulso_token_resolver',{p_token:token});
   const info=Array.isArray(data)?data[0]:data;
   if(error||!info){stateMsg('✕','Link inválido ou expirado','Peça um novo link de pulso.');return}
-  if(info.used){stateMsg('✓','Pulso já respondido','Obrigado — esta resposta já foi registrada. Cada link responde uma vez.');return}
+  if(info.used){stateMsg('✓','Pulso já respondido','Obrigado, esta resposta já foi registrada. Cada link responde uma vez.');return}
   renderForm(info);
 }
 

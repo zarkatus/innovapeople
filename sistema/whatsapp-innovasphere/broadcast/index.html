@@ -18,7 +18,7 @@
   function allow(email){rm();window.__IP_USER_EMAIL=email;const el=document.getElementById('user-display');if(el&&email)el.textContent=email;if(typeof window.bcBoot==='function')try{window.bcBoot()}catch(e){}else setTimeout(()=>{if(typeof window.bcBoot==='function')try{window.bcBoot()}catch(e){}},300)}
   if(document.body)inj();else document.addEventListener('DOMContentLoaded',inj,{once:true});
   const s=setTimeout(()=>allow(''),6000);
-  (async()=>{try{if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=broadcast');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
+ (async()=>{try{if(!window.supabase)throw 0;const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__IP_SB=sb;const {data:{session}}=await sb.auth.getSession();if(!session){clearTimeout(s);location.replace('/sistema/?from=broadcast');return}const email=session.user?.email||'';if(!ALLOWED.includes(email)){clearTimeout(s);location.replace('/sistema/');return}clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>allow(email),{once:true});else allow(email)}catch(e){clearTimeout(s);allow('')}})();
 })();
 </script>
 
@@ -150,8 +150,8 @@ em{font-style:italic}
 <section class="hero">
   <div class="hero-inner">
     <div class="crumb"><a href="/sistema/whatsapp/">WhatsApp</a> · Broadcast</div>
-    <h1>Mensagens <em>em escala — sem perder a entonação.</em></h1>
-    <p class="lede">Cap diário, janela horária, intervalos aleatórios. O broadcast respeita o ritmo humano — disparo de banco, não de bot.</p>
+    <h1>Mensagens <em>em escala, sem perder a entonação.</em></h1>
+    <p class="lede">Cap diário, janela horária, intervalos aleatórios. O broadcast respeita o ritmo humano, disparo de banco, não de bot.</p>
   </div>
 </section>
 
@@ -297,11 +297,11 @@ function abrirNovoBc(){
     <form id="bc-form" class="dr-form">
       <label><span class="dr-lab">Nome interno</span><input type="text" name="nome" required placeholder="ex: Boas-vindas Q1 2026"></label>
       <label><span class="dr-lab">Template</span><select name="template_id">
-        <option value="">— mensagem livre (sem template aprovado) —</option>
+        <option value="">(mensagem livre (sem template aprovado))</option>
         ${_templates.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}${t.category?' · '+esc(t.category):''}</option>`).join('')}
       </select></label>
       <label><span class="dr-lab">Mensagem (use {{nome}}, {{empresa}})</span><textarea name="message" rows="4" placeholder="Olá, {{nome}}. Há uma sala que continua sua..."></textarea></label>
-      <label><span class="dr-lab">Segmento (jsonb — ex: {"tag":"raio-x","estagio":"agendado"})</span><textarea name="segment" rows="2" placeholder='{"tag":"raio-x"}'></textarea></label>
+      <label><span class="dr-lab">Segmento (jsonb, ex: {"tag":"raio-x","estagio":"agendado"})</span><textarea name="segment" rows="2" placeholder='{"tag":"raio-x"}'></textarea></label>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <label><span class="dr-lab">Cap diário</span><input type="number" name="cap" value="50" min="1" max="500"></label>
         <label><span class="dr-lab">Iniciar em</span><input type="datetime-local" name="scheduled"></label>

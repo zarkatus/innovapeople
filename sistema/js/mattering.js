@@ -186,7 +186,7 @@
     try{
       const {error}=await sb().rpc('fn_ip_agent_mattering_coach',{p_mandato_id:_state.mandato});
       if(error)throw error;
-      T.toast('Mattering Coach concluído — veja sugestões em Inteligência/CHRO');
+      T.toast('Mattering Coach concluído, veja sugestões em Inteligência/CHRO');
     }catch(e){T.toast('Erro: '+(e.message||e))}
   }
 

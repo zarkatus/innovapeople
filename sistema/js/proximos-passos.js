@@ -62,7 +62,7 @@
     const arr=filtradas();
     const sint=_data.lastDiag&&_data.lastDiag.payload&&_data.lastDiag.payload.sintese;
     // sem diagnóstico IA recente -> leitura determinística imediata (não fica vazio esperando crédito de IA)
-    const sintTxt=sint?esc(sint):(esc(_diagDeterministico())+' <span style="font-style:italic;color:var(--cream-dim);font-size:11px">(leitura por regras — peça o diagnóstico cruzado IA para a leitura cognitiva)</span>');
+    const sintTxt=sint?esc(sint):(esc(_diagDeterministico())+' <span style="font-style:italic;color:var(--cream-dim);font-size:11px">(leitura por regras, peça o diagnóstico cruzado IA para a leitura cognitiva)</span>');
     let html='';
     html+='<div class="pp-hero"><div class="pp-eyebrow">5 camadas &middot; trilha acionavel</div><h1>Proximos <em>passos</em></h1><div class="pp-tag">Cada sinal detectado pelos agentes vem enriquecido por IA (causa + acao especifica). Voce decide a ordem, ou pede o diagnostico cruzado. Tudo o que <strong>ja foi tratado</strong> some daqui, fechando o loop.</div></div>';
     html+='<div class="pp-bar">';
@@ -90,7 +90,7 @@
     return '<div class="pp-item">'+
       '<div class="pp-item-top">'+badge(s.severidade)+'<span class="pp-agente">'+esc(s.agente||'-')+'</span><span class="pp-time">'+esc(T.fmtRel(s.created_at)||'-')+'</span></div>'+
       '<div class="pp-titulo">'+esc(s.titulo||'(sem titulo)')+'</div>'+
-      (s.sugestao?'<div class="pp-sugestao">'+esc(s.sugestao)+'</div>':'')+
+ (s.sugestao?'<div class="pp-sugestao">'+esc(s.sugestao)+'</div>':'')+
       insight+
       '<div class="pp-actions">'+
       '<a class="pp-btn ghost" href="'+esc(al.href)+'?sinal='+encodeURIComponent(String(s.id||''))+(s.mandato_id?'&mandato='+encodeURIComponent(String(s.mandato_id)):'')+'">Resolver em '+esc(al.nm)+' &rarr;</a>'+
@@ -117,7 +117,7 @@
   // diagnóstico DETERMINÍSTICO (sem IA): cruza os sinais pendentes por regras -> "comece por X"
   function _diagDeterministico(){
     const arr=filtradas();
-    if(!arr.length) return 'Nada pendente neste recorte — operação em dia. Os agentes rodam diariamente às 07:30.';
+    if(!arr.length) return 'Nada pendente neste recorte, operação em dia. Os agentes rodam diariamente às 07:30.';
     const crit=arr.filter(s=>(SEV_RANK[s.severidade]||3)>=5).length;
     const alta=arr.filter(s=>(SEV_RANK[s.severidade]||3)===4).length;
     const porAgente={}; arr.forEach(s=>{porAgente[s.agente]=(porAgente[s.agente]||0)+1;});
@@ -134,7 +134,7 @@
     try{
       const body={ferramenta:'consolidado',persistir:false};
       const {data,error}=await sb().functions.invoke('ip-agent-claude',{body});
-      if(error||(data&&data.erro)){ if(txt0)txt0.innerHTML=esc(_diagDeterministico())+' <span style="font-style:italic;color:var(--cream-dim);font-size:11px">(leitura por regras — copiloto IA indisponível)</span>'; T.toast('Leitura por regras (IA indisponível)'); btn.disabled=false;btn.innerHTML=old; return; }
+      if(error||(data&&data.erro)){ if(txt0)txt0.innerHTML=esc(_diagDeterministico())+' <span style="font-style:italic;color:var(--cream-dim);font-size:11px">(leitura por regras, copiloto IA indisponível)</span>'; T.toast('Leitura por regras (IA indisponível)'); btn.disabled=false;btn.innerHTML=old; return; }
       const txt=document.getElementById('pp-diag-txt');
       if(txt)txt.innerHTML=esc(data.sintese||data.diagnostico||_diagDeterministico());
       const _ps=Array.isArray(data.proximos_passos)?data.proximos_passos:[];

@@ -23,7 +23,7 @@
   function rmovl(){const o=document.getElementById('ipovl');if(o)o.remove()}
   if(document.body)ovl();else document.addEventListener('DOMContentLoaded',ovl,{once:true});
   const safety=setTimeout(()=>{rmovl();deny()},6000);
-  (async()=>{
+ (async()=>{
     try{
       const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
       window.__IP_SB=sb;
@@ -195,7 +195,7 @@ async function loadKpis(){
   $('k-raio-card').classList.toggle('alert',raio>2);
   const scores=(m.data||[]).map(x=>x.score_30d).filter(Boolean);
   const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;
-  $('k-score').innerHTML=avg?avg+'<span class="un">/100</span>':'—<span class="un">/100</span>';
+  $('k-score').innerHTML=avg?avg+'<span class="un">/100</span>':',<span class="un">/100</span>';
 }
 
 async function loadAgents(){

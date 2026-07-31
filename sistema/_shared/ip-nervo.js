@@ -21,8 +21,8 @@
   var _corr = null;
   function _uuid(){ // RFC4122 v4 sem depender de crypto (compat)
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
-      var r = (window.crypto && crypto.getRandomValues) ? crypto.getRandomValues(new Uint8Array(1))[0]%16 : Math.floor(((Date.now()+performance.now())%16));
-      var v = c==='x' ? r : (r&0x3|0x8); return v.toString(16);
+      var r = (window.crypto && crypto.getRandomValues) ? crypto.getRandomValues(new Uint8Array(1))[0]%16: Math.floor(((Date.now()+performance.now())%16));
+      var v = c==='x' ? r: (r&0x3|0x8); return v.toString(16);
     });
   }
   async function setCorrelation(uuid){
@@ -40,7 +40,7 @@
   function subscribe(mandatoId, onEvent){
     var sb=SB();
     if(!sb || !sb.channel){ return function(){}; }
-    var filtro = mandatoId ? ('mandato_id=eq.'+mandatoId) : undefined;
+    var filtro = mandatoId ? ('mandato_id=eq.'+mandatoId): undefined;
     var ch = sb.channel('ip_eventos:'+(mandatoId||'all'))
       .on('postgres_changes',
         { event:'INSERT', schema:'public', table:'ip_eventos', filter: filtro },
@@ -56,7 +56,7 @@
     if(opts.mandato) q=q.eq('mandato_id', opts.mandato);
     if(opts.tipos && opts.tipos.length) q=q.in('tipo_negocio', opts.tipos);
     var r=await q.order('ts',{ascending:false}).limit(opts.limit||30);
-    return r.error ? [] : (r.data||[]);
+    return r.error ? []: (r.data||[]);
   }
 
   // ---- Timeline visual (reusa estética; injeta CSS 1×). live:true assina realtime e prepende. ----
@@ -92,20 +92,20 @@
      +'.ipn-live{display:inline-flex;align-items:center;gap:6px;font:600 9px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--ip-ok,#7BD3A0)}'
      +'.ipn-live .d{width:6px;height:6px;border-radius:50%;background:var(--ip-ok,#7BD3A0);box-shadow:0 0 0 0 rgba(123,211,160,.5);animation:ipnPulse 2s infinite}'
      +'@keyframes ipnPulse{70%{box-shadow:0 0 0 7px rgba(123,211,160,0)}100%{box-shadow:0 0 0 0 rgba(123,211,160,0)}}';
-    (document.head||document.documentElement).appendChild(st);
+ (document.head||document.documentElement).appendChild(st);
   }
 
   async function timeline(host, opts){
     opts=opts||{}; if(!host) return function(){};
     _injectCss();
-    var liveTag = opts.live ? '<span class="ipn-live"><span class="d"></span>ao vivo</span>' : '';
+    var liveTag = opts.live ? '<span class="ipn-live"><span class="d"></span>ao vivo</span>': '';
     host.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'
       +'<span style="font:600 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--ip-ink-3,#8FA0B5)">Linha do tempo · o que aconteceu</span>'+liveTag+'</div>'
-      +'<div class="ipn-tl" id="ipn-tl">'+ (window.IpUI && IpUI.skeleton ? IpUI.skeleton(4) : '…') +'</div>';
+      +'<div class="ipn-tl" id="ipn-tl">'+ (window.IpUI && IpUI.skeleton ? IpUI.skeleton(4): '…') +'</div>';
     var tl = host.querySelector('#ipn-tl');
     var rows = await recent({ mandato: opts.mandato, limit: opts.limit||30, tipos: opts.tipos });
     tl.innerHTML = rows.length ? rows.map(_item).join('')
-      : '<div class="ipn-empty">Ainda sem eventos nesta frente. Cada ação na plataforma passa a aparecer aqui — trilha append-only.</div>';
+: '<div class="ipn-empty">Ainda sem eventos nesta frente. Cada ação na plataforma passa a aparecer aqui, trilha append-only.</div>';
     var unsub = function(){};
     if(opts.live){
       unsub = subscribe(opts.mandato, async function(ev){

@@ -32,7 +32,7 @@
 <section class="hero"><div class="wrap">
   <div class="eyebrow">Inteligência · Agentes IA · 24/7</div>
   <h1>Cinco <em>vigias</em> do seu trabalho</h1>
-  <div class="tagline">Agentes determinísticos rodam todo dia às 07:30 UTC. Cada um vigia um sinal distinto — engajamento, retenção de conhecimento, defasagem decisória, pertencimento — e abre sugestão estruturada quando detecta padrão relevante.</div>
+  <div class="tagline">Agentes determinísticos rodam todo dia às 07:30 UTC. Cada um vigia um sinal distinto (engajamento, retenção de conhecimento, defasagem decisória, pertencimento) e abre sugestão estruturada quando detecta padrão relevante.</div>
   <div class="toolbar">
     <span class="pulse"></span><span>Cron diário ativo</span><span>·</span>
     <span class="last-up" id="ultima-exec">—</span>
@@ -84,7 +84,7 @@ async function carregar(){
   const sb=window.__IP_SB;
   const { data: runs } = await TB.safe(()=>sb.from('ip_agent_runs').select('id,agente,mandato_id,status,sugestoes_geradas,iniciado_em,concluido_em,erro').order('iniciado_em',{ascending:false}).limit(120),{data:[]});
   const arr=runs||[];
-  document.getElementById('ultima-exec').textContent = arr[0]? 'última: '+TB.fmtRel(arr[0].iniciado_em) : 'nunca executado';
+  document.getElementById('ultima-exec').textContent = arr[0]? 'última: '+TB.fmtRel(arr[0].iniciado_em): 'nunca executado';
 
   // KPIs
   const since7=Date.now()-7*86400e3;
@@ -122,7 +122,7 @@ async function carregar(){
   // comentário executivo
   const crit=arr.filter(r=>r.status==='erro').length;
   let txt=`<strong>5 agentes</strong> em vigília · ${runs7} execuções em 7d · ${totalSug} sugestões acumuladas.`;
-  if(crit>0)txt+=` <strong style="color:var(--danger)">${crit} execução com erro</strong> — revisar logs.`;
+  if(crit>0)txt+=` <strong style="color:var(--danger)">${crit} execução com erro</strong>, revisar logs.`;
   else if(!arr.length)txt='Agentes ainda não rodaram. O primeiro ciclo dispara no cron das 07:30 UTC ou manualmente em "Rodar agora".';
   else txt+=' Sistema em vigília saudável.';
   document.getElementById('exec-comment').innerHTML=txt;

@@ -4,7 +4,7 @@
 
 (function(){
   'use strict';
-  (function(){if(!document.querySelector('script[data-ip-persist]')&&!window.IpPersist){var sc=document.createElement('script');sc.src='/sistema/js/persist.js';sc.defer=true;sc.setAttribute('data-ip-persist','1');document.head.appendChild(sc);}})();
+ (function(){if(!document.querySelector('script[data-ip-persist]')&&!window.IpPersist){var sc=document.createElement('script');sc.src='/sistema/js/persist.js';sc.defer=true;sc.setAttribute('data-ip-persist','1');document.head.appendChild(sc);}})();
 
   // ═══ TEMA (dark default / light) — aplica cedo p/ evitar flash ═══
   try{
@@ -37,22 +37,22 @@
 
     // CURADORIA · CHRO
     {g:'Curadoria · CHRO', i:'⌘', n:'Centro de Comando', p:'/sistema/chro/',               d:'39 instrumentos · curadoria de talento · sinal vivo · rituais · governança', t:'chro centro comando curadoria talento rh gente cultura cadastro novo cliente empresa cnpj cpf due diligence dd'},
-    {g:'Curadoria · CHRO', i:'🔎', n:'Due Diligence & Cadastro', p:'/sistema/chro/?novo=1', d:'Nasça um cliente de um CNPJ (ou CPF) — busca em fontes públicas + parecer de due diligence em um clique', t:'due diligence dd diligencia cnpj cpf cadastro cadastrar novo cliente empresa pessoa pesquisa pesquisar idoneidade dossie socios qsa parecer entrar cautela evitar consentimento'},
+    {g:'Curadoria · CHRO', i:'🔎', n:'Due Diligence & Cadastro', p:'/sistema/chro/?novo=1', d:'Nasça um cliente de um CNPJ (ou CPF), busca em fontes públicas + parecer de due diligence em um clique', t:'due diligence dd diligencia cnpj cpf cadastro cadastrar novo cliente empresa pessoa pesquisa pesquisar idoneidade dossie socios qsa parecer entrar cautela evitar consentimento'},
     {g:'Curadoria · CHRO', i:'◎', n:'Cockpit de Comando', p:'/sistema/chro/cockpit/',       d:'Leitura unificada · programas (EVM) + pessoas + clima + sinais IREU + resultado, com copiloto cognitivo', t:'cockpit comando holistico leitura unificada evm cpi spi gauge clima sinais ireu resultado concierge visao geral painel'},
     {g:'Curadoria · CHRO', i:'∿', n:'Pulso Analytics', p:'/sistema/chro/pulso-analytics/', d:'Clima 6D anônimo por equipe · risco de saída · diagnóstico cognitivo · supressão N<5 (LGPD)', t:'pulso analytics clima engajamento 6d proposito autonomia seguranca psicologica risco saida turnover heatmap equipe diagnostico ia anonimo lgpd'},
     {g:'Curadoria · CHRO', i:'📈', n:'Painel Mensal',     p:'/sistema/chro/painel-mensal/', d:'OLAP tendências · BI · digest semanal', t:'chro painel mensal olap bi tendencias digest analytics'},
-    {g:'Curadoria · CHRO', i:'💸', n:'Clientes', p:'/sistema/chro/folha/', d:'Inbox de folhas de pagamento C&S — pipeline InnovaSphere para InnovaPeople', t:'folha pagamento cs c&s engenharia holerite payroll inbox financeiro canteiro competencia'},
-    {g:'Curadoria · CHRO', i:'👤', n:'Pessoas · BPO', p:'/sistema/chro/colaboradores/', d:'Ciclo de gente unificado — admissão, alteração, desligamento · core_colaborador (obra ↔ gente) em tempo real', t:'pessoas colaborador colaboradores bpo gente admissao admitir desligar desligamento rh dp folha ponto sst core_colaborador headcount funcionarios'},
+    {g:'Curadoria · CHRO', i:'💸', n:'Clientes', p:'/sistema/chro/folha/', d:'Inbox de folhas de pagamento C&S, pipeline InnovaSphere para InnovaPeople', t:'folha pagamento cs c&s engenharia holerite payroll inbox financeiro canteiro competencia'},
+    {g:'Curadoria · CHRO', i:'👤', n:'Pessoas · BPO', p:'/sistema/chro/colaboradores/', d:'Ciclo de gente unificado, admissão, alteração, desligamento · core_colaborador (obra ↔ gente) em tempo real', t:'pessoas colaborador colaboradores bpo gente admissao admitir desligar desligamento rh dp folha ponto sst core_colaborador headcount funcionarios'},
     {g:'Curadoria · CHRO', i:'⚖', n:'Resultado por Obra', p:'/sistema/chro/resultado/', d:'Apuração da participação · receita informada − custos reais − cascata waterfall · resultado líquido distribuível', t:'resultado obra participacao apuracao waterfall socios quotas receita vgv custos margem distribuicao lucro liquido financeiro c&s'},
     {g:'Curadoria · CHRO', i:'🗂️', n:'Organograma',        p:'/sistema/chro/organograma/',   d:'Estrutura org dinâmica · badges N0-N5 · export PPTX', t:'organograma estrutura hierarquia cadeiras export pptx'},
-    {g:'Curadoria · CHRO', i:'📁', n:'Documentos',         p:'/sistema/documentos/',        d:'Acervo de Gente, Gestão, Estratégia e SST — manuais, programas, políticas, treinamentos (fonte única InnovaSphere↔InnovaPeople)', t:'documentos docs arquivos acervo biblioteca manual pgr sst ssma seguranca politica treinamento integracao protocolo cartaz gente governanca estrategia institucional'},
+    {g:'Curadoria · CHRO', i:'📁', n:'Documentos',         p:'/sistema/documentos/',        d:'Acervo de Gente, Gestão, Estratégia e SST, manuais, programas, políticas, treinamentos (fonte única InnovaSphere↔InnovaPeople)', t:'documentos docs arquivos acervo biblioteca manual pgr sst ssma seguranca politica treinamento integracao protocolo cartaz gente governanca estrategia institucional'},
 
     // TRABALHOS
     {g:'Trabalhos', i:'💼', n:'Curadorias',  p:'/sistema/#sec-trabalhos', d:'Trabalhos vivos com cada casa · drill-down por curadoria', t:'curadorias mandatos trabalhos curadoria clientes empresas contratos'},
 
     // COMUNICAÇÃO
     {g:'Comunicação', i:'💬', n:'WhatsApp · Inbox', p:'/sistema/whatsapp/',  d:'Inbox unificada · envio · reply · encaminhar · busca · PTT', t:'whatsapp wa inbox mensagens conversas zap chat'},
-    {g:'Comunicação', i:'✉️', n:'E-mail · Minha Caixa', p:'/sistema/comunicacao/', d:'Sua caixa de e-mail da InnovaPeople dentro da plataforma — sem caixa à parte, sem segundo login', t:'email e-mail correio caixa mail webmail comunicacao minha caixa mensagem inbox correspondencia snappymail'},
+    {g:'Comunicação', i:'✉️', n:'E-mail · Minha Caixa', p:'/sistema/comunicacao/', d:'Sua caixa de e-mail da InnovaPeople dentro da plataforma, sem caixa à parte, sem segundo login', t:'email e-mail correio caixa mail webmail comunicacao minha caixa mensagem inbox correspondencia snappymail'},
     {g:'Comunicação', i:'📅', n:'Calendário',       p:'/sistema/calendar.html', d:'Google Calendar integrado · agendamentos Raio-X', t:'calendar calendario google agendamentos eventos reuniao'},
 
     // INTELIGÊNCIA · GOVERNANÇA

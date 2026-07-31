@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CHRO · InnovaPeople</title>
-<meta name="description" content="Centro de comando de pessoas, cultura e curadoria de talento — InnovaPeople">
+<meta name="description" content="Centro de comando de pessoas, cultura e curadoria de talento · InnovaPeople">
 <meta name="robots" content="noindex,nofollow">
 
 <!-- IP-AUTH-GATE (overlay, fail-open) -->
@@ -21,7 +21,7 @@
     const ovl=document.createElement('div');ovl.id='ip-auth-ovl';
     ovl.style.cssText='position:fixed;inset:0;background:#0A1628;color:#3DA882;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647;transition:opacity .35s';
     ovl.innerHTML='<div style="text-align:center"><div style="margin-bottom:14px;font-size:11px;opacity:.5">InnovaPeople</div><div>Validando acesso<span>…</span></div></div>';
-    (document.body||document.documentElement).appendChild(ovl);
+ (document.body||document.documentElement).appendChild(ovl);
   }
   function removeOverlay(){const o=document.getElementById('ip-auth-ovl');if(!o)return;o.style.opacity='0';setTimeout(()=>{if(o.parentNode)o.parentNode.removeChild(o)},400)}
   function deny(r){console.warn('[ip-auth] deny:',r);location.replace('/sistema/?from=chro')}
@@ -34,7 +34,7 @@
   }
   if(document.body){injectOverlay()}else{document.addEventListener('DOMContentLoaded',injectOverlay,{once:true})}
   const safety=setTimeout(()=>{console.warn('[ip-auth] timeout');allow('')},6000);
-  (async function run(){
+ (async function run(){
     try{
       // [perf 30/05] fast-path: token local valido (gate V4) libera sem await getSession
       try{var _k=Object.keys(localStorage).find(k=>k.startsWith('sb-')&&k.includes('auth-token'));if(_k){var _raw=JSON.parse(localStorage.getItem(_k)||'null');var _s=_raw&&(_raw.currentSession||_raw.session||_raw);var _em=_s&&_s.user&&(_s.user.email||(_s.user.user_metadata&&_s.user.user_metadata.email));var _exp=_s&&_s.expires_at?(_s.expires_at*1000):0;if(_s&&_s.access_token&&_em&&(!_exp||_exp>Date.now())&&ALLOWED.includes(_em)){clearTimeout(safety);if(typeof s!=='undefined')clearTimeout(s);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){allow(_em)},{once:true});else allow(_em);try{var _bg=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true}});window.__IP_SB=_bg;}catch(_){}return;}}}catch(_){}
@@ -253,7 +253,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
     <h1>Centro de <em>Curadoria.</em></h1>
     <p class="lede">
       Trinta e dois instrumentos para o trabalho silencioso de manter uma organização inteira de pé.
-      <strong>Pessoas, cultura, ritual, memória, frentes</strong> — tudo o que aparece no palco da curadoria.
+      <strong>Pessoas, cultura, ritual, memória, frentes</strong>, tudo o que aparece no palco da curadoria.
       O backbone técnico (EventBus, canais, compliance) vive em separado, nos <a href="/sistema/bastidores/" style="color:var(--acento-deep);font-weight:500;text-decoration:underline">Bastidores</a>.
     </p>
     <div class="hero-meta">
@@ -308,7 +308,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
       </div>
       <div class="card-body">
         Tokens descartáveis, expiração em 14 dias, agregação só com três respostas ou mais.
-        Captura propósito, autonomia, competência, pertencimento, clareza, segurança — mais um sinal silencioso de risco de saída.
+        Captura propósito, autonomia, competência, pertencimento, clareza, segurança, mais um sinal silencioso de risco de saída.
       </div>
       <div class="card-stats">
         <div><strong id="ps-30d">—</strong>respostas 30d</div>
@@ -331,7 +331,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
       </div>
       <div class="card-body">
         Pulse Anomaly · Knowledge Retention · Clock Drift · Mattering · Critic-Org Designer.
-        Sem LLM externo, sem alucinação — só lógica revisável.
+        Sem LLM externo, sem alucinação, só lógica revisável.
       </div>
       <div class="card-stats">
         <div><strong id="ag-runs">—</strong>runs 7d</div>
@@ -430,7 +430,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
       <div class="card-head">
         <div>
           <div class="card-title">Programas (EVM)</div>
-          <div class="card-promise">Iniciativas de cultura, liderança, onboarding — com PV, EV, AC, CPI, SPI.</div>
+          <div class="card-promise">Iniciativas de cultura, liderança, onboarding: com PV, EV, AC, CPI, SPI.</div>
         </div>
         <span class="status st-live">Operacional</span>
       </div>
@@ -466,7 +466,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
         <span class="status st-live">Operacional</span>
       </div>
       <div class="card-body" id="decisoes-body">
-        Três níveis (operacional · tática · estratégica). Vigiada pelo Clock Drift Detector — tática sem revisão há 14 dias, estratégica há 30, vira sugestão na fila.
+        Três níveis (operacional · tática · estratégica). Vigiada pelo Clock Drift Detector: tática sem revisão há 14 dias, estratégica há 30, vira sugestão na fila.
       </div>
       <div class="card-actions">
         <button class="btn btn-primary" onclick="openDecisoes()">Abrir registro</button>
@@ -483,7 +483,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
         <span class="status st-partial">Parcial</span>
       </div>
       <div class="card-body" id="protocolos-body">
-        Versionados, com responsável e data da próxima revisão programada. Falta UI de edição estruturada — hoje vivem como notas.
+        Versionados, com responsável e data da próxima revisão programada. Falta UI de edição estruturada, hoje vivem como notas.
       </div>
       <div class="card-actions">
         <button class="btn btn-primary" onclick="openProtocolos()">Abrir lista</button>
@@ -495,7 +495,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
       <div class="card-head">
         <div>
           <div class="card-title">Relacionamentos Críticos</div>
-          <div class="card-promise">A matriz de quem segura o quê — e quem segura quem.</div>
+          <div class="card-promise">A matriz de quem segura o quê, e quem segura quem.</div>
         </div>
         <span class="status st-live">Operacional</span>
       </div>
@@ -531,7 +531,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
         <span class="status st-live">Operacional</span>
       </div>
       <div class="card-body">
-        Tabela <code style="font-family:var(--mono);font-size:11px">ip_avaliacao_perfil</code>. Mostra distribuição agregada com cores Aman — ouro no topo direito, âmbar nos extremos baixos.
+        Tabela <code style="font-family:var(--mono);font-size:11px">ip_avaliacao_perfil</code>. Mostra distribuição agregada com cores Aman, ouro no topo direito, âmbar nos extremos baixos.
       </div>
       <div class="card-actions">
         <button class="btn btn-primary" onclick="open9Box()">Abrir grade</button>
@@ -782,7 +782,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
     <span class="count">5 instrumentos · construção colaborativa com AIPrev (InnovaSphere)</span>
   </div>
   <p class="section-sub">
-    O que o AIPrev faz para obras — caminho crítico, valor agregado, previsão — aqui responde por pessoas, programas e cultura.
+    O que o AIPrev faz para obras (caminho crítico, valor agregado, previsão) aqui responde por pessoas, programas e cultura.
     Bringagem espelhada do schema <code style="font-family:var(--mono);font-size:13px;color:var(--acento-deep);font-style:normal">fn_plat_*</code>: 22 RPCs, cinco agentes diários, EventBus em trinta gatilhos.
   </p>
   <div class="grid">
@@ -812,7 +812,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
         <span class="status st-ok">Operacional</span>
       </div>
       <div class="card-body">
-        Curva de valor agregado por marco, índices CPI (custo) e SPI (prazo) com semáforo, EVM por marco e leitura cognitiva — sobre os programas reais (<code style="font-family:var(--mono);font-size:11px">fn_ip_evm_resumo</code>).
+        Curva de valor agregado por marco, índices CPI (custo) e SPI (prazo) com semáforo, EVM por marco e leitura cognitiva, sobre os programas reais (<code style="font-family:var(--mono);font-size:11px">fn_ip_evm_resumo</code>).
       </div>
       <div class="card-actions">
         <button class="btn btn-gold" onclick="openEvmPeople()">Abrir EVM</button>
@@ -823,7 +823,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
       <div class="card-head">
         <div>
           <div class="card-title">Caminho de Desenvolvimento</div>
-          <div class="card-promise">A cadeia ordenada de marcos de cada programa — o elo que segura o avanço, visível antes do atraso.</div>
+          <div class="card-promise">A cadeia ordenada de marcos de cada programa, o elo que segura o avanço, visível antes do atraso.</div>
         </div>
         <span class="status st-ok">Operacional</span>
       </div>
@@ -839,12 +839,12 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
       <div class="card-head">
         <div>
           <div class="card-title">Risco de Retenção</div>
-          <div class="card-promise">Quais equipes estão em zona de risco de saída — leitura viva do Pulso, hoje. Projeção de folha 30/60/90 quando houver headcount.</div>
+          <div class="card-promise">Quais equipes estão em zona de risco de saída, leitura viva do Pulso, hoje. Projeção de folha 30/60/90 quando houver headcount.</div>
         </div>
         <span class="status st-ok">Operacional via Pulso</span>
       </div>
       <div class="card-body">
-        O risco de retenção já é real e acionável no <strong>Pulso Analytics</strong> (risco de saída por equipe, anônimo). A projeção de turnover/folha em cenários entra quando o headcount e a compensação estiverem populados — sem inventar números.
+        O risco de retenção já é real e acionável no <strong>Pulso Analytics</strong> (risco de saída por equipe, anônimo). A projeção de turnover/folha em cenários entra quando o headcount e a compensação estiverem populados, sem inventar números.
       </div>
       <div class="card-actions">
         <button class="btn btn-gold" onclick="openForecaster()">Abrir risco de retenção</button>
@@ -855,7 +855,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
       <div class="card-head">
         <div>
           <div class="card-title">Resumo Executivo Semanal</div>
-          <div class="card-promise">Três insights, três sinais, três decisões a tomar — no email do domingo.</div>
+          <div class="card-promise">Três insights, três sinais, três decisões a tomar, no email do domingo.</div>
         </div>
         <span class="status st-live">Operacional</span>
       </div>
@@ -875,7 +875,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
   <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap">
     <div style="flex:1;min-width:280px">
       <div style="font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--acento-deep);margin-bottom:10px">Em construção colaborativa</div>
-      <h3 style="font-family:var(--serif);font-size:30px;font-weight:400;color:var(--navy);line-height:1.1;margin-bottom:10px">Mattering <em style="color:var(--acento-deep);font-style:italic">— a faixa silenciosa.</em></h3>
+      <h3 style="font-family:var(--serif);font-size:30px;font-weight:400;color:var(--navy);line-height:1.1;margin-bottom:10px">Mattering <em style="color:var(--acento-deep);font-style:italic">, a faixa silenciosa.</em></h3>
       <p style="font-size:14px;color:var(--ink2);line-height:1.6;font-style:italic;font-family:var(--serif);font-size:18px">
         A sensação de importar antes de aparecer na pesquisa. O agente Mattering Coach já vigia aqui;
         a frente conceitual vive na InnovaSphere ao lado do AIPrev. O que evolui lá, espelha aqui.
@@ -937,7 +937,7 @@ html[data-theme="light"] .csub-link .count{background:rgba(0,0,0,.05)}
       <div class="card-head">
         <div>
           <div class="card-title">Governance Matrix</div>
-          <div class="card-promise">Quem decide o quê — e com quem.</div>
+          <div class="card-promise">Quem decide o quê, e com quem.</div>
         </div>
         <span class="status st-todo">Em definição</span>
       </div>
@@ -1004,7 +1004,7 @@ async function chroBoot(){
   const sb=window.__IP_SB;
   if(!sb){console.warn('[chro] sem supabase, modo offline');return paintEmpty()}
   // Sub-abas horizontais: click suave (com offset das barras sticky) + scroll-spy automático
-  (function(){
+ (function(){
     const links=[...document.querySelectorAll('.csub-link[data-jump]')];
     if(!links.length)return;
     let lock=0; // após um click, o scroll-spy respeita a aba escolhida por um instante
@@ -1146,7 +1146,7 @@ async function loadAcoes(sb){
   const body=document.getElementById('acoes-body');if(!body)return;
   try{
     const {data,count}=await sb.from('ip_acoes_template').select('*',{count:'exact'}).order('ireu_score',{ascending:false}).limit(5);
-    if(!data||!data.length){body.innerHTML='<div style="color:var(--ink3);font-style:italic">Biblioteca vazia — seed inicial pendente.</div>';return}
+    if(!data||!data.length){body.innerHTML='<div style="color:var(--ink3);font-style:italic">Biblioteca vazia, seed inicial pendente.</div>';return}
     body.innerHTML=`<div style="font-size:12px;color:var(--ink3);margin-bottom:8px">${count} ações curadas · top 5 por IREU:</div>`+data.map(a=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed var(--border2);font-size:12px"><span>${esc(a.titulo||a.nome||'(sem título)')}</span><span style="font-family:var(--mono);color:var(--acento-deep);font-size:11px">${a.ireu_score||0}</span></div>`).join('');
   }catch(e){body.innerHTML='<div style="color:var(--ink3);font-size:12px;font-style:italic">Tabela ip_acoes_template ainda não populada.</div>'}
 }
@@ -1193,10 +1193,10 @@ async function openPulseDisparar(){
   openDrawer('Disparar pulso', `
     <p class="dr-sub">Gera tokens anônimos válidos por 14 dias e enfileira um convite personalizado para cada destinatário no outbox de e-mail.</p>
     <form id="pd-form" class="dr-form">
-      <label><span class="dr-lab">Trabalho (curadoria)</span><select name="mandato_id" id="pd-mandato" required><option value="">— escolha um trabalho —</option></select></label>
+      <label><span class="dr-lab">Trabalho (curadoria)</span><select name="mandato_id" id="pd-mandato" required><option value="">(escolha um trabalho)</option></select></label>
       <label><span class="dr-lab">Equipe (opcional)</span><input type="text" name="equipe" placeholder="ex: liderança sênior"></label>
       <label><span class="dr-lab">Papel (opcional)</span><input type="text" name="papel" placeholder="ex: gerente"></label>
-      <label><span class="dr-lab">Mensagem personalizada (opcional)</span><textarea name="msg" rows="3" placeholder="Texto extra no convite — tom InnovaPeople."></textarea></label>
+      <label><span class="dr-lab">Mensagem personalizada (opcional)</span><textarea name="msg" rows="3" placeholder="Texto extra no convite, tom InnovaPeople."></textarea></label>
       <label><span class="dr-lab">Destinatários · um por linha (formato: <em>Nome &lt;email@empresa.com&gt;</em> ou só <em>email@empresa.com</em>)</span><textarea name="dests" rows="6" required placeholder="Ana Silva &lt;ana@empresa.com&gt;&#10;joao@empresa.com&#10;Mariana &lt;mari@empresa.com&gt;" style="font-family:var(--mono);font-size:12px"></textarea></label>
       <div id="pd-result"></div>
       <button type="submit" class="btn btn-primary" style="padding:12px 22px;font-size:13px">Gerar tokens &amp; enfileirar e-mails</button>
@@ -1206,11 +1206,11 @@ async function openPulseDisparar(){
     const sel=body.querySelector('#pd-mandato');
     try{
       const {data}=await sb.from('ip_mandatos').select('id,empresa,estagio').neq('estagio','encerrado').order('created_at',{ascending:false});
-      (data||[]).forEach(m=>{
+ (data||[]).forEach(m=>{
         const o=document.createElement('option');o.value=m.id;o.textContent=`${m.empresa} · ${m.estagio||'—'}`;sel.appendChild(o);
       });
       if(!data||!data.length){
-        const o=document.createElement('option');o.value='';o.textContent='(nenhum trabalho ativo — crie um primeiro)';o.disabled=true;sel.appendChild(o);
+        const o=document.createElement('option');o.value='';o.textContent='(nenhum trabalho ativo, crie um primeiro)';o.disabled=true;sel.appendChild(o);
       }
     }catch(e){console.warn('[pd] curadorias',e)}
     body.querySelector('#pd-form').addEventListener('submit', async (ev)=>{
@@ -1234,7 +1234,7 @@ async function openPulseDisparar(){
         const fail=(data.enviados||[]).filter(e=>e.erro);
         let html=`<div class="dr-ok">✓ <strong>${ok}</strong> de <strong>${data.total||dests.length}</strong> convites enfileirados no outbox.</div>`;
         if(fail.length){
-          html+=`<div class="dr-err" style="margin-top:10px"><strong>${fail.length}</strong> falharam:<br>${fail.slice(0,5).map(f=>'· '+esc(f.email)+' — '+esc(f.erro)).join('<br>')}</div>`;
+          html+=`<div class="dr-err" style="margin-top:10px"><strong>${fail.length}</strong> falharam:<br>${fail.slice(0,5).map(f=>'· '+esc(f.email)+', '+esc(f.erro)).join('<br>')}</div>`;
         }
         result.innerHTML=html;
         loadPulso(sb);loadHeroMetrics(sb);
@@ -1302,7 +1302,7 @@ async function suggestionAct(id,status){
 }
 async function runAgentsNow(){
   const sb=window.__IP_SB;if(!sb){alert('Supabase não carregou');return}
-  if(!confirm('Rodar os 5 agentes vigia agora?\n\nChama fn_ip_agentes_rodar_todos — pode levar alguns segundos.'))return;
+  if(!confirm('Rodar os 5 agentes vigia agora?\n\nChama fn_ip_agentes_rodar_todos, pode levar alguns segundos.'))return;
   try{
     const {data,error}=await sb.rpc('fn_ip_agentes_rodar_todos');
     if(error)throw error;
@@ -1324,7 +1324,7 @@ async function openRaioXKanban(){
       if(error)throw error;
       const cols=['novo','contatado','agendado','realizado','convertido','descartado'];
       const grouped={};cols.forEach(c=>grouped[c]=[]);
-      (data||[]).forEach(r=>{const s=r.status||'novo';if(grouped[s])grouped[s].push(r);else grouped['novo'].push(r)});
+ (data||[]).forEach(r=>{const s=r.status||'novo';if(grouped[s])grouped[s].push(r);else grouped['novo'].push(r)});
       target.innerHTML=cols.map(c=>`
         <div style="margin-bottom:24px">
           <div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;display:flex;justify-content:space-between;padding-bottom:6px;border-bottom:1px solid var(--border)">
@@ -1341,7 +1341,7 @@ async function openRaioXKanban(){
                   ${cols.filter(x=>x!==c).map(x=>`<option value="${x}">→ ${x}</option>`).join('')}
                 </select>
               </div>
-            `).join('')||'<div style="color:var(--ink4);font-size:11px;font-style:italic;padding:8px;text-align:center">— vazio —</div>'}
+            `).join('')||'<div style="color:var(--ink4);font-size:11px;font-style:italic;padding:8px;text-align:center">(vazio)</div>'}
           </div>
         </div>
       `).join('');
@@ -1366,7 +1366,7 @@ async function raioXMove(id,status){
 window.__CNC_HISTORY=window.__CNC_HISTORY||[];
 function openConcierge(){
   openDrawer('Concierge IA', `
-    <p class="dr-sub">Claude Haiku 4.5 grounded em dados reais da plataforma — trabalhos, pulso, sugestões dos agentes, decisões, relacionamentos críticos, raio-x, rituais, atividade do EventBus. Pergunte qualquer coisa.</p>
+    <p class="dr-sub">Claude Haiku 4.5 grounded em dados reais da plataforma: trabalhos, pulso, sugestões dos agentes, decisões, relacionamentos críticos, raio-x, rituais, atividade do EventBus. Pergunte qualquer coisa.</p>
     <div id="cnc-chat" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;max-height:54vh;overflow-y:auto;padding-right:6px"></div>
     <form id="cnc-form" style="display:flex;gap:8px">
       <input type="text" name="q" placeholder="Pergunte sobre qualquer coisa da plataforma..." autocomplete="off" style="flex:1;padding:11px 14px;border:1px solid var(--border);border-radius:6px;font:inherit;font-size:13px">
@@ -1571,7 +1571,7 @@ async function openMandatos(){
 }
 function _nmFmtCnpj(v){ v=(v||'').replace(/\D/g,'').slice(0,14); return v.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d)/,'.$1/$2').replace(/(\d{4})(\d)/,'$1-$2'); }
 function newMandato(){openDrawer('Novo cliente',`
-  <p class="dr-sub">Um CNPJ é tudo o que precisamos. A plataforma busca o resto — razão social, porte, setor, sócios, situação cadastral — em várias fontes públicas, e cadastra o cliente já conectado a tudo.</p>
+  <p class="dr-sub">Um CNPJ é tudo o que precisamos. A plataforma busca o resto (razão social, porte, setor, sócios, situação cadastral) em várias fontes públicas, e cadastra o cliente já conectado a tudo.</p>
   <form id="nm-form" class="dr-form" autocomplete="off">
     <label><span class="dr-lab">CNPJ ou CPF do cliente</span>
       <input type="text" name="cnpj" inputmode="numeric" placeholder="empresa (CNPJ) ou pessoa (CPF)" style="font-size:20px;letter-spacing:.04em;padding:14px 16px;font-family:var(--mono)"></label>
@@ -1582,9 +1582,9 @@ function newMandato(){openDrawer('Novo cliente',`
     <div id="nm-pessoa" style="display:none;margin-top:14px"></div>
     <div id="nm-confirm" style="display:none;margin-top:14px">
       <button type="button" class="btn btn-primary" id="nm-submit" style="padding:14px 22px;font-size:15px;width:100%">✓ Cadastrar como cliente</button>
-      <div style="font-size:11px;color:var(--ink3);text-align:center;margin-top:7px">A empresa, o dossiê e o parecer de due diligence entram juntos — em um clique.</div>
+      <div style="font-size:11px;color:var(--ink3);text-align:center;margin-top:7px">A empresa, o dossiê e o parecer de due diligence entram juntos, em um clique.</div>
     </div>
-    <button type="button" class="btn btn-ghost" id="nm-manual" style="padding:8px 14px;font-size:12px;margin-top:12px;width:100%;opacity:.7">não tenho o CNPJ — cadastrar só pelo nome</button>
+    <button type="button" class="btn btn-ghost" id="nm-manual" style="padding:8px 14px;font-size:12px;margin-top:12px;width:100%;opacity:.7">não tenho o CNPJ, cadastrar só pelo nome</button>
     <div id="nm-manualbox" style="display:none;margin-top:10px;padding-top:12px;border-top:1px solid var(--border)">
       <label><span class="dr-lab">Nome do cliente</span><input type="text" name="empresa" placeholder="ex: Construtora Aurora" style="font-size:16px;padding:12px 14px"></label>
       <button type="button" class="btn btn-primary" id="nm-submit-nome" style="padding:11px 20px;font-size:13px;width:100%;margin-top:6px">Cadastrar pelo nome</button>
@@ -1604,9 +1604,9 @@ function newMandato(){openDrawer('Novo cliente',`
       const {data,error}=await sb.rpc('fn_ip_criar_cliente', payload);
       if(error)throw error;
       var ver = (payload.p_dossie&&payload.p_dossie._dd&&payload.p_dossie._dd.veredicto)||null;
-      var verHtml = ver ? ' <span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(200,89,36,.14);color:var(--acento-deep)">DD: '+esc(ver)+'</span>' : '';
-      if(data&&data.ja_existia){ result.innerHTML='<div class="dr-ok">Já existia o cliente <strong>'+esc(data.nome)+'</strong> — abrindo o existente.</div>'; }
-      else { result.innerHTML='<div class="dr-ok">✓ <strong>'+esc(data.nome)+'</strong> cadastrado — empresa, dossiê e parecer de due diligence'+verHtml+', tudo conectado à plataforma em um clique.</div>'; }
+      var verHtml = ver ? ' <span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(200,89,36,.14);color:var(--acento-deep)">DD: '+esc(ver)+'</span>': '';
+      if(data&&data.ja_existia){ result.innerHTML='<div class="dr-ok">Já existia o cliente <strong>'+esc(data.nome)+'</strong>, abrindo o existente.</div>'; }
+      else { result.innerHTML='<div class="dr-ok">✓ <strong>'+esc(data.nome)+'</strong> cadastrado: empresa, dossiê e parecer de due diligence'+verHtml+', tudo conectado à plataforma em um clique.</div>'; }
       dossieBox.style.display='none'; confirmBox.style.display='none'; var par=body.querySelector('#nm-parecer'); if(par)par.style.display='none'; inCnpj.value='';
       try{ loadMandatos(sb);loadHeroMetrics(sb); }catch(_){}
       try{ if(window.IpOrg&&IpOrg._reload) await IpOrg._reload(); }catch(_){}
@@ -1673,7 +1673,7 @@ function newMandato(){openDrawer('Novo cliente',`
     body.querySelector('#nm-dossie').style.display='none'; body.querySelector('#nm-parecer').style.display='none'; confirmBox.style.display='none';
     result.innerHTML='';
     const ok=validaCPF(cpf);
-    if(!ok){ result.innerHTML='<div class="dr-err">CPF inválido — confira os dígitos.</div>'; return; }
+    if(!ok){ result.innerHTML='<div class="dr-err">CPF inválido, confira os dígitos.</div>'; return; }
     const btn=body.querySelector('#nm-buscar'); btn.disabled=true; const old=btn.textContent; btn.innerHTML='Pesquisando…';
     // T0: validação + cruzamento societário público (sem consentimento, com contexto)
     let t0={};
@@ -1693,7 +1693,7 @@ function newMandato(){openDrawer('Novo cliente',`
     pBox.style.display='block';
     // botão cadastrar pessoa (1 clique)
     const inputNome = '<label style="display:block;margin-top:12px"><span class="dr-lab">Nome da pessoa</span><input type="text" id="nm-pnome" placeholder="nome completo" style="font-size:15px;padding:11px 13px;width:100%"></label>';
-    confirmBox.innerHTML = inputNome + '<button type="button" class="btn btn-primary" id="nm-submit-pessoa" style="padding:14px 22px;font-size:15px;width:100%;margin-top:8px">✓ Cadastrar pessoa como cliente</button><div style="font-size:11px;color:var(--ink3);text-align:center;margin-top:7px">A pessoa, validação e participação societária entram juntas — em um clique.</div>';
+    confirmBox.innerHTML = inputNome + '<button type="button" class="btn btn-primary" id="nm-submit-pessoa" style="padding:14px 22px;font-size:15px;width:100%;margin-top:8px">✓ Cadastrar pessoa como cliente</button><div style="font-size:11px;color:var(--ink3);text-align:center;margin-top:7px">A pessoa, validação e participação societária entram juntas, em um clique.</div>';
     confirmBox.style.display='block';
     // caixa de resultado inicial (T0 público) + botões imprimir/PDF — aparece já na pesquisa
     if(window.IpDdResultado){ try{ IpDdResultado.render(result, { cpf:cpf, nome:(body.querySelector('#nm-pnome')||{}).value||'', t0:t0.tier0||t0, avancado:t0 }); }catch(_){} }
@@ -1703,12 +1703,12 @@ function newMandato(){openDrawer('Novo cliente',`
       IpDdConsent.abrir({ doc:cpf, nome:nome, project_id:'ip', contexto_origem:'cliente_curadoria', onSuccess:async (consData, marcadas)=>{
         // re-pesquisa COM as finalidades consentidas e renderiza a caixa completa (com impressão/PDF)
         const fins=(marcadas||[]).map(m=>m.finalidade);
-        result.innerHTML='<div class="dr-info">Consentimento registrado — buscando o que foi autorizado…</div>';
+        result.innerHTML='<div class="dr-info">Consentimento registrado, buscando o que foi autorizado…</div>';
         try{
-          const dados=window.IpDdResultado ? await IpDdResultado.pesquisar({ cpf:cpf, nome:nome, contexto_origem:'cliente_curadoria', finalidades:fins, project_id:'ip' }) : {};
+          const dados=window.IpDdResultado ? await IpDdResultado.pesquisar({ cpf:cpf, nome:nome, contexto_origem:'cliente_curadoria', finalidades:fins, project_id:'ip' }): {};
           _pessoa.t0 = dados.t0 || _pessoa.t0; // atualiza o que será cadastrado
           if(window.IpDdResultado) IpDdResultado.render(result, { cpf:cpf, nome:nome, t0:dados.t0, avancado:dados.avancado, sancoes:dados.sancoes, consentimento:{ hash:(consData&&consData.hash)||'', finalidades:marcadas, versao:(window.IpDdConsent&&IpDdConsent.VERSAO) } });
-        }catch(e){ result.innerHTML='<div class="dr-ok">✓ Consentimento registrado. (A pesquisa avançada não retornou agora — '+esc(e.message||e)+'.)</div>'; }
+        }catch(e){ result.innerHTML='<div class="dr-ok">✓ Consentimento registrado. (A pesquisa avançada não retornou agora, '+esc(e.message||e)+'.)</div>'; }
       } });
     };
     body.querySelector('#nm-submit-pessoa').onclick=async()=>{
@@ -1719,7 +1719,7 @@ function newMandato(){openDrawer('Novo cliente',`
         const sb=window.__IP_SB;
         const {data,error}=await sb.rpc('fn_ip_criar_cliente',{ p_nome:nome, p_setor:'Pessoa física', p_dossie:{ tipo:'pessoa_fisica', cpf:cpf, t0:_pessoa.t0 } });
         if(error)throw error;
-        result.innerHTML='<div class="dr-ok">✓ <strong>'+esc(data.nome)+'</strong> cadastrada — pessoa, validação e participação societária, conectada à plataforma em um clique.</div>';
+        result.innerHTML='<div class="dr-ok">✓ <strong>'+esc(data.nome)+'</strong> cadastrada: pessoa, validação e participação societária, conectada à plataforma em um clique.</div>';
         pBox.style.display='none'; confirmBox.style.display='none'; inCnpj.value='';
         try{ loadMandatos(sb);loadHeroMetrics(sb); }catch(_){}
         try{ if(window.IpOrg&&IpOrg._reload) await IpOrg._reload(); }catch(_){}
@@ -1744,7 +1744,7 @@ async function openAcoesBib(){
     try{
       const {data,error}=await sb.from('ip_acoes_template').select('*').eq('ativo',true).limit(50);
       if(error)throw error;
-      if(!data||!data.length){t.innerHTML='<div class="dr-empty">Biblioteca vazia — seed inicial pendente.</div>';return}
+      if(!data||!data.length){t.innerHTML='<div class="dr-empty">Biblioteca vazia, seed inicial pendente.</div>';return}
       // Ordena client-side por IRE (urgência só faz sentido por instância)
       const sorted=[...data].sort((a,b)=>((+b.impacto||0)*(+b.relevancia||0)*(+b.efeito_borboleta||0))-((+a.impacto||0)*(+a.relevancia||0)*(+a.efeito_borboleta||0)));
       t.innerHTML=`<div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px">${sorted.length} ações curadas · ordenadas por I × R × E</div>`+
@@ -1853,7 +1853,7 @@ async function openProtocolos(){
       if(error)throw error;
       const now=Date.now();
       t.innerHTML=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newProtocolo()">+ Novo protocolo</button>`+
-        (!data||!data.length?'<div class="dr-empty">Nenhum protocolo registrado ainda.</div>':
+ (!data||!data.length?'<div class="dr-empty">Nenhum protocolo registrado ainda.</div>':
         data.map(p=>{
           const prox=p.revisao_planejada?new Date(p.revisao_planejada):null;
           const vencido=prox&&prox.getTime()<now;
@@ -1935,7 +1935,7 @@ async function openRelac(){
       if(!data||!data.length){t.innerHTML='<button class="btn btn-primary" style="margin-bottom:16px" onclick="newRelac()">+ Adicionar relacionamento</button><div class="dr-empty">Nenhum relacionamento mapeado ainda.</div>';return}
       const semTitular=data.filter(r=>r.vinculo_critico&&!r.responsavel_interno).length;
       t.innerHTML=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newRelac()">+ Adicionar relacionamento</button>`+
-        (semTitular?`<div style="padding:12px 14px;background:rgba(155,44,44,.06);border-left:3px solid var(--red);border-radius:4px;font-size:12px;color:var(--ink2);margin-bottom:14px"><strong>${semTitular}</strong> relacionamentos críticos sem titular interno — Knowledge Retention Watchdog ativo.</div>`:'')+
+ (semTitular?`<div style="padding:12px 14px;background:rgba(155,44,44,.06);border-left:3px solid var(--red);border-radius:4px;font-size:12px;color:var(--ink2);margin-bottom:14px"><strong>${semTitular}</strong> relacionamentos críticos sem titular interno, Knowledge Retention Watchdog ativo.</div>`:'')+
         data.map(r=>`<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px">
           <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
             <div style="font-family:var(--serif);font-size:17px;color:var(--navy);font-weight:500">${esc(r.nome)}${r.organizacao?` <span style="color:var(--ink3);font-size:13px;font-style:italic">· ${esc(r.organizacao)}</span>`:''}</div>
@@ -1954,7 +1954,7 @@ async function openRelac(){
 }
 function newRelac(){
   openDrawer('Adicionar relacionamento crítico',`
-    <p class="dr-sub">Vínculo que precisa de titular formal — o que sustenta a continuidade quando alguém vai.</p>
+    <p class="dr-sub">Vínculo que precisa de titular formal, o que sustenta a continuidade quando alguém vai.</p>
     <form id="nr-form" class="dr-form">
       <label><span class="dr-lab">Nome</span><input type="text" name="nome" required></label>
       <label><span class="dr-lab">Papel</span><input type="text" name="papel" placeholder="ex: gerente de obras, prefeito, contador"></label>
@@ -1993,7 +1993,7 @@ async function openRituais(){
       if(error)throw error;
       const now=Date.now();
       t.innerHTML=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newRitual()">+ Novo ritual</button>`+
-        (!data||!data.length?'<div class="dr-empty">Nenhum ritual cadastrado.</div>':
+ (!data||!data.length?'<div class="dr-empty">Nenhum ritual cadastrado.</div>':
         data.map(r=>{
           const prox=r.proxima_em?new Date(r.proxima_em):null;
           const dias=prox?Math.floor((prox.getTime()-now)/864e5):null;
@@ -2366,7 +2366,7 @@ function openWaSend(){
 }
 function openWaTemplates(){
   const tpls=[
-    {nome:'Convite Raio-X',texto:'Olá. Há uma sala que reflete sobre sua organização — sem comércio. Posso te mostrar?\n\n→ innovapeople.com.br/raio-x'},
+    {nome:'Convite Raio-X',texto:'Olá. Há uma sala que reflete sobre sua organização, sem comércio. Posso te mostrar?\n\n→ innovapeople.com.br/raio-x'},
     {nome:'Convite Ritual',texto:'Te aguardo no nosso ritual de [DIA] às [HORA]. Pauta breve abaixo.'},
     {nome:'Confirmação de trabalho',texto:'Confirmando o início do trabalho. O documento de escopo está em [LINK]. Qualquer ajuste antes de assinar?'},
     {nome:'Pulso quinzenal',texto:'Olá. Está aberto o pulso quinzenal. Anônimo, 2 minutos, sem ninguém vendo respostas individuais.\n\n[LINK]'},
@@ -2401,7 +2401,7 @@ async function openLgpd(){
         sb.from('ip_pulse_tokens').select('*',{count:'exact',head:true}),
         sb.from('ip_relacionamentos').select('*',{count:'exact',head:true}),
       ]);
-      t.innerHTML=`<p class="dr-sub">Compliance é constitutivo — anonimato no pulso (k≥3), tokens descartáveis (14d), audit trail imutável (36m), zero PII anônima em <code class="dr-code">ip_perfil_colaborador</code>.</p>
+      t.innerHTML=`<p class="dr-sub">Compliance é constitutivo: anonimato no pulso (k≥3), tokens descartáveis (14d), audit trail imutável (36m), zero PII anônima em <code class="dr-code">ip_perfil_colaborador</code>.</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
         <div style="padding:14px;background:var(--cream2);border-radius:6px">
           <div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">Eventos auditáveis</div>
@@ -2428,8 +2428,8 @@ async function openLgpd(){
         <strong style="color:var(--navy)">Garantias ativas:</strong><br>
         · Audit trail append-only (<code class="dr-code">ip_eventos</code>) com snapshot before/after por actor<br>
         · Tokens de pulso (<code class="dr-code">ip_pulse_tokens</code>) com expires_at = created_at + 14d, invalidados após uso<br>
-        · Pulsos sem PII direto — apenas hash opcional (<code class="dr-code">p_colaborador_hash</code>) para dedup<br>
-        · Perfil de colaborador (<code class="dr-code">ip_perfil_colaborador</code>) sem nome — só rótulo, papel, equipe<br>
+        · Pulsos sem PII direto, apenas hash opcional (<code class="dr-code">p_colaborador_hash</code>) para dedup<br>
+        · Perfil de colaborador (<code class="dr-code">ip_perfil_colaborador</code>) sem nome: só rótulo, papel, equipe<br>
         · ${relacCnt.count??0} relacionamentos com consentimento implícito (contato profissional registrado pelo titular)
       </div>`;
     }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
@@ -2508,7 +2508,7 @@ function openTriggers(){
     </div>
   `);
 }
-function openMatteringStatus(){alert('Mattering — estado atual:\n\n· Agente Mattering Coach: operacional (vigia propósito + pertencimento < 6).\n· Frente conceitual: em construção na InnovaSphere ao lado do AIPrev.\n· Próximo passo conjunto: dimensão longitudinal (mattering trajectory) com retroalimentação visível ao colaborador.\n\nO que evoluir lá, importa para cá. O que aqui produzirmos de bom, modela lá.')}
+function openMatteringStatus(){alert('Mattering, estado atual:\n\n· Agente Mattering Coach: operacional (vigia propósito + pertencimento < 6).\n· Frente conceitual: em construção na InnovaSphere ao lado do AIPrev.\n· Próximo passo conjunto: dimensão longitudinal (mattering trajectory) com retroalimentação visível ao colaborador.\n\nO que evoluir lá, importa para cá. O que aqui produzirmos de bom, modela lá.')}
 // ============================================================
 // 9-BOX GRID — ip_avaliacao_perfil
 // ============================================================
@@ -2520,7 +2520,7 @@ async function open9Box(){
       if(error)throw error;
       // Grid 3x3: linhas potencial 3-1 (alto em cima), colunas performance 1-3
       const grid={};for(let pot=1;pot<=3;pot++)for(let perf=1;perf<=3;perf++)grid[perf+'-'+pot]=0;
-      (data||[]).forEach(a=>{if(a.performance&&a.potencial)grid[a.performance+'-'+a.potencial]=(grid[a.performance+'-'+a.potencial]||0)+1});
+ (data||[]).forEach(a=>{if(a.performance&&a.potencial)grid[a.performance+'-'+a.potencial]=(grid[a.performance+'-'+a.potencial]||0)+1});
       const labels={'1-3':'Diamante Bruto','2-3':'Estrela Emergente','3-3':'Estrela','1-2':'Enigma','2-2':'Núcleo Sólido','3-2':'Alta Performance','1-1':'Risco','2-1':'Eficaz','3-1':'Especialista'};
       const colorCell=(perf,pot)=>{
         if(perf===3&&pot===3)return'rgba(200,89,36,.32)';
@@ -2596,7 +2596,7 @@ async function openSuccession(){
       const {data,error}=await sb.from('ip_sucessao').select('*').eq('ativo',true).order('updated_at',{ascending:false}).limit(60);
       if(error)throw error;
       let html=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newSuccession()">+ Nova posição-chave</button>`;
-      if(!data||!data.length){html+='<div class="dr-empty">Nenhuma posição-chave mapeada. Comece pelas críticas — quais saídas paralisariam o ritmo?</div>';t.innerHTML=html;return}
+      if(!data||!data.length){html+='<div class="dr-empty">Nenhuma posição-chave mapeada. Comece pelas críticas, quais saídas paralisariam o ritmo?</div>';t.innerHTML=html;return}
       const prCor={ready_now:'#2E8B6E','1y':'#A8461A','2y':'#6B7280',indefinido:'#9B2C2C'};
       const prLbl={ready_now:'Pronto agora','1y':'1 ano','2y':'2 anos',indefinido:'indefinido'};
       html+=data.map(s=>`<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:12px">
@@ -2625,8 +2625,8 @@ async function newSuccession(){
         <label><span class="dr-lab">Posição-chave</span><input type="text" name="posicao" required placeholder="ex: Coordenador de Cultura · Gerente de Obra"></label>
         <label><span class="dr-lab">Por que é crítica</span><textarea name="motivo" rows="3" required placeholder="O que esta posição sustenta? O que pararia se ficasse vaga?"></textarea></label>
         ${perfis&&perfis.length?`
-          <label><span class="dr-lab">Titular atual (perfil)</span><select name="titular"><option value="">— sem titular registrado —</option>${opts}</select></label>
-          <label><span class="dr-lab">Sucessor (perfil)</span><select name="sucessor"><option value="">— indefinido —</option>${opts}</select></label>
+          <label><span class="dr-lab">Titular atual (perfil)</span><select name="titular"><option value="">(sem titular registrado)</option>${opts}</select></label>
+          <label><span class="dr-lab">Sucessor (perfil)</span><select name="sucessor"><option value="">(indefinido)</option>${opts}</select></label>
         `:'<div class="dr-info">Sem perfis cadastrados. Adicione perfis primeiro para vincular titular/sucessor.</div>'}
         <label><span class="dr-lab">Prontidão do sucessor</span><select name="prontidao"><option value="indefinido">indefinido</option><option value="ready_now">pronto agora</option><option value="1y">1 ano</option><option value="2y">2 anos</option></select></label>
         <label><span class="dr-lab">Observações</span><textarea name="observacoes" rows="3"></textarea></label>
@@ -2663,14 +2663,14 @@ async function openCompensation(){
       });
       html+='</tbody></table>';
       const altaDisp=data.filter(c=>(+c.dispersao_pct||0)>30).length;
-      if(altaDisp){html+=`<div style="margin-top:14px;padding:12px;background:rgba(155,44,44,.06);border-left:3px solid var(--red);border-radius:4px;font-size:12px;color:var(--ink2)"><strong>${altaDisp}</strong> papéis com dispersão acima de 30% — risco de desequilíbrio interno.</div>`}
+      if(altaDisp){html+=`<div style="margin-top:14px;padding:12px;background:rgba(155,44,44,.06);border-left:3px solid var(--red);border-radius:4px;font-size:12px;color:var(--ink2)"><strong>${altaDisp}</strong> papéis com dispersão acima de 30%, risco de desequilíbrio interno.</div>`}
       t.innerHTML=html;
     }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
   });
 }
 function newCompensation(){
   openDrawer('Nova banda salarial',`
-    <p class="dr-sub">Banda calibrada por valor entregue e dispersão interna. Sem nomes — só papel, intervalos e quantidade.</p>
+    <p class="dr-sub">Banda calibrada por valor entregue e dispersão interna. Sem nomes, só papel, intervalos e quantidade.</p>
     <form id="nc-form" class="dr-form">
       <label><span class="dr-lab">Papel / Cargo</span><input type="text" name="papel" required placeholder="ex: Gerente de Obras Sênior"></label>
       <label><span class="dr-lab">Banda mínima (R$)</span><input type="number" name="min" step="100"></label>
@@ -2706,7 +2706,7 @@ async function openPerfis(){
       const {data,error}=await sb.from('ip_perfil_colaborador').select('*').order('created_at',{ascending:false}).limit(100);
       if(error)throw error;
       let html=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newPerfil()">+ Adicionar perfil</button>`;
-      if(!data||!data.length){html+='<div class="dr-empty">Nenhum perfil cadastrado. Use rótulos, papéis, equipes — nunca nomes individuais identificáveis.</div>';t.innerHTML=html;return}
+      if(!data||!data.length){html+='<div class="dr-empty">Nenhum perfil cadastrado. Use rótulos, papéis, equipes, nunca nomes individuais identificáveis.</div>';t.innerHTML=html;return}
       html+=`<div style="font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px">${data.length} perfis · zero PII direta</div>`;
       html+=data.map(p=>{
         const risco=+p.risco_saida_estimado||0;
@@ -2727,7 +2727,7 @@ async function openPerfis(){
 }
 function newPerfil(){
   openDrawer('Adicionar perfil anonimizado',`
-    <p class="dr-sub">Use rótulos descritivos, não nomes. O agregado serve a curadoria — a ficha individual não.</p>
+    <p class="dr-sub">Use rótulos descritivos, não nomes. O agregado serve a curadoria, a ficha individual não.</p>
     <form id="np-form" class="dr-form">
       <label><span class="dr-lab">Rótulo (interno, descritivo)</span><input type="text" name="rotulo" required placeholder="ex: Gerente A · Coordenadora B · Pleno SP"></label>
       <label><span class="dr-lab">Papel</span><input type="text" name="papel" placeholder="ex: gerente, coordenador, pleno"></label>
@@ -2762,7 +2762,7 @@ async function openProgramas(){
       const {data,error}=await sb.from('ip_programas').select('*').order('created_at',{ascending:false}).limit(50);
       if(error)throw error;
       let html=`<button class="btn btn-primary" style="margin-bottom:16px" onclick="newPrograma()">+ Novo programa</button>`;
-      if(!data||!data.length){html+='<div class="dr-empty">Nenhum programa registrado. Cultura, liderança, onboarding — qualquer iniciativa estruturada com horizonte e custo.</div>';t.innerHTML=html;return}
+      if(!data||!data.length){html+='<div class="dr-empty">Nenhum programa registrado. Cultura, liderança, onboarding, qualquer iniciativa estruturada com horizonte e custo.</div>';t.innerHTML=html;return}
       // Para cada programa busca EVM em paralelo
       const evms=await Promise.all(data.map(p=>sb.rpc('fn_ip_evm_resumo',{p_programa_id:p.id}).then(r=>r.data).catch(()=>null)));
       html+=data.map((p,i)=>{
@@ -2905,7 +2905,7 @@ function apontarMarco(marcoId,programaId,nome){
         // ev_delta ao ev atual, calculamos o delta a partir do EV atual do marco.
         const cur=await sb.from('ip_programa_marcos').select('ev,pv').eq('id',marcoId).maybeSingle();
         const evAlvo=+f.ev.value, evAtual=+( (cur.data&&cur.data.ev)||0 );
-        const pct = (cur.data&&cur.data.pv)? Math.min(100, Math.round(evAlvo/(+cur.data.pv)*100)) : (f.status.value==='concluido'?100:null);
+        const pct = (cur.data&&cur.data.pv)? Math.min(100, Math.round(evAlvo/(+cur.data.pv)*100)): (f.status.value==='concluido'?100:null);
         const acAtual=+(await sb.from('ip_programa_marcos').select('ac').eq('id',marcoId).maybeSingle()).data?.ac||0;
         const {data,error}=await sb.rpc('fn_ip_apontar_marco',{ p_marco_id:marcoId, p_pct:pct, p_ev_delta:(evAlvo-evAtual), p_ac_delta:(+f.ac.value - acAtual), p_data_ref:(f.data_real.value||new Date().toISOString().slice(0,10)), p_obs:'apontado via UI' });
         if(error)throw error;
@@ -2941,7 +2941,7 @@ async function diagnosticoIAPrograma(programaId,nome){
         const prompt='Você é um analista de programas de desenvolvimento de pessoas (EVM). Dados do programa "'+nome+'": CPI='+cpi+' (valor entregue / custo real), SPI='+spi+' (avanço / planejado), '+(evm.marcos||0)+' marcos, status '+(evm.status||'?')+'. Em até 3 frases diretas e calorosas (sem markdown): (1) o que esses números significam para este programa; (2) o risco principal; (3) UMA próxima ação concreta. Tom executivo, português do Brasil.';
         const ai=await window.IpAI.ask(prompt,{maxTokens:300});
         const el=body.querySelector('#di-ai');
-        if(el) el.textContent = ai.ok? ai.text : 'IA indisponível no momento — o diagnóstico determinístico acima já priorizou as ações.';
+        if(el) el.textContent = ai.ok? ai.text: 'IA indisponível no momento, o diagnóstico determinístico acima já priorizou as ações.';
       } else { const el=body.querySelector('#di-ai'); if(el) el.textContent='Helper de IA não carregado nesta página.'; }
     }catch(e){t.innerHTML='<div class="dr-err">Erro: '+esc(e.message)+'</div>'}
   });
@@ -2950,21 +2950,21 @@ async function diagnosticoIAPrograma(programaId,nome){
 function openEvmPeople(){
   openDrawer('EVM de Programas · valor agregado', '<div id="evm-host"><div class="dr-info">Carregando EVM…</div></div>', function(body){
     var host=body.querySelector('#evm-host');
-    (function go(){ if(window.IpEvm){ IpEvm.render(host,{}); } else { setTimeout(go,150); } })();
+ (function go(){ if(window.IpEvm){ IpEvm.render(host,{}); } else { setTimeout(go,150); } })();
   });
 }
 // CPM por sequência REAL (cadeia de marcos, elo que trava) — honesto: datas/dependências entram quando cadastradas
 function openCpmDev(){
   openDrawer('Caminho de Desenvolvimento · cadeia de marcos', '<div id="cpm-host"><div class="dr-info">Carregando cadeia…</div></div>', function(body){
     var host=body.querySelector('#cpm-host');
-    (function go(){ if(window.IpEvm&&window.IpEvm.renderSequencia){ IpEvm.renderSequencia(host,{}); } else { setTimeout(go,150); } })();
+ (function go(){ if(window.IpEvm&&window.IpEvm.renderSequencia){ IpEvm.renderSequencia(host,{}); } else { setTimeout(go,150); } })();
   });
 }
 // Risco de Retenção: o valor real de previsão já vive no Pulso Analytics (risco de saída por equipe).
 // Folha/headcount projetados em cenários entram quando esses dados estiverem populados (sem stub).
 function openForecaster(){ location.href='/sistema/chro/pulso-analytics/'; }
 
-function notImpl(name){alert('Em construção: '+name+'\n\nO contrato de dados está mapeado — falta a UI dedicada na próxima rodada.')}
+function notImpl(name){alert('Em construção: '+name+'\n\nO contrato de dados está mapeado, falta a UI dedicada na próxima rodada.')}
 </script>
 
 <!-- DRAWER SYSTEM -->

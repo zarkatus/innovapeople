@@ -52,11 +52,11 @@
     return '<div aria-busy="true" aria-label="Carregando" style="padding:18px 4px">'+bars+'</div>';
   }
   // injeta a animação do skeleton 1×
-  (function injectSkeletonCss(){
+ (function injectSkeletonCss(){
     if(document.getElementById('ip-ui-css')) return;
     var st=document.createElement('style'); st.id='ip-ui-css';
     st.textContent='.ip-sk{background:linear-gradient(90deg,rgba(210,174,100,.06),rgba(210,174,100,.16),rgba(210,174,100,.06));background-size:200% 100%;animation:ipSk 1.3s ease-in-out infinite}@keyframes ipSk{0%{background-position:200% 0}100%{background-position:-200% 0}}@media (prefers-reduced-motion:reduce){.ip-sk{animation:none}}';
-    (document.head||document.documentElement).appendChild(st);
+ (document.head||document.documentElement).appendChild(st);
   })();
   // ---- Toast (usa TB.toast se existir; senão cria efêmero acessível) ----
   function toast(msg,opts){
@@ -133,17 +133,17 @@
   // ---- Gauge semicircular (indice tipo CPI/SPI, semaforo) · 0..max, alvo 1 ----
   function gauge(valor, opts){
     opts=opts||{}; var max=opts.max||2, label=opts.label||'', alvo=opts.alvo!=null?opts.alvo:1;
-    var v = valor==null ? null : Math.max(0, Math.min(max, +valor));
-    var frac = v==null ? 0 : v/max;
+    var v = valor==null ? null: Math.max(0, Math.min(max, +valor));
+    var frac = v==null ? 0: v/max;
     // semaforo: <0.9 vermelho, 0.9-1.1 dourado, >1.1 verde
-    var cor = v==null ? 'var(--ip-ink-4)' : v<alvo*0.9 ? 'var(--ip-danger)' : v>alvo*1.1 ? 'var(--ip-ok)' : 'var(--ip-gold-lum)';
+    var cor = v==null ? 'var(--ip-ink-4)': v<alvo*0.9 ? 'var(--ip-danger)': v>alvo*1.1 ? 'var(--ip-ok)': 'var(--ip-gold-lum)';
     var R=52, cx=60, cy=60, ang0=Math.PI, ang1=Math.PI-frac*Math.PI; // semicirculo de 180deg
     var x0=cx+R*Math.cos(Math.PI), y0=cy+R*Math.sin(Math.PI);
     var bx=cx+R*Math.cos(0), by=cy+R*Math.sin(0);
     var px=cx+R*Math.cos(ang1), py=cy+R*Math.sin(ang1);
     var large = frac>0.5?1:0;
     var arcBg='M'+x0+','+y0+' A'+R+','+R+' 0 0 1 '+bx+','+by;
-    var arcFg = v==null?'' : 'M'+x0+','+y0+' A'+R+','+R+' 0 '+large+' 1 '+px+','+py;
+    var arcFg = v==null?'': 'M'+x0+','+y0+' A'+R+','+R+' 0 '+large+' 1 '+px+','+py;
     return '<div role="img" aria-label="'+esc(label)+': '+(v==null?'sem dado':v.toFixed(2))+'" style="text-align:center">'
       +'<svg viewBox="0 0 120 72" width="120" height="72" aria-hidden="true">'
       +'<path d="'+arcBg+'" fill="none" stroke="rgba(210,174,100,.12)" stroke-width="9" stroke-linecap="round"/>'

@@ -29,12 +29,12 @@
      +'.ipgp-pill .n{font-size:14px}'
      +'.ipgp-ok{background:rgba(123,211,160,.14);color:var(--ip-ok,#7BD3A0)}.ipgp-cau{background:rgba(229,199,126,.14);color:var(--ip-gold-lum,#E9A578)}.ipgp-no{background:rgba(232,166,166,.14);color:var(--ip-danger,#E8A6A6)}.ipgp-pend{background:rgba(143,160,181,.12);color:var(--ip-ink-2,#9FB0C5)}'
      +'.ipgp-alerta{margin-top:12px;font-size:12.5px;color:var(--ip-danger,#E8A6A6);background:rgba(232,166,166,.07);border-radius:9px;padding:10px 13px}';
-    (document.head||document.documentElement).appendChild(st);
+ (document.head||document.documentElement).appendChild(st);
   }
 
   async function render(host){
     if(!host) return; _injectCss();
-    var node = (window.IpOrg && IpOrg.scope && IpOrg.scope.node) ? IpOrg.scope.node() : null;
+    var node = (window.IpOrg && IpOrg.scope && IpOrg.scope.node) ? IpOrg.scope.node(): null;
     // só aparece em nó de AGREGAÇÃO (grupo/holding/unidade/segmento); em folha-empresa, some
     var ehAgregacao = node && ['grupo','holding','unidade_negocio','segmento','fundo'].indexOf(node.tipo_no)>=0;
     if(!ehAgregacao){ host.innerHTML=''; host.style.display='none'; return; }
@@ -65,7 +65,7 @@
         +'<span class="ipgp-pill ipgp-no"><span class="n">'+(dd.evitar||0)+'</span> evitar</span>'
         +(dd.dd_pendentes?'<span class="ipgp-pill ipgp-pend"><span class="n">'+dd.dd_pendentes+'</span> sem DD</span>':'')
         +'</div>';
-      if(dd.pior){ ddHtml+='<div class="ipgp-alerta">⚠ Maior risco no grupo: <b>'+esc(dd.pior.nome)+'</b> — due diligence '+esc(dd.pior.veredicto)+(dd.pior.score!=null?(' (score '+esc(dd.pior.score)+')'):'')+'.</div>'; }
+      if(dd.pior){ ddHtml+='<div class="ipgp-alerta">⚠ Maior risco no grupo: <b>'+esc(dd.pior.nome)+'</b>, due diligence '+esc(dd.pior.veredicto)+(dd.pior.score!=null?(' (score '+esc(dd.pior.score)+')'):'')+'.</div>'; }
     } else {
       ddHtml='<div style="font-size:11.5px;color:var(--ip-ink-4,#6B7A90);font-style:italic;margin-top:6px">Nenhuma empresa do grupo tem CNPJ com due diligence ainda. Insira o CNPJ nas unidades para acompanhar a idoneidade consolidada.</div>';
     }

@@ -403,13 +403,13 @@ async function carregarResumo(){
     sb.from('ip_agent_sugestoes').select('*').eq('mandato_id', MANDATO_ID).eq('status','pendente').order('severidade',{ascending:false}).order('created_at',{ascending:false}).limit(1),
     sb.from('ip_pulsos').select('score').eq('mandato_id', MANDATO_ID).gte('created_at', new Date(Date.now()-30*86400000).toISOString())
   ]);
-  const score30 = pulsos?.length ? Math.round(pulsos.reduce((a,p)=>a+(p.score||0),0)/pulsos.length) : null;
+  const score30 = pulsos?.length ? Math.round(pulsos.reduce((a,p)=>a+(p.score||0),0)/pulsos.length): null;
   document.getElementById('kpi-score').textContent = score30 ?? '—';
   document.getElementById('kpi-score').className = 'figure '+(score30 && score30<50?'danger':score30 && score30<70?'warn':score30?'success':'');
-  document.getElementById('kpi-score-note').textContent = pulsos?.length ? `${pulsos.length} respostas` : 'sem respostas';
+  document.getElementById('kpi-score-note').textContent = pulsos?.length ? `${pulsos.length} respostas`: 'sem respostas';
   document.getElementById('kpi-sugest').textContent = mdv?.sugestoes_pendentes || 0;
   document.getElementById('kpi-sugest').className = 'figure '+((mdv?.sugestoes_criticas||0)>0?'danger':'');
-  document.getElementById('kpi-sugest-note').textContent = (mdv?.sugestoes_criticas||0) > 0 ? `${mdv.sugestoes_criticas} crítica(s)/alta(s)` : '';
+  document.getElementById('kpi-sugest-note').textContent = (mdv?.sugestoes_criticas||0) > 0 ? `${mdv.sugestoes_criticas} crítica(s)/alta(s)`: '';
   document.getElementById('kpi-rel').textContent = mdv?.relacionamentos_criticos || 0;
   document.getElementById('kpi-rel').className = 'figure '+((mdv?.relacionamentos_criticos||0)>0?'warn':'');
   document.getElementById('kpi-rel-note').textContent = `de ${mdv?.total_relacionamentos||0} total`;
@@ -447,7 +447,7 @@ async function carregarPulsos(){
   const { data: pulsos } = await sb.from('ip_pulsos').select('equipe,score,risco_saida,r_pertencimento,r_proposito').eq('mandato_id', MANDATO_ID).gte('created_at', dataLimite);
   document.getElementById('ct-pulsos').textContent = (pulsos||[]).length;
   const equipes = {};
-  (pulsos||[]).forEach(p=>{
+ (pulsos||[]).forEach(p=>{
     const k = p.equipe || '(sem equipe)';
     if (!equipes[k]) equipes[k] = { scores:[], risco:[], pert:[], prop:[] };
     equipes[k].scores.push(p.score);
@@ -456,7 +456,7 @@ async function carregarPulsos(){
     equipes[k].prop.push(p.r_proposito);
   });
   const html = Object.entries(equipes).map(([nome, d])=>{
-    if (d.scores.length < 3) return `<div class="equipe-row"><div><div class="equipe-name">${esc(nome)}</div><div class="equipe-meta">Apenas ${d.scores.length} resposta(s) — necessário ≥ 3 para preservar anonimato (k-anon)</div></div></div>`;
+    if (d.scores.length < 3) return `<div class="equipe-row"><div><div class="equipe-name">${esc(nome)}</div><div class="equipe-meta">Apenas ${d.scores.length} resposta(s), necessário ≥ 3 para preservar anonimato (k-anon)</div></div></div>`;
     const avg = Math.round(d.scores.reduce((a,b)=>a+b,0)/d.scores.length);
     const risco = Math.round(d.risco.reduce((a,b)=>a+b,0)/d.risco.length);
     return `<div class="equipe-row">
@@ -475,8 +475,8 @@ async function carregarPulsos(){
     const chartHtml = tArr.map(t=>{
       const atual = t.score_atual || 0; const ant = t.score_anterior || 0;
       const delta = t.delta_score || 0;
-      const deltaColor = Math.abs(delta) < 2 ? 'var(--muted)' : delta > 0 ? 'var(--success)' : 'var(--danger)';
-      const sinal = delta > 0 ? '+' : '';
+      const deltaColor = Math.abs(delta) < 2 ? 'var(--muted)': delta > 0 ? 'var(--success)': 'var(--danger)';
+      const sinal = delta > 0 ? '+': '';
       return `<div style="padding:12px 16px;background:var(--paper);border-radius:8px;margin-bottom:8px">
         <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><strong>${esc(t.equipe)}</strong><span style="color:var(--muted);font-size:11px">${t.amostra_atual} respostas · janela 14d × 14d</span></div>
         <svg viewBox="0 0 300 60" style="width:100%;max-width:480px;height:auto;font-family:var(--sans)">
@@ -499,7 +499,7 @@ async function carregarPulsos(){
   document.getElementById('pulsos-tokens').innerHTML = (tokens||[]).length ? (tokens||[]).map(t=>{
     const url = location.origin + '/pulso/?t=' + t.token;
     return `<div class="token-row"><code>${esc(url)}</code><button class="btn btn-sm btn-ghost" onclick="navigator.clipboard.writeText('${url}');toast('Link copiado','success')">Copiar</button><span style="font-size:11px;color:var(--muted)">${esc(t.equipe||'')} · expira ${dt(t.expires_at)}</span></div>`;
-  }).join('') : '<div class="empty"><p>Nenhum token ativo.</p></div>';
+  }).join(''): '<div class="empty"><p>Nenhum token ativo.</p></div>';
 }
 
 function abrirModalGerarTokens(){
@@ -517,7 +517,7 @@ function abrirModalGerarTokens(){
 async function carregarDecisoes(){
   const { data } = await sb.from('ip_decisoes').select('*').eq('mandato_id', MANDATO_ID).order('created_at',{ascending:false});
   document.getElementById('ct-decisoes').textContent = (data||[]).length;
-  document.getElementById('decisoes-list').innerHTML = (data||[]).length ? `<table class="data"><thead><tr><th>Título</th><th>Nível</th><th>Status</th><th>Autor</th><th>Quando</th></tr></thead><tbody>${data.map(d=>`<tr><td><strong>${esc(d.titulo)}</strong><br><span style="font-size:12px;color:var(--muted)">${esc((d.decisao||'').slice(0,140))}${d.decisao&&d.decisao.length>140?'…':''}</span></td><td><span class="tag-nivel ${d.nivel}">${d.nivel}</span></td><td>${esc(d.status)}</td><td>${esc(d.autor||'—')}</td><td>${dt(d.created_at)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty"><p>Nenhuma decisão registrada ainda.</p></div>';
+  document.getElementById('decisoes-list').innerHTML = (data||[]).length ? `<table class="data"><thead><tr><th>Título</th><th>Nível</th><th>Status</th><th>Autor</th><th>Quando</th></tr></thead><tbody>${data.map(d=>`<tr><td><strong>${esc(d.titulo)}</strong><br><span style="font-size:12px;color:var(--muted)">${esc((d.decisao||'').slice(0,140))}${d.decisao&&d.decisao.length>140?'…':''}</span></td><td><span class="tag-nivel ${d.nivel}">${d.nivel}</span></td><td>${esc(d.status)}</td><td>${esc(d.autor||'—')}</td><td>${dt(d.created_at)}</td></tr>`).join('')}</tbody></table>`: '<div class="empty"><p>Nenhuma decisão registrada ainda.</p></div>';
 }
 
 function abrirModalDecisao(){
@@ -536,7 +536,7 @@ function abrirModalDecisao(){
 async function carregarRelacionamentos(){
   const { data } = await sb.from('ip_relacionamentos').select('*').eq('mandato_id', MANDATO_ID).order('vinculo_critico',{ascending:false}).order('created_at',{ascending:false});
   document.getElementById('ct-relacionamentos').textContent = (data||[]).length;
-  document.getElementById('relacionamentos-list').innerHTML = (data||[]).length ? `<table class="data"><thead><tr><th>Nome</th><th>Papel</th><th>Categoria</th><th>Responsável</th><th>Crítico</th></tr></thead><tbody>${data.map(r=>`<tr><td><strong>${esc(r.nome)}</strong>${r.organizacao?'<br><span style="font-size:12px;color:var(--muted)">'+esc(r.organizacao)+'</span>':''}</td><td>${esc(r.papel||'—')}</td><td><span class="tag-cat">${esc(r.categoria||'—')}</span></td><td>${esc(r.responsavel_interno||'—')}</td><td>${r.vinculo_critico?'<span class="indic-critico">●</span>':''}</td></tr>`).join('')}</tbody></table>` : '<div class="empty"><p>Nenhum relacionamento mapeado ainda.</p></div>';
+  document.getElementById('relacionamentos-list').innerHTML = (data||[]).length ? `<table class="data"><thead><tr><th>Nome</th><th>Papel</th><th>Categoria</th><th>Responsável</th><th>Crítico</th></tr></thead><tbody>${data.map(r=>`<tr><td><strong>${esc(r.nome)}</strong>${r.organizacao?'<br><span style="font-size:12px;color:var(--muted)">'+esc(r.organizacao)+'</span>':''}</td><td>${esc(r.papel||'—')}</td><td><span class="tag-cat">${esc(r.categoria||'—')}</span></td><td>${esc(r.responsavel_interno||'—')}</td><td>${r.vinculo_critico?'<span class="indic-critico">●</span>':''}</td></tr>`).join('')}</tbody></table>`: '<div class="empty"><p>Nenhum relacionamento mapeado ainda.</p></div>';
 }
 
 function abrirModalRelacionamento(){
@@ -556,7 +556,7 @@ function abrirModalRelacionamento(){
 async function carregarProtocolos(){
   const { data } = await sb.from('ip_protocolos').select('*').eq('mandato_id', MANDATO_ID).eq('ativo', true).order('updated_at',{ascending:false});
   document.getElementById('ct-protocolos').textContent = (data||[]).length;
-  document.getElementById('protocolos-list').innerHTML = (data||[]).length ? data.map(p=>`<div style="padding:18px 22px;background:var(--paper);border-left:3px solid var(--acento);border-radius:0 8px 8px 0;margin-bottom:10px"><div style="font-family:var(--serif);font-weight:600;color:var(--marca-deep);font-size:18px;margin-bottom:4px">${esc(p.titulo)}</div><div style="font-size:12px;color:var(--muted);letter-spacing:.04em;margin-bottom:10px">${esc(p.area||'—')} · v${p.versao} · responsável ${esc(p.responsavel||'—')} · atualizado ${dt(p.updated_at)}</div><div style="font-size:13.5px;color:var(--ink-soft);line-height:1.55;white-space:pre-wrap">${esc((p.conteudo||'').slice(0,400))}${p.conteudo&&p.conteudo.length>400?'…':''}</div></div>`).join('') : '<div class="empty"><p>Nenhum protocolo vivo ainda.</p></div>';
+  document.getElementById('protocolos-list').innerHTML = (data||[]).length ? data.map(p=>`<div style="padding:18px 22px;background:var(--paper);border-left:3px solid var(--acento);border-radius:0 8px 8px 0;margin-bottom:10px"><div style="font-family:var(--serif);font-weight:600;color:var(--marca-deep);font-size:18px;margin-bottom:4px">${esc(p.titulo)}</div><div style="font-size:12px;color:var(--muted);letter-spacing:.04em;margin-bottom:10px">${esc(p.area||'—')} · v${p.versao} · responsável ${esc(p.responsavel||'—')} · atualizado ${dt(p.updated_at)}</div><div style="font-size:13.5px;color:var(--ink-soft);line-height:1.55;white-space:pre-wrap">${esc((p.conteudo||'').slice(0,400))}${p.conteudo&&p.conteudo.length>400?'…':''}</div></div>`).join(''): '<div class="empty"><p>Nenhum protocolo vivo ainda.</p></div>';
 }
 
 function abrirModalProtocolo(){
@@ -579,7 +579,7 @@ async function carregarSugestoes(){
   document.getElementById('sugestoes-list').innerHTML = SUGESTOES_CACHE.length ? SUGESTOES_CACHE.map(s=>{
     const hasEvidence = s.evidencias && Object.keys(s.evidencias).length > 0;
     return `<div style="padding:18px 22px;background:#fff;border:1px solid var(--rule);border-radius:10px;margin-bottom:10px;${s.status!=='pendente'?'opacity:.55':''};cursor:pointer" onclick="abrirDrillSugestao('${s.id}')"><div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px"><span class="tag-sev ${s.severidade}">${s.severidade}</span><div style="flex:1"><div style="font-family:var(--serif);font-weight:600;color:var(--marca-deep);font-size:17px;line-height:1.3">${esc(s.titulo)}</div><div style="font-size:11px;color:var(--muted);letter-spacing:.04em;margin-top:3px">Agente <strong>${esc(s.agente)}</strong> · ${dt(s.created_at)} · status <strong>${esc(s.status)}</strong>${hasEvidence?' · <span style="color:var(--marca);font-weight:600">clique para detalhes</span>':''}</div></div></div><div style="font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:12px">${esc(s.sugestao)}</div>${s.status==='pendente'?`<div style="display:flex;gap:8px" onclick="event.stopPropagation()"><button class="btn btn-sm btn-success" onclick="updateSugestao('${s.id}','aplicada')">Aplicar</button><button class="btn btn-sm btn-ghost" onclick="updateSugestao('${s.id}','revisada')">Marcar como revisada</button><button class="btn btn-sm btn-danger" onclick="updateSugestao('${s.id}','descartada')">Descartar</button></div>`:''}</div>`;
-  }).join('') : '<div class="empty"><p>Nenhuma sugestão dos agentes ainda. Os agentes rodam diariamente às 07:30 UTC.</p></div>';
+  }).join(''): '<div class="empty"><p>Nenhuma sugestão dos agentes ainda. Os agentes rodam diariamente às 07:30 UTC.</p></div>';
 }
 
 async function abrirDrillSugestao(id){
@@ -612,8 +612,8 @@ async function abrirDrillSugestao(id){
       <div id="hist-termo-result" style="margin-top:12px"></div></div>`;
   }
   document.getElementById('modal-body').innerHTML = html;
-  document.getElementById('modal-confirm').style.display = s.status === 'pendente' ? 'inline-block' : 'none';
-  document.getElementById('modal-confirm').textContent = s.status === 'pendente' ? 'Marcar como aplicada' : 'Fechar';
+  document.getElementById('modal-confirm').style.display = s.status === 'pendente' ? 'inline-block': 'none';
+  document.getElementById('modal-confirm').textContent = s.status === 'pendente' ? 'Marcar como aplicada': 'Fechar';
   document.getElementById('modal').classList.add('show');
 }
 
@@ -652,7 +652,7 @@ async function carregarPlano(){
   const html = (data||[]).length ? `<table class="data"><thead><tr><th>Título</th><th>Frente</th><th>IREU</th><th>Responsável</th><th>Prazo</th><th>Status</th></tr></thead><tbody>${data.map(a=>{
     const sclass = a.status==='concluida'?'opacity:.5':'';
     return `<tr style="${sclass}"><td><strong>${esc(a.titulo)}</strong><br><span style="font-size:11.5px;color:var(--muted);font-style:italic">${esc(a.origem)}${a.descricao?' · '+esc(a.descricao.slice(0,120))+(a.descricao.length>120?'…':''):''}</span></td><td><span class="tag-cat">${esc(FRENTE_LABEL[a.frente]||a.frente)}</span></td><td><strong style="color:var(--marca-deep);font-family:var(--serif);font-size:16px">${a.ireu_score??'—'}</strong></td><td>${esc(a.responsavel||'—')}</td><td>${a.prazo?new Date(a.prazo).toLocaleDateString('pt-BR'):'—'}</td><td><select onchange="updateStatusAcao('${a.id}', this.value)" style="font-size:11px;padding:3px 6px;border:1px solid var(--rule);border-radius:5px;background:#fff;cursor:pointer">${Object.entries(STATUS_PLANO_LABEL).map(([k,v])=>`<option value="${k}" ${a.status===k?'selected':''}>${v}</option>`).join('')}</select></td></tr>`;
-  }).join('')}</tbody></table>` : '<div class="empty"><p>Plano vazio. Clique em "Gerar plano automático" para popular a partir de templates curados + sugestões dos agentes + sintomas do Raio-X.</p></div>';
+  }).join('')}</tbody></table>`: '<div class="empty"><p>Plano vazio. Clique em "Gerar plano automático" para popular a partir de templates curados + sugestões dos agentes + sintomas do Raio-X.</p></div>';
   document.getElementById('plano-list').innerHTML = html;
 }
 
@@ -697,16 +697,16 @@ function abrirModalAcao(){
 async function carregarPessoas(){
   const { data: perfis } = await sb.from('ip_perfil_colaborador').select('*').eq('mandato_id', MANDATO_ID).order('created_at',{ascending:false});
   document.getElementById('ct-pessoas').textContent = (perfis||[]).length;
-  document.getElementById('perfis-list').innerHTML = (perfis||[]).length ? `<table class="data"><thead><tr><th>Rótulo</th><th>Equipe / Papel</th><th>Tempo de casa</th><th>Automatizabilidade</th><th>Risco saída</th></tr></thead><tbody>${perfis.map(p=>`<tr><td><strong>${esc(p.rotulo||'—')}</strong></td><td>${esc(p.equipe||'—')}${p.papel?' · '+esc(p.papel):''}</td><td>${p.tempo_casa_meses?p.tempo_casa_meses+' meses':'—'}</td><td>${p.automatizabilidade_pct?p.automatizabilidade_pct+'%':'—'}</td><td>${p.risco_saida_estimado!==null?'<strong style="color:'+(p.risco_saida_estimado>=7?'var(--danger)':p.risco_saida_estimado>=4?'var(--warn)':'var(--success)')+'">'+p.risco_saida_estimado+'/10</strong>':'—'}</td></tr>`).join('')}</tbody></table>` : '<div class="empty"><p>Nenhum perfil mapeado ainda. Os perfis aqui são anonimizados — use rótulos descritivos do papel (ex: "Líder Operações Norte", "Analista Sênior").</p></div>';
+  document.getElementById('perfis-list').innerHTML = (perfis||[]).length ? `<table class="data"><thead><tr><th>Rótulo</th><th>Equipe / Papel</th><th>Tempo de casa</th><th>Automatizabilidade</th><th>Risco saída</th></tr></thead><tbody>${perfis.map(p=>`<tr><td><strong>${esc(p.rotulo||'—')}</strong></td><td>${esc(p.equipe||'—')}${p.papel?' · '+esc(p.papel):''}</td><td>${p.tempo_casa_meses?p.tempo_casa_meses+' meses':'—'}</td><td>${p.automatizabilidade_pct?p.automatizabilidade_pct+'%':'—'}</td><td>${p.risco_saida_estimado!==null?'<strong style="color:'+(p.risco_saida_estimado>=7?'var(--danger)':p.risco_saida_estimado>=4?'var(--warn)':'var(--success)')+'">'+p.risco_saida_estimado+'/10</strong>':'—'}</td></tr>`).join('')}</tbody></table>`: '<div class="empty"><p>Nenhum perfil mapeado ainda. Os perfis aqui são anonimizados, use rótulos descritivos do papel (ex: "Líder Operações Norte", "Analista Sênior").</p></div>';
 
   const { data: skills } = await sb.from('ip_skill_map').select('*,ip_perfil_colaborador(rotulo,equipe,papel)').eq('mandato_id', MANDATO_ID).order('s_score_total',{ascending:false});
   document.getElementById('skills-list').innerHTML = ((perfis||[]).length === 0)
     ? '<div class="empty"><p style="font-style:italic">Crie perfis primeiro para registrar skills.</p></div>'
-    : `<table class="data"><thead><tr><th>Perfil</th><th>Téc.</th><th>Orq.</th><th>Julg.</th><th>Rel.</th><th>IA</th><th>Gest.</th><th>Total</th><th></th></tr></thead><tbody>${perfis.map(p=>{const s=(skills||[]).find(x=>x.perfil_id===p.id);return `<tr><td><strong>${esc(p.rotulo||'—')}</strong></td><td>${s?.s_tecnica??'—'}</td><td>${s?.s_orquestracao??'—'}</td><td>${s?.s_julgamento??'—'}</td><td>${s?.s_relacao??'—'}</td><td>${s?.s_ia_automacao??'—'}</td><td>${s?.s_gestao??'—'}</td><td><strong style="color:var(--marca-deep);font-family:var(--serif);font-size:16px">${s?.s_score_total??'—'}</strong></td><td><button class="btn btn-sm btn-ghost" onclick="abrirModalSkill('${p.id}','${esc(p.rotulo||'')}',${JSON.stringify(s||{}).replace(/"/g,'&quot;')})">${s?'Editar':'Registrar'}</button></td></tr>`}).join('')}</tbody></table>`;
+: `<table class="data"><thead><tr><th>Perfil</th><th>Téc.</th><th>Orq.</th><th>Julg.</th><th>Rel.</th><th>IA</th><th>Gest.</th><th>Total</th><th></th></tr></thead><tbody>${perfis.map(p=>{const s=(skills||[]).find(x=>x.perfil_id===p.id);return `<tr><td><strong>${esc(p.rotulo||'—')}</strong></td><td>${s?.s_tecnica??'—'}</td><td>${s?.s_orquestracao??'—'}</td><td>${s?.s_julgamento??'—'}</td><td>${s?.s_relacao??'—'}</td><td>${s?.s_ia_automacao??'—'}</td><td>${s?.s_gestao??'—'}</td><td><strong style="color:var(--marca-deep);font-family:var(--serif);font-size:16px">${s?.s_score_total??'—'}</strong></td><td><button class="btn btn-sm btn-ghost" onclick="abrirModalSkill('${p.id}','${esc(p.rotulo||'')}',${JSON.stringify(s||{}).replace(/"/g,'&quot;')})">${s?'Editar':'Registrar'}</button></td></tr>`}).join('')}</tbody></table>`;
 }
 
 async function abrirModalSkill(perfilId, rotulo, skillExistente){
-  const s = typeof skillExistente === 'string' ? JSON.parse(skillExistente.replace(/&quot;/g,'"')) : skillExistente;
+  const s = typeof skillExistente === 'string' ? JSON.parse(skillExistente.replace(/&quot;/g,'"')): skillExistente;
   modalContext = { tipo:'skill', perfil_id: perfilId, skill_id: s.id };
   document.getElementById('modal-title').textContent = `Skill Map · ${rotulo}`;
   document.getElementById('modal-body').innerHTML = `
@@ -747,7 +747,7 @@ async function carregarRituais(){
   const { data } = await sb.from('ip_rituais').select('*').eq('mandato_id', MANDATO_ID).eq('ativo',true).order('proxima_em',{ascending:true,nullsLast:true});
   document.getElementById('ct-rituais').textContent = (data||[]).length;
   document.getElementById('rituais-list').innerHTML = (data||[]).length ? data.map(r=>{
-    const dias = r.proxima_em ? Math.ceil((new Date(r.proxima_em)-new Date())/86400000) : null;
+    const dias = r.proxima_em ? Math.ceil((new Date(r.proxima_em)-new Date())/86400000): null;
     const proxColor = dias===null?'var(--muted)':dias<0?'var(--danger)':dias<=3?'var(--warn)':'var(--success)';
     return `<div style="padding:18px 22px;background:var(--paper);border-left:3px solid var(--acento);border-radius:0 8px 8px 0;margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px">
@@ -760,7 +760,7 @@ async function carregarRituais(){
         <div style="text-align:right;flex-shrink:0;min-width:120px"><div style="font-family:var(--serif);color:${proxColor};font-weight:600;font-size:15px">${r.proxima_em?new Date(r.proxima_em).toLocaleDateString('pt-BR'):'—'}</div><div style="font-size:10.5px;color:var(--muted);letter-spacing:.04em">${dias===null?'sem data':dias<0?Math.abs(dias)+' dias atrás':dias===0?'hoje':dias===1?'amanhã':'em '+dias+' dias'}</div></div>
       </div>
     </div>`;
-  }).join('') : '<div class="empty"><p>Nenhum ritual ativo. Rituais regulares (semanal de orquestração, mensal estratégico) sustentam Coerência de Contexto.</p></div>';
+  }).join(''): '<div class="empty"><p>Nenhum ritual ativo. Rituais regulares (semanal de orquestração, mensal estratégico) sustentam Coerência de Contexto.</p></div>';
 }
 
 function abrirModalRitual(){

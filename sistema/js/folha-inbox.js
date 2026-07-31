@@ -30,7 +30,7 @@
     ]);
     _s.clientes=cli.data||[];
     _s.folhaCount={};
-    (fol.data||[]).forEach(r=>{_s.folhaCount[r.cliente]=(_s.folhaCount[r.cliente]||0)+1;});
+ (fol.data||[]).forEach(r=>{_s.folhaCount[r.cliente]=(_s.folhaCount[r.cliente]||0)+1;});
   }
 
   async function reload(){
@@ -178,7 +178,7 @@
       const r=await IpPersist.write(()=>sb().rpc('fn_ip_folha_processar',{p_inbox_id:id}),{label:'Folha processada'});
       if(!r.ok&&!r.queued)return;
       if(r.queued){ const it=_s.rows.find(x=>x.id===id); if(it){it.estado='processada';it.processado_em=new Date().toISOString();} render(); _fechar(); return; }
-      if(r.data&&r.data.loop_fechado&&window.TB) TB.toast('Folha processada — InnovaSphere notificada');
+      if(r.data&&r.data.loop_fechado&&window.TB) TB.toast('Folha processada, InnovaSphere notificada');
       await reload(); render(); _fechar();
     }catch(e){T.toast('Erro: '+(e.message||e))}
   }

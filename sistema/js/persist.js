@@ -63,7 +63,7 @@
         else {
           const msg=(res&&res.error&&res.error.message)||'erro';
           pushFailed(d,msg); q.splice(i,1); save(QKEY,q);
-          T.toast('Sincronizacao falhou (erro permanente): '+msg+' — ver pendencias');
+          T.toast('Sincronizacao falhou (erro permanente): '+msg+', ver pendencias');
         }
       }
       _badge();
@@ -94,13 +94,13 @@
       // Evolucao p/ exactly-once: idempotency-key no payload + ON CONFLICT no servidor.
       const idempotente = (op==='update'||op==='delete'||op==='upsert');
       if(idempotente || isOffline()){
-        if(enqueue(opts.offline)){ T.toast(label+': sem conexao — salvo localmente, reenvia ao reconectar'); return {ok:false,error:lastErr,queued:true}; }
+        if(enqueue(opts.offline)){ T.toast(label+': sem conexao, salvo localmente, reenvia ao reconectar'); return {ok:false,error:lastErr,queued:true}; }
       } else {
         T.toast('Falha ao salvar '+label+': resposta perdida. Confira se gravou antes de repetir (evitando duplicar).');
         return {ok:false,error:lastErr,queued:false};
       }
     }
-    T.toast('Falha ao salvar '+label+': '+((lastErr&&lastErr.message)||'erro')+' — tente de novo');
+    T.toast('Falha ao salvar '+label+': '+((lastErr&&lastErr.message)||'erro')+', tente de novo');
     return {ok:false,error:lastErr,queued:false};
   }
   async function retryFailed(){
@@ -120,7 +120,7 @@
     }catch(_){}
   }
   if(typeof window!=='undefined'){
-    window.addEventListener('online', function(){ if(pendingCount()){ T.toast('Conexao restabelecida — reenviando pendencias'); drain(); } });
+    window.addEventListener('online', function(){ if(pendingCount()){ T.toast('Conexao restabelecida, reenviando pendencias'); drain(); } });
     setTimeout(function(){ if(pendingCount()||failedCount()){ _badge(); if(pendingCount())drain(); } }, 1500);
   }
   window.IpPersist={write:write,drain:drain,pendingCount:pendingCount,failedCount:failedCount,retryFailed:retryFailed,_enqueue:enqueue};

@@ -19,7 +19,7 @@
     const ovl=document.createElement('div');ovl.id='ip-auth-ovl';
     ovl.style.cssText='position:fixed;inset:0;background:#0A1628;color:#3DA882;display:flex;align-items:center;justify-content:center;font:300 13px/1.4 system-ui;letter-spacing:.22em;text-transform:uppercase;z-index:2147483647;transition:opacity .35s';
     ovl.innerHTML='<div style="text-align:center"><div style="margin-bottom:14px;font-size:11px;opacity:.5">InnovaPeople</div><div>Validando acesso<span>…</span></div></div>';
-    (document.body||document.documentElement).appendChild(ovl);
+ (document.body||document.documentElement).appendChild(ovl);
   }
   function removeOverlay(){const o=document.getElementById('ip-auth-ovl');if(!o)return;o.style.opacity='0';setTimeout(()=>{if(o.parentNode)o.parentNode.removeChild(o)},400)}
   function deny(r){location.replace('/sistema/?from=whatsapp')}
@@ -32,7 +32,7 @@
   }
   if(document.body){injectOverlay()}else{document.addEventListener('DOMContentLoaded',injectOverlay,{once:true})}
   const safety=setTimeout(()=>{allow('')},6000);
-  (async function run(){
+ (async function run(){
     try{
       if(!window.supabase)throw new Error('SDK não carregou');
       const sb=window.supabase.createClient(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
@@ -248,7 +248,7 @@ input,textarea,select{font:inherit}
   <aside class="left">
     <div class="left-h">
       <h2>Conversas <em>vivas</em></h2>
-      <div class="sub" id="conv-count">— em curso</div>
+      <div class="sub" id="conv-count">, em curso</div>
       <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
         <a href="/sistema/whatsapp/sequencias/" style="padding:5px 10px;border:1px solid var(--gold);border-radius:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep);font-family:var(--mono)">Sequências</a>
         <a href="/sistema/whatsapp/broadcast/" style="padding:5px 10px;border:1px solid var(--gold);border-radius:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep);font-family:var(--mono)">Broadcast</a>

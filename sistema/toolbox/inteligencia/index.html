@@ -185,7 +185,7 @@ async function loadPulseAnalytics(){
   document.getElementById('pa-eq').textContent=new Set(arr30.map(x=>x.equipe).filter(Boolean)).size;
   const said=(arr)=>{const f=(k)=>arr.map(r=>r[k]).filter(v=>v!=null);const total=SAID_DIMS.flatMap(k=>f(k));return total.length?total.reduce((a,b)=>a+b,0)/total.length:null};
   const s30=said(arr30),s60=said(arr60);
-  document.getElementById('pa-said').innerHTML=s30?s30.toFixed(2)+'<span class="un">/5</span>':'—<span class="un">/5</span>';
+  document.getElementById('pa-said').innerHTML=s30?s30.toFixed(2)+'<span class="un">/5</span>':',<span class="un">/5</span>';
   if(s30&&s60){
     const d=s30-s60;
     const arrow=d>0?'↑':(d<0?'↓':'→');
@@ -216,7 +216,7 @@ async function loadComment(){
   let texto=`<strong>5 agentes</strong> rodando · ${runs7.count||0} execuções nos últimos 7d.`;
   if(crit>0)texto+=` <strong style="color:var(--acento)">${crit} sugestão${crit>1?'es':''} crítica${crit>1?'s':''}</strong> aguardando revisão.`;
   else if((sug.data||[]).length>0)texto+=` ${(sug.data||[]).length} sugestões pendentes (severidade média/baixa).`;
-  else texto+=' Nenhuma sugestão pendente — sistema em equilíbrio.';
+  else texto+=' Nenhuma sugestão pendente, sistema em equilíbrio.';
   document.getElementById('exec-comment').innerHTML=texto;
 }
 </script>
