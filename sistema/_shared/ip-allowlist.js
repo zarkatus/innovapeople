@@ -11,7 +11,7 @@
 // Fail-SAFE: erro de REDE na RPC nunca desloga (não tranca o CVO por timeout).
 (function(){
   'use strict';
-  var SEED = ['raphael@schifino.com.br','gleice@schifino.com.br','rapheice@schifino.com.br'];
+  var SEED = ['raphael@schifino.com.br','gleice@schifino.com.br','rapheice@schifino.com.br','raphael@innovapeople.com.br','gleice@innovapeople.com.br','raphael@innovasphere.ia.br','gleice@innovasphere.ia.br'];
   function norm(e){ return String(e||'').trim().toLowerCase(); }
 
   // Retorna {ok, via:'rpc'|'seed-fallback'|'empty'}. ok=false só quando a RPC afirma `false`.

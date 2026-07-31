@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Acessos · InnovaPeople</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/sistema/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/sistema/_shared/tokens.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+<style>
+  /* Tela nascida no contrato: nenhuma cor escrita aqui, tudo por var(--ip-*). */
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ip-surface);color:var(--ip-text-body);
+       font:400 15px/1.6 'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:38px 22px 80px}
+  h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;font-size:2.1rem;color:var(--ip-text);margin:0 0 6px}
+  .sub{color:var(--ip-text-muted);font-size:.86rem;margin-bottom:30px;line-height:1.65}
+  .voltar{display:inline-block;color:var(--ip-text-muted);text-decoration:none;font-size:.74rem;
+          letter-spacing:.18em;text-transform:uppercase;margin-bottom:22px}
+  .voltar:hover{color:var(--ip-accent)}
+
+  .cartao{background:var(--ip-surface-card);border:1px solid var(--ip-line);border-radius:14px;
+          box-shadow:var(--ip-shadow-soft);padding:22px 24px;margin-bottom:26px}
+  .cartao h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;font-size:1.35rem;
+             color:var(--ip-text);margin:0 0 16px}
+
+  .linha{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+  .campo{flex:1;min-width:180px}
+  label{display:block;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+        color:var(--ip-text-faint);font-weight:600;margin-bottom:5px}
+  input,select{width:100%;padding:10px 12px;border:1px solid var(--ip-line-strong);border-radius:9px;
+       background:var(--ip-surface-sunken);color:var(--ip-text);font:400 .9rem 'Inter',sans-serif;outline:none}
+  input:focus,select:focus{border-color:var(--ip-accent);box-shadow:0 0 0 3px var(--ip-focus)}
+  button{border:0;border-radius:9px;padding:11px 20px;font:600 .78rem 'Inter',sans-serif;
+         letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+         background:var(--ip-accent);color:var(--ip-text-on-accent)}
+  button:hover{background:var(--ip-accent-strong)}
+  button.fantasma{background:transparent;color:var(--ip-text-muted);border:1px solid var(--ip-line-strong)}
+  button.fantasma:hover{color:var(--ip-danger);border-color:var(--ip-danger)}
+
+  table{width:100%;border-collapse:collapse;font-size:.86rem}
+  th{text-align:left;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+     color:var(--ip-text-faint);font-weight:600;padding:0 10px 10px;border-bottom:1px solid var(--ip-line)}
+  td{padding:12px 10px;border-bottom:1px solid var(--ip-line);vertical-align:middle}
+  tr.inativo td{opacity:.5}
+  .papel{display:inline-block;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+         font-weight:600;padding:3px 9px;border-radius:20px;
+         background:var(--ip-accent-wash);color:var(--ip-accent-strong)}
+  .quando{color:var(--ip-text-faint);font-size:.76rem}
+  .aviso{padding:12px 15px;border-radius:9px;font-size:.83rem;margin-bottom:16px;line-height:1.5}
+  .aviso.erro{background:var(--ip-danger-wash);color:var(--ip-danger);border:1px solid var(--ip-danger)}
+  .aviso.ok{background:var(--ip-ok-wash);color:var(--ip-ok);border:1px solid var(--ip-ok)}
+  .vazio{color:var(--ip-text-faint);font-style:italic;padding:18px 0}
+  .trilha li{font-size:.8rem;color:var(--ip-text-muted);margin-bottom:7px;list-style:none}
+  .trilha{padding:0;margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="voltar" href="/sistema/">&larr; Sistema</a>
+  <h1>Quem entra na casa</h1>
+  <div class="sub">Conceder e revogar acesso acontece aqui. Antes era preciso abrir o banco, e por isso
+    ninguém revogava. Toda mudança fica registrada com quem fez e quando.</div>
+
+  <div id="msg"></div>
+
+  <div class="cartao" id="cartao-novo" style="display:none">
+    <h2>Dar acesso a alguém</h2>
+    <div class="linha">
+      <div class="campo"><label>E-mail</label><input id="f-email" type="email" placeholder="nome@empresa.com.br" autocomplete="off"></div>
+      <div class="campo"><label>Nome</label><input id="f-nome" placeholder="Nome e sobrenome" autocomplete="off"></div>
+      <div class="campo" style="max-width:180px"><label>Papel</label>
+        <select id="f-papel">
+          <option value="convidado">Convidado</option>
+          <option value="gestor">Gestor</option>
+          <option value="socio">Sócio</option>
+          <option value="cvo">CVO</option>
+        </select>
+      </div>
+      <button id="b-conceder">Conceder</button>
+    </div>
+  </div>
+
+  <div class="cartao">
+    <h2>Com acesso hoje</h2>
+    <div id="lista"><div class="vazio">Carregando…</div></div>
+  </div>
+
+  <div class="cartao" id="cartao-trilha" style="display:none">
+    <h2>O que mudou</h2>
+    <ul class="trilha" id="trilha"></ul>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var SUPA_URL='https://auth.innovasphere.ia.br';
+  var SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
+  var sb = window.supabase.createClient(SUPA_URL, SUPA_ANON, { auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:true }});
+  window.__IP_SB = sb;
+  var eu = '';
+
+  function esc(v){ return String(v==null?'':v).replace(/[<>&"]/g,function(c){return ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'})[c];}); }
+  function msg(t, tipo){ document.getElementById('msg').innerHTML = t ? '<div class="aviso '+(tipo||'ok')+'">'+esc(t)+'</div>' : ''; }
+  function quando(d){ if(!d) return 'nunca entrou'; var x=new Date(d); return x.toLocaleDateString('pt-BR')+' '+x.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
+
+  async function carregar(){
+    var r = await sb.rpc('fn_ip_acessos_listar');
+    if(r.error){
+      // Quem nao administra a casa nao ve a lista: a propria funcao recusa no servidor.
+      document.getElementById('lista').innerHTML = '<div class="vazio">Esta tela é de quem administra a casa.</div>';
+      msg('Seu acesso não permite gerir a lista. Fale com o CVO.', 'erro');
+      return;
+    }
+    document.getElementById('cartao-novo').style.display = '';
+    var linhas = (r.data||[]).map(function(u){
+      var acao = u.ativo
+        ? '<button class="fantasma" data-revogar="'+esc(u.email)+'">Revogar</button>'
+        : '<button data-conceder="'+esc(u.email)+'" data-papel="'+esc(u.role)+'">Reativar</button>';
+      return '<tr class="'+(u.ativo?'':'inativo')+'">'
+        + '<td><strong>'+esc(u.nome||u.email.split('@')[0])+'</strong><br><span class="quando">'+esc(u.email)+'</span></td>'
+        + '<td><span class="papel">'+esc(u.role)+'</span></td>'
+        + '<td class="quando">'+esc(quando(u.ultimo_acesso_em))+'</td>'
+        + '<td style="text-align:right">'+acao+'</td></tr>';
+    }).join('');
+    document.getElementById('lista').innerHTML = linhas
+      ? '<table><thead><tr><th>Pessoa</th><th>Papel</th><th>Último acesso</th><th></th></tr></thead><tbody>'+linhas+'</tbody></table>'
+      : '<div class="vazio">Ninguém na lista.</div>';
+    carregarTrilha();
+  }
+
+  async function carregarTrilha(){
+    var r = await sb.from('ip_acesso_log').select('quando,ator,acao,alvo').order('quando',{ascending:false}).limit(12);
+    if(r.error || !r.data || !r.data.length) return;
+    document.getElementById('cartao-trilha').style.display = '';
+    document.getElementById('trilha').innerHTML = r.data.map(function(l){
+      return '<li><span class="quando">'+esc(quando(l.quando))+'</span> &middot; <strong>'+esc(l.ator.split('@')[0])+'</strong> '+esc(l.acao)+' <strong>'+esc(l.alvo)+'</strong></li>';
+    }).join('');
+  }
+
+  document.getElementById('b-conceder').onclick = async function(){
+    var email=document.getElementById('f-email').value.trim();
+    var nome=document.getElementById('f-nome').value.trim();
+    var papel=document.getElementById('f-papel').value;
+    if(!email){ msg('Informe o e-mail de quem vai receber acesso.','erro'); return; }
+    this.disabled=true;
+    var r = await sb.rpc('fn_ip_acesso_conceder',{p_email:email,p_nome:nome,p_role:papel});
+    this.disabled=false;
+    if(r.error){ msg(r.error.message,'erro'); return; }
+    if(r.data && r.data.ok===false){ msg(r.data.erro,'erro'); return; }
+    msg(email+' agora tem acesso como '+papel+'.','ok');
+    document.getElementById('f-email').value=''; document.getElementById('f-nome').value='';
+    carregar();
+  };
+
+  document.addEventListener('click', async function(ev){
+    var b = ev.target.closest('[data-revogar],[data-conceder]');
+    if(!b) return;
+    if(b.dataset.revogar){
+      if(!confirm('Revogar o acesso de '+b.dataset.revogar+'?\n\nEla perde a entrada imediatamente.')) return;
+      var r = await sb.rpc('fn_ip_acesso_revogar',{p_email:b.dataset.revogar});
+      if(r.error){ msg(r.error.message,'erro'); return; }
+      if(r.data && r.data.ok===false){ msg(r.data.erro,'erro'); return; }
+      msg('Acesso de '+b.dataset.revogar+' revogado.','ok');
+    } else {
+      var r2 = await sb.rpc('fn_ip_acesso_conceder',{p_email:b.dataset.conceder,p_role:b.dataset.papel||'convidado'});
+      if(r2.error){ msg(r2.error.message,'erro'); return; }
+      msg('Acesso de '+b.dataset.conceder+' reativado.','ok');
+    }
+    carregar();
+  });
+
+  (async function inicia(){
+    var s = await sb.auth.getSession();
+    var sess = s && s.data && s.data.session;
+    if(!sess){ location.href='/sistema/?from=acessos'; return; }
+    eu = (sess.user && sess.user.email || '').toLowerCase();
+    window.__IP_USER_EMAIL = eu;
+    carregar();
+  })();
+})();
+</script>
+</body>
+</html>

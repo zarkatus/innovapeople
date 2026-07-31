@@ -528,13 +528,14 @@ html[data-theme="dark"] body.ip-has-sidebar .btn-action{background:var(--marca-m
 <script>
 const SUPA_URL = 'https://auth.innovasphere.ia.br';
 const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA';
-// Fallback hardcoded — fonte de verdade real é a tabela ip_allowed_users via RPC fn_ip_pode_acessar.
-// Cada pessoa entra com QUALQUER identidade que já tenha (PU-01: uma persona, vários
-// acessos). Quem chega pelo SSO do webmail vem com o endereço @innovapeople.com.br,
-// então ele precisa estar aqui — senão a sessão abre e o acesso é negado logo adiante.
-const ALLOWED_EMAILS = ['raphael@schifino.com.br', 'gleice@schifino.com.br', 'rapheice@schifino.com.br',
-  'raphael@innovapeople.com.br', 'gleice@innovapeople.com.br',
-  'raphael@innovasphere.ia.br', 'gleice@innovasphere.ia.br'];
+// QUEM PODE ENTRAR mora em UM lugar só: a tabela ip_allowed_users, lida pela RPC
+// fn_ip_pode_acessar. Nao ha lista no cliente (CVO 31/07).
+//
+// Antes havia uma copia chumbada aqui "para o caso de a RPC falhar". Duas fontes de verdade, e a
+// pior vencia no pior momento: revogar alguem na tabela nao revogava de fato, bastava a RPC falhar.
+// E o atalho nem cumpria o que prometia — ele so agia se a RPC ERRASSE, nunca quando ela NEGAVA,
+// entao os enderecos do SSO do InnovaMail (@innovapeople.com.br), que a RPC negava, estavam
+// barrados na pratica. Foram registrados na tabela; a copia morreu.
 
 const sb = window.supabase.createClient(SUPA_URL, SUPA_ANON, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
@@ -671,10 +672,17 @@ async function ipPodeAcessar(email){
   const e=String(email).toLowerCase().trim();
   try{
     const {data,error}=await sb.rpc('fn_ip_pode_acessar',{p_email:e});
-    if(!error&&typeof data==='boolean')return data;
-  }catch(_){}
-  return ALLOWED_EMAILS.includes(e);
+    if(error)throw error;
+    return data===true;
+  }catch(err){
+    // FALHA FECHADA: se a fonte de verdade nao responde, ninguem entra. Portao que abre quando o
+    // porteiro adoece nao e portao. O erro e explicito para nao virar "acesso negado" misterioso.
+    try{console.warn('[acesso] nao consegui validar:', err && err.message);}catch(_){}
+    ipAcessoIndisponivel = true;
+    return false;
+  }
 }
+let ipAcessoIndisponivel = false;
 
 // ═══════════════════════════════════════════════════════════════════
 // V20 LOGIN HANDLERS — 7 portas
@@ -1399,13 +1407,18 @@ function _ipLerSessaoLocal(){
 
 function ipGateDecide(){
   const local = _ipLerSessaoLocal();
-  if(local && ALLOWED_EMAILS.includes((local.email||'').toLowerCase())){
-    showDashboard(local.user);
-    // valida contra RPC em background (não bloqueia); se negar, desloga
-    ipPodeAcessar(local.email).then(ok=>{ if(!ok){ sb.auth.signOut(); showLogin('E-mail não autorizado.'); } });
-  } else if(local){
-    // tem sessão local mas não no allowlist hardcoded → confirma via RPC
-    ipPodeAcessar(local.email).then(ok=>{ if(ok) showDashboard(local.user); else { sb.auth.signOut(); showLogin('E-mail não autorizado.'); } });
+  if(local){
+    // VALIDA ANTES DE MOSTRAR. Antes o painel aparecia na hora para quem estivesse na lista
+    // chumbada e a checagem real corria por tras — quem tivesse acesso revogado via a casa por
+    // dentro por alguns instantes. Agora a tela espera a resposta, e a espera tem cara de espera.
+    showLogin('Verificando seu acesso…');
+    ipPodeAcessar(local.email).then(ok=>{
+      if(ok) return showDashboard(local.user);
+      sb.auth.signOut();
+      showLogin(ipAcessoIndisponivel
+        ? 'Não consegui validar seu acesso agora. Tente de novo em instantes.'
+        : 'E-mail não autorizado.');
+    });
   } else {
     const params = new URLSearchParams(location.search);
     const from = params.get('from');

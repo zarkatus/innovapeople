@@ -38,7 +38,7 @@ window.TB = {
 window.TBAuth = {
   SUPA_URL:'https://auth.innovasphere.ia.br',
   SUPA_ANON:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxa255aGZycm1icXZrZHNoamZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzY3NjIsImV4cCI6MjA4NzUxMjc2Mn0.FQhTsVKAh_Abei65nJZsuXE7SbAxJ6yndFepeI_pZdA',
-  ALLOWED:['raphael@schifino.com.br','gleice@schifino.com.br','rapheice@schifino.com.br'],
+  ALLOWED:['raphael@schifino.com.br','gleice@schifino.com.br','rapheice@schifino.com.br','raphael@innovapeople.com.br','gleice@innovapeople.com.br','raphael@innovasphere.ia.br','gleice@innovasphere.ia.br'],
   init:(fromKey,onAuth)=>{
     function deny(){location.replace('/sistema/?from='+(fromKey||'toolbox'))}
     function ovl(){if(document.getElementById('ipovl'))return;const o=document.createElement('div');o.id='ipovl';o.innerHTML='<div style="text-align:center"><div style="margin-bottom:14px;font-size:10px;opacity:.6">InnovaPeople · ToolBox</div><div>Validando acesso…</div></div>';(document.body||document.documentElement).appendChild(o)}
