@@ -11,7 +11,7 @@
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Raio-X InnovaPeople · Diagnóstico gratuito de design organizacional">
-<meta property="og:description" content="Em 30 minutos, a fotografia precisa do que a sua empresa não consegue ver sozinha.">
+<meta property="og:description" content="Começa por uma conversa de trinta minutos.">
 <meta property="og:url" content="https://innovapeople.com.br/raio-x">
 <meta property="og:image" content="https://innovapeople.com.br/og-image.jpg">
 
@@ -163,7 +163,7 @@ footer .foot-links a:hover{color:var(--marca)}
   <div class="wrap">
     <span class="eyebrow">Raio-X · Diagnóstico Gratuito</span>
     <h1>Em 30 minutos, <em>a fotografia precisa</em> do que a sua empresa não consegue ver sozinha.</h1>
-    <p class="lede">Sem custo. Sem compromisso. Quatro etapas curtas para qualificar o diagnóstico. Uma entrevista estruturada de 2-3h é agendada em sequência.</p>
+    <p class="lede">Sem custo e sem compromisso. As perguntas abaixo servem para chegarmos à conversa já sabendo de onde partir. Quando fizer sentido continuar, o próximo passo é o Raio-X: uma entrevista estruturada de duas a três horas, agendada em sequência.</p>
   </div>
 </section>
 
@@ -351,7 +351,7 @@ footer .foot-links a:hover{color:var(--marca)}
 
       <div class="nav-row">
         <button type="button" class="btn btn-ghost" data-action="prev">← Voltar</button>
-        <button type="submit" class="btn btn-primary" id="submit-btn">Solicitar Raio-X</button>
+        <button type="submit" class="btn btn-primary" id="submit-btn">Enviar</button>
       </div>
     </div>
 
@@ -361,7 +361,7 @@ footer .foot-links a:hover{color:var(--marca)}
         <div class="icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
         </div>
-        <h2>Solicitação recebida</h2>
+        <h2>Recebido</h2>
         <p>Obrigado pela confiança. A InnovaPeople vai te procurar em até <strong>24 horas úteis</strong> para confirmar disponibilidade e agendar a entrevista estruturada de 2 a 3 horas.</p>
         <p>Enquanto isso, se quiser, pode ler o <a href="/">manifesto e a metodologia completa</a> em nossa página principal, sem pressa.</p>
         <p class="meta">Maio de 2026</p>
@@ -467,7 +467,7 @@ form.addEventListener('submit', async (e) => {
     showStep('done');
   } catch (err) {
     submitBtn.disabled = false;
-    submitBtn.innerHTML = 'Solicitar Raio-X';
+    submitBtn.innerHTML = 'Enviar';
     errMsg.textContent = 'Não foi possível enviar agora. Tente novamente em alguns minutos.';
     errMsg.classList.add('show');
   }
