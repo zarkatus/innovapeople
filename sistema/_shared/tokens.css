@@ -29,7 +29,7 @@
   --ip-text:           #1C2734;   /* texto forte, títulos */
   --ip-text-body:      #33404F;   /* corpo */
   --ip-text-muted:     #5F6C7A;   /* secundário, legenda */
-  --ip-text-faint:     #8A95A1;   /* rótulo, placeholder */
+  --ip-text-faint:     #6B7682;   /* rótulo, placeholder */
   --ip-text-on-accent: #FFFFFF;   /* texto sobre o laranja */
 
   /* ── marca e ação ───────────────────────────────────────────── */
@@ -111,7 +111,7 @@ html[data-theme="dark"]{
   --ip-ink-3:     var(--ip-text-muted);
   --ip-ink-4:     var(--ip-text-faint);
   --ip-gold:      var(--ip-accent);
-  --ip-gold-lum:  var(--ip-accent-light);
+  --ip-gold-lum:  var(--ip-accent);
   --ip-gold-soft: var(--ip-accent-strong);
   --ip-ok-deep:   var(--ip-ok);
   --ip-danger-2:  var(--ip-danger);
