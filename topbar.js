@@ -51,6 +51,19 @@
 
   /* ── o traje ────────────────────────────────────────────────────────── */
   var css = [
+    /* ── BLINDAGEM (CVO 22/08, medido no InnovaSphere e no C&S) ────────────────────────
+       O componente entrava e o CSS DA CASA capturava os elementos dele. A folha do
+       InnovaSphere tem regra para `nav` generico; o <nav> que este arquivo cria nao tinha
+       `position` declarado, herdava o `fixed` da casa, saia do fluxo — e "SOBRE" ia parar em
+       cima do logotipo, "CONTATO" em cima de "CONVERSAR". Um padrao que depende de a casa
+       nao ter opiniao sobre `nav` nao e padrao.
+       O reset vale so para os DESCENDENTES (o proprio #topbarCasa segue fixo) e perde para
+       todas as regras de classe abaixo, que tem especificidade maior. */
+    '#topbarCasa *{position:static;float:none;margin:0;padding:0;border:0;outline:none;',
+    ' background:none;box-shadow:none;transform:none;inset:auto;width:auto;height:auto;',
+    ' max-width:none;max-height:none;min-width:0;min-height:0;font:inherit;color:inherit;',
+    ' letter-spacing:normal;text-transform:none;list-style:none;opacity:1;visibility:visible;',
+    ' animation:none;transition:none;box-sizing:border-box}',
     '#topbarCasa{position:fixed;inset:0 0 auto;z-index:80;display:flex;align-items:center;',
     ' justify-content:space-between;gap:14px;height:76px;padding:0 clamp(16px,4vw,60px);',
     " font-family:" + T.sans + ";transition:background .45s cubic-bezier(.19,1,.22,1),",
@@ -154,12 +167,18 @@
      usam <nav id="nav">. Quando o padrao nao acha um <header>, a configuracao diz onde esta a
      barra antiga pelo campo `esconder`. Sem isso, as duas barras se sobrepoem — foi o que
      aconteceu na InnovaPeople antes de publicar. */
-  var antigo = document.querySelector('header') || (C.esconder ? document.querySelector(C.esconder) : null);
-  if (antigo && antigo.id !== 'topbarCasa') {
+  /* CICATRIZ (22/08): era `header` OU o seletor, nunca os dois — e o `||` fazia o `esconder`
+     virar letra morta em toda casa que TEM <header>. A IncorpBuilding tinha header E uma barra
+     de utilidade fixa; o header sumia, a barra de utilidade continuava, e as duas se
+     sobrepunham no topo. Agora esconde TODOS os alvos, e `esconder` aceita lista. */
+  var alvos = [].slice.call(document.querySelectorAll(
+    'header' + (C.esconder ? ',' + C.esconder : '')));
+  alvos.forEach(function (antigo) {
+    if (!antigo || antigo.id === 'topbarCasa' || antigo.contains(h)) return;
     antigo.setAttribute('data-substituido', '1');
     antigo.style.display = 'none';
     antigo.setAttribute('aria-hidden', 'true');
-  }
+  });
   document.body.insertBefore(g, document.body.firstChild);
   document.body.insertBefore(h, document.body.firstChild);
 
